@@ -32,7 +32,7 @@ Creates project configuration, schema, registry, lexicon, evaluation file, agent
 ## `llmnav check`
 
 ```sh
-llmnav check [paths...] [--format text|json|github]
+llmnav check [paths...] [--format text|json|github|sarif]
 ```
 
 Validates syntax, canonical key order, required fields, IDs, role quality, search phrase limits, controlled effects and risks, relation targets, registry consistency, configured coverage, block size, comment ratio, and symbol attachment.
@@ -40,6 +40,8 @@ Validates syntax, canonical key order, required fields, IDs, role quality, searc
 Passing paths restricts source parsing, but project-level relation and registry checks are most reliable on a full scan.
 
 `--format github` emits workflow commands suitable for GitHub Actions annotations.
+
+`--format sarif` emits a deterministic SARIF 2.1.0 log with one rule per LLMNav diagnostic code and repository-relative artifact locations. The command exit status still depends on LLMNav errors, not on the selected serialization.
 
 ## `llmnav format`
 

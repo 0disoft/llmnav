@@ -218,8 +218,11 @@ import {
   SOURCE_INDEXER_VERSION,
   TOKENIZER_VERSION,
   TRANSACTION_SCHEMA_VERSION,
+  SARIF_VERSION,
 } from "llmnav";
 ```
+
+`diagnosticsToSarif(diagnostics)` maps existing diagnostics to a deterministic SARIF 2.1.0 object without discovering or mutating diagnostics.
 
 The normative source vocabulary remains available from `llmnav/spec`.
 

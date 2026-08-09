@@ -40,10 +40,10 @@ Implemented during 0.3 development:
 * language-aware TypeScript and Go declaration enrichers
 * selective body hashes at declaration granularity
 * richer affected-boundary reports
+* SARIF diagnostic output
 
 Planned:
 
-* SARIF diagnostic output
 * sharded generated search artifacts for very large monorepos
 
 ## 0.4 — repository graphs

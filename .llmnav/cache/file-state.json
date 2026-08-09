@@ -1431,7 +1431,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "ec2210b1408ccef7e73c91fb6e66d82aafeb4ec58d64c009f64d5465b334909b",
+      "contentHash": "a69e2d4168712c291f76e36a28bcb28e93f644aef10f626b41c7aae3710b3494",
       "declarations": [
         null
       ],
@@ -1454,7 +1454,7 @@
         ");\n    const name = separator >= 0 ? argument.slice(0, separator) : argument;\n    if (!allowed.has(name)) throw usageError(`Unknown option ${name} for command ${command}.`);\n    if (VALUE_OPTIONS.has(name)) {\n      const inlineValue = separator >= 0 ? argument.slice(separator + 1) : null;\n      if (inlineValue !== null) {\n        if (!inlineValue) throw usageError(`Option ${name} requires a value.`);\n      } else {\n        const next = args[index + 1];\n        if (next === undefined || next.startsWith(",
         ");\n    return 2;\n  }\n  const result = await buildContext(root, id, {\n    depth: parseCliIntegerOption(args, ",
         ");\n    return 2;\n  }\n  const result = await showProjectCard(root, id);\n  if (!result.card) {\n    if (json) console.log(JSON.stringify(result, null, 2));\n    else console.error(`Unknown or inactive semantic ID ${id}.`);\n    return 1;\n  }\n  if (json) console.log(JSON.stringify(result, null, 2));\n  else {\n    if (result.resolvedFrom) console.log(`resolved ${id} -> ${result.card.id}\\n`);\n    console.log(renderCompactCard(result.card));\n  }\n  return 0;\n}\n\nasync function runContext(root, args, json) {\n  const id = getPositionals(args)[0];\n  if (!id) {\n    console.error(",
-        ");\n}\n\nfunction printHelp() {\n  console.log(`llmnav ${PACKAGE_VERSION}\n\nDeterministic semantic navigation for LLM coding agents.\n\nUsage\n  llmnav init [--agents all|agents,claude,copilot,cursor] [--package-scripts]\n  llmnav check [paths...] [--format text|json|github]\n  llmnav format [paths...] [--check]\n  llmnav generate [--check]\n  llmnav query ",
+        ");\n}\n\nfunction printHelp() {\n  console.log(`llmnav ${PACKAGE_VERSION}\n\nDeterministic semantic navigation for LLM coding agents.\n\nUsage\n  llmnav init [--agents all|agents,claude,copilot,cursor] [--package-scripts]\n  llmnav check [paths...] [--format text|json|github|sarif]\n  llmnav format [paths...] [--check]\n  llmnav generate [--check]\n  llmnav query ",
         ")} actual=${item.actual.join(",
         ")}`);\n    console.log(`effects ${EFFECT_KINDS.join(",
         ")}`);\n    console.log(`relations ${RELATION_KINDS.join(",
@@ -1492,6 +1492,7 @@
         "./generator.js",
         "./initializer.js",
         "./project.js",
+        "./sarif.js",
         "./search.js",
         "./spec.js",
         "./util.js",
@@ -1520,6 +1521,7 @@
         "node:path",
         "query",
         "query requires search text.",
+        "sarif",
         "show",
         "spec",
         "stale",
@@ -1531,7 +1533,7 @@
       ],
       "path": "src/cli.js",
       "semanticBytes": 473,
-      "sourceBytes": 13905
+      "sourceBytes": 14079
     },
     {
       "blocks": [],
@@ -2307,7 +2309,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "75fd026eb79a91671497315202cf4fc3a8c54e8a081ff65b21b89a9c05aea17f",
+      "contentHash": "ccca60526addb1a7fd43221355d08beb7b9725156df1f8682ff211737ef8b73a",
       "declarations": [],
       "imports": [
         " | ",
@@ -2322,7 +2324,8 @@
         ";\n  receiver: string | null;\n  line: number;\n  offset: number;\n  endOffset: number;\n  bodyHash: string;\n}\n\nexport interface DetectedBoundary {\n  kind: ",
         ";\n  tokenizerVersion: number;\n  repositoryId: string;\n  cardSetHash: string;\n  documentCount: number;\n  fieldOrder: string[];\n  cardIds: string[];\n  tokens: string[];\n  documents: CompactSearchDocument[];\n  postings: CompactSearchPosting[][];\n}\n\nexport interface SearchIndexStats {\n  previousUsable: boolean;\n  totalCards: number;\n  reusedCards: number;\n  indexedCards: number;\n  removedCards: number;\n  changedIds: string[];\n  removedIds: string[];\n  tokenCount: number;\n}\n\nexport interface SearchMetrics {\n  queryTokens?: number;\n  documentTokenizations?: number;\n  postingVisits?: number;\n  phraseDocumentsScanned?: number;\n  idDocumentsScanned?: number;\n}\n\nexport interface SearchResult {\n  id: string;\n  score: number;\n  reasons: string[];\n  role: string;\n  location: IndexedLocation;\n  card: IndexedCard;\n}\n\nexport interface RegistryRecord {\n  id: string;\n  state: ",
         ";\n  unknown?: Array<{ key: string; value: string; line: number }>;\n}\n\nexport interface LlmnavEntry {\n  key: string;\n  value: string;\n  line: number;\n  order: number;\n}\n\nexport interface LlmnavBlock {\n  specVersion: string;\n  filePath: string;\n  scope: LlmnavScope;\n  card: LlmnavCard;\n  entries: LlmnavEntry[];\n  syntaxErrors: Array<{ line: number; message: string }>;\n  style: ",
-        ";\nexport const SEARCH_INDEX_SCHEMA_VERSION: 2;\nexport const SEARCH_FIELD_ORDER: readonly string[];\nexport const SEARCH_FIELD_WEIGHTS: Readonly<Record<string, number>>;\nexport const TOKENIZER_VERSION: number;\nexport const TRANSACTION_SCHEMA_VERSION: number;\nexport const TRANSACTION_ABORT_EXIT_CODE: number;\n\nexport function installAgentInstructions(root: string, adapters?: string[]): Promise<string[]>;\nexport function detectBoundaries(record: ProjectRecord): DetectedBoundary[];\nexport function buildContractFingerprints(project: ScannedProject, cards: IndexedCard[]): ContractFingerprints;\nexport function compareContractFingerprints(previous: ContractFingerprints | null | undefined, current: ContractFingerprints | null | undefined): ContractFingerprintChange[];\nexport function compareCardIndexes(previousIndex: LlmnavIndex | null, currentIndex: LlmnavIndex): ChangedCardRecord[];\nexport function describeAffectedBoundaries(changedCards: ChangedCardRecord[], config: LlmnavConfig, previousIndex: LlmnavIndex | null, currentIndex: LlmnavIndex): AffectedBoundaryRecord[];\nexport function describeAffectedCatalogs(changedFiles: string[], cacheDirectory: string, config: LlmnavConfig, previousIndex: LlmnavIndex | null, currentIndex: LlmnavIndex): AffectedCatalogRecord[];\nexport function loadConfig(root: string): Promise<{ config: LlmnavConfig; configPath: string }>;\nexport function validateConfig(config: LlmnavConfig, configPath?: string): void;\nexport function findAttachedDeclaration(source: string, block: LlmnavBlock, filePath: string): Declaration | null;\nexport function extractImports(source: string, filePath: string): string[];\nexport function doctorProject(root: string): Promise<{ ok: boolean; checks: Array<{ name: string; ok: boolean; message: string }> }>;\nexport function evaluateProject(root: string, options?: { top?: number; file?: string }): Promise<EvaluationResult>;\nexport function collectSourceFiles(root: string, config: LlmnavConfig, requestedPaths?: string[]): Promise<string[]>;\nexport function findProjectRoot(start?: string): Promise<string>;\nexport function formatProject(root: string, options?: { check?: boolean; paths?: string[] }): Promise<{ ok: boolean; changedFiles: string[]; errors: Array<{ file: string; line: number; message: string }> }>;\nexport function buildArtifacts(project: ScannedProject, order: string[], options?: { previousSearchIndex?: LlmnavSearchIndex | null; fileState?: LlmnavFileState }): Map<string, string>;\nexport function buildArtifactSet(project: ScannedProject, order: string[], options?: { previousSearchIndex?: LlmnavSearchIndex | null; fileState?: LlmnavFileState }): { artifacts: Map<string, string>; index: LlmnavIndex; searchIndex: LlmnavSearchIndex; searchStats: SearchIndexStats; fileState: LlmnavFileState };\nexport function generateProject(root: string, options?: { check?: boolean; incremental?: boolean; useStatHints?: boolean; failpoint?: string }): Promise<GenerationResult>;\nexport function renderCompactCard(card: IndexedCard): string;\nexport function renderSemanticCard(card: IndexedCard): string;\nexport function scanProjectIncremental(root: string, options?: { paths?: string[]; useStatHints?: boolean; previousState?: LlmnavFileState }): Promise<{ project: ScannedProject; fileState: LlmnavFileState; stats: IncrementalFileStats; statHints: unknown; hintsPath: string }>;\nexport function buildFileStateFromProject(project: ScannedProject): LlmnavFileState;\nexport function renderFileState(fileState: LlmnavFileState): string;\nexport function usableFileState(value: unknown): value is LlmnavFileState;\nexport function initializeProject(root: string, options?: { force?: boolean; packageScripts?: boolean; agents?: string[] }): Promise<{ ok: boolean; changed: string[]; generated: GenerationResult }>;\nexport function buildInvertedIndex(index: LlmnavIndex, previous?: LlmnavSearchIndex | null): { searchIndex: LlmnavSearchIndex; stats: SearchIndexStats };\nexport function buildSearchDocument(card: IndexedCard, hash?: string): SearchDocument;\nexport function isCompatibleSearchIndex(searchIndex: unknown, repositoryId?: string): searchIndex is LlmnavSearchIndex;\nexport function renderSearchIndex(searchIndex: LlmnavSearchIndex): string;\nexport function searchCardSetHash(cards: IndexedCard[]): string;\nexport function searchDocumentHash(card: IndexedCard): string;\nexport function verifySearchIndex(index: LlmnavIndex, searchIndex: LlmnavSearchIndex): boolean;\nexport function canonicalizeSource(source: string, filePath?: string): { source: string; changed: boolean; blocks: LlmnavBlock[]; errors: Array<{ line: number; message: string }> };\nexport function cardToCanonicalObject(card: LlmnavCard): Record<string, string | string[]>;\nexport function formatLlmnavBlock(block: LlmnavBlock): string;\nexport function parseLlmnavBlocks(source: string, filePath?: string): LlmnavBlock[];\nexport function scanProject(root: string, options?: { paths?: string[] }): Promise<ScannedProject>;\nexport function ensureActiveIds(root: string, registry: Registry, ids: string[]): Promise<void>;\nexport function loadRegistry(root: string): Promise<Registry>;\nexport function resolveRegistryId(registry: Registry, id: string): { id: string; state: string; [key: string]: unknown };\nexport function buildContext(root: string, id: string, options?: { depth?: number; budget?: number }): Promise<{ id: string; depth: number; budget: number; included: string[]; text: string }>;\nexport function loadSearchData(root: string): Promise<{ index: LlmnavIndex; searchIndex: LlmnavSearchIndex; lexicon: { version?: number; aliases: Record<string, string | string[]> } }>;\nexport function queryIndex(index: LlmnavIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> }; invertedIndex?: LlmnavSearchIndex; metrics?: SearchMetrics }): SearchResult[];\nexport function queryPreparedIndex(index: LlmnavIndex, searchIndex: LlmnavSearchIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> }; metrics?: SearchMetrics }): SearchResult[];\nexport function queryIndexLegacy(index: LlmnavIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> } }): SearchResult[];\nexport function queryProject(root: string, query: string, options?: { top?: number }): Promise<SearchResult[]>;\nexport function showProjectCard(root: string, id: string): Promise<{ card: IndexedCard | null; resolvedFrom: unknown }>;\nexport function tokenize(value: string): string[];\nexport function normalizeSearchText(value: string): string;\nexport function commitGeneratedCache(root: string, cacheDirectory: string, artifacts: Map<string, string>, options?: Record<string, unknown>): Promise<TransactionResult>;\nexport function recoverGenerationTransaction(root: string, options?: { cacheDirectory?: string; renameOptions?: Record<string, unknown> }): Promise<{ recovered: boolean; action: string }>;\nexport function renameWithRetry(source: string, destination: string, options?: Record<string, unknown>): Promise<void>;\nexport function removeWithRetry(target: string, options?: Record<string, unknown>): Promise<void>;\nexport function countDiagnostics(diagnostics: Diagnostic[]): { error: number; warning: number; info: number };\nexport function diagnostic(severity: DiagnosticSeverity, code: string, message: string, file: string, line?: number, column?: number): Diagnostic;\nexport function validateProject(project: ScannedProject): Diagnostic[];\n\nexport * from ",
+        ";\nexport const CONTRACT_FINGERPRINT_SCHEMA_VERSION: 1;\nexport const FILE_STATE_SCHEMA_VERSION: number;\nexport const SOURCE_INDEXER_VERSION: number;\nexport const SEARCH_INDEX_ENCODING: ",
+        ";\nexport const SEARCH_INDEX_SCHEMA_VERSION: 2;\nexport const SEARCH_FIELD_ORDER: readonly string[];\nexport const SEARCH_FIELD_WEIGHTS: Readonly<Record<string, number>>;\nexport const TOKENIZER_VERSION: number;\nexport const TRANSACTION_SCHEMA_VERSION: number;\nexport const TRANSACTION_ABORT_EXIT_CODE: number;\n\nexport function installAgentInstructions(root: string, adapters?: string[]): Promise<string[]>;\nexport function detectBoundaries(record: ProjectRecord): DetectedBoundary[];\nexport function diagnosticsToSarif(diagnostics: Diagnostic[]): Record<string, unknown>;\nexport function buildContractFingerprints(project: ScannedProject, cards: IndexedCard[]): ContractFingerprints;\nexport function compareContractFingerprints(previous: ContractFingerprints | null | undefined, current: ContractFingerprints | null | undefined): ContractFingerprintChange[];\nexport function compareCardIndexes(previousIndex: LlmnavIndex | null, currentIndex: LlmnavIndex): ChangedCardRecord[];\nexport function describeAffectedBoundaries(changedCards: ChangedCardRecord[], config: LlmnavConfig, previousIndex: LlmnavIndex | null, currentIndex: LlmnavIndex): AffectedBoundaryRecord[];\nexport function describeAffectedCatalogs(changedFiles: string[], cacheDirectory: string, config: LlmnavConfig, previousIndex: LlmnavIndex | null, currentIndex: LlmnavIndex): AffectedCatalogRecord[];\nexport function loadConfig(root: string): Promise<{ config: LlmnavConfig; configPath: string }>;\nexport function validateConfig(config: LlmnavConfig, configPath?: string): void;\nexport function findAttachedDeclaration(source: string, block: LlmnavBlock, filePath: string): Declaration | null;\nexport function extractImports(source: string, filePath: string): string[];\nexport function doctorProject(root: string): Promise<{ ok: boolean; checks: Array<{ name: string; ok: boolean; message: string }> }>;\nexport function evaluateProject(root: string, options?: { top?: number; file?: string }): Promise<EvaluationResult>;\nexport function collectSourceFiles(root: string, config: LlmnavConfig, requestedPaths?: string[]): Promise<string[]>;\nexport function findProjectRoot(start?: string): Promise<string>;\nexport function formatProject(root: string, options?: { check?: boolean; paths?: string[] }): Promise<{ ok: boolean; changedFiles: string[]; errors: Array<{ file: string; line: number; message: string }> }>;\nexport function buildArtifacts(project: ScannedProject, order: string[], options?: { previousSearchIndex?: LlmnavSearchIndex | null; fileState?: LlmnavFileState }): Map<string, string>;\nexport function buildArtifactSet(project: ScannedProject, order: string[], options?: { previousSearchIndex?: LlmnavSearchIndex | null; fileState?: LlmnavFileState }): { artifacts: Map<string, string>; index: LlmnavIndex; searchIndex: LlmnavSearchIndex; searchStats: SearchIndexStats; fileState: LlmnavFileState };\nexport function generateProject(root: string, options?: { check?: boolean; incremental?: boolean; useStatHints?: boolean; failpoint?: string }): Promise<GenerationResult>;\nexport function renderCompactCard(card: IndexedCard): string;\nexport function renderSemanticCard(card: IndexedCard): string;\nexport function scanProjectIncremental(root: string, options?: { paths?: string[]; useStatHints?: boolean; previousState?: LlmnavFileState }): Promise<{ project: ScannedProject; fileState: LlmnavFileState; stats: IncrementalFileStats; statHints: unknown; hintsPath: string }>;\nexport function buildFileStateFromProject(project: ScannedProject): LlmnavFileState;\nexport function renderFileState(fileState: LlmnavFileState): string;\nexport function usableFileState(value: unknown): value is LlmnavFileState;\nexport function initializeProject(root: string, options?: { force?: boolean; packageScripts?: boolean; agents?: string[] }): Promise<{ ok: boolean; changed: string[]; generated: GenerationResult }>;\nexport function buildInvertedIndex(index: LlmnavIndex, previous?: LlmnavSearchIndex | null): { searchIndex: LlmnavSearchIndex; stats: SearchIndexStats };\nexport function buildSearchDocument(card: IndexedCard, hash?: string): SearchDocument;\nexport function isCompatibleSearchIndex(searchIndex: unknown, repositoryId?: string): searchIndex is LlmnavSearchIndex;\nexport function renderSearchIndex(searchIndex: LlmnavSearchIndex): string;\nexport function searchCardSetHash(cards: IndexedCard[]): string;\nexport function searchDocumentHash(card: IndexedCard): string;\nexport function verifySearchIndex(index: LlmnavIndex, searchIndex: LlmnavSearchIndex): boolean;\nexport function canonicalizeSource(source: string, filePath?: string): { source: string; changed: boolean; blocks: LlmnavBlock[]; errors: Array<{ line: number; message: string }> };\nexport function cardToCanonicalObject(card: LlmnavCard): Record<string, string | string[]>;\nexport function formatLlmnavBlock(block: LlmnavBlock): string;\nexport function parseLlmnavBlocks(source: string, filePath?: string): LlmnavBlock[];\nexport function scanProject(root: string, options?: { paths?: string[] }): Promise<ScannedProject>;\nexport function ensureActiveIds(root: string, registry: Registry, ids: string[]): Promise<void>;\nexport function loadRegistry(root: string): Promise<Registry>;\nexport function resolveRegistryId(registry: Registry, id: string): { id: string; state: string; [key: string]: unknown };\nexport function buildContext(root: string, id: string, options?: { depth?: number; budget?: number }): Promise<{ id: string; depth: number; budget: number; included: string[]; text: string }>;\nexport function loadSearchData(root: string): Promise<{ index: LlmnavIndex; searchIndex: LlmnavSearchIndex; lexicon: { version?: number; aliases: Record<string, string | string[]> } }>;\nexport function queryIndex(index: LlmnavIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> }; invertedIndex?: LlmnavSearchIndex; metrics?: SearchMetrics }): SearchResult[];\nexport function queryPreparedIndex(index: LlmnavIndex, searchIndex: LlmnavSearchIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> }; metrics?: SearchMetrics }): SearchResult[];\nexport function queryIndexLegacy(index: LlmnavIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> } }): SearchResult[];\nexport function queryProject(root: string, query: string, options?: { top?: number }): Promise<SearchResult[]>;\nexport function showProjectCard(root: string, id: string): Promise<{ card: IndexedCard | null; resolvedFrom: unknown }>;\nexport function tokenize(value: string): string[];\nexport function normalizeSearchText(value: string): string;\nexport function commitGeneratedCache(root: string, cacheDirectory: string, artifacts: Map<string, string>, options?: Record<string, unknown>): Promise<TransactionResult>;\nexport function recoverGenerationTransaction(root: string, options?: { cacheDirectory?: string; renameOptions?: Record<string, unknown> }): Promise<{ recovered: boolean; action: string }>;\nexport function renameWithRetry(source: string, destination: string, options?: Record<string, unknown>): Promise<void>;\nexport function removeWithRetry(target: string, options?: Record<string, unknown>): Promise<void>;\nexport function countDiagnostics(diagnostics: Diagnostic[]): { error: number; warning: number; info: number };\nexport function diagnostic(severity: DiagnosticSeverity, code: string, message: string, file: string, line?: number, column?: number): Diagnostic;\nexport function validateProject(project: ScannedProject): Diagnostic[];\n\nexport * from ",
         "> {\n  location: IndexedLocation;\n  imports: string[];\n  boundaries: DetectedBoundary[];\n  hashes: {\n    semantic: string;\n    structure: string;\n    body: string;\n  };\n}\n\nexport interface LlmnavIndex {\n  schemaVersion: 1;\n  specVersion: string;\n  generatedBy: string;\n  repositoryId: string;\n  contractFingerprints?: ContractFingerprints;\n  sourceHash: string;\n  cards: IndexedCard[];\n}\n\nexport interface ContractFingerprint {\n  sha256: string;\n  count?: number;\n}\n\nexport interface ContractFingerprints {\n  schemaVersion: 1;\n  exportedApi: ContractFingerprint;\n  configuration: ContractFingerprint;\n}\n\nexport interface ContractFingerprintChange {\n  kind: ",
         ">;\n  previous: Record<string, unknown> | null;\n  current: Record<string, unknown> | null;\n}\n\nexport interface AffectedCatalogRecord {\n  file: string;\n  kind: ",
         "] | null;\n  exported: boolean | null;\n  visibility: Declaration[",
@@ -2330,7 +2333,7 @@
         "];\n  dimensions: ChangedCardRecord[",
         "];\n  modules: string[];\n  boundaries: DetectedBoundary[];\n  relatedIds: string[];\n  dependentIds: string[];\n}\n\nexport interface TransactionResult {\n  committed: boolean;\n  skipped: boolean;\n  recovered: boolean;\n  recoveryAction: string;\n  transactionId?: string;\n  replacedExisting?: boolean;\n}\n\nexport interface GenerationResult {\n  ok: boolean;\n  diagnostics: Diagnostic[];\n  changedFiles: string[];\n  changedCards: ChangedCardRecord[];\n  affectedBoundaries: AffectedBoundaryRecord[];\n  affectedCatalogs: AffectedCatalogRecord[];\n  project: ScannedProject;\n  counts: { error: number; warning: number; info: number };\n  artifacts?: Map<string, string>;\n  index?: LlmnavIndex;\n  searchIndex?: LlmnavSearchIndex;\n  incremental: {\n    enabled: boolean;\n    files: IncrementalFileStats;\n    cards: SearchIndexStats | null;\n    statHintsPersisted?: boolean;\n    statHintsError?: string | null;\n  };\n  transaction: TransactionResult;\n}\n\nexport interface EvaluationResult {\n  ok: boolean;\n  errors: string[];\n  cases: Array<{\n    query: string;\n    expected: string[];\n    actual: string[];\n    rank: number | null;\n    passAt1: boolean;\n    passAt5: boolean;\n  }>;\n  metrics: {\n    total: number;\n    recallAt1: number;\n    recallAt5: number;\n    meanReciprocalRank: number;\n  };\n  thresholds?: LlmnavConfig[",
         "];\n}\n\nexport const AGENT_PROTOCOL: string;\nexport const BOUNDARY_KINDS: readonly DetectedBoundary[",
-        "][];\nexport const CONTRACT_FINGERPRINT_SCHEMA_VERSION: 1;\nexport const FILE_STATE_SCHEMA_VERSION: number;\nexport const SOURCE_INDEXER_VERSION: number;\nexport const SEARCH_INDEX_ENCODING: ",
+        "][];\nexport const SARIF_SCHEMA: string;\nexport const SARIF_VERSION: ",
         "architecture",
         "contract",
         "error",
@@ -2343,11 +2346,11 @@
       ],
       "path": "src/index.d.ts",
       "semanticBytes": 0,
-      "sourceBytes": 16456
+      "sourceBytes": 16616
     },
     {
       "blocks": [],
-      "contentHash": "6655be48c8f684dfba7ffb9de5beaeddce7be3adc42aeaf7f9fe39e3f8210f47",
+      "contentHash": "d9467bb2970a7c6f68d6fe4491e52e300c82ad279c38fac9857af5b73e752377",
       "declarations": [],
       "imports": [
         "./agents.js",
@@ -2367,6 +2370,7 @@
         "./parser.js",
         "./project.js",
         "./registry.js",
+        "./sarif.js",
         "./search.js",
         "./spec.js",
         "./tokenizer.js",
@@ -2375,7 +2379,7 @@
       ],
       "path": "src/index.js",
       "semanticBytes": 0,
-      "sourceBytes": 2177
+      "sourceBytes": 2255
     },
     {
       "blocks": [
@@ -2884,6 +2888,114 @@
       "path": "src/registry.js",
       "semanticBytes": 0,
       "sourceBytes": 4148
+    },
+    {
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
+              "diagnostic discovery",
+              "file writes"
+            ],
+            "id": "llmnav.diagnostics.sarif",
+            "invariant": [],
+            "owns": [
+              "SARIF schema mapping",
+              "diagnostic rule table",
+              "artifact locations"
+            ],
+            "rel": [
+              "workflow>llmnav.rules.validate"
+            ],
+            "risk": [],
+            "role": "Serialize deterministic LLMNav diagnostics as a SARIF 2.1.0 result log.",
+            "scope": "module",
+            "search": [
+              "SARIF output",
+              "code scanning diagnostics",
+              "static analysis report"
+            ],
+            "stability": "contract",
+            "unknown": []
+          },
+          "end": 358,
+          "endLine": 9,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.diagnostics.sarif"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Serialize deterministic LLMNav diagnostics as a SARIF 2.1.0 result log."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "SARIF schema mapping|diagnostic rule table|artifact locations"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "diagnostic discovery|file writes"
+            },
+            {
+              "key": "search",
+              "line": 6,
+              "order": 4,
+              "value": "SARIF output|code scanning diagnostics|static analysis report"
+            },
+            {
+              "key": "rel",
+              "line": 7,
+              "order": 5,
+              "value": "workflow>llmnav.rules.validate"
+            },
+            {
+              "key": "stability",
+              "line": 8,
+              "order": 6,
+              "value": "contract"
+            }
+          ],
+          "filePath": "src/sarif.js",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.diagnostics.sarif\nrole=Serialize deterministic LLMNav diagnostics as a SARIF 2.1.0 result log.\nowns=SARIF schema mapping|diagnostic rule table|artifact locations\nexcludes=diagnostic discovery|file writes\nsearch=SARIF output|code scanning diagnostics|static analysis report\nrel=workflow>llmnav.rules.validate\nstability=contract\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "03c20ec0311dedaa5b095d2263a82eec36980dedef745648052ca0d909e4b317",
+      "declarations": [
+        null
+      ],
+      "imports": [
+        "./spec.js",
+        "./util.js",
+        "2.1.0",
+        "LLMNav",
+        "error",
+        "https://github.com/0disoft/llmnav",
+        "https://json.schemastore.org/sarif-2.1.0.json",
+        "note",
+        "warning"
+      ],
+      "path": "src/sarif.js",
+      "semanticBytes": 358,
+      "sourceBytes": 2154
     },
     {
       "blocks": [
@@ -4178,6 +4290,28 @@
       "path": "tests/performance.test.js",
       "semanticBytes": 0,
       "sourceBytes": 1312
+    },
+    {
+      "blocks": [],
+      "contentHash": "71dd248ffd6f322e467a3302cf2d607dc80482b5b0976476584b949fb4a4116d",
+      "declarations": [],
+      "imports": [
+        "../src/sarif.js",
+        "Contract changed.",
+        "LNV001",
+        "LNV009",
+        "Role is missing.",
+        "error",
+        "node:assert/strict",
+        "node:test",
+        "serializes deterministic SARIF 2.1.0 diagnostics",
+        "src/api.ts",
+        "src\\\\api.ts",
+        "warning"
+      ],
+      "path": "tests/sarif.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 1075
     },
     {
       "blocks": [],

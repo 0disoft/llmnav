@@ -15,6 +15,8 @@ npx llmnav eval
 
 `check` rejects invalid meaning, unresolved or retired semantic relations, malformed registry state, missing configured coverage, path escape, and declaration attachment failures.
 
+Use `npx llmnav check --format sarif > llmnav.sarif` when a code-scanning system accepts SARIF 2.1.0 rather than GitHub workflow annotations. SARIF output is deterministic for the same ordered diagnostics and uses repository-relative paths.
+
 `generate --check` performs an incremental read-only reconstruction and rejects stale primary indexes, inverted indexes, file state, manifests, and catalogs.
 
 `eval` catches ranking regressions that remain syntactically valid.

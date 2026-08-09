@@ -2,6 +2,7 @@ export { AGENT_PROTOCOL, installAgentInstructions } from "./agents.js";
 export { compareCardIndexes, describeAffectedBoundaries, describeAffectedCatalogs } from "./changes.js";
 export { loadConfig, validateConfig } from "./config.js";
 export { BOUNDARY_KINDS, detectBoundaries } from "./boundaries.js";
+export { diagnosticsToSarif, SARIF_SCHEMA, SARIF_VERSION } from "./sarif.js";
 export {
   buildContractFingerprints,
   compareContractFingerprints,

@@ -15,6 +15,7 @@ Keep semantic IDs stable across moves and renames.
 * llmnav.agent: .llmnav/cache/modules/llmnav.agent.txt (1 cards)
 * llmnav.cli: .llmnav/cache/modules/llmnav.cli.txt (1 cards)
 * llmnav.contract: .llmnav/cache/modules/llmnav.contract.txt (1 cards)
+* llmnav.diagnostics: .llmnav/cache/modules/llmnav.diagnostics.txt (1 cards)
 * llmnav.eval: .llmnav/cache/modules/llmnav.eval.txt (1 cards)
 * llmnav.index: .llmnav/cache/modules/llmnav.index.txt (5 cards)
 * llmnav.project: .llmnav/cache/modules/llmnav.project.txt (1 cards)

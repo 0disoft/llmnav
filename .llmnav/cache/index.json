@@ -438,9 +438,9 @@
         "index persistence format"
       ],
       "hashes": {
-        "body": "ec2210b1408ccef7e73c91fb6e66d82aafeb4ec58d64c009f64d5465b334909b",
+        "body": "a69e2d4168712c291f76e36a28bcb28e93f644aef10f626b41c7aae3710b3494",
         "semantic": "ce9c7cd107639f96de4f26b913a7e6bdd206af278fbd30acf02ff833ac9d3498",
-        "structure": "9f2409c82035f2d0c9ca0d0ebf3185efa8d8cdd63bfb386fc1062fb9f3a1ee04"
+        "structure": "1474bcd18a15b38bc00df18e3f60c1ce0cda47744c08a3f76c4440b89e6c77c0"
       },
       "id": "llmnav.cli.dispatch",
       "imports": [
@@ -462,7 +462,7 @@
         ");\n    const name = separator >= 0 ? argument.slice(0, separator) : argument;\n    if (!allowed.has(name)) throw usageError(`Unknown option ${name} for command ${command}.`);\n    if (VALUE_OPTIONS.has(name)) {\n      const inlineValue = separator >= 0 ? argument.slice(separator + 1) : null;\n      if (inlineValue !== null) {\n        if (!inlineValue) throw usageError(`Option ${name} requires a value.`);\n      } else {\n        const next = args[index + 1];\n        if (next === undefined || next.startsWith(",
         ");\n    return 2;\n  }\n  const result = await buildContext(root, id, {\n    depth: parseCliIntegerOption(args, ",
         ");\n    return 2;\n  }\n  const result = await showProjectCard(root, id);\n  if (!result.card) {\n    if (json) console.log(JSON.stringify(result, null, 2));\n    else console.error(`Unknown or inactive semantic ID ${id}.`);\n    return 1;\n  }\n  if (json) console.log(JSON.stringify(result, null, 2));\n  else {\n    if (result.resolvedFrom) console.log(`resolved ${id} -> ${result.card.id}\\n`);\n    console.log(renderCompactCard(result.card));\n  }\n  return 0;\n}\n\nasync function runContext(root, args, json) {\n  const id = getPositionals(args)[0];\n  if (!id) {\n    console.error(",
-        ");\n}\n\nfunction printHelp() {\n  console.log(`llmnav ${PACKAGE_VERSION}\n\nDeterministic semantic navigation for LLM coding agents.\n\nUsage\n  llmnav init [--agents all|agents,claude,copilot,cursor] [--package-scripts]\n  llmnav check [paths...] [--format text|json|github]\n  llmnav format [paths...] [--check]\n  llmnav generate [--check]\n  llmnav query ",
+        ");\n}\n\nfunction printHelp() {\n  console.log(`llmnav ${PACKAGE_VERSION}\n\nDeterministic semantic navigation for LLM coding agents.\n\nUsage\n  llmnav init [--agents all|agents,claude,copilot,cursor] [--package-scripts]\n  llmnav check [paths...] [--format text|json|github|sarif]\n  llmnav format [paths...] [--check]\n  llmnav generate [--check]\n  llmnav query ",
         ")} actual=${item.actual.join(",
         ")}`);\n    console.log(`effects ${EFFECT_KINDS.join(",
         ")}`);\n    console.log(`relations ${RELATION_KINDS.join(",
@@ -500,6 +500,7 @@
         "./generator.js",
         "./initializer.js",
         "./project.js",
+        "./sarif.js",
         "./search.js",
         "./spec.js",
         "./util.js",
@@ -528,6 +529,7 @@
         "node:path",
         "query",
         "query requires search text.",
+        "sarif",
         "show",
         "spec",
         "stale",
@@ -1597,6 +1599,59 @@
         "command event"
       ],
       "stability": "architecture"
+    },
+    {
+      "boundaries": [],
+      "excludes": [
+        "diagnostic discovery",
+        "file writes"
+      ],
+      "hashes": {
+        "body": "03c20ec0311dedaa5b095d2263a82eec36980dedef745648052ca0d909e4b317",
+        "semantic": "826a994e68f3fbc85abb6efa436e6b69de5cca6bb0b33884085571996652a187",
+        "structure": "18f84314ee785ed98fea89ce7ec6cc2c2b639f8b6665026424ecb1f0c59c172e"
+      },
+      "id": "llmnav.diagnostics.sarif",
+      "imports": [
+        "./spec.js",
+        "./util.js",
+        "2.1.0",
+        "LLMNav",
+        "error",
+        "https://github.com/0disoft/llmnav",
+        "https://json.schemastore.org/sarif-2.1.0.json",
+        "note",
+        "warning"
+      ],
+      "location": {
+        "declarationLine": null,
+        "endLine": 9,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/sarif.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "owns": [
+        "SARIF schema mapping",
+        "diagnostic rule table",
+        "artifact locations"
+      ],
+      "rel": [
+        "workflow>llmnav.rules.validate"
+      ],
+      "role": "Serialize deterministic LLMNav diagnostics as a SARIF 2.1.0 result log.",
+      "scope": "module",
+      "search": [
+        "SARIF output",
+        "code scanning diagnostics",
+        "static analysis report"
+      ],
+      "stability": "contract"
     }
   ],
   "contractFingerprints": {
@@ -1612,6 +1667,6 @@
   "generatedBy": "llmnav@0.2.0",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "ee83b7de5981dff4d79297d9566a7e9de88bbb0c7733068e5a3790ffd3503b00",
+  "sourceHash": "4c3e240a21fc1520104079adcb08e2380f9a47ff5dd6bbc4ffe679f50ae97bc2",
   "specVersion": "1"
 }

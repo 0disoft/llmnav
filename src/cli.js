@@ -31,6 +31,7 @@ import {
   STABILITIES,
 } from "./spec.js";
 import { parseInteger } from "./util.js";
+import { diagnosticsToSarif } from "./sarif.js";
 
 const VALUE_OPTIONS = new Set(["--root", "--format", "--top", "--depth", "--budget", "--agents", "--file"]);
 
@@ -117,7 +118,7 @@ async function runInit(root, args, json) {
 
 async function runCheck(root, args, json) {
   const format = json ? "json" : getOption(args, "--format") ?? "text";
-  if (!["text", "json", "github"].includes(format)) throw usageError(`Unknown diagnostic format ${JSON.stringify(format)}.`);
+  if (!["text", "json", "github", "sarif"].includes(format)) throw usageError(`Unknown diagnostic format ${JSON.stringify(format)}.`);
   const paths = getPositionals(args);
   const project = await scanProject(root, { paths });
   const diagnostics = validateProject(project);
@@ -125,6 +126,8 @@ async function runCheck(root, args, json) {
   const ok = counts.error === 0;
   if (format === "json") {
     console.log(JSON.stringify({ ok, counts, diagnostics }, null, 2));
+  } else if (format === "sarif") {
+    console.log(JSON.stringify(diagnosticsToSarif(diagnostics), null, 2));
   } else {
     printDiagnostics(diagnostics, format);
     if (format === "text") {
@@ -385,7 +388,7 @@ Deterministic semantic navigation for LLM coding agents.
 
 Usage
   llmnav init [--agents all|agents,claude,copilot,cursor] [--package-scripts]
-  llmnav check [paths...] [--format text|json|github]
+  llmnav check [paths...] [--format text|json|github|sarif]
   llmnav format [paths...] [--check]
   llmnav generate [--check]
   llmnav query "<task>" [--top 5]

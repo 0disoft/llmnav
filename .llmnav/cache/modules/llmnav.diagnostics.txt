@@ -1,0 +1,8 @@
+llmnav-catalog/1 repository=llmnav catalog=llmnav.diagnostics
+Read semantic cards before opening source. Resolve current paths and signatures with llmnav query or show.
+
+@llmnav.diagnostics.sarif
+role Serialize deterministic LLMNav diagnostics as a SARIF 2.1.0 result log.
+owns SARIF schema mapping, diagnostic rule table, artifact locations
+excludes diagnostic discovery, file writes
+rel workflow>llmnav.rules.validate
