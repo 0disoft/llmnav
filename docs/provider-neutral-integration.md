@@ -12,7 +12,7 @@ import { createLlmnavHost } from "llmnav/examples/provider-neutral-host.mjs";
 const host = await createLlmnavHost(process.cwd());
 ```
 
-The packaged example returns fixed tool definitions, verified prompt partitions, and one executor. Copy the small adapter into a host when its packaging system does not import example files directly.
+The packaged example returns fixed tool definitions, verified prompt partitions, and one executor. It loads the index, search postings, graph, lexicon, and registry once into a project session instead of reopening the generated cache for every tool call. Copy the small adapter into a host when its packaging system does not import example files directly.
 
 ## Register tools
 
@@ -28,6 +28,8 @@ const result = await host.execute({
 ```
 
 Return the complete result envelope to the model. Do not convert an expected `LNVAP002` or `LNVAP404` result into an uncaught transport failure.
+
+The session is an intentional immutable snapshot. After generation or a checkout change, call `await host.refresh()` before accepting more navigation calls. Refresh reloads both prompt partitions and the project session; LLMNav does not silently mix old and new generation state.
 
 ## Assemble a cacheable prefix
 

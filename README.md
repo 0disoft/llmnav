@@ -26,7 +26,7 @@ LLMNav is not a documentation generator, an embedding database, or a reason to a
 * Confidence-aware graph ranking and context packing bounded by depth, tokens, and edges
 * Exact qualified and ambiguity-safe workspace semantic ID resolution
 * Content-addressed incremental graph partitions with safe invalidation
-* A runnable provider-neutral host adapter example with typed package export
+* A runnable provider-neutral host adapter with a reusable project snapshot and typed package export
 * Repository and module catalogs designed for prompt-prefix reuse
 * Multilingual alias routing and CJK n-gram retrieval
 * Search regression tests with Recall@1, Recall@5, and MRR

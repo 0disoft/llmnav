@@ -4,6 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { createLlmnavHost } from "../examples/provider-neutral-host.mjs";
+import { generateProject } from "../src/generator.js";
 import { initializeProject } from "../src/initializer.js";
 
 test("runs the packaged provider-neutral host example", async (context) => {
@@ -44,4 +45,15 @@ export const authSession = true;
   const result = await host.execute({ name: "llmnav_query", input: { task: "replayed refresh token" } });
   assert.equal(result.ok, true);
   assert.equal(result.data[0].id, "auth.session");
+
+  await writeFile(
+    path.join(root, "src", "quota.ts"),
+    `/* llmnav/1 symbol\nid=generation.quota.reserve\nrole=Reserve one generation quota before remote execution.\nsearch=quota reservation|generation capacity\nstability=contract\n*/\nexport function reserveQuota() {}\n`,
+  );
+  assert.equal((await generateProject(root)).ok, true);
+  const stale = await host.execute({ name: "llmnav_query", input: { task: "generation capacity" } });
+  assert.deepEqual(stale.data, []);
+  await host.refresh();
+  const refreshed = await host.execute({ name: "llmnav_query", input: { task: "generation capacity" } });
+  assert.equal(refreshed.data[0].id, "generation.quota.reserve");
 });

@@ -27,7 +27,7 @@ const OPERATIONS = new Map([
   ["llmnav_check", "check"],
 ]);
 
-export async function executeAgentOperation(root, name, input = {}) {
+export async function executeAgentOperation(root, name, input = {}, options = {}) {
   const canonicalName = String(name);
   const operation = OPERATIONS.get(canonicalName);
   if (!operation) return failure("unknown", "LNVAP001", `Unknown agent operation ${JSON.stringify(name)}.`);
@@ -37,19 +37,26 @@ export async function executeAgentOperation(root, name, input = {}) {
 
   try {
     if (operation === "query") {
-      return success(operation, await queryProject(root, input.task.trim(), { top: input.top ?? 5 }));
+      return success(operation, options.session
+        ? options.session.query(input.task.trim(), { top: input.top ?? 5 })
+        : await queryProject(root, input.task.trim(), { top: input.top ?? 5 }));
     }
     if (operation === "show") {
-      const result = await showProjectCard(root, input.id.trim());
+      const result = options.session
+        ? options.session.show(input.id.trim())
+        : await showProjectCard(root, input.id.trim());
       if (!result.card && !result.node) return failure(operation, "LNVAP404", `Unknown or inactive semantic ID ${input.id}.`, result);
       return success(operation, result);
     }
     if (operation === "context") {
-      return success(operation, await buildContext(root, input.id.trim(), {
+      const contextOptions = {
         depth: input.depth ?? 1,
         budget: input.budget ?? 2500,
         maxEdges: input.maxEdges ?? 24,
-      }));
+      };
+      return success(operation, options.session
+        ? options.session.context(input.id.trim(), contextOptions)
+        : await buildContext(root, input.id.trim(), contextOptions));
     }
     const project = await scanProject(root, { paths: input.paths ?? [] });
     const graphInputs = await loadGraphInputs(root, project.config);

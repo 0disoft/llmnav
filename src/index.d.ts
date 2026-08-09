@@ -176,6 +176,14 @@ export interface SearchResult {
   card: IndexedCard;
 }
 
+export interface ProjectSession {
+  root: string;
+  query(query: string, options?: { top?: number }): SearchResult[];
+  show(id: string): { card: IndexedCard | null; node: GraphNode | null; resolvedFrom: unknown };
+  context(id: string, options?: { depth?: number; budget?: number; maxEdges?: number }): { id: string; depth: number; budget: number; maxEdges: number; included: string[]; includedEdges: string[]; text: string };
+  refresh(): Promise<ProjectSession>;
+}
+
 export interface RegistryRecord {
   id: string;
   state: "active" | "redirect" | "replaced" | "retired" | string;
@@ -562,7 +570,7 @@ export function diagnosticsToEditor(diagnostics: Diagnostic[]): EditorDiagnostic
 export function renderEditorDiagnostics(diagnostics: Diagnostic[]): string;
 export function getEditorIntegration(name: "vscode"): { schemaVersion: 1; editor: "vscode"; target: ".vscode/tasks.json"; config: Record<string, unknown> };
 export function getAgentToolDefinitions(): AgentToolDefinition[];
-export function executeAgentOperation(root: string, name: string, input?: Record<string, unknown>): Promise<AgentOperationResult>;
+export function executeAgentOperation(root: string, name: string, input?: Record<string, unknown>, options?: { session?: ProjectSession }): Promise<AgentOperationResult>;
 export function buildPromptPrefixBundle(input: { repositoryId: string; toolDefinitions: AgentToolDefinition[]; agentProtocol: string; repositoryCore: string; modules?: Array<{ id: string; content: string }> }): PromptPrefixBundle;
 export function isCompatiblePromptPrefixBundle(bundle: unknown, repositoryId?: string): bundle is PromptPrefixBundle;
 export function loadPromptPrefixBundle(root: string): Promise<PromptPrefixBundle>;
@@ -642,6 +650,7 @@ export function renderRegistryRecords(records: RegistryRecord[]): string;
 export function loadRegistry(root: string): Promise<Registry>;
 export function resolveRegistryId(registry: Registry, id: string): { id: string; state: string; [key: string]: unknown };
 export function buildContext(root: string, id: string, options?: { depth?: number; budget?: number; maxEdges?: number }): Promise<{ id: string; depth: number; budget: number; maxEdges: number; included: string[]; includedEdges: string[]; text: string }>;
+export function createProjectSession(root: string): Promise<ProjectSession>;
 export function loadSearchData(root: string): Promise<{ index: LlmnavIndex; searchIndex: LlmnavSearchIndex; lexicon: { version?: number; aliases: Record<string, string | string[]> }; graph: RepositoryGraph | null }>;
 export function queryIndex(index: LlmnavIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> }; invertedIndex?: LlmnavSearchIndex; metrics?: SearchMetrics; graph?: RepositoryGraph | null }): SearchResult[];
 export function queryPreparedIndex(index: LlmnavIndex, searchIndex: LlmnavSearchIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> }; metrics?: SearchMetrics; graph?: RepositoryGraph | null }): SearchResult[];

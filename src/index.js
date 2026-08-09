@@ -90,6 +90,7 @@ export { scanProject } from "./project.js";
 export { ensureActiveIds, loadRegistry, mergeActiveIds, renderRegistryRecords, resolveRegistryId } from "./registry.js";
 export {
   buildContext,
+  createProjectSession,
   loadSearchData,
   queryIndex,
   queryIndexLegacy,

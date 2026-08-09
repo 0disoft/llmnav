@@ -264,7 +264,24 @@ const result = await executeAgentOperation(
 
 The trusted wrapper binds `root`; the model supplies only the validated operation input. Results use one schemaVersion 1 envelope containing `operation`, `ok`, `data`, and `error`. Input errors use `LNVAP002`, missing IDs use `LNVAP404`, and unexpected operation failures use `LNVAP500`.
 
-The typed `llmnav/examples/provider-neutral-host.mjs` export composes these APIs into a trusted-root closure. It exposes tool definitions, base and module-selected prompt partitions, and one operation executor without importing a model SDK.
+Long-lived hosts can load one explicit snapshot for repeated navigation calls:
+
+```js
+import { createProjectSession, executeAgentOperation } from "llmnav";
+
+const session = await createProjectSession(process.cwd());
+const result = await executeAgentOperation(
+  process.cwd(),
+  "llmnav_query",
+  { task: "rotate a replayed refresh token" },
+  { session },
+);
+await session.refresh(); // after generation or checkout changes
+```
+
+`query`, `show`, and `context` reuse the loaded index, postings, graph, lexicon, and registry. `refresh()` replaces the complete snapshot; it never mutates one layer in place. The `check` operation still scans current source and does not use session data.
+
+The typed `llmnav/examples/provider-neutral-host.mjs` export composes these APIs into a trusted-root closure. It exposes tool definitions, base and module-selected prompt partitions, one snapshot-backed operation executor, and an explicit refresh method without importing a model SDK.
 
 `buildPromptPrefixBundle(input)` constructs ordered package, repository, and module partitions with normalized newlines, SHA-256 content hashes, estimated token counts, and explicit cache-boundary hints. `renderPromptPrefixBundle` serializes it deterministically. `loadPromptPrefixBundle(root)` accepts only a schema-compatible artifact whose exact bytes match `manifest.json`.
 

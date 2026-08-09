@@ -10,6 +10,7 @@ export interface LlmnavHost {
   basePromptPartitions: PromptPrefixPartition[];
   selectPromptPartitions(moduleIds?: string[]): PromptPrefixPartition[];
   execute(call: { name: string; input?: Record<string, unknown> }): Promise<AgentOperationResult>;
+  refresh(): Promise<LlmnavHost>;
 }
 
 export function createLlmnavHost(root: string): Promise<LlmnavHost>;

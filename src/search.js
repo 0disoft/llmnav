@@ -81,6 +81,37 @@ export async function queryProject(root, query, options = {}) {
   return queryPreparedIndex(index, searchIndex, query, { ...options, lexicon, graph });
 }
 
+export async function createProjectSession(root) {
+  let snapshot = await loadProjectSnapshot(root);
+  const session = {
+    root,
+    query(query, options = {}) {
+      return queryPreparedIndex(snapshot.index, snapshot.searchIndex, query, {
+        ...options,
+        lexicon: snapshot.lexicon,
+        graph: snapshot.graph,
+      });
+    },
+    show(id) {
+      return showSnapshotCard(snapshot, id);
+    },
+    context(id, options = {}) {
+      return buildSnapshotContext(snapshot, id, options);
+    },
+    async refresh() {
+      snapshot = await loadProjectSnapshot(root);
+      return session;
+    },
+  };
+  return session;
+}
+
+async function loadProjectSnapshot(root) {
+  const { index, lexicon, searchIndex, graph } = await loadSearchData(root);
+  const registry = await loadRegistry(root);
+  return { index, lexicon, searchIndex, graph, registry };
+}
+
 export function queryIndex(index, query, options = {}) {
   let searchIndex = options.invertedIndex;
   if (!searchIndex) {
@@ -314,11 +345,14 @@ export function queryIndexLegacy(index, query, options = {}) {
 }
 
 export async function showProjectCard(root, id) {
-  const { index, graph } = await loadSearchData(root);
+  return showSnapshotCard(await loadProjectSnapshot(root), id);
+}
+
+function showSnapshotCard(snapshot, id) {
+  const { index, graph, registry } = snapshot;
   const direct = index.cards.find((card) => card.id === id);
   if (direct) return { card: direct, node: null, resolvedFrom: null };
   if (!String(id).includes("/")) {
-    const registry = await loadRegistry(root);
     const resolved = resolveRegistryId(registry, id);
     if (resolved.state === "active") {
       const card = index.cards.find((item) => item.id === resolved.id) ?? null;
@@ -336,8 +370,11 @@ export async function showProjectCard(root, id) {
 }
 
 export async function buildContext(root, id, options = {}) {
-  const { index, graph } = await loadSearchData(root);
-  const registry = await loadRegistry(root);
+  return buildSnapshotContext(await loadProjectSnapshot(root), id, options);
+}
+
+function buildSnapshotContext(snapshot, id, options = {}) {
+  const { index, graph, registry } = snapshot;
   const depth = boundedInteger(options.depth, 1, 0, 8);
   const budget = boundedInteger(options.budget, 2500, 128, 100000);
   const maxEdges = boundedInteger(options.maxEdges, 24, 0, 1000);
