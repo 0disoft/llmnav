@@ -61,6 +61,12 @@ export async function loadRegistry(root) {
 }
 
 export async function ensureActiveIds(root, registry, ids) {
+  const { records, changed } = mergeActiveIds(registry, ids);
+  if (changed) await atomicWrite(registry.registryPath, renderRegistryRecords(records));
+  return { records, changed };
+}
+
+export function mergeActiveIds(registry, ids) {
   const records = [...registry.records];
   const known = new Set(records.map((record) => record.id));
   let changed = false;
@@ -70,11 +76,12 @@ export async function ensureActiveIds(root, registry, ids) {
     known.add(id);
     changed = true;
   }
-  if (changed) {
-    const content = records.map((record) => JSON.stringify(record)).join("\n");
-    await atomicWrite(registry.registryPath, `${content}\n`);
-  }
   return { records, changed };
+}
+
+export function renderRegistryRecords(records) {
+  const content = records.map((record) => JSON.stringify(record)).join("\n");
+  return content ? `${content}\n` : "";
 }
 
 export function resolveRegistryId(registry, id) {

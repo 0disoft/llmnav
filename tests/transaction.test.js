@@ -300,3 +300,29 @@ test("concurrent generators serialize complete source-to-cache transactions", as
   assert.equal(secondResult.ok, true);
   assert.equal(secondResult.transaction.skipped, true);
 });
+
+test("cache, registry, and stable order roll back as one generation state", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-transaction-control-state-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await createProject(root);
+  const indexPath = path.join(root, ".llmnav", "cache", "index.json");
+  const registryPath = path.join(root, ".llmnav", "ids.jsonl");
+  const orderPath = path.join(root, ".llmnav", "order.lock");
+  const before = {
+    index: await readFile(indexPath, "utf8"),
+    registry: await readFile(registryPath, "utf8"),
+    order: await readFile(orderPath, "utf8"),
+  };
+  await writeFile(
+    path.join(root, "src", "capture.ts"),
+    `/* llmnav/1 symbol\nid=billing.credit.capture\nrole=Capture a reserved credit balance after delivery.\nsearch=capture credits|reserved balance\nstability=contract\n*/\nexport function captureCredits() { return 1; }\n`,
+  );
+
+  await assert.rejects(
+    () => generateProject(root, { failpoint: "throw:after-new-installed" }),
+    /Injected generation failure/u,
+  );
+  assert.equal(await readFile(indexPath, "utf8"), before.index);
+  assert.equal(await readFile(registryPath, "utf8"), before.registry);
+  assert.equal(await readFile(orderPath, "utf8"), before.order);
+});

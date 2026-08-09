@@ -98,7 +98,7 @@ after moving the previous cache to backup
 after installing a new cache, before commit
 ```
 
-The assertions compare the restored `index.json` with the previous bytes, prove concurrent writers serialize, and prove a query waits instead of rolling back an active writer. Transient Windows error codes `EACCES`, `EBUSY`, `EEXIST`, `ENOTEMPTY`, and `EPERM` are injected into rename operations to verify bounded retries.
+The assertions compare the restored `index.json`, ID registry, and stable order with their previous bytes, prove concurrent writers serialize, and prove a query waits instead of rolling back an active writer. Transient Windows error codes `EACCES`, `EBUSY`, `EEXIST`, `ENOTEMPTY`, and `EPERM` are injected into rename operations to verify bounded retries.
 
 These tests are not a substitute for the Windows CI runner. They make exact phases reproducible on every platform, while the matrix executes the same filesystem workflow on Windows.
 

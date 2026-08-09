@@ -93,7 +93,7 @@ changed content             → parse that file and retokenize changed cards onl
 deleted file                → remove its cards and postings
 ```
 
-All generated cache artifacts are completed and verified in a staging directory before the live cache is replaced. If writing, verification, rename, or the process itself fails, the previous cache remains available or is restored before the next query or generation.
+All generated cache artifacts are completed and verified in a staging directory before the live cache is replaced. Registry additions and stable-order updates participate in the same recoverable transaction, so rollback cannot leave control state ahead of the cache. If writing, verification, rename, or the process itself fails, the previous generation state remains available or is restored before the next query or generation.
 
 One repository-scoped generation lock serializes the complete source-to-cache operation. Readers wait for an active writer and recover only abandoned journals, so they cannot roll back a live generation. Windows transient rename failures such as `EPERM`, `EBUSY`, `EACCES`, `EEXIST`, and `ENOTEMPTY` are retried. CI executes the transaction and interruption suite on `windows-latest` as well as Linux.
 

@@ -87,7 +87,7 @@ export {
   parseLlmnavBlocks,
 } from "./parser.js";
 export { scanProject } from "./project.js";
-export { ensureActiveIds, loadRegistry, resolveRegistryId } from "./registry.js";
+export { ensureActiveIds, loadRegistry, mergeActiveIds, renderRegistryRecords, resolveRegistryId } from "./registry.js";
 export {
   buildContext,
   loadSearchData,

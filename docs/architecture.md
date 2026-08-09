@@ -203,6 +203,8 @@ remove backup, transaction directory, and journal
 
 The journal is `.llmnav/generation-transaction.json`. It records the writer owner ID, and transaction paths are repository-relative and validated to remain below `.llmnav/.transactions`.
 
+When generation discovers new semantic IDs, the staged transaction also owns `.llmnav/ids.jsonl` and `.llmnav/order.lock`. Their previous bytes are backed up beside the cache, their replacements are verified by content hash, and recovery restores or finalizes all three surfaces together.
+
 If generation throws before commit, rollback restores the backup. If the process is killed, the next `query`, `generate`, or `doctor` recovers from the journal before reading cache data.
 
 An installed cache is considered authoritative only after the journal reaches `committed`. A crash after installing a new cache but before commit restores the previous cache. A crash after recording `committed` keeps the new verified cache and completes cleanup.

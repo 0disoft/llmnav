@@ -15,10 +15,9 @@ import { readdir } from "node:fs/promises";
 import path from "node:path";
 import { cardToCanonicalObject } from "./parser.js";
 import { scanProject } from "./project.js";
-import { ensureActiveIds } from "./registry.js";
+import { mergeActiveIds, renderRegistryRecords } from "./registry.js";
 import { countDiagnostics, validateProject } from "./validator.js";
 import {
-  atomicWrite,
   assertNoSymlinkTraversal,
   compareText,
   readJsonSafe,
@@ -191,12 +190,17 @@ async function generateProjectLocked(root, options) {
       path.join(root, project.config.generation.cacheDirectory),
       project.config.generation.cacheDirectory,
     );
-    await ensureActiveIds(root, project.registry, ids);
-    await atomicWrite(path.join(root, ".llmnav", "order.lock"), orderContent);
-
     const cachePrefix = `${toPosix(project.config.generation.cacheDirectory).replace(/\/+$/u, "")}/`;
     const cacheChanges = uniqueChangedFiles.filter((file) => file.startsWith(cachePrefix));
-    if (cacheChanges.length > 0) {
+    const controlArtifacts = new Map();
+    if (missingRegistryIds.length > 0) {
+      controlArtifacts.set(
+        ".llmnav/ids.jsonl",
+        renderRegistryRecords(mergeActiveIds(project.registry, ids).records),
+      );
+    }
+    if (orderChanged) controlArtifacts.set(".llmnav/order.lock", orderContent);
+    if (cacheChanges.length > 0 || controlArtifacts.size > 0) {
       transaction = await commitGeneratedCache(
         root,
         project.config.generation.cacheDirectory,
@@ -206,6 +210,7 @@ async function generateProjectLocked(root, options) {
           onPhase: options.onTransactionPhase,
           renameOptions: options.renameOptions,
           lockOwnerId: options.lockOwnerId,
+          controlArtifacts,
         },
       );
     }

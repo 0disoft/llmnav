@@ -636,6 +636,8 @@ export function formatLlmnavBlock(block: LlmnavBlock): string;
 export function parseLlmnavBlocks(source: string, filePath?: string): LlmnavBlock[];
 export function scanProject(root: string, options?: { paths?: string[] }): Promise<ScannedProject>;
 export function ensureActiveIds(root: string, registry: Registry, ids: string[]): Promise<void>;
+export function mergeActiveIds(registry: Registry, ids: string[]): { records: RegistryRecord[]; changed: boolean };
+export function renderRegistryRecords(records: RegistryRecord[]): string;
 export function loadRegistry(root: string): Promise<Registry>;
 export function resolveRegistryId(registry: Registry, id: string): { id: string; state: string; [key: string]: unknown };
 export function buildContext(root: string, id: string, options?: { depth?: number; budget?: number; maxEdges?: number }): Promise<{ id: string; depth: number; budget: number; maxEdges: number; included: string[]; includedEdges: string[]; text: string }>;

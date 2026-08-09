@@ -32,6 +32,7 @@ const DEFAULT_RETRY_DELAYS = Object.freeze([0, 8, 16, 32, 64, 128, 256, 512]);
 const JOURNAL_PHASES = new Set(["prepared", "old-moved", "new-installed", "committed"]);
 const DEFAULT_LOCK_TIMEOUT_MS = 30_000;
 const DEFAULT_LOCK_POLL_MS = 50;
+const CONTROL_ARTIFACT_PATHS = new Set([".llmnav/ids.jsonl", ".llmnav/order.lock"]);
 
 export async function withGenerationLock(root, callback, options = {}) {
   const lock = await acquireGenerationLock(root, options);
@@ -106,6 +107,7 @@ export async function commitGeneratedCache(root, cacheDirectory, artifacts, opti
   const stagePath = path.join(transactionPath, "stage");
   const backupPath = path.join(transactionPath, "backup");
   const hadExistingCacheAtStart = await pathExists(cachePath);
+  let controlRecords = [];
   await mkdir(stagePath, { recursive: true });
 
   const cachePrefix = `${cacheRelative.replace(/\/+$/u, "")}/`;
@@ -131,6 +133,7 @@ export async function commitGeneratedCache(root, cacheDirectory, artifacts, opti
       await invokeFailpoint(`after-write:${stageRelative}`, options);
     }
     await verifyStagedArtifacts(stagePath, cacheArtifacts, cachePrefix);
+    controlRecords = await stageControlArtifacts(root, transactionPath, options.controlArtifacts);
     await invokeFailpoint("after-stage", options);
 
     const hadExistingCache = hadExistingCacheAtStart;
@@ -142,6 +145,7 @@ export async function commitGeneratedCache(root, cacheDirectory, artifacts, opti
       backupDirectory: relativePosix(root, backupPath),
       hadExistingCache,
       ownerId: options.lockOwnerId,
+      controlArtifacts: controlRecords,
       phase: "prepared",
     };
     await atomicWrite(journalPath, stableStringify(journal));
@@ -150,14 +154,17 @@ export async function commitGeneratedCache(root, cacheDirectory, artifacts, opti
     if (hadExistingCache) {
       await renameWithRetry(cachePath, backupPath, options.renameOptions);
     }
+    await moveControlArtifactsToBackup(root, controlRecords, options.renameOptions);
     journal = { ...journal, phase: "old-moved" };
     await atomicWrite(journalPath, stableStringify(journal));
     await invokeFailpoint("after-cache-moved", options);
 
     await renameWithRetry(stagePath, cachePath, options.renameOptions);
+    await installControlArtifacts(root, controlRecords, options.renameOptions);
     journal = { ...journal, phase: "new-installed" };
     await atomicWrite(journalPath, stableStringify(journal));
     await verifyCommittedCache(cachePath, cacheRelative);
+    await verifyControlArtifacts(root, controlRecords);
     await invokeFailpoint("after-new-installed", options);
 
     journal = { ...journal, phase: "committed" };
@@ -188,6 +195,7 @@ export async function commitGeneratedCache(root, cacheDirectory, artifacts, opti
           backupDirectory: relativePosix(root, backupPath),
           hadExistingCache: hadExistingCacheAtStart,
           ownerId: options.lockOwnerId,
+          controlArtifacts: controlRecords,
           phase: "prepared",
         }, cacheRelative, options.renameOptions);
       } catch (rollbackError) {
@@ -234,6 +242,7 @@ export async function recoverGenerationTransaction(root, options = {}) {
       await renameWithRetry(backupPath, cachePath, options.renameOptions);
       action = "restored-backup-after-missing-commit";
     }
+    await finalizeCommittedControlArtifacts(root, journal.controlArtifacts ?? [], options.renameOptions);
   } else if (await pathExists(backupPath)) {
     if (await pathExists(cachePath)) await removeWithRetry(cachePath, options.renameOptions);
     await renameWithRetry(backupPath, cachePath, options.renameOptions);
@@ -249,6 +258,10 @@ export async function recoverGenerationTransaction(root, options = {}) {
     action = "completed-first-generation";
   } else {
     action = "removed-incomplete-transaction";
+  }
+
+  if (journal.phase !== "committed") {
+    await restoreControlArtifacts(root, journal.controlArtifacts ?? [], options.renameOptions);
   }
 
   await removeWithRetry(transactionPath, options.renameOptions);
@@ -305,6 +318,7 @@ async function rollbackTransaction(root, journal, expectedCacheDirectory, rename
   } else if (!journal.hadExistingCache && await pathExists(cachePath)) {
     await removeWithRetry(cachePath, renameOptions);
   }
+  await restoreControlArtifacts(root, journal.controlArtifacts ?? [], renameOptions);
   if (await pathExists(stagePath)) await removeWithRetry(stagePath, renameOptions);
   await removeWithRetry(transactionPath, renameOptions);
   await removeWithRetry(journalPath, renameOptions);
@@ -374,8 +388,104 @@ function validateJournal(root, journal, expectedCacheDirectory) {
   if (journal.ownerId !== undefined && (typeof journal.ownerId !== "string" || !journal.ownerId)) {
     throw new Error("Generation transaction journal has invalid ownerId.");
   }
+  validateControlArtifacts(journal, transactionDirectory);
   if (!JOURNAL_PHASES.has(journal.phase)) {
     throw new Error("Generation transaction journal has invalid phase.");
+  }
+}
+
+async function stageControlArtifacts(root, transactionPath, artifacts = new Map()) {
+  const records = [];
+  for (const [relativePath, content] of [...artifacts.entries()].sort(([left], [right]) => compareText(left, right))) {
+    const normalized = projectRelativePath(relativePath, `Control artifact ${relativePath}`);
+    if (!CONTROL_ARTIFACT_PATHS.has(normalized)) {
+      throw new Error(`Control artifact ${normalized} is not transaction-managed.`);
+    }
+    const name = path.posix.basename(normalized);
+    const stagePath = path.join(transactionPath, "control-stage", name);
+    const backupPath = path.join(transactionPath, "control-backup", name);
+    await mkdir(path.dirname(stagePath), { recursive: true });
+    await writeFile(stagePath, content, "utf8");
+    records.push({
+      path: normalized,
+      stagePath: relativePosix(root, stagePath),
+      backupPath: relativePosix(root, backupPath),
+      hadExisting: await pathExists(path.join(root, normalized)),
+      hash: sha256(content),
+    });
+  }
+  return records;
+}
+
+async function moveControlArtifactsToBackup(root, records, renameOptions) {
+  for (const record of records) {
+    if (!record.hadExisting) continue;
+    const backupPath = path.join(root, record.backupPath);
+    await mkdir(path.dirname(backupPath), { recursive: true });
+    await renameWithRetry(path.join(root, record.path), backupPath, renameOptions);
+  }
+}
+
+async function installControlArtifacts(root, records, renameOptions) {
+  for (const record of records) {
+    await renameWithRetry(path.join(root, record.stagePath), path.join(root, record.path), renameOptions);
+  }
+}
+
+async function verifyControlArtifacts(root, records) {
+  for (const record of records) {
+    const content = await readFile(path.join(root, record.path), "utf8");
+    if (sha256(content) !== record.hash) throw new Error(`Control artifact ${record.path} fails transaction verification.`);
+  }
+}
+
+async function restoreControlArtifacts(root, records, renameOptions) {
+  for (const record of records) {
+    const targetPath = path.join(root, record.path);
+    const backupPath = path.join(root, record.backupPath);
+    if (await pathExists(backupPath)) {
+      if (await pathExists(targetPath)) await removeWithRetry(targetPath, renameOptions);
+      await renameWithRetry(backupPath, targetPath, renameOptions);
+    } else if (!record.hadExisting && await pathExists(targetPath)) {
+      await removeWithRetry(targetPath, renameOptions);
+    }
+  }
+}
+
+async function finalizeCommittedControlArtifacts(root, records, renameOptions) {
+  for (const record of records) {
+    const targetPath = path.join(root, record.path);
+    const stagePath = path.join(root, record.stagePath);
+    const backupPath = path.join(root, record.backupPath);
+    if (!await pathExists(targetPath) && await pathExists(stagePath)) {
+      await renameWithRetry(stagePath, targetPath, renameOptions);
+    } else if (!await pathExists(targetPath) && await pathExists(backupPath)) {
+      await renameWithRetry(backupPath, targetPath, renameOptions);
+    }
+  }
+  await verifyControlArtifacts(root, records);
+}
+
+function validateControlArtifacts(journal, transactionDirectory) {
+  if (journal.controlArtifacts === undefined) return;
+  if (!Array.isArray(journal.controlArtifacts)) {
+    throw new Error("Generation transaction journal has invalid controlArtifacts.");
+  }
+  const seen = new Set();
+  for (const record of journal.controlArtifacts) {
+    if (!record || typeof record !== "object" || !CONTROL_ARTIFACT_PATHS.has(toPosix(record.path))) {
+      throw new Error("Generation transaction journal has an invalid control artifact path.");
+    }
+    if (seen.has(record.path)) throw new Error("Generation transaction journal repeats a control artifact path.");
+    seen.add(record.path);
+    const name = path.posix.basename(toPosix(record.path));
+    if (toPosix(record.stagePath) !== `${transactionDirectory}/control-stage/${name}` ||
+        toPosix(record.backupPath) !== `${transactionDirectory}/control-backup/${name}`) {
+      throw new Error("Generation transaction control artifact does not belong to its transaction.");
+    }
+    if (typeof record.hadExisting !== "boolean" || !/^[a-f0-9]{64}$/u.test(record.hash)) {
+      throw new Error("Generation transaction journal has invalid control artifact metadata.");
+    }
   }
 }
 
