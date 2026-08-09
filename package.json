@@ -4,7 +4,7 @@
   "description": "A deterministic semantic navigation layer for LLM coding agents.",
   "type": "module",
   "bin": {
-    "llmnav": "./bin/llmnav.js"
+    "llmnav": "bin/llmnav.js"
   },
   "exports": {
     ".": {

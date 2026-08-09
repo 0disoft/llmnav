@@ -22,6 +22,7 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 * Invalidated pre-fix file-state accelerators so corrected declaration and import data is rebuilt from source.
 * Preserved multi-target replacement ambiguity and detected cycles hidden in replacement branches.
 * Synchronized public TypeScript declarations with runtime return values and graph-aware options.
+* Normalized the npm executable path so current npm clients publish the `llmnav` binary without metadata correction.
 
 ## [0.5.0] — 2026-08-09
 
