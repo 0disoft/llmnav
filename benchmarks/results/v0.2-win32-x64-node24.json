@@ -1,0 +1,250 @@
+{
+  "coldProcessQuery": {
+    "exactResultChecksumMatch": true,
+    "expectedId": "domain003.feature005.action003053",
+    "inverted": {
+      "checksum": 518737,
+      "correct": 7,
+      "indexBytes": 5017250,
+      "maxMs": 253.1241,
+      "medianHeapUsedBytes": 5596600,
+      "medianMs": 221.1072,
+      "medianRssBytes": 123854848,
+      "minMs": 183.15040000000002,
+      "p95Ms": 253.1241,
+      "searchIndexBytes": 11986018
+    },
+    "legacy": {
+      "checksum": 518737,
+      "correct": 7,
+      "indexBytes": 5017250,
+      "maxMs": 429.8147,
+      "medianHeapUsedBytes": 11204704,
+      "medianMs": 394.46990000000005,
+      "medianRssBytes": 153636864,
+      "minMs": 322.5054,
+      "p95Ms": 429.8147,
+      "searchIndexBytes": 0
+    },
+    "medianSpeedup": 1.7840662809714023,
+    "note": "Each sample starts a fresh Node.js process. The operating-system filesystem cache was not flushed.",
+    "query": "locate operation code003053 for shard003053",
+    "runsPerMode": 7
+  },
+  "environment": {
+    "arch": "x64",
+    "cpu": "AMD Ryzen 5 7430U with Radeon Graphics         ",
+    "filesystemCacheFlushed": false,
+    "logicalCpuCount": 12,
+    "node": "v24.18.0",
+    "platform": "win32",
+    "totalMemoryBytes": 33654575104
+  },
+  "fixture": {
+    "cards": 5000,
+    "cardsPerFile": 5,
+    "changedCards": 1,
+    "changedFiles": 1,
+    "creationMs": 736.0224000000001,
+    "files": 1000
+  },
+  "generation": {
+    "byteIdenticalToFull": true,
+    "cacheBytes": 34869078,
+    "cacheFiles": 507,
+    "cold": {
+      "affectedCatalogs": 502,
+      "cards": {
+        "changedIdCount": 5000,
+        "changedIdSample": [
+          "domain000.feature000.action000000",
+          "domain000.feature000.action000001",
+          "domain000.feature000.action000002",
+          "domain000.feature000.action000003",
+          "domain000.feature000.action000004",
+          "domain000.feature000.action000005",
+          "domain000.feature000.action000006",
+          "domain000.feature000.action000007",
+          "domain000.feature000.action000008",
+          "domain000.feature000.action000009"
+        ],
+        "indexedCards": 5000,
+        "previousUsable": false,
+        "removedCards": 0,
+        "removedIdCount": 0,
+        "removedIdSample": [],
+        "reusedCards": 0,
+        "tokenCount": 21120,
+        "totalCards": 5000
+      },
+      "changedCards": 5000,
+      "changedFiles": 509,
+      "elapsedMs": 7190.8997,
+      "files": {
+        "bytesRead": 1618890,
+        "cardsParsed": 5000,
+        "cardsReused": 0,
+        "deletedFiles": 0,
+        "parsedFiles": 1000,
+        "reusedFiles": 0,
+        "reusedFilesByHash": 0,
+        "reusedFilesByStat": 0,
+        "totalFiles": 1000
+      },
+      "heapDeltaBytes": 88357104,
+      "heapUsedBytes": 93733816,
+      "mode": "incremental",
+      "ok": true,
+      "rssBytes": 334868480,
+      "transaction": {
+        "committed": true,
+        "recovered": false,
+        "recoveryAction": "none",
+        "replacedExisting": false,
+        "skipped": false,
+        "transactionId": "31252-msledqt8-4b49312e0463"
+      }
+    },
+    "incrementalVsFullSpeedup": 1.519983459879037,
+    "noOpIncremental": {
+      "affectedCatalogs": 0,
+      "cards": {
+        "changedIdCount": 0,
+        "changedIdSample": [],
+        "indexedCards": 0,
+        "previousUsable": true,
+        "removedCards": 0,
+        "removedIdCount": 0,
+        "removedIdSample": [],
+        "reusedCards": 5000,
+        "tokenCount": 21124,
+        "totalCards": 5000
+      },
+      "changedCards": 0,
+      "changedFiles": 0,
+      "elapsedMs": 2209.9157999999998,
+      "files": {
+        "bytesRead": 0,
+        "cardsParsed": 0,
+        "cardsReused": 5000,
+        "deletedFiles": 0,
+        "parsedFiles": 0,
+        "reusedFiles": 1000,
+        "reusedFilesByHash": 0,
+        "reusedFilesByStat": 1000,
+        "totalFiles": 1000
+      },
+      "heapDeltaBytes": 73587464,
+      "heapUsedBytes": 78964184,
+      "mode": "incremental",
+      "ok": true,
+      "rssBytes": 311791616,
+      "transaction": {
+        "committed": false,
+        "recovered": false,
+        "recoveryAction": "none",
+        "skipped": true
+      }
+    },
+    "oneFileFull": {
+      "affectedCatalogs": 1,
+      "cards": {
+        "changedIdCount": 5000,
+        "changedIdSample": [
+          "domain000.feature000.action000000",
+          "domain000.feature000.action000001",
+          "domain000.feature000.action000002",
+          "domain000.feature000.action000003",
+          "domain000.feature000.action000004",
+          "domain000.feature000.action000005",
+          "domain000.feature000.action000006",
+          "domain000.feature000.action000007",
+          "domain000.feature000.action000008",
+          "domain000.feature000.action000009"
+        ],
+        "indexedCards": 5000,
+        "previousUsable": false,
+        "removedCards": 0,
+        "removedIdCount": 0,
+        "removedIdSample": [],
+        "reusedCards": 0,
+        "tokenCount": 21124,
+        "totalCards": 5000
+      },
+      "changedCards": 5,
+      "changedFiles": 6,
+      "elapsedMs": 7450.2538,
+      "files": {
+        "bytesRead": 1618920,
+        "cardsParsed": 5000,
+        "cardsReused": 0,
+        "deletedFiles": 0,
+        "parsedFiles": 1000,
+        "reusedFiles": 0,
+        "reusedFilesByHash": 0,
+        "reusedFilesByStat": 0,
+        "totalFiles": 1000
+      },
+      "heapDeltaBytes": 89278768,
+      "heapUsedBytes": 94655472,
+      "mode": "full",
+      "ok": true,
+      "rssBytes": 364294144,
+      "transaction": {
+        "committed": true,
+        "recovered": false,
+        "recoveryAction": "none",
+        "replacedExisting": true,
+        "skipped": false,
+        "transactionId": "29408-msleecto-4a3590c434a2"
+      }
+    },
+    "oneFileIncremental": {
+      "affectedCatalogs": 1,
+      "cards": {
+        "changedIdCount": 1,
+        "changedIdSample": [
+          "domain003.feature005.action003053"
+        ],
+        "indexedCards": 1,
+        "previousUsable": true,
+        "removedCards": 0,
+        "removedIdCount": 0,
+        "removedIdSample": [],
+        "reusedCards": 4999,
+        "tokenCount": 21124,
+        "totalCards": 5000
+      },
+      "changedCards": 5,
+      "changedFiles": 6,
+      "elapsedMs": 4901.536099999999,
+      "files": {
+        "bytesRead": 1650,
+        "cardsParsed": 5,
+        "cardsReused": 4995,
+        "deletedFiles": 0,
+        "parsedFiles": 1,
+        "reusedFiles": 999,
+        "reusedFilesByHash": 0,
+        "reusedFilesByStat": 999,
+        "totalFiles": 1000
+      },
+      "heapDeltaBytes": 73772848,
+      "heapUsedBytes": 79149568,
+      "mode": "incremental",
+      "ok": true,
+      "rssBytes": 309538816,
+      "transaction": {
+        "committed": true,
+        "recovered": false,
+        "recoveryAction": "none",
+        "replacedExisting": true,
+        "skipped": false,
+        "transactionId": "25152-mslee6zc-36d378b5212c"
+      }
+    }
+  },
+  "measuredAt": "2026-08-09T06:05:03.544Z",
+  "packageVersion": "0.2.0",
+  "schemaVersion": 1
+}

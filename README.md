@@ -2,24 +2,27 @@
 
 LLMNav is a deterministic semantic navigation layer for LLM coding agents.
 
-It adds compact, stable metadata to a small number of architectural and behavioral boundaries, compiles that metadata into repository catalogs, and gives agents a fast path from a task description to the code that matters.
+It adds compact, stable metadata to a small number of architectural and behavioral boundaries, compiles that metadata into repository catalogs and a persistent inverted index, and gives agents a fast path from task language to the code that matters.
 
-LLMNav is not a documentation generator, an embedding database, or a reason to annotate every function. It is a protocol and a zero-runtime-dependency CLI for reducing broad repository scans, irrelevant context, stale hand-written links, and repeated prompt input.
+LLMNav is not a documentation generator, an embedding database, or a reason to annotate every function. It is a zero-runtime-dependency Node.js CLI and ESM library for reducing broad repository scans, irrelevant context, stale hand-written links, repeated card tokenization, and avoidable cache invalidation.
 
-## What it provides
+## What v0.2 provides
 
-* The `llmnav/1` comment specification
+* The backward-compatible `llmnav/1` source comment specification
 * A parser and data-loss-resistant canonical formatter
 * Semantic lint rules with stable diagnostic codes
-* A deterministic JSON and JSONL repository index
-* Repository and module catalogs designed for prompt reuse
-* Multilingual alias routing without duplicating translations in source comments
-* `query`, `show`, and bounded `context` commands for coding agents
+* A schemaVersion 1 `index.json` compatible with v0.1 consumers
+* A deterministic persistent inverted index that reuses unchanged card tokenization
+* File and card-level incremental indexing
+* Transactional cache generation with rollback and interrupted-run recovery
+* Machine-readable changed-card and affected-catalog output
+* Repository and module catalogs designed for prompt-prefix reuse
+* Multilingual alias routing and CJK n-gram retrieval
 * Search regression tests with Recall@1, Recall@5, and MRR
 * Managed instructions for AGENTS.md, Claude Code, GitHub Copilot, and Cursor
-* GitHub Actions workflows for CI and npm publication
+* Linux and Windows CI gates plus npm pack installation smoke tests
 
-The package has no runtime dependencies and supports Node.js 22 or newer.
+The package supports Node.js 22 or newer, uses ESM, performs no network requests, and has no runtime dependencies.
 
 ## Install
 
@@ -28,9 +31,7 @@ npm install --save-dev llmnav
 npx llmnav init --agents all --package-scripts
 ```
 
-The initialization command is explicit. LLMNav never edits a consumer repository from an npm `postinstall` script. Use `--agents none` when only the machine-readable control directory is desired.
-
-The default initialization creates `.llmnav/`, installs a managed section into `AGENTS.md`, and generates an empty deterministic index. `--agents all` also creates managed instructions for Claude Code, GitHub Copilot, and Cursor.
+Initialization is explicit. LLMNav never edits a consumer repository from an npm `postinstall` script. Use `--agents none` when only the machine-readable control directory is desired.
 
 ## Add the first card
 
@@ -68,16 +69,58 @@ npx llmnav show auth.session.rotate
 npx llmnav context auth.session.rotate --depth 1 --budget 2500
 ```
 
-A query result includes the stable ID, role, generated location, current declaration signature, score, and ranking reasons. The agent reads those compact results before opening full source bodies.
+The generated inverted index stores a deterministic token dictionary, compact posting lists, and normalized phrase documents. A query tokenizes only the task text; it does not tokenize every card again. If `search-index.json` is missing or incompatible, the library rebuilds it in memory from the compatible schemaVersion 1 `index.json`.
+
+## Incremental and transactional generation
+
+The first generation parses every source file and indexes every card. Later runs compare persisted file state and volatile stat hints.
+
+```text
+unchanged stat fingerprint  → reuse parsed file without reading it
+changed stat, same SHA-256  → reuse parsed file after one content read
+changed content             → parse that file and retokenize changed cards only
+deleted file                → remove its cards and postings
+```
+
+All generated cache artifacts are completed and verified in a staging directory before the live cache is replaced. If writing, verification, rename, or the process itself fails, the previous cache remains available or is restored before the next query or generation.
+
+Windows transient rename failures such as `EPERM`, `EBUSY`, `EACCES`, `EEXIST`, and `ENOTEMPTY` are retried. CI executes the transaction and interruption suite on `windows-latest` as well as Linux.
+
+## Machine-readable change output
+
+```sh
+npx llmnav generate --json
+```
+
+The JSON response preserves the v0.1 fields and adds stable records for changed cards, affected catalogs, file reuse, card retokenization, and transaction recovery.
+
+```json
+{
+  "changedCards": [
+    {
+      "id": "auth.session.rotate",
+      "change": "modified",
+      "dimensions": ["semantic"]
+    }
+  ],
+  "affectedCatalogs": [
+    {
+      "file": ".llmnav/cache/modules/auth.session.txt",
+      "kind": "module",
+      "id": "auth.session"
+    }
+  ]
+}
+```
+
+Locations and hashes are included in the complete records. Array ordering and generated JSON key ordering are deterministic.
 
 ## The core separation
-
-LLMNav deliberately separates three kinds of information.
 
 | Layer | Examples | Owner | Storage |
 | --- | --- | --- | --- |
 | Stable meaning | role, invariant, domain search phrases, effects, risks, semantic relations | human or coding agent | source comment |
-| Generated structure | path, declaration, signature, imports, hashes | LLMNav and future language enrichers | generated index |
+| Generated structure | path, declaration, signature, imports, hashes | LLMNav | generated cache |
 | Task state | branch, diff, test output, current request | agent harness | never stored in a card |
 
 Paths, line numbers, commit hashes, callers, imports, and signatures are forbidden in source cards. They change too often and are more accurately generated.
@@ -98,39 +141,23 @@ stability=architecture
 */
 ```
 
-Line-comment cards require an explicit terminator and work with `//`, `#`, and `--`.
-
-```py
-# llmnav/1 symbol
-# id=billing.credit.reserve
-# role=Reserve credits before an external generation job starts.
-# search=credit hold|reserve credits|generation billing
-# invariant=Captured credits never exceed the active reservation.
-# effect=db.write(credit_reservations)
-# risk=concurrency
-# stability=contract
-# /llmnav
-
-def reserve_credits():
-    pass
-```
-
-HTML comments are supported for markup-oriented files.
+Line-comment cards require an explicit terminator and work with `//`, `#`, and `--`. HTML comments are supported for markup-oriented files.
 
 ## Commands
 
 | Command | Purpose |
 | --- | --- |
-| `llmnav init` | Create configuration, registry, schema, agent instructions, and the initial index |
-| `llmnav check` | Parse and validate cards, relations, coverage rules, and registry state |
-| `llmnav format` | Rewrite cards into their canonical key order and spacing |
-| `llmnav generate` | Compile cards into deterministic cache catalogs and `index.json` |
-| `llmnav query` | Rank cards for a natural-language task |
+| `llmnav init` | Create configuration, registry, schemas, agent instructions, and the initial cache |
+| `llmnav check` | Validate cards, relations, coverage rules, and registry state |
+| `llmnav format` | Rewrite safe cards into canonical order and spacing |
+| `llmnav generate` | Incrementally compile and transactionally commit generated artifacts |
+| `llmnav index` | Alias for `generate` |
+| `llmnav query` | Rank cards through the persistent inverted index |
 | `llmnav show` | Resolve one active or redirected semantic ID |
 | `llmnav context` | Build a bounded context bundle around one ID |
 | `llmnav eval` | Run repository-specific search regression queries |
-| `llmnav doctor` | Inspect installation, generated-file drift, and manifest hashes |
-| `llmnav spec` | Print machine-readable vocabularies and key order |
+| `llmnav doctor` | Verify installation, cache integrity, transaction recovery, and drift |
+| `llmnav spec` | Print source-spec vocabularies and key order |
 
 See [docs/cli.md](docs/cli.md) for every option and exit code.
 
@@ -147,9 +174,13 @@ See [docs/cli.md](docs/cli.md) for every option and exit code.
     config.schema.json
   eval/
     queries.jsonl
-  cache/
-    index.json
+  state/                    # volatile, ignored
+    stat-hints.json
+  cache/                    # deterministic, commit this
+    index.json              # v0.1-compatible schemaVersion 1
     cards.jsonl
+    search-index.json       # compact token dictionary, phrases, and postings
+    file-state.json         # deterministic parsed-file state
     repo-core.txt
     agent-context.md
     manifest.json
@@ -158,13 +189,13 @@ See [docs/cli.md](docs/cli.md) for every option and exit code.
       billing.credit.txt
 ```
 
-`.llmnav/cache` is deterministic and intended to be committed. CI runs `llmnav generate --check` to reject stale generated context.
+`.llmnav/.transactions/` and `.llmnav/generation-transaction.json` may exist only while a cache transaction is incomplete. They are ignored and recovered automatically. Generated structure is never written back into source comments.
 
-`order.lock` is append-only under normal development. A new card is appended rather than inserted into a globally re-sorted catalog, which preserves larger prompt prefixes across repository growth.
+`order.lock` is append-only under normal development. New IDs are appended rather than inserted into a globally re-sorted catalog, preserving larger prompt prefixes as the repository grows.
 
 ## Multilingual task language
 
-Keep source cards in one repository language. Map user language, product wording, abbreviations, and historical names in `.llmnav/lexicon.json`.
+Keep source cards in one repository language. Map product wording, local language, abbreviations, and retired names in `.llmnav/lexicon.json`.
 
 ```json
 {
@@ -177,24 +208,11 @@ Keep source cards in one repository language. Map user language, product wording
 }
 ```
 
-This avoids repeating translations throughout source files and prevents a translation change from invalidating unrelated semantic cards.
-
 ## Search regression gates
 
-Add real task descriptions to `.llmnav/eval/queries.jsonl`.
+Add real task descriptions to `.llmnav/eval/queries.jsonl` and run `npx llmnav eval`. The default gates are Recall@1 at 0.75 and Recall@5 at 0.90. Large synthetic accuracy, speed, and memory regression tests are also part of this repository's test suite.
 
-```jsonl
-{"query":"재사용된 리프레시 토큰이면 같은 세션을 모두 폐기","expected":["auth.session.rotate","auth.session.revoke-family"]}
-{"query":"외부 생성 작업 전에 크레딧을 먼저 묶어둔다","expected":["billing.credit.reserve"]}
-```
-
-Then run:
-
-```sh
-npx llmnav eval
-```
-
-The default gates are Recall@1 at 0.75 and Recall@5 at 0.90. A repository should tune these only after collecting representative historical tasks.
+The measured v0.2 benchmark report is in [docs/performance-v0.2.md](docs/performance-v0.2.md). It records the exact fixture, environment, fresh-process query timing, incremental and forced-full regeneration timing, memory, and byte-equivalence checks. The report does not present estimates as measurements.
 
 ## Recommended adoption boundary
 
@@ -204,9 +222,9 @@ Do not annotate trivial getters, generated files, obvious wrappers, every test f
 
 ## Current implementation boundary
 
-Version 0.1 provides the stable semantic layer, deterministic index, generated import lists, declaration attachment heuristics, relation traversal, and local lexical ranking.
+Version 0.2 provides the stable semantic layer, compatible deterministic index, persistent lexical inverted index, incremental file and card indexing, transaction recovery, generated declaration and import data, relation traversal, and local search evaluation.
 
-It does not yet parse SCIP indexes, construct a full call graph, or use language-server ASTs. Those belong to generated structure enrichers rather than hand-written source metadata. The extension design is documented in [ROADMAP.md](ROADMAP.md) and [docs/architecture.md](docs/architecture.md).
+MCP, embeddings, SCIP, a hosted service, and a full language-aware call graph are intentionally outside v0.2. Generated structure enrichers remain future work and must never write derived edges into source cards.
 
 ## Documentation
 
@@ -220,7 +238,8 @@ It does not yet parse SCIP indexes, construct a full call graph, or use language
 * [CI and enforcement](docs/ci.md)
 * [Gradual migration](docs/migration.md)
 * [Language examples](docs/language-examples.md)
-* [Benchmarking](docs/benchmarking.md)
+* [Benchmarking methodology](docs/benchmarking.md)
+* [Measured v0.2 performance](docs/performance-v0.2.md)
 * [Research basis](docs/research.md)
 * [Publishing checklist](docs/publishing.md)
 * [FAQ](docs/faq.md)
@@ -228,18 +247,20 @@ It does not yet parse SCIP indexes, construct a full call graph, or use language
 ## Development
 
 ```sh
-npm install
+npm ci
 npm test
+npm run test:coverage
 npm run lint
 npm run check
-npm pack --dry-run
+npm run smoke:pack
+npm run benchmark:v0.2
 ```
 
-The project intentionally uses the Node.js standard library and built-in test runner. There is no build step and no production dependency tree to audit.
+The project uses the Node.js standard library and built-in test runner. There is no build step and no production dependency tree to audit.
 
 ## Status
 
-LLMNav is an experimental protocol and a usable v0.1 CLI. The source format is versioned independently from the npm package. Breaking syntax changes require a new `llmnav/N` header.
+LLMNav is an experimental protocol and a usable v0.2 CLI. The source format remains `llmnav/1`; npm package changes and source-grammar changes are versioned independently.
 
 ## License
 

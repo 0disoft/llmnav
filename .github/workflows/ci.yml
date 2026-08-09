@@ -25,6 +25,8 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run check
+      - if: matrix.node == 22
+        run: npm run smoke:pack
 
   package:
     name: npm package payload
@@ -36,4 +38,5 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      - run: npm run smoke:pack
       - run: npm pack --dry-run

@@ -43,10 +43,11 @@ A classic or granular access token can be used for a manual first publication. D
 npm ci
 npm run check
 npm run release:check
+npm run smoke:pack
 npm pack --dry-run
 ```
 
-Inspect the tarball list. The package intentionally includes the CLI, source API, type declarations, schema, templates, documentation, README files, changelog, and license. Tests and examples remain in GitHub but are not installed into consumer projects.
+Inspect the tarball list. The package intentionally includes the CLI, source API, type declarations, schema, templates, documentation, README files, changelog, roadmap, and license. Tests, benchmark harnesses, development scripts, and examples remain in GitHub but are not installed into consumer projects. `npm run smoke:pack` verifies the exact tarball in a clean temporary project.
 
 ## 5. Publish the first release
 
@@ -60,8 +61,8 @@ npm publish --provenance --access public
 Automated publication:
 
 ```sh
-git tag v0.1.0
-git push origin v0.1.0
+git tag v0.2.0
+git push origin v0.2.0
 ```
 
 The release workflow rejects a tag that does not match `package.json`.

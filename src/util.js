@@ -25,14 +25,26 @@ export function stableStringify(value, space = 2) {
   return `${JSON.stringify(sortObject(value), null, space)}\n`;
 }
 
-function sortObject(value) {
+export function stableJson(value) {
+  return JSON.stringify(sortObject(value));
+}
+
+export function compareText(left, right) {
+  const leftText = String(left);
+  const rightText = String(right);
+  if (leftText < rightText) return -1;
+  if (leftText > rightText) return 1;
+  return 0;
+}
+
+export function sortObject(value) {
   if (Array.isArray(value)) {
     return value.map(sortObject);
   }
   if (value && typeof value === "object") {
     return Object.fromEntries(
       Object.entries(value)
-        .sort(([left], [right]) => left.localeCompare(right))
+        .sort(([left], [right]) => compareText(left, right))
         .map(([key, child]) => [key, sortObject(child)]),
     );
   }
@@ -86,6 +98,15 @@ export async function readJson(filePath, fallback = undefined) {
   const text = await readText(filePath, fallback === undefined ? undefined : "");
   if (text === "" && fallback !== undefined) return structuredClone(fallback);
   return JSON.parse(text);
+}
+
+export async function readJsonSafe(filePath, fallback = null) {
+  try {
+    return await readJson(filePath, fallback);
+  } catch (error) {
+    if (error instanceof SyntaxError) return structuredClone(fallback);
+    throw error;
+  }
 }
 
 export async function atomicWrite(filePath, content) {

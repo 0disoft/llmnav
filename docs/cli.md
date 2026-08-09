@@ -2,11 +2,18 @@
 
 ## Global behavior
 
-All commands accept `--root <path>`. Without it, the CLI searches all ancestors for `.llmnav`; when none exists, it falls back to the nearest `package.json` or `.git`. This keeps monorepo package boundaries from hiding the repository-level LLMNav configuration.
+All commands accept `--root <path>`. Without it, the CLI searches ancestors for `.llmnav`; when none exists, it falls back to the nearest `package.json` or `.git` boundary.
 
-Commands that produce structured results accept `--json`.
+Commands with structured results accept `--json`.
 
-Exit status 0 means success. Status 1 means validation, generation, evaluation, or lookup failure. Status 2 means invalid command usage.
+| Status | Meaning |
+| ---: | --- |
+| 0 | success |
+| 1 | validation, generation, evaluation, integrity, or lookup failure |
+| 2 | invalid command usage |
+| 86 | test-only injected process interruption during a cache transaction |
+
+Unknown options, missing option values, and invalid integer values fail instead of being ignored.
 
 ## `llmnav init`
 
@@ -14,13 +21,13 @@ Exit status 0 means success. Status 1 means validation, generation, evaluation, 
 llmnav init [--agents <adapters>] [--package-scripts] [--force]
 ```
 
-Creates project configuration, schema, registry, lexicon, evaluation file, agent protocol, and generated cache.
+Creates project configuration, schema, registry, lexicon, evaluation file, agent protocol, deterministic cache, volatile state ignore rules, and transaction ignore rules.
 
-`--agents` accepts `agents`, `claude`, `copilot`, `cursor`, a comma-separated combination, `all`, or `none`. The default is `agents`. Unknown adapter names fail instead of being ignored.
+`--agents` accepts `agents`, `claude`, `copilot`, `cursor`, a comma-separated combination, `all`, or `none`. The default is `agents`.
 
 `--package-scripts` adds `llmnav:check`, `llmnav:format`, `llmnav:generate`, and `llmnav:eval` to an existing package.json.
 
-`--force` refreshes the configuration template, schema, managed agent blocks, and control ignore file. It never resets `ids.jsonl`, `order.lock`, `lexicon.json`, evaluation queries, or source cards.
+`--force` refreshes configuration templates, schema, managed agent blocks, and `.llmnav/.gitignore`. It never resets semantic ID history, catalog order, aliases, evaluation cases, or source cards.
 
 ## `llmnav check`
 
@@ -30,7 +37,7 @@ llmnav check [paths...] [--format text|json|github]
 
 Validates syntax, canonical key order, required fields, IDs, role quality, search phrase limits, controlled effects and risks, relation targets, registry consistency, configured coverage, block size, comment ratio, and symbol attachment.
 
-Passing paths restricts the source scan, but project-level relation and registry checks are most reliable on a full scan.
+Passing paths restricts source parsing, but project-level relation and registry checks are most reliable on a full scan.
 
 `--format github` emits workflow commands suitable for GitHub Actions annotations.
 
@@ -40,24 +47,79 @@ Passing paths restricts the source scan, but project-level relation and registry
 llmnav format [paths...] [--check]
 ```
 
-Canonicalizes card key order, list serialization, spacing, and terminators. The formatter refuses to rewrite malformed cards, unknown fields, overlapping blocks, or duplicate scalar fields, so a typo cannot silently erase metadata.
+Canonicalizes key order, list serialization, spacing, and terminators. The formatter refuses to rewrite malformed cards, unknown fields, overlapping blocks, or duplicate scalar fields.
 
 `--check` reports files that would change and exits with status 1 without writing.
 
 ## `llmnav generate`
 
 ```sh
-llmnav generate [--check]
-llmnav index [--check]
+llmnav generate [--check] [--json]
+llmnav index [--check] [--json]
 ```
 
-`index` is an alias for `generate`.
+`index` remains an alias for `generate`.
 
-Generation updates the ID registry with new active IDs, appends new IDs to `order.lock`, and rebuilds `.llmnav/cache` deterministically.
+Generation performs these operations:
 
-`--check`, also accepted as `--verify`, performs no writes and fails when generated artifacts differ.
+1. Recover an interrupted cache transaction when a journal exists.
+2. Reuse unchanged parsed files from `file-state.json`.
+3. Parse changed files and validate the complete project.
+4. Reuse unchanged card search documents from `search-index.json`.
+5. Build every deterministic artifact in memory.
+6. Write and verify a complete staging cache.
+7. Replace the live cache through a recoverable directory transaction.
+8. Persist volatile stat hints after the deterministic cache commits.
 
-Generation stops when semantic validation contains errors.
+`--check`, also accepted as `--verify`, performs no writes and fails when generated artifacts differ. It still validates whether a pending transaction must be recovered before reading the cache.
+
+Generation stops before cache mutation when semantic validation contains errors.
+
+### JSON output
+
+```json
+{
+  "ok": true,
+  "changedFiles": [],
+  "changedCards": [],
+  "affectedCatalogs": [],
+  "incremental": {
+    "enabled": true,
+    "files": {
+      "totalFiles": 120,
+      "parsedFiles": 1,
+      "reusedFiles": 119,
+      "reusedFilesByStat": 119,
+      "reusedFilesByHash": 0,
+      "deletedFiles": 0,
+      "bytesRead": 824,
+      "cardsParsed": 2,
+      "cardsReused": 418
+    },
+    "cards": {
+      "totalCards": 420,
+      "reusedCards": 419,
+      "indexedCards": 1,
+      "removedCards": 0,
+      "changedIds": ["billing.credit.reserve"],
+      "removedIds": []
+    }
+  },
+  "transaction": {
+    "committed": true,
+    "skipped": false,
+    "recovered": false,
+    "recoveryAction": "none"
+  },
+  "diagnostics": []
+}
+```
+
+`changedCards` is sorted by semantic ID. Each record identifies `added`, `modified`, or `removed` and lists changed `semantic`, `structure`, and `body` hash dimensions.
+
+`affectedCatalogs` contains only repository, module, or agent-context catalogs whose generated bytes changed. Generic cache files remain visible through `changedFiles`.
+
+A no-op generation returns zero parsed files, zero indexed cards, and `transaction.skipped=true` when volatile stat hints are available and current.
 
 ## `llmnav query`
 
@@ -65,9 +127,13 @@ Generation stops when semantic validation contains errors.
 llmnav query "<task language>" [--top <n>] [--json]
 ```
 
-Ranks cards with deterministic field weights, inverse document frequency, exact ID matching, multilingual aliases, exact phrase bonuses, and one-hop relation expansion.
+Ranks cards using exact ID matching, multilingual aliases, pre-tokenized deterministic posting lists, inverse document frequency, exact phrase bonuses, and one-hop semantic relation expansion.
 
-The current local ranker uses no network calls, embeddings, or model API. `--top` is bounded from 1 to 100.
+Only query text is tokenized per invocation. Card fields are read from `search-index.json`. A missing or incompatible search index is rebuilt in memory from the v0.1-compatible `index.json`.
+
+The ranker uses no network calls, embeddings, model API, MCP server, or hosted service. `--top` is bounded from 1 to 100.
+
+Before reading the cache, `query` recovers an interrupted generation transaction. It never observes an uncommitted cache as authoritative.
 
 ## `llmnav show`
 
@@ -75,7 +141,7 @@ The current local ranker uses no network calls, embeddings, or model API. `--top
 llmnav show <semantic-id> [--json]
 ```
 
-Prints one compact card. Redirected registry IDs resolve to their active target. Replaced records resolve to the first replacement only for navigation convenience; callers that need every replacement should read JSON output or the registry.
+Prints one compact card. Redirected registry IDs resolve to their active target. Replaced records resolve to the first replacement for navigation convenience; JSON callers that need every replacement should read the registry record.
 
 ## `llmnav context`
 
@@ -85,7 +151,7 @@ llmnav context <semantic-id> [--depth <n>] [--budget <tokens>] [--json]
 
 Resolves redirected IDs, traverses outgoing and incoming semantic relations breadth-first, and emits cards until the approximate token budget is reached.
 
-The default depth is 1 and the default budget is 2,500 approximate tokens. Depth is bounded from 0 to 8 and budget from 128 to 100,000. The root card is retained even when it must be truncated. The estimator is intentionally conservative and provider-independent.
+Depth defaults to 1 and is bounded from 0 to 8. Budget defaults to 2,500 approximate tokens and is bounded from 128 to 100,000. The root card is retained even when it must be truncated.
 
 ## `llmnav eval`
 
@@ -93,7 +159,7 @@ The default depth is 1 and the default budget is 2,500 approximate tokens. Depth
 llmnav eval [--file <queries.jsonl>] [--top <n>] [--json]
 ```
 
-Runs query records in the form:
+Runs records in this format:
 
 ```json
 {"query":"task language","expected":["one.id","another.id"]}
@@ -101,7 +167,7 @@ Runs query records in the form:
 
 Reports Recall@1, Recall@5, and mean reciprocal rank. Gates come from `.llmnav/config.json`. The selected query file must remain inside the repository and cannot traverse a symbolic link.
 
-An empty query file succeeds but produces zero metrics. CI should not treat an empty benchmark as evidence of search quality.
+An empty query file succeeds with zero metrics. It is not evidence of search quality.
 
 ## `llmnav doctor`
 
@@ -109,7 +175,18 @@ An empty query file succeeds but produces zero metrics. CI should not treat an e
 llmnav doctor [--json]
 ```
 
-Checks configuration, Node.js version, required control files, generated manifest hashes, generation drift, and unreplaced release metadata in the LLMNav repository itself.
+Checks:
+
+* configuration and Node.js version
+* interrupted transaction recovery
+* required control and generated files
+* primary index and inverted-index consistency
+* file-state schema compatibility
+* manifest hashes
+* generated-file drift
+* unreplaced release metadata in the LLMNav repository itself
+
+`doctor` may perform transaction recovery, but it does not regenerate stale cache content.
 
 ## `llmnav spec`
 
@@ -117,4 +194,4 @@ Checks configuration, Node.js version, required control files, generated manifes
 llmnav spec [--json]
 ```
 
-Prints the active source specification version, canonical key order, stability values, effect vocabulary, risk vocabulary, and semantic relation types.
+Prints the active source specification version, canonical key order, stability values, effect vocabulary, risk vocabulary, and semantic relation types. The package version is separate from the `llmnav/1` source grammar version.

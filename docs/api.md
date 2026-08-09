@@ -1,14 +1,14 @@
 # Programmatic API
 
-The npm package exposes the same deterministic operations used by the CLI. The API is ESM-only and ships TypeScript declarations.
+The npm package exposes the deterministic operations used by the CLI. It is ESM-only, requires Node.js 22 or newer, and ships TypeScript declarations.
 
 ```js
 import {
   generateProject,
   parseLlmnavBlocks,
   queryProject,
-  validateProject,
   scanProject,
+  validateProject,
 } from "llmnav";
 ```
 
@@ -23,8 +23,7 @@ for (const block of blocks) {
 }
 ```
 
-Parsing does not perform semantic validation. Read `syntaxErrors` on each block or validate a scanned project.
-
+Parsing does not perform project-level semantic validation. Read `syntaxErrors` on each block or validate a scanned project.
 
 ## Canonicalize one source string safely
 
@@ -38,7 +37,7 @@ if (result.errors.length > 0) {
 console.log(result.source);
 ```
 
-Canonicalization does not erase unknown fields, malformed lines, or duplicate scalar fields. Unsafe blocks remain byte-for-byte unchanged and are returned through `errors`.
+Canonicalization refuses to erase unknown fields, malformed lines, or duplicate scalar fields. Unsafe blocks remain byte-for-byte unchanged.
 
 ## Scan and validate a repository
 
@@ -50,56 +49,176 @@ const diagnostics = validateProject(project);
 const errors = diagnostics.filter((item) => item.severity === "error");
 ```
 
-`scanProject` reads `.llmnav/config.json`, source files, and the semantic ID registry. It does not execute source code.
+`scanProject` performs a full source read. Use `scanProjectIncremental` when building a persistent tool that can reuse `.llmnav/cache/file-state.json`.
 
-## Generate catalogs
+```js
+import { scanProjectIncremental } from "llmnav";
+
+const { project, fileState, stats } = await scanProjectIncremental(process.cwd());
+console.log(stats.parsedFiles, stats.reusedFiles);
+```
+
+Stat hints are an optimization, not deterministic output. The returned `fileState` contains only repository-relative generated data.
+
+## Generate incrementally and transactionally
 
 ```js
 import { generateProject } from "llmnav";
 
-const result = await generateProject(process.cwd(), { check: false });
+const result = await generateProject(process.cwd());
 if (!result.ok) {
-  throw new Error(result.diagnostics.map((item) => item.message).join("\n"));
+  console.error(result.diagnostics);
+  process.exitCode = 1;
 }
+
+console.log(result.changedCards);
+console.log(result.affectedCatalogs);
+console.log(result.incremental.files);
+console.log(result.incremental.cards);
+console.log(result.transaction);
 ```
 
-Use `{ check: true }` for a read-only drift check.
+Default generation reuses file and card state and commits cache changes through a recoverable directory transaction.
 
-## Query the current index
+A read-only drift check is explicit:
+
+```js
+const result = await generateProject(process.cwd(), { check: true });
+```
+
+A forced full rebuild is available for verification and benchmarks:
+
+```js
+const result = await generateProject(process.cwd(), { incremental: false });
+```
+
+`incremental: false` reparses every source file and retokenizes every card. It must produce the same deterministic cache bytes as incremental generation.
+
+Failure injection options exist for the repository test suite and are not a normal application interface.
+
+## Build and update an inverted index
+
+```js
+import { buildInvertedIndex } from "llmnav";
+
+const initial = buildInvertedIndex(index);
+const updated = buildInvertedIndex(nextIndex, initial.searchIndex);
+
+console.log(updated.stats.indexedCards);
+console.log(updated.stats.reusedCards);
+```
+
+The previous index is reused only when schema version, tokenizer version, field order, and repository ID match. Incremental and full builds serialize identically for the same primary index.
+
+Useful lower-level exports include:
+
+```js
+import {
+  buildSearchDocument,
+  isCompatibleSearchIndex,
+  searchCardSetHash,
+  searchDocumentHash,
+  verifySearchIndex,
+} from "llmnav";
+```
+
+## Query a generated project
 
 ```js
 import { queryProject } from "llmnav";
 
-const results = await queryProject(
-  process.cwd(),
-  "replayed refresh token revokes the family",
-  { top: 5 },
-);
-
-for (const result of results) {
-  console.log(result.id, result.score, result.location.path);
-}
-```
-
-`queryProject` requires an existing `.llmnav/cache/index.json`. Generate first. Result limits are bounded from 1 to 100.
-
-## Query an in-memory index
-
-```js
-import { queryIndex } from "llmnav";
-
-const results = queryIndex(index, task, {
+const results = await queryProject(process.cwd(), "replayed refresh token", {
   top: 5,
-  lexicon: {
-    aliases: {
-      "토큰 재사용 공격": "auth.session.rotate",
-    },
-  },
 });
 ```
 
-This form is useful for MCP servers, editor integrations, and test harnesses that already hold the index in memory.
+`queryProject` recovers an interrupted transaction, loads `index.json`, loads or validates `search-index.json`, and applies repository aliases. Result limits are bounded from 1 to 100.
 
-## Public stability
+## Query in-memory indexes
 
-The CLI and exported JavaScript API follow npm semantic versioning. Object properties in the generated index are experimental during 0.x. Consumers should validate `schemaVersion` and avoid depending on undocumented internal modules.
+```js
+import { queryPreparedIndex } from "llmnav";
+
+const metrics = {};
+const results = queryPreparedIndex(index, searchIndex, "reserve credits", {
+  top: 5,
+  lexicon: { aliases: {} },
+  metrics,
+});
+
+console.log(metrics.documentTokenizations); // 0
+```
+
+`queryIndex(index, query)` builds and weakly caches an in-memory inverted index when one is not supplied.
+
+`queryIndexLegacy(index, query)` retains the v0.1-compatible per-query retokenization path for regression tests and migration measurement. New integrations should not use it in production.
+
+## Inspect changed cards and catalogs
+
+```js
+import { compareCardIndexes, describeAffectedCatalogs } from "llmnav";
+
+const changes = compareCardIndexes(previousIndex, currentIndex);
+const catalogs = describeAffectedCatalogs(
+  changedFiles,
+  config.generation.cacheDirectory,
+  config,
+  previousIndex,
+  currentIndex,
+);
+```
+
+Changed-card records distinguish semantic, structure, and body dimensions. Catalog records include only repository, module, and agent-context artifacts.
+
+## Recover or commit a cache transaction
+
+Most callers should use `generateProject`. Lower-level transaction functions are exported for integration testing and specialized hosts.
+
+```js
+import { recoverGenerationTransaction } from "llmnav";
+
+const recovery = await recoverGenerationTransaction(root, {
+  cacheDirectory: ".llmnav/cache",
+});
+```
+
+`commitGeneratedCache` expects a complete artifact map and verifies the staged manifest before replacing the live cache. Its path and failure-injection options are deliberately strict.
+
+## Resolve and build context
+
+```js
+import { buildContext, showProjectCard } from "llmnav";
+
+const shown = await showProjectCard(root, "auth.session.renew");
+const context = await buildContext(root, "auth.session.renew", {
+  depth: 1,
+  budget: 2500,
+});
+```
+
+Redirected IDs resolve through `.llmnav/ids.jsonl` before source cards are selected.
+
+## Constants
+
+The package exports versioned generated-format constants:
+
+```js
+import {
+  FILE_STATE_SCHEMA_VERSION,
+  SEARCH_INDEX_ENCODING,
+  SEARCH_INDEX_SCHEMA_VERSION,
+  SOURCE_INDEXER_VERSION,
+  TOKENIZER_VERSION,
+  TRANSACTION_SCHEMA_VERSION,
+} from "llmnav";
+```
+
+The normative source vocabulary remains available from `llmnav/spec`.
+
+```js
+import { KEY_ORDER, EFFECT_KINDS, RISK_KINDS } from "llmnav/spec";
+```
+
+## Compatibility boundary
+
+The public API follows package semantic versioning. `index.json` schemaVersion 1 and `llmnav/1` source syntax remain compatible in v0.2. `search-index.json`, `file-state.json`, transaction journals, and performance metrics are additive v0.2 formats with their own schema or implementation versions.

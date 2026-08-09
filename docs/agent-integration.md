@@ -84,9 +84,9 @@ The first two layers change rarely. The task and source bodies change frequently
 
 LLMNav emits catalogs but deliberately leaves provider-specific caching to the agent harness.
 
-## MCP and tool wrappers
+## Tool wrappers
 
-A wrapper should expose a small stable tool surface instead of one tool per operation.
+LLMNav v0.2 does not ship an MCP server. A separate wrapper may expose a small stable tool surface instead of one tool per operation.
 
 Suggested contract:
 

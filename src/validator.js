@@ -29,7 +29,7 @@ import {
 } from "./spec.js";
 import { formatLlmnavBlock } from "./parser.js";
 import { resolveRegistryId } from "./registry.js";
-import { matchesAnyGlob, unique } from "./util.js";
+import { compareText, matchesAnyGlob, unique } from "./util.js";
 
 export function validateProject(project) {
   const diagnostics = [];
@@ -627,9 +627,9 @@ function hasValue(value) {
 
 function compareDiagnostics(left, right) {
   return (
-    left.file.localeCompare(right.file) ||
+    compareText(left.file, right.file) ||
     left.line - right.line ||
     left.column - right.column ||
-    left.code.localeCompare(right.code)
+    compareText(left.code, right.code)
   );
 }

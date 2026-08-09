@@ -1,12 +1,40 @@
 export { AGENT_PROTOCOL, installAgentInstructions } from "./agents.js";
+export { compareCardIndexes, describeAffectedCatalogs } from "./changes.js";
 export { loadConfig, validateConfig } from "./config.js";
 export { findAttachedDeclaration, extractImports } from "./declaration.js";
 export { doctorProject } from "./doctor.js";
 export { evaluateProject } from "./evaluation.js";
 export { collectSourceFiles, findProjectRoot } from "./files.js";
 export { formatProject } from "./formatter.js";
-export { buildArtifacts, generateProject, renderCompactCard, renderSemanticCard } from "./generator.js";
+export {
+  buildArtifacts,
+  buildArtifactSet,
+  generateProject,
+  renderCompactCard,
+  renderSemanticCard,
+} from "./generator.js";
+export {
+  buildFileStateFromProject,
+  FILE_STATE_SCHEMA_VERSION,
+  renderFileState,
+  scanProjectIncremental,
+  SOURCE_INDEXER_VERSION,
+  usableFileState,
+} from "./incremental.js";
 export { initializeProject } from "./initializer.js";
+export {
+  buildInvertedIndex,
+  buildSearchDocument,
+  isCompatibleSearchIndex,
+  renderSearchIndex,
+  SEARCH_FIELD_ORDER,
+  SEARCH_FIELD_WEIGHTS,
+  SEARCH_INDEX_ENCODING,
+  SEARCH_INDEX_SCHEMA_VERSION,
+  searchCardSetHash,
+  searchDocumentHash,
+  verifySearchIndex,
+} from "./inverted-index.js";
 export {
   canonicalizeSource,
   cardToCanonicalObject,
@@ -15,6 +43,24 @@ export {
 } from "./parser.js";
 export { scanProject } from "./project.js";
 export { ensureActiveIds, loadRegistry, resolveRegistryId } from "./registry.js";
-export { buildContext, loadSearchData, queryIndex, queryProject, showProjectCard, tokenize } from "./search.js";
+export {
+  buildContext,
+  loadSearchData,
+  queryIndex,
+  queryIndexLegacy,
+  queryPreparedIndex,
+  queryProject,
+  showProjectCard,
+  tokenize,
+} from "./search.js";
+export { normalizeSearchText, TOKENIZER_VERSION } from "./tokenizer.js";
+export {
+  commitGeneratedCache,
+  recoverGenerationTransaction,
+  removeWithRetry,
+  renameWithRetry,
+  TRANSACTION_ABORT_EXIT_CODE,
+  TRANSACTION_SCHEMA_VERSION,
+} from "./transaction.js";
 export * from "./spec.js";
 export { countDiagnostics, diagnostic, validateProject } from "./validator.js";

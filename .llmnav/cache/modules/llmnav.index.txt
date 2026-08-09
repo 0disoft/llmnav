@@ -5,4 +5,28 @@ Read semantic cards before opening source. Resolve current paths and signatures 
 role Compile validated semantic cards into deterministic repository and module catalogs for coding agents.
 owns stable card order, generated index, cache catalogs
 excludes source semantics, agent search decisions
-rel workflow>llmnav.rules.validate
+rel workflow>llmnav.rules.validate, workflow>llmnav.index.incremental, workflow>llmnav.index.inverted, workflow>llmnav.index.transaction
+
+@llmnav.index.changes
+role Describe changed semantic cards and generated catalogs as stable machine-readable records.
+owns card diff, catalog impact report, change ordering
+excludes source mutation, cache commit
+rel workflow>llmnav.index.generate
+
+@llmnav.index.incremental
+role Reuse unchanged file parses and card records while rebuilding deterministic generated artifacts.
+owns file fingerprints, parsed-file state, incremental scan metrics
+excludes source comment mutation, cache directory commit
+rel workflow>llmnav.index.generate
+
+@llmnav.index.inverted
+role Compile searchable card fields into a deterministic inverted index that can be updated one card at a time.
+owns posting lists, card search documents, incremental token reuse
+excludes semantic source syntax, query presentation
+rel workflow>llmnav.search.tokenize, workflow>llmnav.index.generate
+
+@llmnav.index.transaction
+role Commit a complete generated cache with rollback and crash recovery across POSIX and Windows rename behavior.
+owns cache staging, directory swap, generation recovery
+excludes artifact semantics, source indexing
+rel workflow>llmnav.index.generate

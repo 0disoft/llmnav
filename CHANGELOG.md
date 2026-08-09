@@ -1,10 +1,44 @@
 # Changelog
 
-All notable changes to this project will be documented here.
+All notable changes to this project are documented here.
 
-The project follows [Semantic Versioning](https://semver.org/). The `llmnav/N` source protocol has its own version.
+The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
 ## [Unreleased]
+
+## [0.2.0] — 2026-08-09
+
+### Added
+
+* Deterministic compact `search-index.json` containing a sorted token dictionary, normalized phrase documents, and ordinal posting lists with sparse field vectors.
+* Card-level inverted-index updates keyed by deterministic search-document hashes.
+* Deterministic `file-state.json` for file-level incremental parsing and card reuse.
+* Volatile stat hints under `.llmnav/state/` to skip reading byte-identical files during no-op generation.
+* Transactional cache generation through staged writes, manifest verification, directory replacement, rollback, and crash recovery.
+* Automatic recovery before `query`, `generate`, and `doctor` read or replace generated cache data.
+* Retry handling for Windows-style `EACCES`, `EBUSY`, `EEXIST`, `ENOTEMPTY`, and `EPERM` rename and removal failures.
+* Machine-readable `changedCards`, `affectedCatalogs`, incremental metrics, and transaction state in `generate --json` output.
+* Large synthetic fixture regression tests for ranking equality, query speed, index size, RSS, and heap use.
+* Failure-injection tests before journaling, after moving the old cache, and after installing an uncommitted cache.
+* Fresh-process query and regeneration benchmark harness with raw JSON and Markdown reports.
+* npm tarball installation smoke test that initializes, generates, queries, validates, and diagnoses a clean project.
+* Public ESM exports and TypeScript declarations for the v0.2 indexing and transaction APIs.
+
+### Changed
+
+* `llmnav generate` now performs incremental scanning by default and commits cache changes transactionally.
+* `llmnav query` uses the generated inverted index and no longer tokenizes every card for every query.
+* `llmnav doctor` validates search-index compatibility, file-state compatibility, manifest hashes, and interrupted transactions.
+* Generated artifacts use locale-independent key and path ordering.
+* `.llmnav/.gitignore` now excludes volatile stat hints and transaction work directories.
+* CI runs the complete suite on Linux and Windows with Node.js 22 and 24, and runs the packed-package smoke test on Node.js 22.
+
+### Compatibility
+
+* The source grammar remains `llmnav/1`.
+* `.llmnav/cache/index.json` remains schemaVersion 1 and retains its v0.1 fields.
+* Existing v0.1 commands and default text output remain compatible.
+* `search-index.json` and `file-state.json` are additive generated artifacts. A missing, malformed, corrupted, or incompatible search index is rebuilt in memory from `index.json`.
 
 ## [0.1.0] — 2026-08-09
 

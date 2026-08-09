@@ -7,7 +7,7 @@ npm install --save-dev llmnav
 npx llmnav init --agents all --package-scripts
 ```
 
-This creates the `.llmnav` control directory, a JSON schema, the semantic ID registry, the stable order lock, generated catalogs, and managed instruction files for coding agents.
+This creates the `.llmnav` control directory, a JSON schema, the semantic ID registry, the stable order lock, deterministic generated indexes and catalogs, volatile state ignore rules, and managed instruction files for coding agents.
 
 Review `.llmnav/config.json` before annotating code. The default scans the repository root while excluding build outputs, dependency directories, generated bundles, and common caches.
 
@@ -66,13 +66,23 @@ GitHub annotation output is available for CI:
 npx llmnav check --format github
 ```
 
-## Generate deterministic catalogs
+## Generate deterministic indexes and catalogs
 
 ```sh
 npx llmnav generate
 ```
 
-Commit `.llmnav/cache`, `.llmnav/ids.jsonl`, and `.llmnav/order.lock`.
+The first run parses every source file and builds `index.json`, `search-index.json`, `file-state.json`, semantic catalogs, and a manifest. Later runs reuse unchanged file parses and card search documents.
+
+Commit `.llmnav/cache`, `.llmnav/ids.jsonl`, and `.llmnav/order.lock`. Do not commit `.llmnav/state` or transaction work files.
+
+Inspect machine-readable impact data when integrating with CI or an agent:
+
+```sh
+npx llmnav generate --json
+```
+
+`changedCards` distinguishes semantic, structure, and body changes. `affectedCatalogs` identifies only repository, module, and agent-context catalogs whose bytes changed.
 
 CI should run:
 
@@ -80,7 +90,7 @@ CI should run:
 npx llmnav generate --check
 ```
 
-That command fails when generated files, the registry, or the stable order lock differ from current source.
+That command fails when generated files, the registry, or the stable order lock differ from current source. It does not replace the live cache. Normal generation stages and verifies a complete replacement before committing it.
 
 ## Search before opening source
 
@@ -89,6 +99,8 @@ npx llmnav query "where do replayed refresh tokens revoke their family" --top 5
 npx llmnav show auth.session.rotate
 npx llmnav context auth.session.rotate --depth 1 --budget 2500
 ```
+
+Queries use the persistent inverted index and do not retokenize every card. If a previous generation was interrupted, the query command restores the last committed cache before reading it.
 
 The expected agent workflow is:
 

@@ -80,12 +80,55 @@ export interface IndexedCard extends Omit<LlmnavCard, "unknown"> {
 }
 
 export interface LlmnavIndex {
-  schemaVersion: number;
+  schemaVersion: 1;
   specVersion: string;
   generatedBy: string;
   repositoryId: string;
   sourceHash: string;
   cards: IndexedCard[];
+}
+
+export interface SearchDocument {
+  hash: string;
+  phrases: string[];
+  terms: Array<[token: string, sparseFieldCounts: number[]]>;
+  tokens: string[];
+}
+
+export type CompactSearchDocument = [hash: string, phrases: string[]];
+export type CompactSearchPosting = [cardIndex: number, sparseFieldCounts: number[]];
+
+export interface LlmnavSearchIndex {
+  schemaVersion: 2;
+  encoding: "compact-v1";
+  tokenizerVersion: number;
+  repositoryId: string;
+  cardSetHash: string;
+  documentCount: number;
+  fieldOrder: string[];
+  cardIds: string[];
+  tokens: string[];
+  documents: CompactSearchDocument[];
+  postings: CompactSearchPosting[][];
+}
+
+export interface SearchIndexStats {
+  previousUsable: boolean;
+  totalCards: number;
+  reusedCards: number;
+  indexedCards: number;
+  removedCards: number;
+  changedIds: string[];
+  removedIds: string[];
+  tokenCount: number;
+}
+
+export interface SearchMetrics {
+  queryTokens?: number;
+  documentTokenizations?: number;
+  postingVisits?: number;
+  phraseDocumentsScanned?: number;
+  idDocumentsScanned?: number;
 }
 
 export interface SearchResult {
@@ -152,11 +195,24 @@ export interface LlmnavConfig {
   };
 }
 
+export interface ProjectFileRecord {
+  absolutePath: string;
+  relativePath: string;
+  source: string | null;
+  contentHash: string;
+  bodyHash: string;
+  sourceBytes: number;
+  semanticBytes: number;
+  blocks: LlmnavBlock[];
+  imports: string[];
+}
+
 export interface ProjectRecord {
   root: string;
   absolutePath: string;
   relativePath: string;
-  source: string;
+  source: string | null;
+  bodyHash: string;
   imports: string[];
   block: LlmnavBlock;
   card: LlmnavCard;
@@ -167,26 +223,84 @@ export interface ScannedProject {
   root: string;
   config: LlmnavConfig;
   configPath: string;
-  files: Array<{
-    absolutePath: string;
-    relativePath: string;
-    source: string;
-    blocks: LlmnavBlock[];
-    imports: string[];
-  }>;
+  files: string[];
+  fileRecords: ProjectFileRecord[];
   records: ProjectRecord[];
   registry: Registry;
   sourceBytes: number;
   semanticBytes: number;
 }
 
+export interface SerializedFileStateRecord {
+  path: string;
+  contentHash: string;
+  sourceBytes: number;
+  semanticBytes: number;
+  imports: string[];
+  blocks: LlmnavBlock[];
+  declarations: Array<Declaration | null>;
+}
+
+export interface LlmnavFileState {
+  schemaVersion: number;
+  indexerVersion: number;
+  files: SerializedFileStateRecord[];
+}
+
+export interface IncrementalFileStats {
+  totalFiles: number;
+  parsedFiles: number;
+  reusedFiles: number;
+  reusedFilesByStat: number;
+  reusedFilesByHash: number;
+  deletedFiles: number;
+  bytesRead: number;
+  cardsParsed: number;
+  cardsReused: number;
+}
+
+export interface ChangedCardRecord {
+  id: string;
+  change: "added" | "modified" | "removed";
+  dimensions: Array<"semantic" | "structure" | "body">;
+  previous: Record<string, unknown> | null;
+  current: Record<string, unknown> | null;
+}
+
+export interface AffectedCatalogRecord {
+  file: string;
+  kind: "repository" | "module" | "agent-context";
+  id: string;
+}
+
+export interface TransactionResult {
+  committed: boolean;
+  skipped: boolean;
+  recovered: boolean;
+  recoveryAction: string;
+  transactionId?: string;
+  replacedExisting?: boolean;
+}
+
 export interface GenerationResult {
   ok: boolean;
   diagnostics: Diagnostic[];
   changedFiles: string[];
+  changedCards: ChangedCardRecord[];
+  affectedCatalogs: AffectedCatalogRecord[];
   project: ScannedProject;
   counts: { error: number; warning: number; info: number };
   artifacts?: Map<string, string>;
+  index?: LlmnavIndex;
+  searchIndex?: LlmnavSearchIndex;
+  incremental: {
+    enabled: boolean;
+    files: IncrementalFileStats;
+    cards: SearchIndexStats | null;
+    statHintsPersisted?: boolean;
+    statHintsError?: string | null;
+  };
+  transaction: TransactionResult;
 }
 
 export interface EvaluationResult {
@@ -210,7 +324,19 @@ export interface EvaluationResult {
 }
 
 export const AGENT_PROTOCOL: string;
+export const FILE_STATE_SCHEMA_VERSION: number;
+export const SOURCE_INDEXER_VERSION: number;
+export const SEARCH_INDEX_ENCODING: "compact-v1";
+export const SEARCH_INDEX_SCHEMA_VERSION: 2;
+export const SEARCH_FIELD_ORDER: readonly string[];
+export const SEARCH_FIELD_WEIGHTS: Readonly<Record<string, number>>;
+export const TOKENIZER_VERSION: number;
+export const TRANSACTION_SCHEMA_VERSION: number;
+export const TRANSACTION_ABORT_EXIT_CODE: number;
+
 export function installAgentInstructions(root: string, adapters?: string[]): Promise<string[]>;
+export function compareCardIndexes(previousIndex: LlmnavIndex | null, currentIndex: LlmnavIndex): ChangedCardRecord[];
+export function describeAffectedCatalogs(changedFiles: string[], cacheDirectory: string, config: LlmnavConfig, previousIndex: LlmnavIndex | null, currentIndex: LlmnavIndex): AffectedCatalogRecord[];
 export function loadConfig(root: string): Promise<{ config: LlmnavConfig; configPath: string }>;
 export function validateConfig(config: LlmnavConfig, configPath?: string): void;
 export function findAttachedDeclaration(source: string, block: LlmnavBlock, filePath: string): Declaration | null;
@@ -220,11 +346,23 @@ export function evaluateProject(root: string, options?: { top?: number; file?: s
 export function collectSourceFiles(root: string, config: LlmnavConfig, requestedPaths?: string[]): Promise<string[]>;
 export function findProjectRoot(start?: string): Promise<string>;
 export function formatProject(root: string, options?: { check?: boolean; paths?: string[] }): Promise<{ ok: boolean; changedFiles: string[]; errors: Array<{ file: string; line: number; message: string }> }>;
-export function buildArtifacts(project: ScannedProject, order: string[]): Map<string, string>;
-export function generateProject(root: string, options?: { check?: boolean }): Promise<GenerationResult>;
+export function buildArtifacts(project: ScannedProject, order: string[], options?: { previousSearchIndex?: LlmnavSearchIndex | null; fileState?: LlmnavFileState }): Map<string, string>;
+export function buildArtifactSet(project: ScannedProject, order: string[], options?: { previousSearchIndex?: LlmnavSearchIndex | null; fileState?: LlmnavFileState }): { artifacts: Map<string, string>; index: LlmnavIndex; searchIndex: LlmnavSearchIndex; searchStats: SearchIndexStats; fileState: LlmnavFileState };
+export function generateProject(root: string, options?: { check?: boolean; incremental?: boolean; useStatHints?: boolean; failpoint?: string }): Promise<GenerationResult>;
 export function renderCompactCard(card: IndexedCard): string;
 export function renderSemanticCard(card: IndexedCard): string;
+export function scanProjectIncremental(root: string, options?: { paths?: string[]; useStatHints?: boolean; previousState?: LlmnavFileState }): Promise<{ project: ScannedProject; fileState: LlmnavFileState; stats: IncrementalFileStats; statHints: unknown; hintsPath: string }>;
+export function buildFileStateFromProject(project: ScannedProject): LlmnavFileState;
+export function renderFileState(fileState: LlmnavFileState): string;
+export function usableFileState(value: unknown): value is LlmnavFileState;
 export function initializeProject(root: string, options?: { force?: boolean; packageScripts?: boolean; agents?: string[] }): Promise<{ ok: boolean; changed: string[]; generated: GenerationResult }>;
+export function buildInvertedIndex(index: LlmnavIndex, previous?: LlmnavSearchIndex | null): { searchIndex: LlmnavSearchIndex; stats: SearchIndexStats };
+export function buildSearchDocument(card: IndexedCard, hash?: string): SearchDocument;
+export function isCompatibleSearchIndex(searchIndex: unknown, repositoryId?: string): searchIndex is LlmnavSearchIndex;
+export function renderSearchIndex(searchIndex: LlmnavSearchIndex): string;
+export function searchCardSetHash(cards: IndexedCard[]): string;
+export function searchDocumentHash(card: IndexedCard): string;
+export function verifySearchIndex(index: LlmnavIndex, searchIndex: LlmnavSearchIndex): boolean;
 export function canonicalizeSource(source: string, filePath?: string): { source: string; changed: boolean; blocks: LlmnavBlock[]; errors: Array<{ line: number; message: string }> };
 export function cardToCanonicalObject(card: LlmnavCard): Record<string, string | string[]>;
 export function formatLlmnavBlock(block: LlmnavBlock): string;
@@ -234,11 +372,18 @@ export function ensureActiveIds(root: string, registry: Registry, ids: string[])
 export function loadRegistry(root: string): Promise<Registry>;
 export function resolveRegistryId(registry: Registry, id: string): { id: string; state: string; [key: string]: unknown };
 export function buildContext(root: string, id: string, options?: { depth?: number; budget?: number }): Promise<{ id: string; depth: number; budget: number; included: string[]; text: string }>;
-export function loadSearchData(root: string): Promise<{ index: LlmnavIndex; lexicon: { version?: number; aliases: Record<string, string> } }>;
-export function queryIndex(index: LlmnavIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string> } }): SearchResult[];
+export function loadSearchData(root: string): Promise<{ index: LlmnavIndex; searchIndex: LlmnavSearchIndex; lexicon: { version?: number; aliases: Record<string, string | string[]> } }>;
+export function queryIndex(index: LlmnavIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> }; invertedIndex?: LlmnavSearchIndex; metrics?: SearchMetrics }): SearchResult[];
+export function queryPreparedIndex(index: LlmnavIndex, searchIndex: LlmnavSearchIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> }; metrics?: SearchMetrics }): SearchResult[];
+export function queryIndexLegacy(index: LlmnavIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> } }): SearchResult[];
 export function queryProject(root: string, query: string, options?: { top?: number }): Promise<SearchResult[]>;
 export function showProjectCard(root: string, id: string): Promise<{ card: IndexedCard | null; resolvedFrom: unknown }>;
 export function tokenize(value: string): string[];
+export function normalizeSearchText(value: string): string;
+export function commitGeneratedCache(root: string, cacheDirectory: string, artifacts: Map<string, string>, options?: Record<string, unknown>): Promise<TransactionResult>;
+export function recoverGenerationTransaction(root: string, options?: { cacheDirectory?: string; renameOptions?: Record<string, unknown> }): Promise<{ recovered: boolean; action: string }>;
+export function renameWithRetry(source: string, destination: string, options?: Record<string, unknown>): Promise<void>;
+export function removeWithRetry(target: string, options?: Record<string, unknown>): Promise<void>;
 export function countDiagnostics(diagnostics: Diagnostic[]): { error: number; warning: number; info: number };
 export function diagnostic(severity: DiagnosticSeverity, code: string, message: string, file: string, line?: number, column?: number): Diagnostic;
 export function validateProject(project: ScannedProject): Diagnostic[];

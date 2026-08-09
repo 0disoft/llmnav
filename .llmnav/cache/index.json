@@ -7,8 +7,8 @@
       ],
       "hashes": {
         "body": "5120d6b711e4179a586eaec5a01e84d219d648c9ff8599426badfaea46928e94",
-        "semantic": "0f1740a47dec97e03c6a7181e37b407537f67229699dca0ad33a5a5511f9fb9f",
-        "structure": "708f07e98099dd32d928732606571959d16c56b4f9606da02af1c0535c1af41a"
+        "semantic": "4d806e88c451b5674b9aac8a56bcb2dca884d039dac9cba7045160d3129c91bf",
+        "structure": "5a6a936937543366fc438a78766572860d4c42acae3246f5cab25231741019d7"
       },
       "id": "example.auth.session",
       "imports": [
@@ -46,8 +46,8 @@
       ],
       "hashes": {
         "body": "5120d6b711e4179a586eaec5a01e84d219d648c9ff8599426badfaea46928e94",
-        "semantic": "b421fc58b399bef1c2a11da46ed9aa6b0a6ea38fb29679bdcce6d6e23f18c685",
-        "structure": "ecf30de3527ba0c9ce1d5aa0b2f566fb82989fee8a3cfb693a4e55d16b8c7b30"
+        "semantic": "ea85cad8750ef442ffbec6f501668277c3c03fe235228a5f70067d37dc074a21",
+        "structure": "f471754231ace96c4052806517180491f1b3b3e906165f97818c30dafda9da35"
       },
       "id": "example.auth.session.rotate",
       "imports": [
@@ -86,8 +86,8 @@
     {
       "hashes": {
         "body": "5120d6b711e4179a586eaec5a01e84d219d648c9ff8599426badfaea46928e94",
-        "semantic": "1b2ecdcd73b693eacb7f8f5493ea107eac5555e6e67ac4c90695ef5656a61705",
-        "structure": "836039789bd731c96187c1f1f6ba70bc8c7ab3edcf151a75fb15697811d11cd0"
+        "semantic": "1c4d1f970c2758d05a59c2c5d6be3e9cafffb21cb1a4f0a92e947b4ec8ef23f0",
+        "structure": "d93ced15b346d8ab9344eaaac5a110ec38024194f3e41fa169312d435a607197"
       },
       "id": "example.auth.session.rotate-contract",
       "imports": [
@@ -118,8 +118,8 @@
       ],
       "hashes": {
         "body": "472ab94549b0b17821a8351c1e7f0cc938a97b14bb81364835aa8c5c177323e7",
-        "semantic": "fb3d5d906f8d47b4150126ee769bb5cee621f5974d55a15bc41ad44b0fc21e4b",
-        "structure": "5f4decfce2a6651a3d41b68e362779bf5d58ec7f74fa2cab35acb6fc4359fc13"
+        "semantic": "27ae475c55b7919989f9d6d626bc4ee9f894660b94028e30e44e72cf28da32ff",
+        "structure": "7ab67529a565572e018e573efa24c85e12a11889d382b031e26a32b344b6999f"
       },
       "id": "example.billing.credit",
       "imports": [],
@@ -154,8 +154,8 @@
       ],
       "hashes": {
         "body": "472ab94549b0b17821a8351c1e7f0cc938a97b14bb81364835aa8c5c177323e7",
-        "semantic": "32e1eaad6ef69459d89711b8a9a89c468742620e99b7bae0c96aca7c2e639b80",
-        "structure": "88283d2ab2de3ac0df7944ae3e4e25ab01b7007910352850e6773542dbfba878"
+        "semantic": "4fdbdcb343ddb5da5a38f4327f9dc03a54cdb5f32bd58566974c397bd00c778c",
+        "structure": "196444767fdb12b748056f11a6eda91a55e9bb3b3cd666813b2e152a5a21f011"
       },
       "id": "example.billing.credit.reserve",
       "imports": [],
@@ -190,8 +190,8 @@
       ],
       "hashes": {
         "body": "034485c2570a9cc6cf3782eaf3765ac199eaf3c105969d4c5276764f64b8cc7b",
-        "semantic": "1068531648a04e8032529e4764817eac1113b06cf1d59f43f4764cf4804ec10d",
-        "structure": "76b9ae0af61eae6972c818ca37a6da2b4103b0bb2f4e0b7fd79be5266b93f4e8"
+        "semantic": "8a4339037abb5c808e505eb35993ca9bac451ff6edc771d4cbf91edd4eb02a1a",
+        "structure": "8cd3e66a6710c14a868b8969f37a0ba9c87175223c4f4477803f58bcc3e6ed4d"
       },
       "id": "example.privacy.export",
       "imports": [
@@ -229,8 +229,8 @@
       ],
       "hashes": {
         "body": "034485c2570a9cc6cf3782eaf3765ac199eaf3c105969d4c5276764f64b8cc7b",
-        "semantic": "27abffd7ef4addd31ab2036403baed12cd37968284144e77ffd971302e45b831",
-        "structure": "6425fe450ae1a8ba0d896d9b098e41676e1a2dfebeca83f97bc27b506f5b5bad"
+        "semantic": "c01b2ebbd877ed11aba267fbfa7a7a5d6b25e98512d8b07d607516159e7acefc",
+        "structure": "ff1bbe6f2e11501fbc6b8d58cd089a8de9045f010c8dfdc9fb1829745ce7524c"
       },
       "id": "example.privacy.export.prepare",
       "imports": [
@@ -266,8 +266,8 @@
     {
       "hashes": {
         "body": "034485c2570a9cc6cf3782eaf3765ac199eaf3c105969d4c5276764f64b8cc7b",
-        "semantic": "a3db9c52f5a17fb2ff10bb317f9d511a2ae49b13675331c5cd891d951f867877",
-        "structure": "d4ff876e8b98c391c6e172dcdcfc7f9ce80eab22a61ba97f6504d5bc57eb6bab"
+        "semantic": "3d3d742230ed78e848032539d73960dffe14fd5e6366a2c6eda3d00abe73c62e",
+        "structure": "bc3342873b1d28194cec70e05a6491b54eec5753e1e31c3f77cbf25296aa0fc6"
       },
       "id": "example.privacy.export.prepare-contract",
       "imports": [
@@ -298,8 +298,8 @@
       ],
       "hashes": {
         "body": "20fdbc37f99cfdf43691322cf9de803b00d7931ae89d047195dadd76b98d7017",
-        "semantic": "97aecc965ca53ba55348a90dd32febedebfe46368c83672a490869e082902221",
-        "structure": "5784a549a9a8b7c27ec6daae83844e5659e5e8a87804869f525052a7b55eff7b"
+        "semantic": "7258d93062db7c24d1bdf4076e99802a3fcc413f4012e0aca49148a9fe1dedaa",
+        "structure": "ce92604cd4fe29c2ac1adc10a39e9928f44a6538962e42818c60299ce506e679"
       },
       "id": "llmnav.agent.install",
       "imports": [
@@ -376,9 +376,9 @@
         "index persistence format"
       ],
       "hashes": {
-        "body": "f2f9462f9766adeb0c294d3891a210b6e563310393d05d690e168cb859160821",
-        "semantic": "d83d9f6e2b0beaa3ad7815f8fb7eb042809b7509da16c4b7284cec2c49e31322",
-        "structure": "2c42e521170ef0c05beaf5c92ac736fb66e1f1ac93b883a8a0c382df4bd001f0"
+        "body": "bb22b51c94d545b030f3075e49525452a3624f3dc06f0a0eea4548055bce1ab2",
+        "semantic": "ce9c7cd107639f96de4f26b913a7e6bdd206af278fbd30acf02ff833ac9d3498",
+        "structure": "519d4f6f21e537f89188be02057a99e174c9ec89e4a600bc00b666439ce38089"
       },
       "id": "llmnav.cli.dispatch",
       "imports": [
@@ -510,9 +510,9 @@
         "model quality scoring"
       ],
       "hashes": {
-        "body": "33d5ea1160d814bfb2ac4468fbe1ecdc2931fa5a76c4426044f01dafecba2620",
-        "semantic": "4b17e9fe9f7c95d0a029157496627349e9f29bfc535c8df08b51fad237005579",
-        "structure": "3d1309dc500cef1249ee8386a27249051c971999db324f0a679a71e97d06d0db"
+        "body": "dcc8d70c727f84a17cc119cff300da3774b0bd5cabe7b4e0d8e72fd040215f8f",
+        "semantic": "1a58f139a77d418513f77d2e2719dc37ac1e68c35c263bdce98b35386615c4bb",
+        "structure": "be3394115d8dd47966f983cdc89d94b89ae6d034a1ef32a8bcb065382cebc812"
       },
       "id": "llmnav.eval.measure",
       "imports": [
@@ -555,25 +555,26 @@
         "agent search decisions"
       ],
       "hashes": {
-        "body": "05649564e808a5b648fc7f721da5585b4bb13afc5a48f2c0c118bd9b18510487",
-        "semantic": "9d52554f72c38bc7d8ffbb23b6e12eb564d0f80470c37fe8a5de61558ddfd203",
-        "structure": "7a2143995a1bac98de93ca65040d53feab82499d9a7512834ef5eff6ab0a3f44"
+        "body": "375822804f8bbfffcc8e221fa867a59082b11e3e882f000b2930c0daed12d4cd",
+        "semantic": "7052622c9732ab29e37c3ab87f848188e931f601684e811e7bb8adef31fbfe85",
+        "structure": "bd1a6f232dc56d3a548e8444bf06dc65257e9694bc03feded450a230a83cfa6b"
       },
       "id": "llmnav.index.generate",
       "imports": [
         " && error.code === ",
         "))\n    .split(/\\r?\\n/u)\n    .map((line) => line.trim())\n    .filter((line) => line && !line.startsWith(",
-        "));\n  const seen = new Set(existing);\n  const additions = [...new Set(ids)].filter((id) => !seen.has(id)).sort();\n  return [...existing, ...additions];\n}\n\nfunction renderOrder(order) {\n  return order.length > 0 ? `${order.join(",
+        ")),\n    cards,\n  };\n  const { searchIndex, stats: searchStats } = buildInvertedIndex(index, options.previousSearchIndex);\n  const fileState = options.fileState ?? buildFileStateFromProject(project);\n\n  const artifacts = new Map();\n  const cacheRoot = toPosix(project.config.generation.cacheDirectory).replace(/\\/+$/u, ",
+        "));\n  const seen = new Set(existing);\n  const additions = [...new Set(ids)].filter((id) => !seen.has(id)).sort(compareText);\n  return [...existing, ...additions];\n}\n\nfunction renderOrder(order) {\n  return order.length > 0 ? `${order.join(",
+        "),\n    },\n  };\n}\n\nfunction groupByModule(cards, depth) {\n  const groups = new Map();\n  for (const card of cards) {\n    const moduleId = moduleIdForCard(card.id, depth);\n    const existing = groups.get(moduleId) ?? [];\n    existing.push(card);\n    groups.set(moduleId, existing);\n  }\n  return [...groups.entries()].sort(([left], [right]) => compareText(left, right));\n}\n\nfunction renderCatalog(repositoryId, catalogId, cards) {\n  const lines = [\n    `llmnav-catalog/1 repository=${repositoryId} catalog=${catalogId}`,\n    ",
         "), ",
         ").trimEnd()}\\n`;\n}\n\nexport function renderSemanticCard(card) {\n  const lines = [`@${card.id}`, `role ${card.role}`];\n  if (card.owns?.length) lines.push(`owns ${card.owns.join(",
-        ");\n    const existing = groups.get(moduleId) ?? [];\n    existing.push(card);\n    groups.set(moduleId, existing);\n  }\n  return [...groups.entries()].sort(([left], [right]) => left.localeCompare(right));\n}\n\nfunction renderCatalog(repositoryId, catalogId, cards) {\n  const lines = [\n    `llmnav-catalog/1 repository=${repositoryId} catalog=${catalogId}`,\n    ",
-        ");\n    const moduleId = segments.slice(0, Math.min(Math.max(depth, 1), segments.length)).join(",
-        ");\n    const relativePath = `${cacheRoot}/modules/${safeName}.txt`;\n    artifacts.set(relativePath, renderCatalog(project.config.repositoryId, moduleId, filtered));\n    moduleManifest.push({ id: moduleId, file: relativePath, cards: filtered.length });\n  }\n\n  artifacts.set(`${cacheRoot}/agent-context.md`, renderAgentContext(project.config.repositoryId, moduleManifest));\n\n  const contentHashes = Object.fromEntries(\n    [...artifacts.entries()].map(([relativePath, content]) => [relativePath, sha256(content)]),\n  );\n  const manifest = {\n    schemaVersion: 1,\n    specVersion: SPEC_VERSION,\n    repositoryId: project.config.repositoryId,\n    cardCount: cards.length,\n    moduleCount: moduleManifest.length,\n    sourceHash: index.sourceHash,\n    files: contentHashes,\n  };\n  artifacts.set(`${cacheRoot}/manifest.json`, stableStringify(manifest));\n  return artifacts;\n}\n\nfunction indexedCard(record) {\n  const canonical = cardToCanonicalObject(record.card);\n  const semanticPayload = JSON.stringify(canonical);\n  const structurePayload = JSON.stringify({\n    path: record.relativePath,\n    scope: record.block.scope,\n    symbol: record.declaration?.symbol ?? null,\n    kind: record.declaration?.kind ?? null,\n    signature: record.declaration?.signature ?? null,\n    imports: record.imports,\n  });\n  return {\n    ...canonical,\n    location: {\n      path: record.relativePath,\n      startLine: record.block.startLine,\n      endLine: record.block.endLine,\n      symbol: record.declaration?.symbol ?? null,\n      kind: record.declaration?.kind ?? null,\n      declarationLine: record.declaration?.line ?? null,\n      signature: record.declaration?.signature ?? null,\n    },\n    imports: record.imports,\n    hashes: {\n      semantic: sha256(semanticPayload),\n      structure: sha256(structurePayload),\n      body: sha256(record.source),\n    },\n  };\n}\n\nfunction groupByModule(cards, depth) {\n  const groups = new Map();\n  for (const card of cards) {\n    const segments = card.id.split(",
+        ");\n  artifacts.set(`${cacheRoot}/index.json`, stableStringify(index));\n  artifacts.set(\n    `${cacheRoot}/cards.jsonl`,\n    cards.length > 0 ? `${cards.map((card) => stableJson(card)).join(",
         ");\n  const location = card.location;\n  if (location) {\n    const symbol = location.symbol ? `#${location.symbol}` : ",
         ");\n  for (const module of modules) lines.push(`* ${module.id}: ${module.file} (${module.cards} cards)`);\n  return `${lines.join(",
-        ");\n  }\n  return `${lines.join(",
+        ");\n  return `${lines.join(",
         ");\n}\n\nexport function renderCompactCard(card) {\n  const lines = renderSemanticCard(card).split(",
         ");\n}\n\nfunction renderAgentContext(repositoryId, modules) {\n  const lines = [\n    ",
+        ")}/`;\n    const cacheChanges = uniqueChangedFiles.filter((file) => file.startsWith(cachePrefix));\n    if (cacheChanges.length > 0) {\n      transaction = await commitGeneratedCache(\n        root,\n        project.config.generation.cacheDirectory,\n        artifacts,\n        {\n          failpoint: options.failpoint,\n          onPhase: options.onTransactionPhase,\n          renameOptions: options.renameOptions,\n        },\n      );\n    }\n\n    if (statHints && hintsPath) {\n      try {\n        await persistStatHints(hintsPath, statHints);\n        statHintsPersisted = true;\n      } catch (error) {\n        statHintsError = error instanceof Error ? error.message : String(error);\n      }\n    }\n  }\n\n  return {\n    ok: options.check ? uniqueChangedFiles.length === 0 : true,\n    diagnostics,\n    changedFiles: uniqueChangedFiles,\n    changedCards,\n    affectedCatalogs,\n    project,\n    counts,\n    artifacts,\n    index: built.index,\n    searchIndex: built.searchIndex,\n    incremental: {\n      enabled: options.incremental !== false,\n      files: scanStats,\n      cards: built.searchStats,\n      statHintsPersisted,\n      statHintsError,\n    },\n    transaction,\n  };\n}\n\nexport function buildArtifacts(project, order, options = {}) {\n  return buildArtifactSet(project, order, options).artifacts;\n}\n\nexport function buildArtifactSet(project, order, options = {}) {\n  const orderMap = new Map(order.map((id, index) => [id, index]));\n  const cards = project.records\n    .filter((record) => record.card.id)\n    .map((record) => indexedCard(record))\n    .sort((left, right) => {\n      const orderDifference = (orderMap.get(left.id) ?? Number.MAX_SAFE_INTEGER) -\n        (orderMap.get(right.id) ?? Number.MAX_SAFE_INTEGER);\n      return orderDifference || compareText(left.id, right.id);\n    });\n\n  const index = {\n    schemaVersion: 1,\n    specVersion: SPEC_VERSION,\n    generatedBy: `llmnav@${PACKAGE_VERSION}`,\n    repositoryId: project.config.repositoryId,\n    sourceHash: sha256(cards.map((card) => `${card.hashes.semantic}:${card.hashes.structure}:${card.hashes.body}`).join(",
         ")}\\n` : ",
         ")}\\n`;\n}\n\nasync function buildStableOrder(root, ids) {\n  const existing = (await readText(path.join(root, ",
         ")}`);\n  if (card.effect?.length) lines.push(`effect ${card.effect.join(",
@@ -584,31 +585,37 @@
         ")}`);\n  return lines.join(",
         ",\n    ",
         ",\n    `Repository: ${repositoryId}`,\n    ",
-        ",\n  );\n\n  const repositoryCards = cards.filter((card) =>\n    project.config.generation.repositoryCatalogStabilities.includes(card.stability),\n  );\n  artifacts.set(`${cacheRoot}/repo-core.txt`, renderCatalog(project.config.repositoryId, ",
-        ",\n  ];\n  for (const card of cards) {\n    lines.push(renderSemanticCard(card), ",
+        ",\n  );\n  artifacts.set(`${cacheRoot}/search-index.json`, renderSearchIndex(searchIndex));\n  artifacts.set(`${cacheRoot}/file-state.json`, renderFileState(fileState));\n\n  const repositoryCards = cards.filter((card) =>\n    project.config.generation.repositoryCatalogStabilities.includes(card.stability),\n  );\n  artifacts.set(`${cacheRoot}/repo-core.txt`, renderCatalog(project.config.repositoryId, ",
+        ",\n  ];\n  for (const card of cards) lines.push(renderSemanticCard(card), ",
         ",\n  ];\n  if (modules.length === 0) lines.push(",
         ", ",
-        ", repositoryCards));\n\n  const modules = groupByModule(cards, project.config.generation.moduleDepth);\n  const moduleManifest = [];\n  for (const [moduleId, moduleCards] of modules) {\n    const filtered = moduleCards.filter((card) =>\n      project.config.generation.moduleCatalogStabilities.includes(card.stability),\n    );\n    if (filtered.length === 0) continue;\n    const safeName = moduleId.replace(/[^a-z0-9.-]/gu, ",
+        ", repositoryCards));\n\n  const modules = groupByModule(cards, project.config.generation.moduleDepth);\n  const moduleManifest = [];\n  for (const [moduleId, moduleCards] of modules) {\n    const filtered = moduleCards.filter((card) =>\n      project.config.generation.moduleCatalogStabilities.includes(card.stability),\n    );\n    if (filtered.length === 0) continue;\n    const relativePath = `${cacheRoot}/modules/${safeModuleName(moduleId)}.txt`;\n    artifacts.set(relativePath, renderCatalog(project.config.repositoryId, moduleId, filtered));\n    moduleManifest.push({ id: moduleId, file: relativePath, cards: filtered.length });\n  }\n\n  artifacts.set(`${cacheRoot}/agent-context.md`, renderAgentContext(project.config.repositoryId, moduleManifest));\n\n  const contentHashes = Object.fromEntries(\n    [...artifacts.entries()]\n      .sort(([left], [right]) => compareText(left, right))\n      .map(([relativePath, content]) => [relativePath, sha256(content)]),\n  );\n  const manifest = {\n    schemaVersion: 1,\n    specVersion: SPEC_VERSION,\n    repositoryId: project.config.repositoryId,\n    cardCount: cards.length,\n    moduleCount: moduleManifest.length,\n    sourceHash: index.sourceHash,\n    searchCardSetHash: searchIndex.cardSetHash,\n    searchIndexSchemaVersion: searchIndex.schemaVersion,\n    fileStateSchemaVersion: fileState.schemaVersion,\n    files: contentHashes,\n  };\n  artifacts.set(`${cacheRoot}/manifest.json`, stableStringify(manifest));\n  return { artifacts, index, searchIndex, searchStats, fileState, moduleManifest };\n}\n\nfunction indexedCard(record) {\n  const canonical = cardToCanonicalObject(record.card);\n  const semanticPayload = stableJson(canonical);\n  const structurePayload = stableJson({\n    path: record.relativePath,\n    scope: record.block.scope,\n    symbol: record.declaration?.symbol ?? null,\n    kind: record.declaration?.kind ?? null,\n    signature: record.declaration?.signature ?? null,\n    imports: record.imports,\n  });\n  return {\n    ...canonical,\n    location: {\n      path: record.relativePath,\n      startLine: record.block.startLine,\n      endLine: record.block.endLine,\n      symbol: record.declaration?.symbol ?? null,\n      kind: record.declaration?.kind ?? null,\n      declarationLine: record.declaration?.line ?? null,\n      signature: record.declaration?.signature ?? null,\n    },\n    imports: record.imports,\n    hashes: {\n      semantic: sha256(semanticPayload),\n      structure: sha256(structurePayload),\n      body: record.bodyHash ?? sha256(record.source ?? ",
+        "./changes.js",
+        "./config.js",
+        "./incremental.js",
+        "./inverted-index.js",
         "./parser.js",
         "./project.js",
         "./registry.js",
         "./spec.js",
+        "./transaction.js",
         "./util.js",
         "./validator.js",
         ".llmnav",
         ".llmnav/ids.jsonl",
         ".llmnav/order.lock",
         ";\n    lines.push(`loc ${location.path}${symbol}:${location.declarationLine ?? location.startLine}`);\n    if (location.signature) lines.push(`sig ${location.signature}`);\n  }\n  return lines.join(",
-        ";\n}\n\nasync function compareArtifacts(root, cacheDirectory, artifacts) {\n  const changed = [];\n  for (const [relativePath, content] of artifacts) {\n    if (await compareOne(path.join(root, relativePath), content)) changed.push(relativePath);\n  }\n  const actualFiles = await listFiles(path.join(root, cacheDirectory));\n  const expected = new Set([...artifacts.keys()].map((item) => toPosix(item)));\n  for (const absolutePath of actualFiles) {\n    const relativePath = relativePosix(root, absolutePath);\n    if (!expected.has(relativePath)) changed.push(relativePath);\n  }\n  return changed;\n}\n\nasync function compareOne(filePath, expected) {\n  const actual = await readText(filePath, null);\n  return actual !== expected;\n}\n\nasync function listFiles(directory) {\n  try {\n    const entries = await readdir(directory, { withFileTypes: true });\n    const files = [];\n    for (const entry of entries) {\n      const absolute = path.join(directory, entry.name);\n      if (entry.isDirectory()) files.push(...(await listFiles(absolute)));\n      else if (entry.isFile()) files.push(absolute);\n    }\n    return files;\n  } catch (error) {\n    if (error && typeof error === ",
+        ";\n}\n\nasync function compareArtifacts(root, cacheDirectory, artifacts) {\n  const changed = [];\n  for (const [relativePath, content] of artifacts) {\n    if (await compareOne(path.join(root, relativePath), content)) changed.push(toPosix(relativePath));\n  }\n  const actualFiles = await listFiles(path.join(root, cacheDirectory));\n  const expected = new Set([...artifacts.keys()].map((item) => toPosix(item)));\n  for (const absolutePath of actualFiles) {\n    const relativePath = relativePosix(root, absolutePath);\n    if (!expected.has(relativePath)) changed.push(relativePath);\n  }\n  return changed.sort(compareText);\n}\n\nasync function compareOne(filePath, expected) {\n  const actual = await readText(filePath, null);\n  return actual !== expected;\n}\n\nasync function listFiles(directory) {\n  try {\n    const entries = await readdir(directory, { withFileTypes: true });\n    entries.sort((left, right) => compareText(left.name, right.name));\n    const files = [];\n    for (const entry of entries) {\n      const absolute = path.join(directory, entry.name);\n      if (entry.isDirectory()) files.push(...(await listFiles(absolute)));\n      else if (entry.isFile()) files.push(absolute);\n    }\n    return files;\n  } catch (error) {\n    if (error && typeof error === ",
         "<task>\\",
-        "\\n",
+        "index.json",
         "node:fs/promises",
         "node:path",
-        "order.lock"
+        "order.lock",
+        "search-index.json"
       ],
       "location": {
         "declarationLine": null,
-        "endLine": 9,
+        "endLine": 12,
         "kind": null,
         "path": "src/generator.js",
         "signature": null,
@@ -621,7 +628,10 @@
         "cache catalogs"
       ],
       "rel": [
-        "workflow>llmnav.rules.validate"
+        "workflow>llmnav.rules.validate",
+        "workflow>llmnav.index.incremental",
+        "workflow>llmnav.index.inverted",
+        "workflow>llmnav.index.transaction"
       ],
       "role": "Compile validated semantic cards into deterministic repository and module catalogs for coding agents.",
       "scope": "module",
@@ -638,9 +648,9 @@
         "automatic annotation"
       ],
       "hashes": {
-        "body": "f205f60da7acf1ef519eb83148fc48828ca43c2d9d6571d56333d4bd99523af3",
-        "semantic": "0d4e70f2bc62b507269a110e19525cd57c311b1374e88b9cedf6020b5fa069da",
-        "structure": "2cb19425c4d15ab03d4bda283c1442877a3fc77462a16144eb1fe2262c840c67"
+        "body": "421814c5201ffb634892634d0f3615620a6a3c5cd591238304e4b68b86365ca5",
+        "semantic": "32b959f42c7911d86ba137ce781e1b28f71b1d6f089e5ad0533bfe7e6a7e5956",
+        "structure": "c559622d1d4ecba2d6423313a5691d734132ca85d5e5f81530ea4c6650898403"
       },
       "id": "llmnav.project.initialize",
       "imports": [
@@ -719,9 +729,9 @@
         "search ranking"
       ],
       "hashes": {
-        "body": "0763378f90ef68e09dd6bdb5ce57a42e8f49529842a16b2f479489e5e9dda5f7",
-        "semantic": "fe068b617876bc1084ac39d447a80f9497e68ac334a22cf65e62a18aaea6eca4",
-        "structure": "40340a9f9ecec46b74a9a02ab955f89b130b3f3c9e4b6006ca23990cab1bc410"
+        "body": "b2869988488aea2a6c8345ff34e3b2570c4fe16d50bcbdf6ecae592b6293a15b",
+        "semantic": "c5dc78b5539ae1579e7ce201a75625d8a2c88ab8d3b9dfd147ff61ffdd112f3b",
+        "structure": "33c582a765a3631b27ee0c63692dc51c70be7a62107233667c32967824d657ec"
       },
       "id": "llmnav.rules.validate",
       "imports": [
@@ -813,12 +823,17 @@
         "source mutation"
       ],
       "hashes": {
-        "body": "08353de228da3b5141248c16e838e8c956eaf0759cfc086131182f585f0f8b10",
-        "semantic": "70c2274cf4b58e0dd724631897003cdd448bd39001fb9dd2539b8276cc9c57e9",
-        "structure": "a50a7b3433b4963452fc7e47004c200f811c195918eeab8f1ea5ad5c3472f9c4"
+        "body": "c38ec84d77f7bbda0736801fc6f3f04590b894dc10147019ef78b9dfb23fa032",
+        "semantic": "1a0922e478fefb4618555b65a2a2d09e6ef017f10fe9a096a5a8097d25b9305e",
+        "structure": "d08f8867061f45449132aac881695dff5445a0f3240ca45e129273dd6a053e33"
       },
       "id": "llmnav.search.query",
       "imports": [
+        " } : resolveRegistryId(registry, id);\n  if (resolved.state !== ",
+        ") + 1);\n      const list = reverse.get(target) ?? [];\n      list.push(card.id);\n      reverse.set(target, list);\n    }\n  }\n\n  const queue = [{ id: rootId, depth: 0 }];\n  const visited = new Set();\n  const selected = [];\n  while (queue.length > 0) {\n    const current = queue.shift();\n    if (!current || visited.has(current.id)) continue;\n    visited.add(current.id);\n    const card = byId.get(current.id);\n    if (!card) continue;\n    selected.push(card);\n    if (current.depth >= depth) continue;\n    for (const relation of card.rel ?? []) {\n      const target = relation.slice(relation.indexOf(",
+        ") + 1);\n      queue.push({ id: target, depth: current.depth + 1 });\n    }\n    for (const source of reverse.get(card.id) ?? []) queue.push({ id: source, depth: current.depth + 1 });\n  }\n\n  const header = `llmnav-context/1 root=${rootId} depth=${depth}\\n`;\n  let output = header;\n  const included = [];\n  for (const card of selected) {\n    const rendered = `${renderCompactCard(card)}\\n\\n`;\n    if (approximateTokens(output + rendered) > budget) {\n      if (included.length === 0) {\n        output = truncateToTokenBudget(output + rendered, budget);\n        included.push(card.id);\n      }\n      break;\n    }\n    output += rendered;\n    included.push(card.id);\n  }\n  return {\n    id: rootId,\n    depth,\n    budget,\n    included,\n    text: truncateToTokenBudget(output.trimEnd(), budget),\n  };\n}\n\nfunction addScore(resultsById, card, score, reasons) {\n  const existing = resultsById.get(card.id) ?? { card, score: 0, reasons: [] };\n  existing.score += score;\n  if (Array.isArray(reasons)) existing.reasons.push(...reasons);\n  else existing.reasons.push(reasons);\n  resultsById.set(card.id, existing);\n}\n\nfunction boundedInteger(value, fallback, minimum, maximum) {\n  const parsed = Number.isInteger(value) ? value : Number.parseInt(String(value ?? ",
+        ") return { card: null, resolvedFrom: resolved };\n  return {\n    card: index.cards.find((card) => card.id === resolved.id) ?? null,\n    resolvedFrom: resolved,\n  };\n}\n\nexport async function buildContext(root, id, options = {}) {\n  const { index } = await loadSearchData(root);\n  const registry = await loadRegistry(root);\n  const direct = index.cards.find((card) => card.id === id);\n  const resolved = direct ? { id, state: ",
+        ") throw new Error(`Unknown or inactive semantic ID ${id}.`);\n  const rootId = resolved.id;\n  const depth = boundedInteger(options.depth, 1, 0, 8);\n  const budget = boundedInteger(options.budget, 2500, 128, 100000);\n  const start = index.cards.find((card) => card.id === rootId);\n  if (!start) throw new Error(`No indexed source card exists for semantic ID ${rootId}.`);\n  const byId = new Map(index.cards.map((card) => [card.id, card]));\n  const reverse = new Map();\n  for (const card of index.cards) {\n    for (const relation of card.rel ?? []) {\n      const target = relation.slice(relation.indexOf(",
         ")),\n    effect: tokenize((card.effect ?? []).join(",
         ")),\n    excludes: tokenize((card.excludes ?? []).join(",
         ")),\n    invariant: tokenize((card.invariant ?? []).join(",
@@ -826,33 +841,38 @@
         ")),\n    risk: tokenize((card.risk ?? []).join(",
         ")),\n    role: tokenize(card.role),\n    search: tokenize((card.search ?? []).join(",
         ")),\n    symbol: tokenize(card.location?.symbol ?? ",
-        "));\n      }\n      for (let index = 0; index <= characters.length - 3; index += 1) {\n        tokens.push(characters.slice(index, index + 3).join(",
         "),\n    path: tokenize(card.location?.path ?? ",
         "),\n    signature: tokenize(card.location?.signature ?? ",
-        "),\n  };\n  return { fields, allTokens: Object.values(fields).flat() };\n}\n\nfunction normalize(value) {\n  return String(value ?? ",
-        "), 10);\n  if (!Number.isFinite(parsed)) return fallback;\n  return Math.min(maximum, Math.max(minimum, parsed));\n}\n\nfunction buildDocument(card) {\n  const fields = {\n    id: tokenize(card.id.replaceAll(",
-        ").normalize(",
-        ").toLocaleLowerCase(",
-        ").trim();\n}\n\nexport function tokenize(value) {\n  const normalized = normalize(value);\n  const base = normalized.match(/[\\p{L}\\p{N}]+/gu) ?? [];\n  const tokens = [...base];\n  for (const token of base) {\n    if (containsCjk(token) && [...token].length >= 3) {\n      const characters = [...token];\n      for (let index = 0; index <= characters.length - 2; index += 1) {\n        tokens.push(characters.slice(index, index + 2).join(",
+        "),\n  };\n  return { fields, allTokens: Object.values(fields).flat() };\n}\n\nexport { tokenize } from ",
+        "), 10);\n  if (!Number.isFinite(parsed)) return fallback;\n  return Math.min(maximum, Math.max(minimum, parsed));\n}\n\nfunction buildLegacyDocument(card) {\n  const fields = {\n    id: tokenize(card.id.replaceAll(",
+        "), null);\n  let searchIndex = null;\n  if (searchText !== null) {\n    try {\n      searchIndex = JSON.parse(searchText);\n    } catch {\n      searchIndex = null;\n    }\n  }\n  const manifestMatches = Boolean(\n    searchText !== null &&\n      manifest?.searchCardSetHash &&\n      searchIndex?.cardSetHash === manifest.searchCardSetHash &&\n      searchIndex?.documentCount === index.cards.length &&\n      manifest.files?.[searchRelative] === sha256(searchText),\n  );\n  if (!isCompatibleSearchIndex(searchIndex, index.repositoryId) || (!manifestMatches && !verifySearchIndex(index, searchIndex))) {\n    searchIndex = buildInvertedIndex(index).searchIndex;\n  }\n  return { index, lexicon, searchIndex };\n}\n\nexport async function queryProject(root, query, options = {}) {\n  const { index, lexicon, searchIndex } = await loadSearchData(root);\n  return queryPreparedIndex(index, searchIndex, query, { ...options, lexicon });\n}\n\nexport function queryIndex(index, query, options = {}) {\n  let searchIndex = options.invertedIndex;\n  if (!searchIndex) {\n    searchIndex = preparedIndexCache.get(index);\n    if (!searchIndex) {\n      searchIndex = buildInvertedIndex(index).searchIndex;\n      preparedIndexCache.set(index, searchIndex);\n    }\n  }\n  return queryPreparedIndex(index, searchIndex, query, options);\n}\n\nexport function queryPreparedIndex(index, searchIndex, query, options = {}) {\n  const top = boundedInteger(options.top, 5, 1, 100);\n  const lexicon = options.lexicon ?? { aliases: {} };\n  const metrics = options.metrics ?? null;\n  const normalizedQuery = normalizeSearchText(query);\n  const queryTokens = tokenize(query);\n  const aliases = Object.entries(lexicon.aliases ?? {});\n  const aliasTargets = new Set();\n  const aliasReasons = new Map();\n  const byId = new Map(index.cards.map((card) => [card.id, card]));\n  const cardOrder = new Map(index.cards.map((card, cardIndex) => [card.id, cardIndex]));\n  const resultsById = new Map();\n\n  if (metrics) {\n    metrics.queryTokens = queryTokens.length;\n    metrics.documentTokenizations = 0;\n    metrics.postingVisits = 0;\n    metrics.phraseDocumentsScanned = 0;\n    metrics.idDocumentsScanned = 0;\n  }\n\n  for (const [alias, targetValue] of aliases) {\n    const normalizedAlias = normalizeSearchText(alias);\n    if (!normalizedAlias || !normalizedQuery.includes(normalizedAlias)) continue;\n    const targets = Array.isArray(targetValue) ? targetValue : [targetValue];\n    for (const target of targets) {\n      aliasTargets.add(target);\n      const reasons = aliasReasons.get(target) ?? [];\n      reasons.push(`alias=${JSON.stringify(alias)}`);\n      aliasReasons.set(target, reasons);\n    }\n  }\n\n  for (const card of index.cards) {\n    if (metrics) metrics.idDocumentsScanned += 1;\n    if (normalizeSearchText(card.id) === normalizedQuery) {\n      addScore(resultsById, card, 1000, ",
+        ");\n      if (separator <= 0) continue;\n      const target = relation.slice(separator + 1);\n      const targetCard = byId.get(target);\n      if (!targetCard) continue;\n      const bonus = seed.score * 0.08;\n      addScore(resultsById, targetCard, bonus, `related-from=${seed.card.id}`);\n    }\n  }\n\n  return [...resultsById.values()]\n    .filter((result) => result.score > 0)\n    .sort((left, right) => right.score - left.score || compareText(left.card.id, right.card.id))\n    .slice(0, top)\n    .map((result) => ({\n      id: result.card.id,\n      score: Number(result.score.toFixed(3)),\n      reasons: [...new Set(result.reasons)].slice(0, 6),\n      role: result.card.role,\n      location: result.card.location,\n      card: result.card,\n    }));\n}\n\nfunction prepareCompactSearchIndex(searchIndex) {\n  let prepared = preparedSearchIndexCache.get(searchIndex);\n  if (prepared) return prepared;\n  prepared = {\n    tokenIndex: new Map((searchIndex.tokens ?? []).map((token, index) => [token, index])),\n  };\n  preparedSearchIndexCache.set(searchIndex, prepared);\n  return prepared;\n}\n\nexport function queryIndexLegacy(index, query, options = {}) {\n  const top = boundedInteger(options.top, 5, 1, 100);\n  const lexicon = options.lexicon ?? { aliases: {} };\n  const normalizedQuery = normalizeSearchText(query);\n  const queryTokens = tokenize(query);\n  const aliases = Object.entries(lexicon.aliases ?? {});\n  const aliasTargets = new Set();\n  const aliasReasons = new Map();\n\n  for (const [alias, targetValue] of aliases) {\n    const normalizedAlias = normalizeSearchText(alias);\n    if (!normalizedAlias || !normalizedQuery.includes(normalizedAlias)) continue;\n    const targets = Array.isArray(targetValue) ? targetValue : [targetValue];\n    for (const target of targets) {\n      aliasTargets.add(target);\n      const reasons = aliasReasons.get(target) ?? [];\n      reasons.push(`alias=${JSON.stringify(alias)}`);\n      aliasReasons.set(target, reasons);\n    }\n  }\n\n  const documents = index.cards.map((card) => buildLegacyDocument(card));\n  const documentFrequency = new Map();\n  for (const document of documents) {\n    for (const token of new Set(document.allTokens)) {\n      documentFrequency.set(token, (documentFrequency.get(token) ?? 0) + 1);\n    }\n  }\n\n  const results = [];\n  for (const [cardIndex, card] of index.cards.entries()) {\n    const document = documents[cardIndex];\n    let score = 0;\n    const reasons = [];\n\n    if (normalizeSearchText(card.id) === normalizedQuery) {\n      score += 1000;\n      reasons.push(",
+        ");\n      if (separator <= 0) continue;\n      const target = relation.slice(separator + 1);\n      const targetCard = index.cards.find((card) => card.id === target);\n      if (!targetCard) continue;\n      const existing = byId.get(target);\n      const bonus = seed.score * 0.08;\n      if (existing) {\n        existing.score += bonus;\n        existing.reasons.push(`related-from=${seed.card.id}`);\n      } else {\n        const result = { card: targetCard, score: bonus, reasons: [`related-from=${seed.card.id}`] };\n        results.push(result);\n        byId.set(target, result);\n      }\n    }\n  }\n\n  return results\n    .sort((left, right) => right.score - left.score || compareText(left.card.id, right.card.id))\n    .slice(0, top)\n    .map((result) => ({\n      id: result.card.id,\n      score: Number(result.score.toFixed(3)),\n      reasons: [...new Set(result.reasons)].slice(0, 6),\n      role: result.card.role,\n      location: result.card.location,\n      card: result.card,\n    }));\n}\n\nexport async function showProjectCard(root, id) {\n  const { index } = await loadSearchData(root);\n  const direct = index.cards.find((card) => card.id === id);\n  if (direct) return { card: direct, resolvedFrom: null };\n  const registry = await loadRegistry(root);\n  const resolved = resolveRegistryId(registry, id);\n  if (resolved.state !== ",
+        ");\n    }\n\n    if (aliasTargets.has(card.id)) {\n      score += 500;\n      reasons.push(...(aliasReasons.get(card.id) ?? []));\n    }\n\n    for (const token of queryTokens) {\n      const frequency = documentFrequency.get(token) ?? 0;\n      const idf = Math.log(1 + (index.cards.length + 1) / (frequency + 1));\n      let tokenScore = 0;\n      for (const [field, weight] of Object.entries(SEARCH_FIELD_WEIGHTS)) {\n        const count = document.fields[field]?.filter((item) => item === token).length ?? 0;\n        tokenScore += count * weight * idf;\n      }\n      if (tokenScore > 0) {\n        score += tokenScore;\n        reasons.push(`token=${token}`);\n      }\n    }\n\n    const phraseFields = [card.role, ...(card.search ?? []), ...(card.invariant ?? []), ...(card.owns ?? [])]\n      .filter(Boolean)\n      .map(normalizeSearchText);\n    if (normalizedQuery.length >= 4 && phraseFields.some((field) => field.includes(normalizedQuery))) {\n      score += 40;\n      reasons.push(",
+        ");\n    }\n\n    if (score > 0) results.push({ card, score, reasons: [...new Set(reasons)].slice(0, 6) });\n  }\n\n  const byId = new Map(results.map((result) => [result.card.id, result]));\n  const seeds = [...results].sort((left, right) => right.score - left.score).slice(0, 3);\n  for (const seed of seeds) {\n    for (const relation of seed.card.rel ?? []) {\n      const separator = relation.indexOf(",
+        ");\n    }\n    if (aliasTargets.has(card.id)) {\n      addScore(resultsById, card, 500, aliasReasons.get(card.id) ?? []);\n    }\n  }\n\n  const preparedSearchIndex = prepareCompactSearchIndex(searchIndex);\n  const documentCount = index.cards.length;\n  for (const token of queryTokens) {\n    const tokenIndex = preparedSearchIndex.tokenIndex.get(token);\n    const tokenPostings = tokenIndex === undefined ? [] : (searchIndex.postings[tokenIndex] ?? []);\n    const frequency = tokenPostings.length;\n    const idf = Math.log(1 + (documentCount + 1) / (frequency + 1));\n    for (const [cardIndex, vector] of tokenPostings) {\n      if (metrics) metrics.postingVisits += 1;\n      const id = searchIndex.cardIds[cardIndex];\n      const card = byId.get(id);\n      if (!card) continue;\n      let tokenScore = 0;\n      for (let vectorIndex = 0; vectorIndex < vector.length; vectorIndex += 2) {\n        const field = SEARCH_FIELD_ORDER[vector[vectorIndex]];\n        const count = vector[vectorIndex + 1] ?? 0;\n        if (field) tokenScore += count * SEARCH_FIELD_WEIGHTS[field] * idf;\n      }\n      if (tokenScore > 0) addScore(resultsById, card, tokenScore, `token=${token}`);\n    }\n  }\n\n  if (normalizedQuery.length >= 4) {\n    for (const [cardIndex, document] of searchIndex.documents.entries()) {\n      if (metrics) metrics.phraseDocumentsScanned += 1;\n      const phrases = Array.isArray(document) && Array.isArray(document[1]) ? document[1] : [];\n      if (!phrases.some((field) => field.includes(normalizedQuery))) continue;\n      const card = byId.get(searchIndex.cardIds[cardIndex]);\n      if (card) addScore(resultsById, card, 40, ",
+        ");\n    }\n  }\n\n  const results = [...resultsById.values()].filter((result) => result.score > 0);\n  const seeds = [...results]\n    .sort((left, right) => right.score - left.score || (cardOrder.get(left.card.id) ?? 0) - (cardOrder.get(right.card.id) ?? 0))\n    .slice(0, 3);\n  for (const seed of seeds) {\n    for (const relation of seed.card.rel ?? []) {\n      const separator = relation.indexOf(",
+        ");\n    } else if (normalizeSearchText(card.id).includes(normalizedQuery) && normalizedQuery.length > 2) {\n      addScore(resultsById, card, 100, ",
+        ");\n    } else if (normalizeSearchText(card.id).includes(normalizedQuery) && normalizedQuery.length > 2) {\n      score += 100;\n      reasons.push(",
+        ")}/search-index.json`;\n  const searchText = await readText(path.join(cacheRoot, ",
         ", ",
+        "./config.js",
         "./generator.js",
+        "./inverted-index.js",
         "./registry.js",
+        "./tokenizer.js",
+        "./transaction.js",
         "./util.js",
         ".llmnav",
-        ">",
         "No generated index found. Run `llmnav generate` first.",
-        "active",
-        "cache",
-        "exact phrase",
-        "exact semantic ID",
         "index.json",
         "lexicon.json",
-        "node:path",
-        "semantic ID phrase"
+        "manifest.json",
+        "node:path"
       ],
       "location": {
         "declarationLine": null,
-        "endLine": 9,
+        "endLine": 10,
         "kind": null,
         "path": "src/search.js",
         "signature": null,
@@ -865,7 +885,8 @@
         "context expansion"
       ],
       "rel": [
-        "workflow>llmnav.index.generate"
+        "workflow>llmnav.index.generate",
+        "workflow>llmnav.index.inverted"
       ],
       "role": "Rank semantic cards from task language, aliases, metadata fields, and one-hop semantic relations.",
       "scope": "module",
@@ -883,8 +904,8 @@
       ],
       "hashes": {
         "body": "b844e690afe199372272a426c11cc1f1aefc72ffb110c101f6bbc49f3a172c62",
-        "semantic": "f4c82dc43a27c7461dffba2be4c9e5f09e29bf2118b5db5c706d51c2bca86491",
-        "structure": "63ab612d9dc39326d4bc52ea2c1970a8c2c746ecb9795d600276ff4db4c59894"
+        "semantic": "6fe19b8340b0f5a5ba89cf953692dfd02bb937b04718dfc19ea14b936de5fb80",
+        "structure": "efb99747375312a6efee8513595afadb4b903d0da7aca0babf651deb3ac9a5c9"
       },
       "id": "llmnav.syntax.parse",
       "imports": [
@@ -980,11 +1001,357 @@
         "canonical formatting"
       ],
       "stability": "architecture"
+    },
+    {
+      "excludes": [
+        "source mutation",
+        "cache commit"
+      ],
+      "hashes": {
+        "body": "756ca3d92131807c7825c568c1dff0bb5bf9b16b249372bf7fd8522753deebaf",
+        "semantic": "ace68184441ce1dfcb8a6bfd96429982b3db69bc2e3d3fd0308f07290b3414f3",
+        "structure": "c5fe9c0861cf8f7d879db8a69d082d8d1479cfb25bb6686ee814d3a61310be13"
+      },
+      "id": "llmnav.index.changes",
+      "imports": [
+        " }],\n    [`${cacheRoot}/agent-context.md`, { kind: ",
+        " }],\n  ]);\n  for (const index of [previousIndex, currentIndex]) {\n    for (const module of buildModuleCatalogMetadata(index?.cards ?? [], config)) {\n      known.set(module.file, { kind: ",
+        ").slice(0, 2).join(",
+        ");\n  const known = new Map([\n    [`${cacheRoot}/repo-core.txt`, { kind: ",
+        ");\n  return [...groups.entries()]\n    .sort(([left], [right]) => compareText(left, right))\n    .map(([id, cardsCount]) => ({\n      id,\n      file: `${cacheRoot}/modules/${safeModuleName(id)}.txt`,\n      cards: cardsCount,\n    }));\n}\n\nexport function moduleIdForCard(id, depth) {\n  const segments = String(id).split(",
+        ");\n  return segments.slice(0, Math.min(Math.max(depth, 1), segments.length)).join(",
+        ");\n}\n\nexport function safeModuleName(id) {\n  return String(id).replace(/[^a-z0-9.-]/gu, ",
+        ");\n}\n\nfunction cardSnapshot(card) {\n  return {\n    stability: card?.stability ?? null,\n    module: card?.id ? card.id.split(",
+        ", id: ",
+        ", id: module.id });\n    }\n  }\n\n  return [...new Set(changedFiles.map(toPosix))]\n    .filter((file) => known.has(file))\n    .sort(compareText)\n    .map((file) => ({ file, ...known.get(file) }));\n}\n\nexport function buildModuleCatalogMetadata(cards, config) {\n  const groups = new Map();\n  for (const card of cards) {\n    if (!config.generation.moduleCatalogStabilities.includes(card.stability)) continue;\n    const id = moduleIdForCard(card.id, config.generation.moduleDepth);\n    const count = groups.get(id) ?? 0;\n    groups.set(id, count + 1);\n  }\n  const cacheRoot = toPosix(config.generation.cacheDirectory).replace(/\\/+$/u, ",
+        "./util.js",
+        "added",
+        "body",
+        "modified",
+        "removed",
+        "semantic",
+        "structure"
+      ],
+      "location": {
+        "declarationLine": null,
+        "endLine": 9,
+        "kind": null,
+        "path": "src/changes.js",
+        "signature": null,
+        "startLine": 1,
+        "symbol": null
+      },
+      "owns": [
+        "card diff",
+        "catalog impact report",
+        "change ordering"
+      ],
+      "rel": [
+        "workflow>llmnav.index.generate"
+      ],
+      "role": "Describe changed semantic cards and generated catalogs as stable machine-readable records.",
+      "scope": "module",
+      "search": [
+        "changed cards",
+        "affected catalog",
+        "generation report"
+      ],
+      "stability": "architecture"
+    },
+    {
+      "excludes": [
+        "source comment mutation",
+        "cache directory commit"
+      ],
+      "hashes": {
+        "body": "331c89ffb602a05188a0dd56d59ba32467a2de81bab3d4f36924800dba768e81",
+        "semantic": "26e0abf92c39ff07a7eb622d795d5ecbc83c7704b7c1ed09cd3ad339e3c04865",
+        "structure": "41df1f7ee74f94c612d20cec76e8c0ba50d5c5a6415b941da5d2426315f4a732"
+      },
+      "id": "llmnav.index.incremental",
+      "imports": [
+        " || !Array.isArray(file.blocks)) continue;\n    output.set(file.path, file);\n  }\n  return output;\n}\n\nfunction statFingerprint(details) {\n  return {\n    size: details.size.toString(),\n    mtimeNs: details.mtimeNs.toString(),\n    ctimeNs: details.ctimeNs.toString(),\n  };\n}\n\nfunction fingerprintsEqual(left, right) {\n  return Boolean(\n    left &&\n      left.size === right.size &&\n      left.mtimeNs === right.mtimeNs &&\n      left.ctimeNs === right.ctimeNs,\n  );\n}\n\nfunction usableStatHints(value) {\n  return Boolean(value && value.schemaVersion === STAT_HINTS_SCHEMA_VERSION && value.files && typeof value.files === ",
+        "./config.js",
+        "./declaration.js",
+        "./files.js",
+        "./parser.js",
+        "./registry.js",
+        "./util.js",
+        ".llmnav",
+        ";\n    const declarations = fileRecord.blocks.map((block) =>\n      findAttachedDeclaration(source, block, fileRecord.relativePath),\n    );\n    return normalizeStateFile(\n      {\n        path: fileRecord.relativePath,\n        contentHash: fileRecord.contentHash ?? sha256(source),\n        sourceBytes: Buffer.byteLength(source),\n        semanticBytes: fileRecord.blocks.reduce((sum, block) => sum + Buffer.byteLength(block.raw), 0),\n        imports: fileRecord.imports,\n        blocks: fileRecord.blocks,\n        declarations,\n      },\n      fileRecord.relativePath,\n    );\n  });\n  files.sort((left, right) => compareText(left.path, right.path));\n  return {\n    schemaVersion: FILE_STATE_SCHEMA_VERSION,\n    indexerVersion: SOURCE_INDEXER_VERSION,\n    files,\n  };\n}\n\nexport async function persistStatHints(hintsPath, statHints) {\n  await atomicWrite(hintsPath, stableStringify(statHints));\n}\n\nexport function renderFileState(fileState) {\n  return stableStringify(fileState);\n}\n\nexport function usableFileState(value) {\n  return Boolean(\n    value &&\n      value.schemaVersion === FILE_STATE_SCHEMA_VERSION &&\n      value.indexerVersion === SOURCE_INDEXER_VERSION &&\n      Array.isArray(value.files),\n  );\n}\n\nfunction analyzeFile(relativePath, source) {\n  const blocks = parseLlmnavBlocks(source, relativePath);\n  return {\n    path: relativePath,\n    contentHash: sha256(source),\n    sourceBytes: Buffer.byteLength(source),\n    semanticBytes: blocks.reduce((sum, block) => sum + Buffer.byteLength(block.raw), 0),\n    imports: extractImports(source, relativePath),\n    blocks,\n    declarations: blocks.map((block) => findAttachedDeclaration(source, block, relativePath)),\n  };\n}\n\nfunction normalizeStateFile(file, relativePath) {\n  return {\n    path: relativePath,\n    contentHash: String(file.contentHash),\n    sourceBytes: Number(file.sourceBytes),\n    semanticBytes: Number(file.semanticBytes),\n    imports: [...(file.imports ?? [])],\n    blocks: structuredClone(file.blocks ?? []),\n    declarations: structuredClone(file.declarations ?? []),\n  };\n}\n\nfunction hydrateFileRecord(root, absolutePath, stateFile) {\n  return {\n    absolutePath,\n    relativePath: stateFile.path,\n    source: null,\n    contentHash: stateFile.contentHash,\n    bodyHash: stateFile.contentHash,\n    sourceBytes: stateFile.sourceBytes,\n    semanticBytes: stateFile.semanticBytes,\n    blocks: stateFile.blocks,\n    imports: stateFile.imports,\n    root,\n  };\n}\n\nfunction hydrateRecords(root, absolutePath, stateFile) {\n  return stateFile.blocks.map((block, index) => ({\n    root,\n    absolutePath,\n    relativePath: stateFile.path,\n    source: null,\n    bodyHash: stateFile.contentHash,\n    imports: stateFile.imports,\n    block,\n    card: block.card,\n    declaration: stateFile.declarations[index] ?? null,\n  }));\n}\n\nfunction mapStateFiles(files) {\n  const output = new Map();\n  for (const file of files ?? []) {\n    if (!file || typeof file.path !== ",
+        "file-state.json",
+        "node:fs/promises",
+        "node:path",
+        "stat-hints.json",
+        "state",
+        "utf8"
+      ],
+      "location": {
+        "declarationLine": null,
+        "endLine": 9,
+        "kind": null,
+        "path": "src/incremental.js",
+        "signature": null,
+        "startLine": 1,
+        "symbol": null
+      },
+      "owns": [
+        "file fingerprints",
+        "parsed-file state",
+        "incremental scan metrics"
+      ],
+      "rel": [
+        "workflow>llmnav.index.generate"
+      ],
+      "role": "Reuse unchanged file parses and card records while rebuilding deterministic generated artifacts.",
+      "scope": "module",
+      "search": [
+        "incremental indexing",
+        "file cache",
+        "card reuse"
+      ],
+      "stability": "architecture"
+    },
+    {
+      "excludes": [
+        "semantic source syntax",
+        "query presentation"
+      ],
+      "hashes": {
+        "body": "3312de9254a43912944e3065e8e4a9acd65d8e4d0713c0286b20429177d6cfdb",
+        "semantic": "5137a9570f530cec8a032925b5c560348a26a0b3ebe62046409093d1a1094e1b",
+        "structure": "f72bfbc59b4ba5cc6e9deeb192a6f0052e099b32c8bd9e6ca01741ce8ea9fd6c"
+      },
+      "id": "llmnav.index.inverted",
+      "imports": [
+        " ||\n      !Array.isArray(serialized) ||\n      serialized.length !== 2 ||\n      typeof serialized[0] !== ",
+        " ||\n      !Array.isArray(serialized[1]) ||\n      !serialized[1].every((phrase) => typeof phrase === ",
+        ")\n    ) {\n      throw new Error(",
+        ") throw new Error(",
+        ")),\n  );\n}\n\nexport function verifySearchIndex(index, searchIndex) {\n  if (!isCompatibleSearchIndex(searchIndex, index.repositoryId)) return false;\n  if (searchIndex.documentCount !== index.cards.length) return false;\n  if (searchIndex.cardSetHash !== searchCardSetHash(index.cards)) return false;\n  const cards = new Map(index.cards.map((card) => [card.id, card]));\n  if (searchIndex.cardIds.length !== cards.size) return false;\n  for (const [cardIndex, id] of searchIndex.cardIds.entries()) {\n    const card = cards.get(id);\n    const document = searchIndex.documents[cardIndex];\n    if (!card || !Array.isArray(document) || document[0] !== searchDocumentHash(card)) return false;\n  }\n  try {\n    deserializeSearchIndex(searchIndex);\n  } catch {\n    return false;\n  }\n  return true;\n}\n\nexport function renderSearchIndex(searchIndex) {\n  return stableStringify(searchIndex);\n}\n\nfunction countTokens(tokens) {\n  const counts = new Map();\n  for (const token of tokens) counts.set(token, (counts.get(token) ?? 0) + 1);\n  return counts;\n}\n\nfunction addDocumentToPostings(postings, id, document) {\n  for (const [token, vector] of document.terms ?? []) {\n    const tokenPostings = postings.get(token) ?? new Map();\n    tokenPostings.set(id, vector);\n    postings.set(token, tokenPostings);\n  }\n}\n\nfunction removeDocumentFromPostings(postings, id, document) {\n  for (const token of document?.tokens ?? []) {\n    const tokenPostings = postings.get(token);\n    if (!tokenPostings) continue;\n    tokenPostings.delete(id);\n    if (tokenPostings.size === 0) postings.delete(token);\n  }\n}\n\nfunction deserializeSearchIndex(searchIndex) {\n  const documents = new Map();\n  for (const [cardIndex, id] of searchIndex.cardIds.entries()) {\n    const serialized = searchIndex.documents[cardIndex];\n    if (\n      typeof id !== ",
+        "),\n    effect: (card.effect ?? []).join(",
+        "),\n    excludes: (card.excludes ?? []).join(",
+        "),\n    invariant: (card.invariant ?? []).join(",
+        "),\n    owns: (card.owns ?? []).join(",
+        "),\n    risk: (card.risk ?? []).join(",
+        "),\n    role: card.role,\n    search: (card.search ?? []).join(",
+        "),\n    symbol: card.location?.symbol ?? ",
+        "),\n  );\n}\n\nexport function isCompatibleSearchIndex(searchIndex, repositoryId = undefined) {\n  return Boolean(\n    searchIndex &&\n      searchIndex.schemaVersion === SEARCH_INDEX_SCHEMA_VERSION &&\n      searchIndex.encoding === SEARCH_INDEX_ENCODING &&\n      searchIndex.tokenizerVersion === TOKENIZER_VERSION &&\n      Array.isArray(searchIndex.fieldOrder) &&\n      SEARCH_FIELD_ORDER.every((field, index) => searchIndex.fieldOrder[index] === field) &&\n      Array.isArray(searchIndex.cardIds) &&\n      isSortedUniqueStrings(searchIndex.cardIds) &&\n      Array.isArray(searchIndex.tokens) &&\n      isSortedUniqueStrings(searchIndex.tokens) &&\n      Array.isArray(searchIndex.documents) &&\n      searchIndex.documents.length === searchIndex.cardIds.length &&\n      Array.isArray(searchIndex.postings) &&\n      searchIndex.postings.length === searchIndex.tokens.length &&\n      (repositoryId === undefined || searchIndex.repositoryId === (repositoryId ?? ",
+        ");\n      tokenPostings.set(id, vector);\n      document.tokens.push(token);\n    }\n    if (tokenPostings.size > 0) postings.set(token, tokenPostings);\n  }\n  return { documents, postings };\n}\n\nfunction validateSparseVector(vector) {\n  if (vector.length === 0 || vector.length % 2 !== 0) throw new Error(",
+        ");\n      }\n      const cardIndex = entry[0];\n      const vector = entry[1];\n      if (cardIndex <= previousCardIndex || cardIndex < 0 || cardIndex >= searchIndex.cardIds.length) {\n        throw new Error(",
+        ");\n      }\n      validateSparseVector(vector);\n      previousCardIndex = cardIndex;\n      const id = searchIndex.cardIds[cardIndex];\n      const document = documents.get(id);\n      if (!document) throw new Error(",
+        ");\n    const tokenPostings = new Map();\n    let previousCardIndex = -1;\n    for (const entry of searchIndex.postings[tokenIndex] ?? []) {\n      if (!Array.isArray(entry) || entry.length !== 2 || !Number.isInteger(entry[0]) || !Array.isArray(entry[1])) {\n        throw new Error(",
+        ");\n    }\n    documents.set(id, {\n      hash: serialized[0],\n      phrases: serialized[1],\n      tokens: [],\n    });\n  }\n\n  const postings = new Map();\n  for (const [tokenIndex, token] of searchIndex.tokens.entries()) {\n    if (typeof token !== ",
+        ");\n    }\n    previousFieldIndex = fieldIndex;\n  }\n}\n\nfunction isSortedUniqueStrings(values) {\n  let previous = null;\n  for (const value of values) {\n    if (typeof value !== ",
+        ");\n  let previousFieldIndex = -1;\n  for (let index = 0; index < vector.length; index += 2) {\n    const fieldIndex = vector[index];\n    const count = vector[index + 1];\n    if (\n      !Number.isInteger(fieldIndex) ||\n      fieldIndex <= previousFieldIndex ||\n      fieldIndex < 0 ||\n      fieldIndex >= SEARCH_FIELD_ORDER.length ||\n      !Number.isInteger(count) ||\n      count <= 0\n    ) {\n      throw new Error(",
+        ",\n    cardSetHash,\n    documentCount: index.cards.length,\n    fieldOrder: [...SEARCH_FIELD_ORDER],\n    cardIds,\n    tokens,\n    documents: serializedDocuments,\n    postings: serializedPostings,\n  };\n\n  return {\n    searchIndex,\n    stats: {\n      previousUsable,\n      totalCards: index.cards.length,\n      reusedCards,\n      indexedCards,\n      removedCards: removedIds.length,\n      changedIds: changedIds.sort(compareText),\n      removedIds: removedIds.sort(compareText),\n      tokenCount: tokens.length,\n    },\n  };\n}\n\nexport function buildSearchDocument(card, hash = searchDocumentHash(card)) {\n  const fieldValues = {\n    id: card.id.replaceAll(",
+        ",\n    path: card.location?.path ?? ",
+        ",\n    signature: card.location?.signature ?? ",
+        ",\n  };\n\n  const termMap = new Map();\n  for (const [fieldIndex, field] of SEARCH_FIELD_ORDER.entries()) {\n    const counts = countTokens(tokenize(fieldValues[field]));\n    for (const [token, count] of counts) {\n      const sparse = termMap.get(token) ?? new Map();\n      sparse.set(fieldIndex, count);\n      termMap.set(token, sparse);\n    }\n  }\n\n  const terms = [...termMap.entries()]\n    .sort(([left], [right]) => compareText(left, right))\n    .map(([token, sparse]) => [token, serializeSparseVector(sparse)]);\n  const phrases = [card.role, ...(card.search ?? []), ...(card.invariant ?? []), ...(card.owns ?? [])]\n    .filter(Boolean)\n    .map(normalizeSearchText);\n\n  return {\n    hash,\n    phrases,\n    terms,\n    tokens: terms.map(([token]) => token),\n  };\n}\n\nexport function searchDocumentHash(card) {\n  return sha256(\n    stableJson({\n      id: card.id,\n      role: card.role,\n      search: card.search ?? [],\n      owns: card.owns ?? [],\n      excludes: card.excludes ?? [],\n      invariant: card.invariant ?? [],\n      effect: card.effect ?? [],\n      risk: card.risk ?? [],\n      symbol: card.location?.symbol ?? null,\n      path: card.location?.path ?? null,\n      signature: card.location?.signature ?? null,\n    }),\n  );\n}\n\nexport function searchCardSetHash(cards) {\n  return sha256(\n    [...cards]\n      .sort((left, right) => compareText(left.id, right.id))\n      .map((card) => `${card.id}:${searchDocumentHash(card)}`)\n      .join(",
+        ", ",
+        "./tokenizer.js",
+        "./util.js",
+        "compact-v1",
+        "effect",
+        "excludes",
+        "id",
+        "invariant",
+        "owns",
+        "path",
+        "risk",
+        "role",
+        "search",
+        "signature",
+        "symbol"
+      ],
+      "location": {
+        "declarationLine": null,
+        "endLine": 10,
+        "kind": null,
+        "path": "src/inverted-index.js",
+        "signature": null,
+        "startLine": 1,
+        "symbol": null
+      },
+      "owns": [
+        "posting lists",
+        "card search documents",
+        "incremental token reuse"
+      ],
+      "rel": [
+        "workflow>llmnav.search.tokenize",
+        "workflow>llmnav.index.generate"
+      ],
+      "role": "Compile searchable card fields into a deterministic inverted index that can be updated one card at a time.",
+      "scope": "module",
+      "search": [
+        "inverted index",
+        "incremental search index",
+        "posting list"
+      ],
+      "stability": "architecture"
+    },
+    {
+      "excludes": [
+        "artifact semantics",
+        "source indexing"
+      ],
+      "hashes": {
+        "body": "760d8d0532989a0e58402260525f8cb9ec141b8dcd286ed8820f40e627b26e6f",
+        "semantic": "ce2cf8943f71d053f8cba914886bae20316e5b6106857f52abc4d8a59afb1ef1",
+        "structure": "dab7c6e8aa6dfed5fe72d0fb7c73c25aff41980c847fc7769ba8bcc8dbe9f321"
+      },
+      "id": "llmnav.index.transaction",
+      "imports": [
+        " && RETRYABLE_RENAME_CODES.has(error.code));\n}\n\nasync function pathExists(candidate) {\n  try {\n    await lstat(candidate);\n    return true;\n  } catch (error) {\n    if (error && typeof error === ",
+        " && error.code === ",
+        " || !journal[key] || path.isAbsolute(journal[key])) {\n      throw new Error(`Generation transaction journal has invalid ${key}.`);\n    }\n    const resolved = path.resolve(root, journal[key]);\n    const relative = path.relative(path.resolve(root), resolved);\n    if (relative === ",
+        " || error.code !== ",
+        " || relative.startsWith(`..${path.sep}`) || path.isAbsolute(relative)) {\n      throw new Error(`Generation transaction journal ${key} escapes the repository root.`);\n    }\n  }\n  if (!expectedCacheDirectory) {\n    throw new Error(",
+        " };\n    await atomicWrite(journalPath, stableStringify(journal));\n    await invokeFailpoint(",
+        " };\n    await atomicWrite(journalPath, stableStringify(journal));\n    await verifyCommittedCache(cachePath, cacheRelative);\n    await invokeFailpoint(",
+        " };\n    await atomicWrite(journalPath, stableStringify(journal));\n    if (hadExistingCache) await removeWithRetry(backupPath, options.renameOptions);\n    await removeWithRetry(transactionPath, options.renameOptions);\n    await removeWithRetry(journalPath, options.renameOptions);\n    await cleanupEmptyTransactionsDirectory(transactionsDirectory);\n\n    return {\n      committed: true,\n      skipped: false,\n      recovered: recovery.recovered,\n      recoveryAction: recovery.action,\n      transactionId,\n      replacedExisting: hadExistingCache,\n    };\n  } catch (error) {\n    const journal = await readJson(journalPath, null);\n    if (journal?.phase !== ",
+        " };\n  validateJournal(root, journal, options.cacheDirectory);\n\n  const cachePath = path.join(root, journal.cacheDirectory);\n  const stagePath = path.join(root, journal.stageDirectory);\n  const backupPath = path.join(root, journal.backupDirectory);\n  const transactionPath = path.join(root, journal.transactionDirectory);\n  await assertNoSymlinkTraversal(root, cachePath, journal.cacheDirectory);\n  await assertNoSymlinkTraversal(root, transactionPath, journal.transactionDirectory);\n  await assertNoSymlinkTraversal(root, stagePath, journal.stageDirectory);\n  await assertNoSymlinkTraversal(root, backupPath, journal.backupDirectory);\n  let action = ",
+        ") await options.onPhase(name);\n  const failpoint = options.failpoint ?? process.env.LLMNAV_TEST_FAILPOINT;\n  if (failpoint === `throw:${name}`) throw new Error(`Injected generation failure at ${name}.`);\n  if (failpoint === `abort:${name}`) process.exit(TRANSACTION_ABORT_EXIT_CODE);\n}\n\nfunction isRetryableRenameError(error) {\n  return Boolean(error && typeof error === ",
+        ") return false;\n    throw error;\n  }\n}\n\nasync function cleanupEmptyTransactionsDirectory(directory) {\n  try {\n    const details = await stat(directory);\n    if (!details.isDirectory()) return;\n    const entries = await readdir(directory);\n    if (entries.length === 0) await rm(directory, { recursive: true, force: true });\n  } catch (error) {\n    if (!error || typeof error !== ",
+        ") throw error;\n  }\n}\n\nfunction createTransactionId() {\n  return `${process.pid}-${Date.now().toString(36)}-${randomBytes(6).toString(",
+        ") {\n      try {\n        await rollbackTransaction(root, journal ?? {\n          schemaVersion: TRANSACTION_SCHEMA_VERSION,\n          cacheDirectory: cacheRelative,\n          transactionDirectory: relativePosix(root, transactionPath),\n          stageDirectory: relativePosix(root, stagePath),\n          backupDirectory: relativePosix(root, backupPath),\n          hadExistingCache: hadExistingCacheAtStart,\n          phase: ",
+        ") {\n    if (await pathExists(cachePath)) {\n      action = ",
+        ") {\n    throw new Error(",
+        ") || path.isAbsolute(stageRelative)) {\n        throw new Error(`Generated artifact ${normalized} escapes the staged cache.`);\n      }\n      const destination = path.join(stagePath, ...stageRelative.split(",
+        ")), ",
+        "));\n      await mkdir(path.dirname(destination), { recursive: true });\n      await writeFile(destination, content, ",
+        "));\n  for (const [relativePath, expectedHash] of Object.entries(manifest.files ?? {}).sort(([left], [right]) => compareText(left, right))) {\n    const normalized = toPosix(relativePath);\n    const prefix = `${toPosix(cacheDirectory).replace(/\\/+$/u, ",
+        "));\n  if (index?.schemaVersion !== 1 || !Array.isArray(index.cards)) {\n    throw new Error(",
+        "), ",
+        ");\n\n  if (await pathExists(backupPath)) {\n    if (await pathExists(cachePath)) await removeWithRetry(cachePath, renameOptions);\n    await renameWithRetry(backupPath, cachePath, renameOptions);\n  } else if (!journal.hadExistingCache && await pathExists(cachePath)) {\n    await removeWithRetry(cachePath, renameOptions);\n  }\n  if (await pathExists(stagePath)) await removeWithRetry(stagePath, renameOptions);\n  await removeWithRetry(transactionPath, renameOptions);\n  await removeWithRetry(journalPath, renameOptions);\n  await cleanupEmptyTransactionsDirectory(path.dirname(transactionPath));\n}\n\nasync function verifyStagedArtifacts(stagePath, artifacts, cachePrefix) {\n  for (const [relativePath, expected] of artifacts) {\n    const stageRelative = toPosix(relativePath).slice(cachePrefix.length);\n    const actual = await readFile(path.join(stagePath, ...stageRelative.split(",
+        ");\n      await invokeFailpoint(`after-write:${stageRelative}`, options);\n    }\n    await verifyStagedArtifacts(stagePath, cacheArtifacts, cachePrefix);\n    await invokeFailpoint(",
+        ");\n    if (actual !== expected) throw new Error(`Staged artifact ${relativePath} does not match generated bytes.`);\n  }\n  await verifyCommittedCache(stagePath, cachePrefix.slice(0, -1));\n}\n\nasync function verifyCommittedCache(cachePath, cacheDirectory) {\n  const manifest = JSON.parse(await readFile(path.join(cachePath, ",
+        ");\n    if (sha256(content) !== expectedHash) throw new Error(`Generated artifact ${relativePath} fails manifest verification.`);\n  }\n  const index = JSON.parse(await readFile(path.join(cachePath, ",
+        ");\n  await assertNoSymlinkTraversal(root, controlDirectory, ",
+        ");\n  const journal = await readJson(journalPath, null);\n  if (!journal) return { recovered: false, action: ",
+        ");\n  const journalPath = path.join(controlDirectory, ",
+        ");\n  }\n  const transactionDirectory = toPosix(journal.transactionDirectory);\n  if (!/^\\.llmnav\\/\\.transactions\\/[A-Za-z0-9][A-Za-z0-9._-]*$/u.test(transactionDirectory)) {\n    throw new Error(",
+        ");\n  }\n  for (const key of [",
+        ");\n  }\n  if (!JOURNAL_PHASES.has(journal.phase)) {\n    throw new Error(",
+        ");\n  }\n  if (toPosix(journal.backupDirectory) !== `${transactionDirectory}/backup`) {\n    throw new Error(",
+        ");\n  }\n  if (toPosix(journal.cacheDirectory) !== toPosix(expectedCacheDirectory)) {\n    throw new Error(",
+        ");\n  }\n  if (toPosix(journal.stageDirectory) !== `${transactionDirectory}/stage`) {\n    throw new Error(",
+        ");\n  }\n  if (typeof journal.hadExistingCache !== ",
+        ");\n  }\n}\n\nasync function invokeFailpoint(name, options) {\n  if (typeof options.onPhase === ",
+        ");\n  }\n}\n\nfunction validateJournal(root, journal, expectedCacheDirectory) {\n  if (!journal || journal.schemaVersion !== TRANSACTION_SCHEMA_VERSION) {\n    throw new Error(",
+        ")}/`;\n    if (!normalized.startsWith(prefix)) throw new Error(`Manifest path ${relativePath} is outside ${cacheDirectory}.`);\n    const cacheRelative = normalized.slice(prefix.length);\n    const content = await readFile(path.join(cachePath, ...cacheRelative.split(",
+        ")}/`;\n  const cacheArtifacts = [...artifacts.entries()]\n    .filter(([relativePath]) => toPosix(relativePath).startsWith(cachePrefix))\n    .sort(([left], [right]) => compareText(toPosix(left), toPosix(right)));\n  if (cacheArtifacts.length === 0) throw new Error(`No generated artifacts target ${cacheRelative}.`);\n\n  try {\n    for (const [relativePath, content] of cacheArtifacts) {\n      const normalized = toPosix(relativePath);\n      const stageRelative = normalized.slice(cachePrefix.length);\n      if (!stageRelative || stageRelative.startsWith(",
+        ",\n        }, cacheRelative, options.renameOptions);\n      } catch (rollbackError) {\n        const message = rollbackError instanceof Error ? rollbackError.message : String(rollbackError);\n        throw new AggregateError([error, rollbackError], `Generation failed and rollback also failed: ${message}`);\n      }\n    }\n    throw error;\n  }\n}\n\nexport async function recoverGenerationTransaction(root, options = {}) {\n  const controlDirectory = path.join(root, ",
+        ",\n    };\n    await atomicWrite(journalPath, stableStringify(journal));\n    await invokeFailpoint(",
+        ", ",
+        ", options);\n\n    await renameWithRetry(stagePath, cachePath, options.renameOptions);\n    journal = { ...journal, phase: ",
+        ", options);\n\n    const hadExistingCache = hadExistingCacheAtStart;\n    let journal = {\n      schemaVersion: TRANSACTION_SCHEMA_VERSION,\n      cacheDirectory: cacheRelative,\n      transactionDirectory: relativePosix(root, transactionPath),\n      stageDirectory: relativePosix(root, stagePath),\n      backupDirectory: relativePosix(root, backupPath),\n      hadExistingCache,\n      phase: ",
+        ", options);\n\n    if (hadExistingCache) {\n      await renameWithRetry(cachePath, backupPath, options.renameOptions);\n    }\n    journal = { ...journal, phase: ",
+        ", options);\n\n    journal = { ...journal, phase: ",
+        "./util.js",
+        ".llmnav",
+        ".transactions",
+        ";\n\n  if (journal.phase === ",
+        ";\n    }\n  } else if (await pathExists(backupPath)) {\n    if (await pathExists(cachePath)) await removeWithRetry(cachePath, options.renameOptions);\n    await renameWithRetry(backupPath, cachePath, options.renameOptions);\n    action = ",
+        ";\n    } else if (await pathExists(backupPath)) {\n      await renameWithRetry(backupPath, cachePath, options.renameOptions);\n      action = ",
+        ";\n    } else if (await pathExists(stagePath)) {\n      await renameWithRetry(stagePath, cachePath, options.renameOptions);\n      action = ",
+        ";\n  }\n\n  await removeWithRetry(transactionPath, options.renameOptions);\n  await removeWithRetry(journalPath, options.renameOptions);\n  await cleanupEmptyTransactionsDirectory(path.dirname(transactionPath));\n  return { recovered: true, action };\n}\n\nexport async function renameWithRetry(source, destination, options = {}) {\n  const renameImpl = options.renameImpl ?? rename;\n  const delays = options.delays ?? DEFAULT_RETRY_DELAYS;\n  let lastError;\n  for (const delay of delays) {\n    if (delay > 0) await (options.sleepImpl ?? sleep)(delay);\n    try {\n      await renameImpl(source, destination);\n      return;\n    } catch (error) {\n      lastError = error;\n      if (!isRetryableRenameError(error)) throw error;\n    }\n  }\n  throw lastError;\n}\n\nexport async function removeWithRetry(target, options = {}) {\n  const rmImpl = options.rmImpl ?? rm;\n  const delays = options.delays ?? DEFAULT_RETRY_DELAYS;\n  let lastError;\n  for (const delay of delays) {\n    if (delay > 0) await (options.sleepImpl ?? sleep)(delay);\n    try {\n      await rmImpl(target, { recursive: true, force: true });\n      return;\n    } catch (error) {\n      lastError = error;\n      if (!isRetryableRenameError(error)) throw error;\n    }\n  }\n  throw lastError;\n}\n\nasync function rollbackTransaction(root, journal, expectedCacheDirectory, renameOptions) {\n  validateJournal(root, journal, expectedCacheDirectory);\n  const cachePath = path.join(root, journal.cacheDirectory);\n  const stagePath = path.join(root, journal.stageDirectory);\n  const backupPath = path.join(root, journal.backupDirectory);\n  const transactionPath = path.join(root, journal.transactionDirectory);\n  const journalPath = path.join(root, ",
+        ";\n  } else if (!journal.hadExistingCache && await pathExists(cachePath)) {\n    await verifyCommittedCache(cachePath, journal.cacheDirectory);\n    action = ",
+        ";\n  } else if (!journal.hadExistingCache && await pathExists(stagePath)) {\n    await verifyCommittedCache(stagePath, journal.cacheDirectory);\n    await renameWithRetry(stagePath, cachePath, options.renameOptions);\n    action = ",
+        ";\n  } else if (journal.hadExistingCache && await pathExists(cachePath)) {\n    action = ",
+        ";\n  } else {\n    action = ",
+        "EACCES",
+        "EBUSY",
+        "EEXIST",
+        "ENOTEMPTY",
+        "EPERM",
+        "]) {\n    if (typeof journal[key] !== ",
+        "backup",
+        "committed",
+        "generation-transaction.json",
+        "new-installed",
+        "node:crypto",
+        "node:fs/promises",
+        "node:path",
+        "node:timers/promises",
+        "old-moved",
+        "prepared",
+        "stage"
+      ],
+      "location": {
+        "declarationLine": null,
+        "endLine": 9,
+        "kind": null,
+        "path": "src/transaction.js",
+        "signature": null,
+        "startLine": 1,
+        "symbol": null
+      },
+      "owns": [
+        "cache staging",
+        "directory swap",
+        "generation recovery"
+      ],
+      "rel": [
+        "workflow>llmnav.index.generate"
+      ],
+      "role": "Commit a complete generated cache with rollback and crash recovery across POSIX and Windows rename behavior.",
+      "scope": "module",
+      "search": [
+        "transactional generation",
+        "atomic cache swap",
+        "Windows rename recovery"
+      ],
+      "stability": "architecture"
+    },
+    {
+      "excludes": [
+        "card ranking",
+        "inverted-index persistence"
+      ],
+      "hashes": {
+        "body": "0c6b16cd13369e1efc38b067d594d89025d78451a3b03c35bfec7a089b20583b",
+        "semantic": "ae001446555aa3d2739a6aaa61aa630fc797a7e5b3b2f10019e93ddb504131da",
+        "structure": "5a4ae25a6853f86ab995f4e321b62ab71ff480490a5290d920ea59d2b764034e"
+      },
+      "id": "llmnav.search.tokenize",
+      "imports": [
+        "));\n      }\n      for (let index = 0; index <= characters.length - 3; index += 1) {\n        tokens.push(characters.slice(index, index + 3).join(",
+        ").normalize(",
+        ").toLocaleLowerCase(",
+        ").trim();\n}\n\nexport function tokenize(value) {\n  const normalized = normalizeSearchText(value);\n  const base = normalized.match(/[\\p{L}\\p{N}]+/gu) ?? [];\n  const tokens = [...base];\n  for (const token of base) {\n    if (containsCjk(token) && [...token].length >= 3) {\n      const characters = [...token];\n      for (let index = 0; index <= characters.length - 2; index += 1) {\n        tokens.push(characters.slice(index, index + 2).join("
+      ],
+      "location": {
+        "declarationLine": null,
+        "endLine": 9,
+        "kind": null,
+        "path": "src/tokenizer.js",
+        "signature": null,
+        "startLine": 1,
+        "symbol": null
+      },
+      "owns": [
+        "query normalization",
+        "CJK n-grams",
+        "tokenizer version"
+      ],
+      "rel": [
+        "workflow>llmnav.search.query"
+      ],
+      "role": "Normalize task text and emit deterministic word and CJK n-gram tokens for semantic retrieval.",
+      "scope": "module",
+      "search": [
+        "search tokenizer",
+        "CJK ngram",
+        "query normalization"
+      ],
+      "stability": "architecture"
     }
   ],
-  "generatedBy": "llmnav@0.1.0",
+  "generatedBy": "llmnav@0.2.0",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "49c7edea1d5b8531511fbd9e0189d2be0b0906ede601460b0e6799ec58f2e42e",
+  "sourceHash": "c4ad8dcdd833d318e402eb2a94f4ef593a14c53d3eade58d38dc45389423f4b4",
   "specVersion": "1"
 }

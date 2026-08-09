@@ -4,7 +4,7 @@ import { findAttachedDeclaration, extractImports } from "./declaration.js";
 import { collectSourceFiles } from "./files.js";
 import { parseLlmnavBlocks } from "./parser.js";
 import { loadRegistry } from "./registry.js";
-import { relativePosix } from "./util.js";
+import { relativePosix, sha256 } from "./util.js";
 
 export async function scanProject(root, options = {}) {
   const { config, configPath } = await loadConfig(root);
@@ -18,10 +18,21 @@ export async function scanProject(root, options = {}) {
     const source = await readFile(absolutePath, "utf8");
     const relativePath = relativePosix(root, absolutePath);
     const blocks = parseLlmnavBlocks(source, relativePath);
+    const contentHash = sha256(source);
     sourceBytes += Buffer.byteLength(source);
     semanticBytes += blocks.reduce((sum, block) => sum + Buffer.byteLength(block.raw), 0);
     const imports = extractImports(source, relativePath);
-    const fileRecord = { absolutePath, relativePath, source, blocks, imports };
+    const fileRecord = {
+      absolutePath,
+      relativePath,
+      source,
+      contentHash,
+      bodyHash: contentHash,
+      sourceBytes: Buffer.byteLength(source),
+      semanticBytes: blocks.reduce((sum, block) => sum + Buffer.byteLength(block.raw), 0),
+      blocks,
+      imports,
+    };
     fileRecords.push(fileRecord);
     for (const block of blocks) {
       const declaration = findAttachedDeclaration(source, block, relativePath);
@@ -30,6 +41,7 @@ export async function scanProject(root, options = {}) {
         absolutePath,
         relativePath,
         source,
+        bodyHash: contentHash,
         imports,
         block,
         card: block.card,

@@ -5,10 +5,13 @@ owns=stable card order|generated index|cache catalogs
 excludes=source semantics|agent search decisions
 search=repository map|semantic index|cache catalog
 rel=workflow>llmnav.rules.validate
+rel=workflow>llmnav.index.incremental
+rel=workflow>llmnav.index.inverted
+rel=workflow>llmnav.index.transaction
 stability=architecture
 */
 
-import { mkdir, readdir, rm } from "node:fs/promises";
+import { readdir } from "node:fs/promises";
 import path from "node:path";
 import { cardToCanonicalObject } from "./parser.js";
 import { scanProject } from "./project.js";
@@ -17,31 +20,119 @@ import { countDiagnostics, validateProject } from "./validator.js";
 import {
   atomicWrite,
   assertNoSymlinkTraversal,
+  compareText,
+  readJsonSafe,
   readText,
   relativePosix,
   sha256,
+  stableJson,
   stableStringify,
   toPosix,
 } from "./util.js";
 import { PACKAGE_VERSION, SPEC_VERSION } from "./spec.js";
+import {
+  buildFileStateFromProject,
+  persistStatHints,
+  renderFileState,
+  scanProjectIncremental,
+} from "./incremental.js";
+import { buildInvertedIndex, renderSearchIndex } from "./inverted-index.js";
+import {
+  buildModuleCatalogMetadata,
+  compareCardIndexes,
+  describeAffectedCatalogs,
+  moduleIdForCard,
+  safeModuleName,
+} from "./changes.js";
+import { commitGeneratedCache, recoverGenerationTransaction } from "./transaction.js";
+import { loadConfig } from "./config.js";
 
 export async function generateProject(root, options = {}) {
-  const project = await scanProject(root, options);
+  const { config: recoveryConfig } = await loadConfig(root);
+  const recovery = await recoverGenerationTransaction(root, {
+    cacheDirectory: recoveryConfig.generation.cacheDirectory,
+    renameOptions: options.renameOptions,
+  });
+  const cacheDirectory = path.join(root, recoveryConfig.generation.cacheDirectory);
+  const previousIndex = await readJsonSafe(path.join(cacheDirectory, "index.json"), null);
+  const previousSearchIndex = await readJsonSafe(path.join(cacheDirectory, "search-index.json"), null);
+
+  let project;
+  let fileState;
+  let statHints = null;
+  let hintsPath = null;
+  let scanStats;
+  if (options.incremental === false) {
+    project = await scanProject(root, options);
+    fileState = buildFileStateFromProject(project);
+    scanStats = {
+      totalFiles: project.fileRecords.length,
+      parsedFiles: project.fileRecords.length,
+      reusedFiles: 0,
+      reusedFilesByStat: 0,
+      reusedFilesByHash: 0,
+      deletedFiles: 0,
+      bytesRead: project.sourceBytes,
+      cardsParsed: project.records.length,
+      cardsReused: 0,
+    };
+  } else {
+    const incremental = await scanProjectIncremental(root, {
+      ...options,
+      useStatHints: options.useStatHints,
+    });
+    ({ project, fileState, statHints, hintsPath, stats: scanStats } = incremental);
+  }
+
   const diagnostics = validateProject(project);
   const counts = countDiagnostics(diagnostics);
   if (counts.error > 0) {
-    return { ok: false, diagnostics, changedFiles: [], project, counts };
+    return {
+      ok: false,
+      diagnostics,
+      changedFiles: [],
+      changedCards: [],
+      affectedCatalogs: [],
+      project,
+      counts,
+      incremental: { enabled: options.incremental !== false, files: scanStats, cards: null },
+      transaction: { committed: false, skipped: true, recovered: recovery.recovered, recoveryAction: recovery.action },
+    };
   }
 
   const ids = project.records.map((record) => record.card.id).filter(Boolean);
   const order = await buildStableOrder(root, ids);
-  const artifacts = buildArtifacts(project, order);
+  const built = buildArtifactSet(project, order, {
+    previousSearchIndex: options.incremental === false ? null : previousSearchIndex,
+    fileState,
+  });
+  const artifacts = built.artifacts;
   const changedFiles = await compareArtifacts(root, project.config.generation.cacheDirectory, artifacts);
-  const orderChanged = await compareOne(path.join(root, ".llmnav", "order.lock"), renderOrder(order));
+  const orderContent = renderOrder(order);
+  const orderChanged = await compareOne(path.join(root, ".llmnav", "order.lock"), orderContent);
   if (orderChanged) changedFiles.push(".llmnav/order.lock");
 
   const missingRegistryIds = ids.filter((id) => !project.registry.byId.has(id));
   if (missingRegistryIds.length > 0) changedFiles.push(".llmnav/ids.jsonl");
+
+  const uniqueChangedFiles = [...new Set(changedFiles.map(toPosix))].sort(compareText);
+  const changedCards = compareCardIndexes(previousIndex, built.index);
+  const affectedCatalogs = describeAffectedCatalogs(
+    uniqueChangedFiles,
+    project.config.generation.cacheDirectory,
+    project.config,
+    previousIndex,
+    built.index,
+  );
+
+  let transaction = {
+    committed: false,
+    skipped: true,
+    recovered: recovery.recovered,
+    recoveryAction: recovery.action,
+  };
+  let statHintsPersisted = false;
+  let statHintsError = null;
 
   if (!options.check) {
     await assertNoSymlinkTraversal(root, path.join(root, ".llmnav"), ".llmnav");
@@ -51,31 +142,69 @@ export async function generateProject(root, options = {}) {
       project.config.generation.cacheDirectory,
     );
     await ensureActiveIds(root, project.registry, ids);
-    await atomicWrite(path.join(root, ".llmnav", "order.lock"), renderOrder(order));
-    const cacheDirectory = path.join(root, project.config.generation.cacheDirectory);
-    await rm(cacheDirectory, { recursive: true, force: true });
-    await mkdir(cacheDirectory, { recursive: true });
-    for (const [relativePath, content] of artifacts) {
-      await atomicWrite(path.join(root, relativePath), content);
+    await atomicWrite(path.join(root, ".llmnav", "order.lock"), orderContent);
+
+    const cachePrefix = `${toPosix(project.config.generation.cacheDirectory).replace(/\/+$/u, "")}/`;
+    const cacheChanges = uniqueChangedFiles.filter((file) => file.startsWith(cachePrefix));
+    if (cacheChanges.length > 0) {
+      transaction = await commitGeneratedCache(
+        root,
+        project.config.generation.cacheDirectory,
+        artifacts,
+        {
+          failpoint: options.failpoint,
+          onPhase: options.onTransactionPhase,
+          renameOptions: options.renameOptions,
+        },
+      );
+    }
+
+    if (statHints && hintsPath) {
+      try {
+        await persistStatHints(hintsPath, statHints);
+        statHintsPersisted = true;
+      } catch (error) {
+        statHintsError = error instanceof Error ? error.message : String(error);
+      }
     }
   }
 
   return {
-    ok: options.check ? changedFiles.length === 0 : true,
+    ok: options.check ? uniqueChangedFiles.length === 0 : true,
     diagnostics,
-    changedFiles: [...new Set(changedFiles)].sort(),
+    changedFiles: uniqueChangedFiles,
+    changedCards,
+    affectedCatalogs,
     project,
     counts,
     artifacts,
+    index: built.index,
+    searchIndex: built.searchIndex,
+    incremental: {
+      enabled: options.incremental !== false,
+      files: scanStats,
+      cards: built.searchStats,
+      statHintsPersisted,
+      statHintsError,
+    },
+    transaction,
   };
 }
 
-export function buildArtifacts(project, order) {
+export function buildArtifacts(project, order, options = {}) {
+  return buildArtifactSet(project, order, options).artifacts;
+}
+
+export function buildArtifactSet(project, order, options = {}) {
   const orderMap = new Map(order.map((id, index) => [id, index]));
   const cards = project.records
     .filter((record) => record.card.id)
     .map((record) => indexedCard(record))
-    .sort((left, right) => (orderMap.get(left.id) ?? Number.MAX_SAFE_INTEGER) - (orderMap.get(right.id) ?? Number.MAX_SAFE_INTEGER));
+    .sort((left, right) => {
+      const orderDifference = (orderMap.get(left.id) ?? Number.MAX_SAFE_INTEGER) -
+        (orderMap.get(right.id) ?? Number.MAX_SAFE_INTEGER);
+      return orderDifference || compareText(left.id, right.id);
+    });
 
   const index = {
     schemaVersion: 1,
@@ -85,14 +214,18 @@ export function buildArtifacts(project, order) {
     sourceHash: sha256(cards.map((card) => `${card.hashes.semantic}:${card.hashes.structure}:${card.hashes.body}`).join("\n")),
     cards,
   };
+  const { searchIndex, stats: searchStats } = buildInvertedIndex(index, options.previousSearchIndex);
+  const fileState = options.fileState ?? buildFileStateFromProject(project);
 
   const artifacts = new Map();
-  const cacheRoot = toPosix(project.config.generation.cacheDirectory);
+  const cacheRoot = toPosix(project.config.generation.cacheDirectory).replace(/\/+$/u, "");
   artifacts.set(`${cacheRoot}/index.json`, stableStringify(index));
   artifacts.set(
     `${cacheRoot}/cards.jsonl`,
-    cards.length > 0 ? `${cards.map((card) => JSON.stringify(card)).join("\n")}\n` : "",
+    cards.length > 0 ? `${cards.map((card) => stableJson(card)).join("\n")}\n` : "",
   );
+  artifacts.set(`${cacheRoot}/search-index.json`, renderSearchIndex(searchIndex));
+  artifacts.set(`${cacheRoot}/file-state.json`, renderFileState(fileState));
 
   const repositoryCards = cards.filter((card) =>
     project.config.generation.repositoryCatalogStabilities.includes(card.stability),
@@ -106,8 +239,7 @@ export function buildArtifacts(project, order) {
       project.config.generation.moduleCatalogStabilities.includes(card.stability),
     );
     if (filtered.length === 0) continue;
-    const safeName = moduleId.replace(/[^a-z0-9.-]/gu, "-");
-    const relativePath = `${cacheRoot}/modules/${safeName}.txt`;
+    const relativePath = `${cacheRoot}/modules/${safeModuleName(moduleId)}.txt`;
     artifacts.set(relativePath, renderCatalog(project.config.repositoryId, moduleId, filtered));
     moduleManifest.push({ id: moduleId, file: relativePath, cards: filtered.length });
   }
@@ -115,7 +247,9 @@ export function buildArtifacts(project, order) {
   artifacts.set(`${cacheRoot}/agent-context.md`, renderAgentContext(project.config.repositoryId, moduleManifest));
 
   const contentHashes = Object.fromEntries(
-    [...artifacts.entries()].map(([relativePath, content]) => [relativePath, sha256(content)]),
+    [...artifacts.entries()]
+      .sort(([left], [right]) => compareText(left, right))
+      .map(([relativePath, content]) => [relativePath, sha256(content)]),
   );
   const manifest = {
     schemaVersion: 1,
@@ -124,16 +258,19 @@ export function buildArtifacts(project, order) {
     cardCount: cards.length,
     moduleCount: moduleManifest.length,
     sourceHash: index.sourceHash,
+    searchCardSetHash: searchIndex.cardSetHash,
+    searchIndexSchemaVersion: searchIndex.schemaVersion,
+    fileStateSchemaVersion: fileState.schemaVersion,
     files: contentHashes,
   };
   artifacts.set(`${cacheRoot}/manifest.json`, stableStringify(manifest));
-  return artifacts;
+  return { artifacts, index, searchIndex, searchStats, fileState, moduleManifest };
 }
 
 function indexedCard(record) {
   const canonical = cardToCanonicalObject(record.card);
-  const semanticPayload = JSON.stringify(canonical);
-  const structurePayload = JSON.stringify({
+  const semanticPayload = stableJson(canonical);
+  const structurePayload = stableJson({
     path: record.relativePath,
     scope: record.block.scope,
     symbol: record.declaration?.symbol ?? null,
@@ -156,7 +293,7 @@ function indexedCard(record) {
     hashes: {
       semantic: sha256(semanticPayload),
       structure: sha256(structurePayload),
-      body: sha256(record.source),
+      body: record.bodyHash ?? sha256(record.source ?? ""),
     },
   };
 }
@@ -164,13 +301,12 @@ function indexedCard(record) {
 function groupByModule(cards, depth) {
   const groups = new Map();
   for (const card of cards) {
-    const segments = card.id.split(".");
-    const moduleId = segments.slice(0, Math.min(Math.max(depth, 1), segments.length)).join(".");
+    const moduleId = moduleIdForCard(card.id, depth);
     const existing = groups.get(moduleId) ?? [];
     existing.push(card);
     groups.set(moduleId, existing);
   }
-  return [...groups.entries()].sort(([left], [right]) => left.localeCompare(right));
+  return [...groups.entries()].sort(([left], [right]) => compareText(left, right));
 }
 
 function renderCatalog(repositoryId, catalogId, cards) {
@@ -179,9 +315,7 @@ function renderCatalog(repositoryId, catalogId, cards) {
     "Read semantic cards before opening source. Resolve current paths and signatures with llmnav query or show.",
     "",
   ];
-  for (const card of cards) {
-    lines.push(renderSemanticCard(card), "");
-  }
+  for (const card of cards) lines.push(renderSemanticCard(card), "");
   return `${lines.join("\n").trimEnd()}\n`;
 }
 
@@ -232,7 +366,7 @@ async function buildStableOrder(root, ids) {
     .map((line) => line.trim())
     .filter((line) => line && !line.startsWith("#"));
   const seen = new Set(existing);
-  const additions = [...new Set(ids)].filter((id) => !seen.has(id)).sort();
+  const additions = [...new Set(ids)].filter((id) => !seen.has(id)).sort(compareText);
   return [...existing, ...additions];
 }
 
@@ -243,7 +377,7 @@ function renderOrder(order) {
 async function compareArtifacts(root, cacheDirectory, artifacts) {
   const changed = [];
   for (const [relativePath, content] of artifacts) {
-    if (await compareOne(path.join(root, relativePath), content)) changed.push(relativePath);
+    if (await compareOne(path.join(root, relativePath), content)) changed.push(toPosix(relativePath));
   }
   const actualFiles = await listFiles(path.join(root, cacheDirectory));
   const expected = new Set([...artifacts.keys()].map((item) => toPosix(item)));
@@ -251,7 +385,7 @@ async function compareArtifacts(root, cacheDirectory, artifacts) {
     const relativePath = relativePosix(root, absolutePath);
     if (!expected.has(relativePath)) changed.push(relativePath);
   }
-  return changed;
+  return changed.sort(compareText);
 }
 
 async function compareOne(filePath, expected) {
@@ -262,6 +396,7 @@ async function compareOne(filePath, expected) {
 async function listFiles(directory) {
   try {
     const entries = await readdir(directory, { withFileTypes: true });
+    entries.sort((left, right) => compareText(left.name, right.name));
     const files = [];
     for (const entry of entries) {
       const absolute = path.join(directory, entry.name);
@@ -274,3 +409,5 @@ async function listFiles(directory) {
     throw error;
   }
 }
+
+export { buildModuleCatalogMetadata };

@@ -14,3 +14,8 @@ llmnav.project.initialize
 llmnav.rules.validate
 llmnav.search.query
 llmnav.syntax.parse
+llmnav.index.changes
+llmnav.index.incremental
+llmnav.index.inverted
+llmnav.index.transaction
+llmnav.search.tokenize

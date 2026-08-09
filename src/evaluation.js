@@ -10,12 +10,12 @@ stability=architecture
 
 import path from "node:path";
 import { loadConfig } from "./config.js";
-import { loadSearchData, queryIndex } from "./search.js";
+import { loadSearchData, queryPreparedIndex } from "./search.js";
 import { assertNoSymlinkTraversal, parseJsonLines, readText } from "./util.js";
 
 export async function evaluateProject(root, options = {}) {
   const { config } = await loadConfig(root);
-  const { index, lexicon } = await loadSearchData(root);
+  const { index, lexicon, searchIndex } = await loadSearchData(root);
   const queryPath = path.resolve(root, options.file ?? config.evaluation.queryFile);
   await assertNoSymlinkTraversal(root, queryPath, "evaluation query file");
   const parsed = parseJsonLines(await readText(queryPath, ""), queryPath);
@@ -33,7 +33,7 @@ export async function evaluateProject(root, options = {}) {
         metrics: emptyMetrics(),
       };
     }
-    const results = queryIndex(index, record.query, { top: Math.max(options.top ?? 5, 5), lexicon });
+    const results = queryPreparedIndex(index, searchIndex, record.query, { top: Math.max(options.top ?? 5, 5), lexicon });
     const ids = results.map((result) => result.id);
     const firstRank = ids.findIndex((id) => record.expected.includes(id));
     cases.push({

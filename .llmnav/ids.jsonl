@@ -14,3 +14,8 @@
 {"id":"llmnav.syntax.parse","state":"active"}
 {"id":"llmnav.search.query","state":"active"}
 {"id":"llmnav.rules.validate","state":"active"}
+{"id":"llmnav.index.changes","state":"active"}
+{"id":"llmnav.index.incremental","state":"active"}
+{"id":"llmnav.index.inverted","state":"active"}
+{"id":"llmnav.search.tokenize","state":"active"}
+{"id":"llmnav.index.transaction","state":"active"}

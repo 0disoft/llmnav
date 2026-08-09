@@ -1,6 +1,6 @@
 {
   "name": "llmnav",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A deterministic semantic navigation layer for LLM coding agents.",
   "type": "module",
   "bin": {
@@ -40,7 +40,10 @@
     "pack:check": "npm pack --dry-run",
     "release:check": "node ./scripts/release-check.js",
     "prepublishOnly": "npm run check && npm run release:check && npm run pack:check",
-    "release:tag": "node ./scripts/verify-tag.js"
+    "release:tag": "node ./scripts/verify-tag.js",
+    "test:performance": "node --test tests/performance.test.js",
+    "benchmark:v0.2": "node ./benchmarks/run-v0.2.js",
+    "smoke:pack": "node ./scripts/pack-smoke.js"
   },
   "keywords": [
     "llm",

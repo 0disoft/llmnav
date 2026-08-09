@@ -5,53 +5,99 @@ owns=query ranking|multilingual aliases|context expansion
 excludes=embedding generation|source mutation
 search=semantic code search|agent navigation|multilingual query
 rel=workflow>llmnav.index.generate
+rel=workflow>llmnav.index.inverted
 stability=architecture
 */
 
 import path from "node:path";
-import { readJson } from "./util.js";
+import { loadConfig } from "./config.js";
 import { resolveRegistryId, loadRegistry } from "./registry.js";
 import { renderCompactCard } from "./generator.js";
-import { approximateTokens, truncateToTokenBudget } from "./util.js";
+import { approximateTokens, compareText, readJsonSafe, readText, sha256, toPosix, truncateToTokenBudget } from "./util.js";
+import {
+  buildInvertedIndex,
+  isCompatibleSearchIndex,
+  SEARCH_FIELD_ORDER,
+  SEARCH_FIELD_WEIGHTS,
+  verifySearchIndex,
+} from "./inverted-index.js";
+import { normalizeSearchText, tokenize } from "./tokenizer.js";
+import { recoverGenerationTransaction } from "./transaction.js";
 
-const FIELD_WEIGHTS = Object.freeze({
-  id: 12,
-  role: 8,
-  search: 10,
-  owns: 7,
-  excludes: 2,
-  invariant: 6,
-  effect: 5,
-  risk: 4,
-  symbol: 5,
-  path: 3,
-  signature: 3,
-});
+const preparedIndexCache = new WeakMap();
+const preparedSearchIndexCache = new WeakMap();
 
 export async function loadSearchData(root) {
-  const indexPath = path.join(root, ".llmnav", "cache", "index.json");
-  const index = await readJson(indexPath, null);
+  const { config } = await loadConfig(root);
+  await recoverGenerationTransaction(root, { cacheDirectory: config.generation.cacheDirectory });
+  const cacheRoot = path.join(root, config.generation.cacheDirectory);
+  const index = await readJsonSafe(path.join(cacheRoot, "index.json"), null);
   if (!index) throw new Error("No generated index found. Run `llmnav generate` first.");
-  const lexicon = await readJson(path.join(root, ".llmnav", "lexicon.json"), { version: 1, aliases: {} });
-  return { index, lexicon };
+  const lexicon = await readJsonSafe(path.join(root, ".llmnav", "lexicon.json"), { version: 1, aliases: {} });
+  const manifest = await readJsonSafe(path.join(cacheRoot, "manifest.json"), null);
+  const searchRelative = `${toPosix(config.generation.cacheDirectory).replace(/\/+$/u, "")}/search-index.json`;
+  const searchText = await readText(path.join(cacheRoot, "search-index.json"), null);
+  let searchIndex = null;
+  if (searchText !== null) {
+    try {
+      searchIndex = JSON.parse(searchText);
+    } catch {
+      searchIndex = null;
+    }
+  }
+  const manifestMatches = Boolean(
+    searchText !== null &&
+      manifest?.searchCardSetHash &&
+      searchIndex?.cardSetHash === manifest.searchCardSetHash &&
+      searchIndex?.documentCount === index.cards.length &&
+      manifest.files?.[searchRelative] === sha256(searchText),
+  );
+  if (!isCompatibleSearchIndex(searchIndex, index.repositoryId) || (!manifestMatches && !verifySearchIndex(index, searchIndex))) {
+    searchIndex = buildInvertedIndex(index).searchIndex;
+  }
+  return { index, lexicon, searchIndex };
 }
 
 export async function queryProject(root, query, options = {}) {
-  const { index, lexicon } = await loadSearchData(root);
-  return queryIndex(index, query, { ...options, lexicon });
+  const { index, lexicon, searchIndex } = await loadSearchData(root);
+  return queryPreparedIndex(index, searchIndex, query, { ...options, lexicon });
 }
 
 export function queryIndex(index, query, options = {}) {
+  let searchIndex = options.invertedIndex;
+  if (!searchIndex) {
+    searchIndex = preparedIndexCache.get(index);
+    if (!searchIndex) {
+      searchIndex = buildInvertedIndex(index).searchIndex;
+      preparedIndexCache.set(index, searchIndex);
+    }
+  }
+  return queryPreparedIndex(index, searchIndex, query, options);
+}
+
+export function queryPreparedIndex(index, searchIndex, query, options = {}) {
   const top = boundedInteger(options.top, 5, 1, 100);
   const lexicon = options.lexicon ?? { aliases: {} };
-  const normalizedQuery = normalize(query);
+  const metrics = options.metrics ?? null;
+  const normalizedQuery = normalizeSearchText(query);
   const queryTokens = tokenize(query);
   const aliases = Object.entries(lexicon.aliases ?? {});
   const aliasTargets = new Set();
   const aliasReasons = new Map();
+  const byId = new Map(index.cards.map((card) => [card.id, card]));
+  const cardOrder = new Map(index.cards.map((card, cardIndex) => [card.id, cardIndex]));
+  const resultsById = new Map();
+
+  if (metrics) {
+    metrics.queryTokens = queryTokens.length;
+    metrics.documentTokenizations = 0;
+    metrics.postingVisits = 0;
+    metrics.phraseDocumentsScanned = 0;
+    metrics.idDocumentsScanned = 0;
+  }
 
   for (const [alias, targetValue] of aliases) {
-    const normalizedAlias = normalize(alias);
+    const normalizedAlias = normalizeSearchText(alias);
     if (!normalizedAlias || !normalizedQuery.includes(normalizedAlias)) continue;
     const targets = Array.isArray(targetValue) ? targetValue : [targetValue];
     for (const target of targets) {
@@ -62,7 +108,112 @@ export function queryIndex(index, query, options = {}) {
     }
   }
 
-  const documents = index.cards.map((card) => buildDocument(card));
+  for (const card of index.cards) {
+    if (metrics) metrics.idDocumentsScanned += 1;
+    if (normalizeSearchText(card.id) === normalizedQuery) {
+      addScore(resultsById, card, 1000, "exact semantic ID");
+    } else if (normalizeSearchText(card.id).includes(normalizedQuery) && normalizedQuery.length > 2) {
+      addScore(resultsById, card, 100, "semantic ID phrase");
+    }
+    if (aliasTargets.has(card.id)) {
+      addScore(resultsById, card, 500, aliasReasons.get(card.id) ?? []);
+    }
+  }
+
+  const preparedSearchIndex = prepareCompactSearchIndex(searchIndex);
+  const documentCount = index.cards.length;
+  for (const token of queryTokens) {
+    const tokenIndex = preparedSearchIndex.tokenIndex.get(token);
+    const tokenPostings = tokenIndex === undefined ? [] : (searchIndex.postings[tokenIndex] ?? []);
+    const frequency = tokenPostings.length;
+    const idf = Math.log(1 + (documentCount + 1) / (frequency + 1));
+    for (const [cardIndex, vector] of tokenPostings) {
+      if (metrics) metrics.postingVisits += 1;
+      const id = searchIndex.cardIds[cardIndex];
+      const card = byId.get(id);
+      if (!card) continue;
+      let tokenScore = 0;
+      for (let vectorIndex = 0; vectorIndex < vector.length; vectorIndex += 2) {
+        const field = SEARCH_FIELD_ORDER[vector[vectorIndex]];
+        const count = vector[vectorIndex + 1] ?? 0;
+        if (field) tokenScore += count * SEARCH_FIELD_WEIGHTS[field] * idf;
+      }
+      if (tokenScore > 0) addScore(resultsById, card, tokenScore, `token=${token}`);
+    }
+  }
+
+  if (normalizedQuery.length >= 4) {
+    for (const [cardIndex, document] of searchIndex.documents.entries()) {
+      if (metrics) metrics.phraseDocumentsScanned += 1;
+      const phrases = Array.isArray(document) && Array.isArray(document[1]) ? document[1] : [];
+      if (!phrases.some((field) => field.includes(normalizedQuery))) continue;
+      const card = byId.get(searchIndex.cardIds[cardIndex]);
+      if (card) addScore(resultsById, card, 40, "exact phrase");
+    }
+  }
+
+  const results = [...resultsById.values()].filter((result) => result.score > 0);
+  const seeds = [...results]
+    .sort((left, right) => right.score - left.score || (cardOrder.get(left.card.id) ?? 0) - (cardOrder.get(right.card.id) ?? 0))
+    .slice(0, 3);
+  for (const seed of seeds) {
+    for (const relation of seed.card.rel ?? []) {
+      const separator = relation.indexOf(">");
+      if (separator <= 0) continue;
+      const target = relation.slice(separator + 1);
+      const targetCard = byId.get(target);
+      if (!targetCard) continue;
+      const bonus = seed.score * 0.08;
+      addScore(resultsById, targetCard, bonus, `related-from=${seed.card.id}`);
+    }
+  }
+
+  return [...resultsById.values()]
+    .filter((result) => result.score > 0)
+    .sort((left, right) => right.score - left.score || compareText(left.card.id, right.card.id))
+    .slice(0, top)
+    .map((result) => ({
+      id: result.card.id,
+      score: Number(result.score.toFixed(3)),
+      reasons: [...new Set(result.reasons)].slice(0, 6),
+      role: result.card.role,
+      location: result.card.location,
+      card: result.card,
+    }));
+}
+
+function prepareCompactSearchIndex(searchIndex) {
+  let prepared = preparedSearchIndexCache.get(searchIndex);
+  if (prepared) return prepared;
+  prepared = {
+    tokenIndex: new Map((searchIndex.tokens ?? []).map((token, index) => [token, index])),
+  };
+  preparedSearchIndexCache.set(searchIndex, prepared);
+  return prepared;
+}
+
+export function queryIndexLegacy(index, query, options = {}) {
+  const top = boundedInteger(options.top, 5, 1, 100);
+  const lexicon = options.lexicon ?? { aliases: {} };
+  const normalizedQuery = normalizeSearchText(query);
+  const queryTokens = tokenize(query);
+  const aliases = Object.entries(lexicon.aliases ?? {});
+  const aliasTargets = new Set();
+  const aliasReasons = new Map();
+
+  for (const [alias, targetValue] of aliases) {
+    const normalizedAlias = normalizeSearchText(alias);
+    if (!normalizedAlias || !normalizedQuery.includes(normalizedAlias)) continue;
+    const targets = Array.isArray(targetValue) ? targetValue : [targetValue];
+    for (const target of targets) {
+      aliasTargets.add(target);
+      const reasons = aliasReasons.get(target) ?? [];
+      reasons.push(`alias=${JSON.stringify(alias)}`);
+      aliasReasons.set(target, reasons);
+    }
+  }
+
+  const documents = index.cards.map((card) => buildLegacyDocument(card));
   const documentFrequency = new Map();
   for (const document of documents) {
     for (const token of new Set(document.allTokens)) {
@@ -76,10 +227,10 @@ export function queryIndex(index, query, options = {}) {
     let score = 0;
     const reasons = [];
 
-    if (normalize(card.id) === normalizedQuery) {
+    if (normalizeSearchText(card.id) === normalizedQuery) {
       score += 1000;
       reasons.push("exact semantic ID");
-    } else if (normalize(card.id).includes(normalizedQuery) && normalizedQuery.length > 2) {
+    } else if (normalizeSearchText(card.id).includes(normalizedQuery) && normalizedQuery.length > 2) {
       score += 100;
       reasons.push("semantic ID phrase");
     }
@@ -93,7 +244,7 @@ export function queryIndex(index, query, options = {}) {
       const frequency = documentFrequency.get(token) ?? 0;
       const idf = Math.log(1 + (index.cards.length + 1) / (frequency + 1));
       let tokenScore = 0;
-      for (const [field, weight] of Object.entries(FIELD_WEIGHTS)) {
+      for (const [field, weight] of Object.entries(SEARCH_FIELD_WEIGHTS)) {
         const count = document.fields[field]?.filter((item) => item === token).length ?? 0;
         tokenScore += count * weight * idf;
       }
@@ -105,7 +256,7 @@ export function queryIndex(index, query, options = {}) {
 
     const phraseFields = [card.role, ...(card.search ?? []), ...(card.invariant ?? []), ...(card.owns ?? [])]
       .filter(Boolean)
-      .map(normalize);
+      .map(normalizeSearchText);
     if (normalizedQuery.length >= 4 && phraseFields.some((field) => field.includes(normalizedQuery))) {
       score += 40;
       reasons.push("exact phrase");
@@ -137,7 +288,7 @@ export function queryIndex(index, query, options = {}) {
   }
 
   return results
-    .sort((left, right) => right.score - left.score || left.card.id.localeCompare(right.card.id))
+    .sort((left, right) => right.score - left.score || compareText(left.card.id, right.card.id))
     .slice(0, top)
     .map((result) => ({
       id: result.card.id,
@@ -226,6 +377,13 @@ export async function buildContext(root, id, options = {}) {
   };
 }
 
+function addScore(resultsById, card, score, reasons) {
+  const existing = resultsById.get(card.id) ?? { card, score: 0, reasons: [] };
+  existing.score += score;
+  if (Array.isArray(reasons)) existing.reasons.push(...reasons);
+  else existing.reasons.push(reasons);
+  resultsById.set(card.id, existing);
+}
 
 function boundedInteger(value, fallback, minimum, maximum) {
   const parsed = Number.isInteger(value) ? value : Number.parseInt(String(value ?? ""), 10);
@@ -233,7 +391,7 @@ function boundedInteger(value, fallback, minimum, maximum) {
   return Math.min(maximum, Math.max(minimum, parsed));
 }
 
-function buildDocument(card) {
+function buildLegacyDocument(card) {
   const fields = {
     id: tokenize(card.id.replaceAll(".", " ")),
     role: tokenize(card.role),
@@ -250,28 +408,4 @@ function buildDocument(card) {
   return { fields, allTokens: Object.values(fields).flat() };
 }
 
-function normalize(value) {
-  return String(value ?? "").normalize("NFKC").toLocaleLowerCase("en-US").trim();
-}
-
-export function tokenize(value) {
-  const normalized = normalize(value);
-  const base = normalized.match(/[\p{L}\p{N}]+/gu) ?? [];
-  const tokens = [...base];
-  for (const token of base) {
-    if (containsCjk(token) && [...token].length >= 3) {
-      const characters = [...token];
-      for (let index = 0; index <= characters.length - 2; index += 1) {
-        tokens.push(characters.slice(index, index + 2).join(""));
-      }
-      for (let index = 0; index <= characters.length - 3; index += 1) {
-        tokens.push(characters.slice(index, index + 3).join(""));
-      }
-    }
-  }
-  return tokens;
-}
-
-function containsCjk(value) {
-  return /[\p{Script=Han}\p{Script=Hangul}\p{Script=Hiragana}\p{Script=Katakana}]/u.test(value);
-}
+export { tokenize } from "./tokenizer.js";

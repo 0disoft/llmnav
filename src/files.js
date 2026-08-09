@@ -1,6 +1,6 @@
 import { lstat, readdir, stat } from "node:fs/promises";
 import path from "node:path";
-import { matchesAnyGlob, relativePosix, toPosix } from "./util.js";
+import { compareText, matchesAnyGlob, relativePosix, toPosix } from "./util.js";
 
 export async function findProjectRoot(start = process.cwd()) {
   let current = path.resolve(start);
@@ -47,7 +47,7 @@ export async function collectSourceFiles(root, config, requestedPaths = []) {
       if (!error || typeof error !== "object" || error.code !== "ENOENT") throw error;
     }
   }
-  return [...files.keys()].sort((left, right) => relativePosix(root, left).localeCompare(relativePosix(root, right)));
+  return [...files.keys()].sort((left, right) => compareText(relativePosix(root, left), relativePosix(root, right)));
 }
 
 function assertInsideRoot(root, absolutePath, sourcePath) {
@@ -58,7 +58,7 @@ function assertInsideRoot(root, absolutePath, sourcePath) {
 
 async function walkDirectory(root, directory, config, files) {
   const entries = await readdir(directory, { withFileTypes: true });
-  entries.sort((left, right) => left.name.localeCompare(right.name));
+  entries.sort((left, right) => compareText(left.name, right.name));
   for (const entry of entries) {
     const absolute = path.join(directory, entry.name);
     const relative = relativePosix(root, absolute);

@@ -1,5 +1,24 @@
 # Gradual migration
 
+## Upgrade from 0.1 to 0.2
+
+No source-card migration is required. Keep every `llmnav/1` comment and the existing `.llmnav/cache/index.json` consumer contract.
+
+Upgrade and regenerate:
+
+```sh
+npm install --save-dev llmnav@^0.2.0
+npx llmnav init --agents all
+npx llmnav generate
+npx llmnav doctor
+```
+
+The regeneration adds deterministic `search-index.json` and `file-state.json`. Initialization refreshes `.llmnav/.gitignore` so volatile `state/`, `.transactions/`, and `generation-transaction.json` are not committed.
+
+Review `generate --json` during the first upgrade. Every existing card will be reported as added only when no previous compatible primary index exists. After the first successful v0.2 generation, later output is card-granular.
+
+Do not delete `index.json`, rewrite semantic IDs, or copy generated paths into comments. v0.2 acceleration is additive.
+
 ## Do not annotate the whole repository
 
 The fastest way to destroy LLMNav's value is a campaign that adds a card to every declaration. It creates search-term competition, maintenance burden, and larger prompts before the repository has evidence that those cards help.
