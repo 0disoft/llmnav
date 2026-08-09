@@ -169,7 +169,7 @@ Errors block generation. Warnings do not block `check` by default.
 | `LNV006` | weak or oversized role |
 | `LNV007` | search phrase quality, count, or saturation failure |
 | `LNV008` | unresolved semantic relation |
-| `LNV009` | reserved for future contract fingerprint drift |
+| `LNV009` | exported API or effective configuration fingerprint drift |
 | `LNV010` | non-canonical or stale generated representation |
 | `LNV011` | parser or declaration attachment failure |
 | `LNV012` | deleted or renamed ID lacks lifecycle handling |

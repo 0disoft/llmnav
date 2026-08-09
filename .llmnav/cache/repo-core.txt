@@ -95,3 +95,9 @@ role Normalize task text and emit deterministic word and CJK n-gram tokens for s
 owns query normalization, CJK n-grams, tokenizer version
 excludes card ranking, inverted-index persistence
 rel workflow>llmnav.search.query
+
+@llmnav.contract.fingerprint
+role Fingerprint repository API and configuration contracts without coupling them to source locations.
+owns contract fingerprint schema, export selection, contract drift comparison
+excludes semantic version decisions, source mutation
+rel workflow>llmnav.index.generate

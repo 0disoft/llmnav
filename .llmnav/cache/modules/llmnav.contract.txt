@@ -1,0 +1,8 @@
+llmnav-catalog/1 repository=llmnav catalog=llmnav.contract
+Read semantic cards before opening source. Resolve current paths and signatures with llmnav query or show.
+
+@llmnav.contract.fingerprint
+role Fingerprint repository API and configuration contracts without coupling them to source locations.
+owns contract fingerprint schema, export selection, contract drift comparison
+excludes semantic version decisions, source mutation
+rel workflow>llmnav.index.generate

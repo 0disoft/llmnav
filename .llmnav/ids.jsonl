@@ -19,3 +19,4 @@
 {"id":"llmnav.index.inverted","state":"active"}
 {"id":"llmnav.search.tokenize","state":"active"}
 {"id":"llmnav.index.transaction","state":"active"}
+{"id":"llmnav.contract.fingerprint","state":"active"}

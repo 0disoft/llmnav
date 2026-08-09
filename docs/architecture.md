@@ -38,12 +38,19 @@ Generated paths, signatures, callers, references, timestamps, and hashes are nev
   "specVersion": "1",
   "generatedBy": "llmnav@0.2.0",
   "repositoryId": "example",
+  "contractFingerprints": {
+    "schemaVersion": 1,
+    "exportedApi": { "count": 0, "sha256": "..." },
+    "configuration": { "sha256": "..." }
+  },
   "sourceHash": "...",
   "cards": []
 }
 ```
 
-v0.2 preserves schemaVersion 1 and the v0.1 card fields. Additive accelerators are stored beside it rather than changing the existing consumer contract.
+The primary index preserves schemaVersion 1 and the v0.1 card fields. v0.3 adds `contractFingerprints` as an optional additive field, so v0.1 and v0.2 consumers can continue reading the existing fields.
+
+The exported API fingerprint covers annotated declarations that are public according to deterministic language conventions. The configuration fingerprint covers the effective validated configuration except the local `$schema` path. Body-only edits do not change either fingerprint. Generation emits warning `LNV009` when an existing fingerprint changes, but the warning does not block an intentional regeneration.
 
 Each card carries three independent hashes.
 

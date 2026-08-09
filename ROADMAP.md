@@ -33,9 +33,12 @@ Implemented:
 
 ## 0.3 — stronger local structure
 
-Planned:
+Implemented during 0.3 development:
 
 * exported API and configuration contract fingerprints
+
+Planned:
+
 * route, event, schema, migration, and command-boundary detection
 * language-aware TypeScript and Go declaration enrichers
 * selective body hashes at declaration granularity

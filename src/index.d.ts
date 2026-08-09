@@ -84,8 +84,26 @@ export interface LlmnavIndex {
   specVersion: string;
   generatedBy: string;
   repositoryId: string;
+  contractFingerprints?: ContractFingerprints;
   sourceHash: string;
   cards: IndexedCard[];
+}
+
+export interface ContractFingerprint {
+  sha256: string;
+  count?: number;
+}
+
+export interface ContractFingerprints {
+  schemaVersion: 1;
+  exportedApi: ContractFingerprint;
+  configuration: ContractFingerprint;
+}
+
+export interface ContractFingerprintChange {
+  kind: "exportedApi" | "configuration";
+  previous: string | null;
+  current: string | null;
 }
 
 export interface SearchDocument {
@@ -324,6 +342,7 @@ export interface EvaluationResult {
 }
 
 export const AGENT_PROTOCOL: string;
+export const CONTRACT_FINGERPRINT_SCHEMA_VERSION: 1;
 export const FILE_STATE_SCHEMA_VERSION: number;
 export const SOURCE_INDEXER_VERSION: number;
 export const SEARCH_INDEX_ENCODING: "compact-v1";
@@ -335,6 +354,8 @@ export const TRANSACTION_SCHEMA_VERSION: number;
 export const TRANSACTION_ABORT_EXIT_CODE: number;
 
 export function installAgentInstructions(root: string, adapters?: string[]): Promise<string[]>;
+export function buildContractFingerprints(project: ScannedProject, cards: IndexedCard[]): ContractFingerprints;
+export function compareContractFingerprints(previous: ContractFingerprints | null | undefined, current: ContractFingerprints | null | undefined): ContractFingerprintChange[];
 export function compareCardIndexes(previousIndex: LlmnavIndex | null, currentIndex: LlmnavIndex): ChangedCardRecord[];
 export function describeAffectedCatalogs(changedFiles: string[], cacheDirectory: string, config: LlmnavConfig, previousIndex: LlmnavIndex | null, currentIndex: LlmnavIndex): AffectedCatalogRecord[];
 export function loadConfig(root: string): Promise<{ config: LlmnavConfig; configPath: string }>;

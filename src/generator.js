@@ -46,6 +46,7 @@ import {
 } from "./changes.js";
 import { commitGeneratedCache, recoverGenerationTransaction } from "./transaction.js";
 import { loadConfig } from "./config.js";
+import { buildContractFingerprints, compareContractFingerprints } from "./contracts.js";
 
 export async function generateProject(root, options = {}) {
   const { config: recoveryConfig } = await loadConfig(root);
@@ -85,7 +86,7 @@ export async function generateProject(root, options = {}) {
   }
 
   const diagnostics = validateProject(project);
-  const counts = countDiagnostics(diagnostics);
+  let counts = countDiagnostics(diagnostics);
   if (counts.error > 0) {
     return {
       ok: false,
@@ -106,6 +107,17 @@ export async function generateProject(root, options = {}) {
     previousSearchIndex: options.incremental === false ? null : previousSearchIndex,
     fileState,
   });
+  const contractChanges = compareContractFingerprints(
+    previousIndex?.contractFingerprints,
+    built.index.contractFingerprints,
+  );
+  for (const change of contractChanges) {
+    diagnostics.push(
+      diagnosticForContractChange(change),
+    );
+  }
+  diagnostics.sort(compareGeneratedDiagnostics);
+  counts = countDiagnostics(diagnostics);
   const artifacts = built.artifacts;
   const changedFiles = await compareArtifacts(root, project.config.generation.cacheDirectory, artifacts);
   const orderContent = renderOrder(order);
@@ -211,6 +223,7 @@ export function buildArtifactSet(project, order, options = {}) {
     specVersion: SPEC_VERSION,
     generatedBy: `llmnav@${PACKAGE_VERSION}`,
     repositoryId: project.config.repositoryId,
+    contractFingerprints: buildContractFingerprints(project, cards),
     sourceHash: sha256(cards.map((card) => `${card.hashes.semantic}:${card.hashes.structure}:${card.hashes.body}`).join("\n")),
     cards,
   };
@@ -265,6 +278,27 @@ export function buildArtifactSet(project, order, options = {}) {
   };
   artifacts.set(`${cacheRoot}/manifest.json`, stableStringify(manifest));
   return { artifacts, index, searchIndex, searchStats, fileState, moduleManifest };
+}
+
+function diagnosticForContractChange(change) {
+  const file = change.kind === "configuration" ? ".llmnav/config.json" : ".llmnav/cache/index.json";
+  const label = change.kind === "configuration" ? "Effective configuration" : "Exported API";
+  return {
+    severity: "warning",
+    code: "LNV009",
+    message: `${label} contract fingerprint changed; review the affected contract before committing generated artifacts.`,
+    file,
+    line: 1,
+    column: 1,
+  };
+}
+
+function compareGeneratedDiagnostics(left, right) {
+  return compareText(left.file, right.file) ||
+    left.line - right.line ||
+    left.column - right.column ||
+    compareText(left.code, right.code) ||
+    compareText(left.message, right.message);
 }
 
 function indexedCard(record) {

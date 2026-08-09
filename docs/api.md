@@ -78,6 +78,8 @@ console.log(result.incremental.cards);
 console.log(result.transaction);
 ```
 
+`result.index.contractFingerprints` contains deterministic `exportedApi` and `configuration` SHA-256 values. A changed fingerprint produces a non-failing `LNV009` diagnostic so callers can require explicit contract review without treating every body edit as an API change.
+
 Default generation reuses file and card state and commits cache changes through a recoverable directory transaction.
 
 A read-only drift check is explicit:
@@ -204,6 +206,7 @@ The package exports versioned generated-format constants:
 
 ```js
 import {
+  CONTRACT_FINGERPRINT_SCHEMA_VERSION,
   FILE_STATE_SCHEMA_VERSION,
   SEARCH_INDEX_ENCODING,
   SEARCH_INDEX_SCHEMA_VERSION,
@@ -221,4 +224,4 @@ import { KEY_ORDER, EFFECT_KINDS, RISK_KINDS } from "llmnav/spec";
 
 ## Compatibility boundary
 
-The public API follows package semantic versioning. `index.json` schemaVersion 1 and `llmnav/1` source syntax remain compatible in v0.2. `search-index.json`, `file-state.json`, transaction journals, and performance metrics are additive v0.2 formats with their own schema or implementation versions.
+The public API follows package semantic versioning. `index.json` schemaVersion 1 and `llmnav/1` source syntax remain compatible. Contract fingerprints are optional additive index fields. `search-index.json`, `file-state.json`, transaction journals, and performance metrics retain their own schema or implementation versions.

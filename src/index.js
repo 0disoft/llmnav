@@ -1,6 +1,11 @@
 export { AGENT_PROTOCOL, installAgentInstructions } from "./agents.js";
 export { compareCardIndexes, describeAffectedCatalogs } from "./changes.js";
 export { loadConfig, validateConfig } from "./config.js";
+export {
+  buildContractFingerprints,
+  compareContractFingerprints,
+  CONTRACT_FINGERPRINT_SCHEMA_VERSION,
+} from "./contracts.js";
 export { findAttachedDeclaration, extractImports } from "./declaration.js";
 export { doctorProject } from "./doctor.js";
 export { evaluateProject } from "./evaluation.js";

@@ -19,3 +19,4 @@ llmnav.index.incremental
 llmnav.index.inverted
 llmnav.index.transaction
 llmnav.search.tokenize
+llmnav.contract.fingerprint
