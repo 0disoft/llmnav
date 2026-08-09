@@ -51,6 +51,7 @@ import { buildContractFingerprints, compareContractFingerprints } from "./contra
 import { detectBoundaries } from "./boundaries.js";
 import { buildSearchShards, SEARCH_SHARD_SCHEMA_VERSION } from "./search-shards.js";
 import { loadGraphInputs } from "./graph-input.js";
+import { buildRepositoryGraph, GRAPH_SCHEMA_VERSION, renderRepositoryGraph } from "./graph.js";
 
 export async function generateProject(root, options = {}) {
   const { config: recoveryConfig } = await loadConfig(root);
@@ -206,6 +207,7 @@ export async function generateProject(root, options = {}) {
     artifacts,
     index: built.index,
     searchIndex: built.searchIndex,
+    graph: built.graph,
     incremental: {
       enabled: options.incremental !== false,
       files: scanStats,
@@ -243,6 +245,7 @@ export function buildArtifactSet(project, order, options = {}) {
   };
   const { searchIndex, stats: searchStats } = buildInvertedIndex(index, options.previousSearchIndex);
   const fileState = options.fileState ?? buildFileStateFromProject(project);
+  const graph = buildRepositoryGraph(project, index);
 
   const artifacts = new Map();
   const cacheRoot = toPosix(project.config.generation.cacheDirectory).replace(/\/+$/u, "");
@@ -253,6 +256,7 @@ export function buildArtifactSet(project, order, options = {}) {
   );
   artifacts.set(`${cacheRoot}/search-index.json`, renderSearchIndex(searchIndex));
   artifacts.set(`${cacheRoot}/file-state.json`, renderFileState(fileState));
+  artifacts.set(`${cacheRoot}/graph.json`, renderRepositoryGraph(graph));
   const searchShards = buildSearchShards(index, searchIndex, project.config.generation.searchShardSize);
   if (searchShards.manifest) {
     artifacts.set(`${cacheRoot}/search-shards.json`, stableStringify(searchShards.manifest));
@@ -295,11 +299,12 @@ export function buildArtifactSet(project, order, options = {}) {
     searchCardSetHash: searchIndex.cardSetHash,
     searchIndexSchemaVersion: searchIndex.schemaVersion,
     fileStateSchemaVersion: fileState.schemaVersion,
+    graphSchemaVersion: GRAPH_SCHEMA_VERSION,
     searchShardSchemaVersion: searchShards.manifest ? SEARCH_SHARD_SCHEMA_VERSION : null,
     files: contentHashes,
   };
   artifacts.set(`${cacheRoot}/manifest.json`, stableStringify(manifest));
-  return { artifacts, index, searchIndex, searchStats, fileState, moduleManifest };
+  return { artifacts, index, searchIndex, searchStats, fileState, graph, moduleManifest };
 }
 
 function diagnosticForContractChange(change) {

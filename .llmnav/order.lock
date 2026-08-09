@@ -24,3 +24,4 @@ llmnav.structure.boundaries
 llmnav.diagnostics.sarif
 llmnav.index.search-shards
 llmnav.graph.import
+llmnav.graph.generate

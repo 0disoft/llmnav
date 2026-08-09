@@ -1,0 +1,1495 @@
+{
+  "edges": [
+    {
+      "confidence": 1,
+      "from": "llmnav/example.auth.session.rotate",
+      "id": "8ee25689601d3627424035075d4a0c8348955acc6599103012ed6b46cdfee830",
+      "kind": "test",
+      "provenance": {
+        "generator": null,
+        "line": 21,
+        "path": "examples/typescript/src/session.ts",
+        "source": "examples/typescript/src/session.ts",
+        "type": "source-card"
+      },
+      "to": "llmnav/example.auth.session.rotate-contract"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/example.privacy.export.prepare",
+      "id": "91f843cd67cd017c4b8c211e123e9fab3ac228f57777f949f755b62990e25996",
+      "kind": "test",
+      "provenance": {
+        "generator": null,
+        "line": 20,
+        "path": "examples/python/export_job.py",
+        "source": "examples/python/export_job.py",
+        "type": "source-card"
+      },
+      "to": "llmnav/example.privacy.export.prepare-contract"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.agent.install",
+      "id": "121f432b48ab652e9ed1a27ec5f0fd4b834b4bfe4489858284c73e8ebcac3595",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/agents.js",
+        "source": "src/agents.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.search.query"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.cli.dispatch",
+      "id": "eff41cd7c9d17709b02482666214d640574b399b164c1b28125a654ba91f1c0f",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/cli.js",
+        "source": "src/cli.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.diagnostics.sarif"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.cli.dispatch",
+      "id": "953d56e2b865ac7b9d279abb3aa2597a87f1a428b80e76709233e9ef032ebc0f",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/cli.js",
+        "source": "src/cli.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.eval.measure"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.cli.dispatch",
+      "id": "b4bc373d9d9d03955583d3e84fa68e30dacb4dffb279b45a620509f5b1db25c8",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/cli.js",
+        "source": "src/cli.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.eval.measure"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.cli.dispatch",
+      "id": "5761880b6fa28189244fbb37e45ff38cd85d5ae0d5f2b27e93a8cc62099a8577",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/cli.js",
+        "source": "src/cli.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.graph.import"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.cli.dispatch",
+      "id": "a0f746e928da9bc3e5ddf40b25a7745c9e5dc55cdd917e549b10600908323876",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/cli.js",
+        "source": "src/cli.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.index.generate"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.cli.dispatch",
+      "id": "2588d9b3ab4e35fe6676ed20109a69f012f61a51b4b20fb59f6ac8ed822467f2",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/cli.js",
+        "source": "src/cli.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.project.initialize"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.cli.dispatch",
+      "id": "c35c8f6f3b2af6a048b7138dba66ca94abde3212bda55231d8bc439e43a38867",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/cli.js",
+        "source": "src/cli.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.project.initialize"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.cli.dispatch",
+      "id": "b60b8ad29ce13f8852a0483e7e3adec17776a01aa22fb6311b19c348b5ef6d3d",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/cli.js",
+        "source": "src/cli.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.rules.validate"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.cli.dispatch",
+      "id": "3702f354bc6ca756334177efa6fc07375e5813ea81f799bb6a778c35ac61a7fb",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/cli.js",
+        "source": "src/cli.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.rules.validate"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.cli.dispatch",
+      "id": "bf06b4d68eda5fb522d030d38f0d058787e28c0a5c12b6d9e97ad13462eed650",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/cli.js",
+        "source": "src/cli.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.search.query"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.cli.dispatch",
+      "id": "a1e021c65ba4629eaf96aae22ae3eb352cb009e22081fafa79972e8b9992029a",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/cli.js",
+        "source": "src/cli.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.search.query"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.contract.fingerprint",
+      "id": "87b35d021c5063277f742c5472cf4dd9cbcf68af15e94092e268855208380ea3",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/contracts.js",
+        "source": "src/contracts.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.index.generate"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.diagnostics.sarif",
+      "id": "153f44d4f2adf0ac0595475f6898a42f12151f319c7fb0d25410864c20097385",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/sarif.js",
+        "source": "src/sarif.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.rules.validate"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.eval.measure",
+      "id": "90216989f0c26e55dbd1764f0b72cf3796f9b30358702f3652a745e320fd7b3e",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/evaluation.js",
+        "source": "src/evaluation.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.search.query"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.eval.measure",
+      "id": "d8091f96af25d5665c01e000fb05940555a86f13df936f377c2b93ce3a9bbcd7",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/evaluation.js",
+        "source": "src/evaluation.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.search.query"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.graph.generate",
+      "id": "12438d7cb3730894624f584434ad93949e5319749eb7e39a024aad823b1b0fd3",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/graph.js",
+        "source": "src/graph.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.graph.import"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.graph.generate",
+      "id": "f7d474df5ac08466982b5b8e1522f7919dc59059e11ab214b1b8321f3be03210",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/graph.js",
+        "source": "src/graph.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.index.generate"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.graph.import",
+      "id": "7fc1827e21f2cf8793d76bb79f11c04453d48cf183cdac4d8b3a0973cca1d3e5",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/graph-input.js",
+        "source": "src/graph-input.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.index.generate"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.graph.import",
+      "id": "55b08950a848f531de52821e0b318731e7c59279512b8b0d177bb2187d195e00",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/graph-input.js",
+        "source": "src/graph-input.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.rules.validate"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.index.changes",
+      "id": "bfafa02edf8b80db9163ccc11320ca3ebc2b245963c7f4fd77b5197895efff75",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/changes.js",
+        "source": "src/changes.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.index.generate"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.index.generate",
+      "id": "007834d4e422b3ce03e56fb1fb2e6e1683092838c194bd149ff3b38afd4c9c3d",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/generator.js",
+        "source": "src/generator.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.contract.fingerprint"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.index.generate",
+      "id": "b5f57341edcdcc70d447423f8a807e3b91f9d856b1883cbd4b91b4e5b5dfd0d2",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/generator.js",
+        "source": "src/generator.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.graph.generate"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.index.generate",
+      "id": "788bae5e6eedb9776ce1d2e6af65ed2ce5916527184b46bb941b2e77ec6ac8e7",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/generator.js",
+        "source": "src/generator.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.graph.import"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.index.generate",
+      "id": "83366896f01616bf6c1d7e182e223c0c8df8714e11f582969604781fb3ed84b5",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/generator.js",
+        "source": "src/generator.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.index.changes"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.index.generate",
+      "id": "ff2f2ad19f599d7f7f7cd552409f2c6e47cf19790aa2b4031c3ec09fb60e9241",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/generator.js",
+        "source": "src/generator.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.index.incremental"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.index.generate",
+      "id": "72d1ae7e07c3a871f717e99b70623832b2e2159e40fcae1322a639e06df54097",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/generator.js",
+        "source": "src/generator.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.index.incremental"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.index.generate",
+      "id": "7dd01b5e750503eb136b5ae4b04687ae52bc98b37cbdcf9c544743e4a05afe47",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/generator.js",
+        "source": "src/generator.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.index.inverted"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.index.generate",
+      "id": "82e0eef3e6734ae11524f16c1b80ebfd779d9d70cd0e8cea8b296c5c7861a121",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/generator.js",
+        "source": "src/generator.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.index.inverted"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.index.generate",
+      "id": "8c0581d3571c70e09f471be4ff55e9a2532ac83046096c9909db384428b76c2d",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/generator.js",
+        "source": "src/generator.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.index.search-shards"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.index.generate",
+      "id": "55d837dcd982ee84c5f462875954676e9e586bddf85d41b8cde328d380291fac",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/generator.js",
+        "source": "src/generator.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.index.transaction"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.index.generate",
+      "id": "4e8c0c460225ee83e05f18c4ea29562fb8b8612b2ab3bc2b6d0d625b31cf3121",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/generator.js",
+        "source": "src/generator.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.index.transaction"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.index.generate",
+      "id": "7c7c6bb57f904f9d46d2acb92d4f4bb49c7f28d71ed37a7ed8d121f382bd595c",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/generator.js",
+        "source": "src/generator.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.rules.validate"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.index.generate",
+      "id": "0e02f05fb0bddd2223a656eed42d8f80255e6094c2168fa93f4e35e32b4cabf0",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/generator.js",
+        "source": "src/generator.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.rules.validate"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.index.generate",
+      "id": "710a8935a8c06a160e07bbd0b700478939bb96db5cdd93c0057a7b3071bbb675",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/generator.js",
+        "source": "src/generator.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.structure.boundaries"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.index.generate",
+      "id": "eff55cb7a0753c8ed11bcc844fa1efa8c7ff12b947a4742df242b241461ae005",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/generator.js",
+        "source": "src/generator.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.syntax.parse"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.index.incremental",
+      "id": "259c0fbf70341f797aad52aaa1ea68346113767d9886f41f597f8d9ace14509c",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/incremental.js",
+        "source": "src/incremental.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.index.generate"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.index.incremental",
+      "id": "ec846714e8b1df18ec82c4f99f741e3a758003ad2494949a3a8ce5cb6f2c7135",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/incremental.js",
+        "source": "src/incremental.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.syntax.parse"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.index.inverted",
+      "id": "6a13917f3233877edbb84625d03e0e21eb49de7bfca7df2bcdf165ce3523039b",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/inverted-index.js",
+        "source": "src/inverted-index.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.index.generate"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.index.inverted",
+      "id": "6e13415e31ea6e8eae0ad409ddc0ce823035ba9cce7d3fd62fb40608b469cbc1",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/inverted-index.js",
+        "source": "src/inverted-index.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.search.tokenize"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.index.inverted",
+      "id": "2c1a2ebc52a838c87201b42e57430db9ae9403f83b68fd4bc2536603eb23bb13",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/inverted-index.js",
+        "source": "src/inverted-index.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.search.tokenize"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.index.search-shards",
+      "id": "61ca78742441f3ede1e00400cdc11b463a748595680452cad055ee61e3a1d029",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/search-shards.js",
+        "source": "src/search-shards.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.index.generate"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.index.search-shards",
+      "id": "eb04882f90f2ec235ef79b9cb0eb686191141be05bf0829ba859eef222c99cb3",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/search-shards.js",
+        "source": "src/search-shards.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.index.inverted"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.index.search-shards",
+      "id": "bd8842a3c94cd4c33c58e716d540bbe382f9e6c17371e9ba1396392a81539022",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/search-shards.js",
+        "source": "src/search-shards.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.index.inverted"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.index.transaction",
+      "id": "8833fdb8d58fa4d98e042bd6294a1581fe479d558e30a61a7574f55f4774e61e",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/transaction.js",
+        "source": "src/transaction.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.index.generate"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.project.initialize",
+      "id": "728425f59f9313534ce8c488f250851c4439f89441f720313b91619c63e21ea3",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/initializer.js",
+        "source": "src/initializer.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.agent.install"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.project.initialize",
+      "id": "01bcf2a5a53f5fd9a239b00f7fc934eb5a1094edf13a8725682d72ef2e90a7f0",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/initializer.js",
+        "source": "src/initializer.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.index.generate"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.rules.validate",
+      "id": "fa8ac20d97acd792cd4dadc498bcae4415a899b19515f40e4e3701df7c00b97b",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/validator.js",
+        "source": "src/validator.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.syntax.parse"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.rules.validate",
+      "id": "f28a5401c48b8565c2c36efbb6dfe27b8f915b31b60ca4e3faf5a34f2d53877a",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/validator.js",
+        "source": "src/validator.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.syntax.parse"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.search.query",
+      "id": "a50320bd2e4a0d9a70fca3d05c907b2c9ceaa0c76c576284952f7cc3cff00362",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/search.js",
+        "source": "src/search.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.index.generate"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.search.query",
+      "id": "c8e1405432d844b5b38ade2b170ebe2cfef38997cfffe2979b8d1c539b0aee55",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/search.js",
+        "source": "src/search.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.index.generate"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.search.query",
+      "id": "5ff5c86da701a8e46f225021bd1685de826cf7c237b5151b8054b074f8ee263d",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/search.js",
+        "source": "src/search.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.index.inverted"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.search.query",
+      "id": "8bfabc7fc9bf931d8655abb28a416a8d0056846054f2b4baeb50857814012c93",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/search.js",
+        "source": "src/search.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.index.inverted"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.search.query",
+      "id": "79219ce7d20bbc9e090bd369ecf55a33070648bf91d8bc770e6549d005e8d224",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/search.js",
+        "source": "src/search.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.index.transaction"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.search.query",
+      "id": "de41d615970b6f543fe24b679165c22fc0863d9a89a5e12f8e72a1c64edf4cd3",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/search.js",
+        "source": "src/search.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.search.tokenize"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.search.tokenize",
+      "id": "8ace185e173fcaa492a544e8ea5f68e3f781457a06cc2f82cbe18b8f850460ec",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/tokenizer.js",
+        "source": "src/tokenizer.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.search.query"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.structure.boundaries",
+      "id": "fd91c860c59f885fe34e05a12f41996b17737082fe1559de06319219fe0fb750",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/boundaries.js",
+        "source": "src/boundaries.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.index.generate"
+    }
+  ],
+  "nodes": [
+    {
+      "definitions": [],
+      "external": false,
+      "key": "llmnav/example.auth.session",
+      "location": {
+        "declarationLine": null,
+        "endLine": 9,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "examples/typescript/src/session.ts",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Own refresh-token rotation, replay detection, and family revocation for the example service.",
+      "semanticId": "example.auth.session",
+      "unresolved": false
+    },
+    {
+      "definitions": [
+        {
+          "kind": "function",
+          "line": 33,
+          "path": "examples/typescript/src/session.ts",
+          "provenance": {
+            "generator": null,
+            "source": ".llmnav/cache/index.json",
+            "type": "llmnav-index"
+          },
+          "symbol": "rotateSession"
+        }
+      ],
+      "external": false,
+      "key": "llmnav/example.auth.session.rotate",
+      "location": {
+        "declarationLine": 33,
+        "endLine": 31,
+        "exported": true,
+        "kind": "function",
+        "language": "typescript",
+        "path": "examples/typescript/src/session.ts",
+        "receiver": null,
+        "signature": "export async function rotateSession( input: RotateSessionInput, ): Promise<RotateSessionResult>",
+        "startLine": 21,
+        "symbol": "rotateSession",
+        "visibility": "public"
+      },
+      "repositoryId": "llmnav",
+      "role": "Rotate one refresh-token family atomically and reject a replayed token.",
+      "semanticId": "example.auth.session.rotate",
+      "unresolved": false
+    },
+    {
+      "definitions": [
+        {
+          "kind": "function",
+          "line": 47,
+          "path": "examples/typescript/src/session.ts",
+          "provenance": {
+            "generator": null,
+            "source": ".llmnav/cache/index.json",
+            "type": "llmnav-index"
+          },
+          "symbol": "assertRotateSessionContract"
+        }
+      ],
+      "external": false,
+      "key": "llmnav/example.auth.session.rotate-contract",
+      "location": {
+        "declarationLine": 47,
+        "endLine": 45,
+        "exported": true,
+        "kind": "function",
+        "language": "typescript",
+        "path": "examples/typescript/src/session.ts",
+        "receiver": null,
+        "signature": "export function assertRotateSessionContract(): void",
+        "startLine": 40,
+        "symbol": "assertRotateSessionContract",
+        "visibility": "public"
+      },
+      "repositoryId": "llmnav",
+      "role": "Verify rotation preserves single-token and replay-revocation guarantees.",
+      "semanticId": "example.auth.session.rotate-contract",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
+      "key": "llmnav/example.billing.credit",
+      "location": {
+        "declarationLine": null,
+        "endLine": 11,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "examples/go/session/reserve.go",
+        "receiver": null,
+        "signature": null,
+        "startLine": 3,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Own credit reservation and capture boundaries for generation jobs.",
+      "semanticId": "example.billing.credit",
+      "unresolved": false
+    },
+    {
+      "definitions": [
+        {
+          "kind": "function",
+          "line": 28,
+          "path": "examples/go/session/reserve.go",
+          "provenance": {
+            "generator": null,
+            "source": ".llmnav/cache/index.json",
+            "type": "llmnav-index"
+          },
+          "symbol": "ReserveCredits"
+        }
+      ],
+      "external": false,
+      "key": "llmnav/example.billing.credit.reserve",
+      "location": {
+        "declarationLine": 28,
+        "endLine": 26,
+        "exported": true,
+        "kind": "function",
+        "language": "go",
+        "path": "examples/go/session/reserve.go",
+        "receiver": null,
+        "signature": "func ReserveCredits(accountID string, amount int64, idempotencyKey string) Reservation",
+        "startLine": 18,
+        "symbol": "ReserveCredits",
+        "visibility": "public"
+      },
+      "repositoryId": "llmnav",
+      "role": "Reserve credits before an external generation job starts.",
+      "semanticId": "example.billing.credit.reserve",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
+      "key": "llmnav/example.privacy.export",
+      "location": {
+        "declarationLine": null,
+        "endLine": 9,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "examples/python/export_job.py",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Own preparation and expiry of user data export jobs.",
+      "semanticId": "example.privacy.export",
+      "unresolved": false
+    },
+    {
+      "definitions": [
+        {
+          "kind": "function",
+          "line": 31,
+          "path": "examples/python/export_job.py",
+          "provenance": {
+            "generator": null,
+            "source": ".llmnav/cache/index.json",
+            "type": "llmnav-index"
+          },
+          "symbol": "prepare_export"
+        }
+      ],
+      "external": false,
+      "key": "llmnav/example.privacy.export.prepare",
+      "location": {
+        "declarationLine": 31,
+        "endLine": 29,
+        "exported": true,
+        "kind": "function",
+        "language": "python",
+        "path": "examples/python/export_job.py",
+        "receiver": null,
+        "signature": "def prepare_export(account_id: str) -> ExportJob: return ExportJob(job_id=f\"job",
+        "startLine": 20,
+        "symbol": "prepare_export",
+        "visibility": "public"
+      },
+      "repositoryId": "llmnav",
+      "role": "Create one auditable export job without exposing its object key publicly.",
+      "semanticId": "example.privacy.export.prepare",
+      "unresolved": false
+    },
+    {
+      "definitions": [
+        {
+          "kind": "function",
+          "line": 42,
+          "path": "examples/python/export_job.py",
+          "provenance": {
+            "generator": null,
+            "source": ".llmnav/cache/index.json",
+            "type": "llmnav-index"
+          },
+          "symbol": "assert_prepare_export_contract"
+        }
+      ],
+      "external": false,
+      "key": "llmnav/example.privacy.export.prepare-contract",
+      "location": {
+        "declarationLine": 42,
+        "endLine": 40,
+        "exported": true,
+        "kind": "function",
+        "language": "python",
+        "path": "examples/python/export_job.py",
+        "receiver": null,
+        "signature": "def assert_prepare_export_contract() -> None: \"\"\"Replace with repository-specific tests.\"\"\"",
+        "startLine": 35,
+        "symbol": "assert_prepare_export_contract",
+        "visibility": "public"
+      },
+      "repositoryId": "llmnav",
+      "role": "Verify export preparation keeps object keys private and jobs auditable.",
+      "semanticId": "example.privacy.export.prepare-contract",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
+      "key": "llmnav/llmnav.agent.install",
+      "location": {
+        "declarationLine": null,
+        "endLine": 9,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/agents.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Install one managed navigation protocol into instruction files used by major coding agents.",
+      "semanticId": "llmnav.agent.install",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
+      "key": "llmnav/llmnav.cli.dispatch",
+      "location": {
+        "declarationLine": null,
+        "endLine": 12,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/cli.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Expose initialization, validation, generation, search, evaluation, and diagnostics through one CLI.",
+      "semanticId": "llmnav.cli.dispatch",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
+      "key": "llmnav/llmnav.contract.fingerprint",
+      "location": {
+        "declarationLine": null,
+        "endLine": 9,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/contracts.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Fingerprint repository API and configuration contracts without coupling them to source locations.",
+      "semanticId": "llmnav.contract.fingerprint",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
+      "key": "llmnav/llmnav.diagnostics.sarif",
+      "location": {
+        "declarationLine": null,
+        "endLine": 9,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/sarif.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Serialize deterministic LLMNav diagnostics as a SARIF 2.1.0 result log.",
+      "semanticId": "llmnav.diagnostics.sarif",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
+      "key": "llmnav/llmnav.eval.measure",
+      "location": {
+        "declarationLine": null,
+        "endLine": 9,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/evaluation.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Measure whether repository task queries retrieve expected semantic IDs within configured rank gates.",
+      "semanticId": "llmnav.eval.measure",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
+      "key": "llmnav/llmnav.graph.generate",
+      "location": {
+        "declarationLine": null,
+        "endLine": 10,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/graph.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Build a deterministic repository graph with qualified nodes, provenance, and confidence.",
+      "semanticId": "llmnav.graph.generate",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
+      "key": "llmnav/llmnav.graph.import",
+      "location": {
+        "declarationLine": null,
+        "endLine": 9,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/graph-input.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Load and validate optional generated definition and reference indexes without executing repository code.",
+      "semanticId": "llmnav.graph.import",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
+      "key": "llmnav/llmnav.index.changes",
+      "location": {
+        "declarationLine": null,
+        "endLine": 9,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/changes.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Describe changed cards, affected boundaries, and generated catalogs as stable machine-readable records.",
+      "semanticId": "llmnav.index.changes",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
+      "key": "llmnav/llmnav.index.generate",
+      "location": {
+        "declarationLine": null,
+        "endLine": 12,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/generator.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Compile validated semantic cards into deterministic repository and module catalogs for coding agents.",
+      "semanticId": "llmnav.index.generate",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
+      "key": "llmnav/llmnav.index.incremental",
+      "location": {
+        "declarationLine": null,
+        "endLine": 9,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/incremental.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Reuse unchanged file parses and card records while rebuilding deterministic generated artifacts.",
+      "semanticId": "llmnav.index.incremental",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
+      "key": "llmnav/llmnav.index.inverted",
+      "location": {
+        "declarationLine": null,
+        "endLine": 10,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/inverted-index.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Compile searchable card fields into a deterministic inverted index that can be updated one card at a time.",
+      "semanticId": "llmnav.index.inverted",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
+      "key": "llmnav/llmnav.index.search-shards",
+      "location": {
+        "declarationLine": null,
+        "endLine": 10,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/search-shards.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Split a compact search index into deterministic card-range artifacts without retokenizing documents.",
+      "semanticId": "llmnav.index.search-shards",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
+      "key": "llmnav/llmnav.index.transaction",
+      "location": {
+        "declarationLine": null,
+        "endLine": 9,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/transaction.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Commit a complete generated cache with rollback and crash recovery across POSIX and Windows rename behavior.",
+      "semanticId": "llmnav.index.transaction",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
+      "key": "llmnav/llmnav.project.initialize",
+      "location": {
+        "declarationLine": null,
+        "endLine": 10,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/initializer.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Create a repository's LLMNav configuration, registry, schemas, agent instructions, and initial index.",
+      "semanticId": "llmnav.project.initialize",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
+      "key": "llmnav/llmnav.rules.validate",
+      "location": {
+        "declarationLine": null,
+        "endLine": 9,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/validator.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Reject unstable, ambiguous, oversized, or structurally invalid LLMNav metadata before indexing.",
+      "semanticId": "llmnav.rules.validate",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
+      "key": "llmnav/llmnav.search.query",
+      "location": {
+        "declarationLine": null,
+        "endLine": 10,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/search.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Rank semantic cards from task language, aliases, metadata fields, and one-hop semantic relations.",
+      "semanticId": "llmnav.search.query",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
+      "key": "llmnav/llmnav.search.tokenize",
+      "location": {
+        "declarationLine": null,
+        "endLine": 9,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/tokenizer.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Normalize task text and emit deterministic word and CJK n-gram tokens for semantic retrieval.",
+      "semanticId": "llmnav.search.tokenize",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
+      "key": "llmnav/llmnav.structure.boundaries",
+      "location": {
+        "declarationLine": null,
+        "endLine": 9,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/boundaries.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Detect route, event, schema, migration, and command boundaries from generated local evidence.",
+      "semanticId": "llmnav.structure.boundaries",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
+      "key": "llmnav/llmnav.syntax.parse",
+      "location": {
+        "declarationLine": null,
+        "endLine": 8,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/parser.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Parse LLMNav source comments into deterministic semantic cards and rewrite them canonically.",
+      "semanticId": "llmnav.syntax.parse",
+      "unresolved": false
+    }
+  ],
+  "repositoryId": "llmnav",
+  "schemaVersion": 1,
+  "sourceHash": "da4da1967c57a9b18ad2a5aa011603a6b594051f94dd98662252d9427cb0a5a3",
+  "stats": {
+    "edgeCount": 59,
+    "importedIndexCount": 0,
+    "nodeCount": 27,
+    "unresolvedNodeCount": 0
+  }
+}

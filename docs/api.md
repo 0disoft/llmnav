@@ -230,6 +230,8 @@ import {
 
 `normalizeGraphInput(value, file, contentHash)` validates and normalizes one schemaVersion 1 definition/reference index. `loadGraphInputs(root, config)` reads configured repository-local inputs and returns normalized indexes plus deterministic `LNV014` diagnostics without executing project code.
 
+`buildRepositoryGraph(project, index)` returns the schemaVersion 1 qualified node and edge graph. `renderRepositoryGraph(graph)` serializes it deterministically. Successful generation also exposes the graph as `result.graph` and writes it to `.llmnav/cache/graph.json`.
+
 The normative source vocabulary remains available from `llmnav/spec`.
 
 ```js

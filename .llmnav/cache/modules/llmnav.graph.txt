@@ -6,3 +6,9 @@ role Load and validate optional generated definition and reference indexes witho
 owns graph import schema, input normalization, graph input diagnostics
 excludes graph ranking, source mutation
 rel workflow>llmnav.index.generate
+
+@llmnav.graph.generate
+role Build a deterministic repository graph with qualified nodes, provenance, and confidence.
+owns graph schema, edge normalization, local import resolution
+excludes query scoring, workspace file discovery
+rel workflow>llmnav.graph.import, workflow>llmnav.index.generate

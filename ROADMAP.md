@@ -48,10 +48,10 @@ Implemented:
 Implemented during 0.4 development:
 
 * optional import of generated definition and reference indexes
+* edge provenance and confidence
 
 Planned:
 
-* edge provenance and confidence
 * graph-aware ranking and bounded context packing
 * workspace and cross-repository semantic ID resolution
 * incremental graph invalidation

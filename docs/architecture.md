@@ -78,6 +78,12 @@ When `generation.searchShardSize` is positive and the repository exceeds that ca
 
 Shards slice the already-built compact documents and postings, adjust local card ordinals, and never retokenize cards. Every shard independently satisfies the compact search-index compatibility checks for its card subset. The full `search-index.json` remains authoritative for built-in queries, preserving global document frequency and v0.2 ranking behavior. Cache transactions publish or remove the complete shard set atomically.
 
+## Repository graph
+
+`.llmnav/cache/graph.json` schemaVersion 1 is a deterministic derived artifact. It combines source-card semantic relations, resolvable relative imports, and configured generated definition/reference indexes. Nodes and edges use qualified repository keys. Edges retain confidence and provenance rather than flattening explicit and inferred evidence into one unqualified relation.
+
+Unresolved targets are preserved as placeholder nodes. This allows later workspace resolution without inventing a local definition or silently dropping an imported reference. `manifest.json` covers the graph bytes and cache transactions publish it atomically with the primary and search indexes.
+
 Each card entry stores a hash of its searchable fields and its normalized phrase fields. The global token dictionary is sorted once. Every dictionary entry points to a posting list encoded as sorted card ordinals and sparse field-frequency vectors. The ordinals resolve through the sorted `cardIds` table.
 
 Field order and field weights are versioned constants. Tokens, card IDs, object keys, and posting entries use locale-independent UTF-16 lexical comparison.

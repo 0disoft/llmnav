@@ -298,6 +298,49 @@ export interface GraphInputIndex {
   references: GraphReference[];
 }
 
+export interface GraphProvenance {
+  type: "source-card" | "local-import" | "generated-index" | string;
+  source: string;
+  path: string | null;
+  line: number | null;
+  generator: string | null;
+}
+
+export interface GraphNode {
+  key: string;
+  repositoryId: string;
+  semanticId: string;
+  role: string | null;
+  location: IndexedLocation | null;
+  external: boolean;
+  unresolved: boolean;
+  definitions: Array<{
+    symbol: string;
+    path: string;
+    line: number | null;
+    kind: string | null;
+    provenance: Omit<GraphProvenance, "path" | "line">;
+  }>;
+}
+
+export interface GraphEdge {
+  id: string;
+  from: string;
+  to: string;
+  kind: string;
+  confidence: number;
+  provenance: GraphProvenance;
+}
+
+export interface RepositoryGraph {
+  schemaVersion: 1;
+  repositoryId: string;
+  sourceHash: string;
+  nodes: GraphNode[];
+  edges: GraphEdge[];
+  stats: { nodeCount: number; edgeCount: number; unresolvedNodeCount: number; importedIndexCount: number };
+}
+
 export interface SerializedFileStateRecord {
   path: string;
   contentHash: string;
@@ -371,6 +414,7 @@ export interface GenerationResult {
   artifacts?: Map<string, string>;
   index?: LlmnavIndex;
   searchIndex?: LlmnavSearchIndex;
+  graph?: RepositoryGraph;
   incremental: {
     enabled: boolean;
     files: IncrementalFileStats;
@@ -404,6 +448,7 @@ export interface EvaluationResult {
 export const AGENT_PROTOCOL: string;
 export const BOUNDARY_KINDS: readonly DetectedBoundary["kind"][];
 export const GRAPH_INPUT_SCHEMA_VERSION: 1;
+export const GRAPH_SCHEMA_VERSION: 1;
 export const SARIF_SCHEMA: string;
 export const SARIF_VERSION: "2.1.0";
 export const SEARCH_SHARD_ENCODING: "card-range-v1";
@@ -423,6 +468,8 @@ export function installAgentInstructions(root: string, adapters?: string[]): Pro
 export function detectBoundaries(record: ProjectRecord): DetectedBoundary[];
 export function normalizeGraphInput(value: unknown, file?: string, contentHash?: string | null): GraphInputIndex;
 export function loadGraphInputs(root: string, config: LlmnavConfig): Promise<{ indexes: GraphInputIndex[]; diagnostics: Diagnostic[] }>;
+export function buildRepositoryGraph(project: ScannedProject, index: LlmnavIndex): RepositoryGraph;
+export function renderRepositoryGraph(graph: RepositoryGraph): string;
 export function diagnosticsToSarif(diagnostics: Diagnostic[]): Record<string, unknown>;
 export function buildSearchShards(index: LlmnavIndex, searchIndex: LlmnavSearchIndex, shardSize: number): {
   manifest: null | {
@@ -451,7 +498,7 @@ export function collectSourceFiles(root: string, config: LlmnavConfig, requested
 export function findProjectRoot(start?: string): Promise<string>;
 export function formatProject(root: string, options?: { check?: boolean; paths?: string[] }): Promise<{ ok: boolean; changedFiles: string[]; errors: Array<{ file: string; line: number; message: string }> }>;
 export function buildArtifacts(project: ScannedProject, order: string[], options?: { previousSearchIndex?: LlmnavSearchIndex | null; fileState?: LlmnavFileState }): Map<string, string>;
-export function buildArtifactSet(project: ScannedProject, order: string[], options?: { previousSearchIndex?: LlmnavSearchIndex | null; fileState?: LlmnavFileState }): { artifacts: Map<string, string>; index: LlmnavIndex; searchIndex: LlmnavSearchIndex; searchStats: SearchIndexStats; fileState: LlmnavFileState };
+export function buildArtifactSet(project: ScannedProject, order: string[], options?: { previousSearchIndex?: LlmnavSearchIndex | null; fileState?: LlmnavFileState }): { artifacts: Map<string, string>; index: LlmnavIndex; searchIndex: LlmnavSearchIndex; searchStats: SearchIndexStats; fileState: LlmnavFileState; graph: RepositoryGraph };
 export function generateProject(root: string, options?: { check?: boolean; incremental?: boolean; useStatHints?: boolean; failpoint?: string }): Promise<GenerationResult>;
 export function renderCompactCard(card: IndexedCard): string;
 export function renderSemanticCard(card: IndexedCard): string;
