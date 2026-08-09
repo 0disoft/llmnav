@@ -255,6 +255,28 @@ export interface AgentOperationResult<T = unknown> {
   error: { code: string; message: string } | null;
 }
 
+export interface PromptPrefixPartition {
+  id: string;
+  cacheScope: "package" | "repository" | "module";
+  contentType: string;
+  contentHash: string;
+  estimatedTokens: number;
+  cacheBoundaryAfter: true;
+  content: string;
+}
+
+export interface PromptPrefixBundle {
+  schemaVersion: 1;
+  repositoryId: string;
+  bundleHash: string;
+  assembly: {
+    basePartitionIds: string[];
+    modulePartitionIds: string[];
+    volatileContextAfter: true;
+  };
+  partitions: PromptPrefixPartition[];
+}
+
 export interface ProjectFileRecord {
   absolutePath: string;
   relativePath: string;
@@ -422,7 +444,7 @@ export interface ChangedCardRecord {
 
 export interface AffectedCatalogRecord {
   file: string;
-  kind: "repository" | "module" | "agent-context";
+  kind: "repository" | "module" | "agent-context" | "prompt-prefix";
   id: string;
 }
 
@@ -496,6 +518,7 @@ export const BOUNDARY_KINDS: readonly DetectedBoundary["kind"][];
 export const GRAPH_INPUT_SCHEMA_VERSION: 1;
 export const GRAPH_SCHEMA_VERSION: 1;
 export const GRAPH_STATE_SCHEMA_VERSION: 1;
+export const PROMPT_BUNDLE_SCHEMA_VERSION: 1;
 export const SARIF_SCHEMA: string;
 export const SARIF_VERSION: "2.1.0";
 export const SEARCH_SHARD_ENCODING: "card-range-v1";
@@ -514,6 +537,10 @@ export const TRANSACTION_ABORT_EXIT_CODE: number;
 export function installAgentInstructions(root: string, adapters?: string[]): Promise<string[]>;
 export function getAgentToolDefinitions(): AgentToolDefinition[];
 export function executeAgentOperation(root: string, name: string, input?: Record<string, unknown>): Promise<AgentOperationResult>;
+export function buildPromptPrefixBundle(input: { repositoryId: string; toolDefinitions: AgentToolDefinition[]; agentProtocol: string; repositoryCore: string; modules?: Array<{ id: string; content: string }> }): PromptPrefixBundle;
+export function isCompatiblePromptPrefixBundle(bundle: unknown, repositoryId?: string): bundle is PromptPrefixBundle;
+export function loadPromptPrefixBundle(root: string): Promise<PromptPrefixBundle>;
+export function renderPromptPrefixBundle(bundle: PromptPrefixBundle): string;
 export function detectBoundaries(record: ProjectRecord): DetectedBoundary[];
 export function normalizeGraphInput(value: unknown, file?: string, contentHash?: string | null): GraphInputIndex;
 export function loadGraphInputs(root: string, config: LlmnavConfig): Promise<{ indexes: GraphInputIndex[]; diagnostics: Diagnostic[] }>;
@@ -562,7 +589,7 @@ export function collectSourceFiles(root: string, config: LlmnavConfig, requested
 export function findProjectRoot(start?: string): Promise<string>;
 export function formatProject(root: string, options?: { check?: boolean; paths?: string[] }): Promise<{ ok: boolean; changedFiles: string[]; errors: Array<{ file: string; line: number; message: string }> }>;
 export function buildArtifacts(project: ScannedProject, order: string[], options?: { previousSearchIndex?: LlmnavSearchIndex | null; previousGraphState?: RepositoryGraphState | null; fileState?: LlmnavFileState }): Map<string, string>;
-export function buildArtifactSet(project: ScannedProject, order: string[], options?: { previousSearchIndex?: LlmnavSearchIndex | null; previousGraphState?: RepositoryGraphState | null; fileState?: LlmnavFileState }): { artifacts: Map<string, string>; index: LlmnavIndex; searchIndex: LlmnavSearchIndex; searchStats: SearchIndexStats; fileState: LlmnavFileState; graph: RepositoryGraph; graphState: RepositoryGraphState; graphStats: IncrementalGraphStats };
+export function buildArtifactSet(project: ScannedProject, order: string[], options?: { previousSearchIndex?: LlmnavSearchIndex | null; previousGraphState?: RepositoryGraphState | null; fileState?: LlmnavFileState }): { artifacts: Map<string, string>; index: LlmnavIndex; searchIndex: LlmnavSearchIndex; searchStats: SearchIndexStats; fileState: LlmnavFileState; graph: RepositoryGraph; graphState: RepositoryGraphState; graphStats: IncrementalGraphStats; promptBundle: PromptPrefixBundle };
 export function generateProject(root: string, options?: { check?: boolean; incremental?: boolean; useStatHints?: boolean; failpoint?: string }): Promise<GenerationResult>;
 export function renderCompactCard(card: IndexedCard): string;
 export function renderSemanticCard(card: IndexedCard): string;

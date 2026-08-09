@@ -26,3 +26,5 @@
 {"id":"llmnav.graph.import","state":"active"}
 {"id":"llmnav.graph.generate","state":"active"}
 {"id":"llmnav.agent.protocol","state":"active"}
+{"id":"llmnav.agent.tool-schema","state":"active"}
+{"id":"llmnav.agent.prompt-bundle","state":"active"}

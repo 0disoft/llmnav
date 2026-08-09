@@ -42,6 +42,7 @@ test("generate --json reports changed cards, boundaries, and affected catalogs",
     dependentIds: [],
   }]);
   assert.ok(output.affectedCatalogs.some((item) => item.kind === "module" && item.id === "billing.credit"));
+  assert.ok(output.affectedCatalogs.some((item) => item.kind === "prompt-prefix"));
   assert.equal(output.incremental.files.parsedFiles, 1);
   assert.equal(output.incremental.cards.indexedCards, 1);
   assert.equal(output.transaction.committed, true);

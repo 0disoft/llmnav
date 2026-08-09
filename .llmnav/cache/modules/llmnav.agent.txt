@@ -8,7 +8,19 @@ excludes postinstall mutation, agent execution
 rel workflow>llmnav.search.query
 
 @llmnav.agent.protocol
-role Expose stable provider-neutral tool schemas and execute bounded repository navigation operations.
-owns agent tool schemas, operation validation, provider-neutral result envelope
+role Execute bounded repository navigation operations through one provider-neutral result envelope.
+owns operation validation, operation dispatch, provider-neutral result envelope
 excludes provider SDK transport, repository discovery, source mutation
 rel workflow>llmnav.search.query, workflow>llmnav.rules.validate
+
+@llmnav.agent.prompt-bundle
+role Assemble deterministic prompt-prefix partitions with explicit cache scope and integrity hashes.
+owns prompt bundle schema, partition ordering, cache boundaries, bundle integrity
+excludes provider cache API calls, volatile task context, source discovery
+rel workflow>llmnav.agent.tool-schema, workflow>llmnav.agent.install, workflow>llmnav.index.generate
+
+@llmnav.agent.tool-schema
+role Publish stable provider-neutral tool definitions without loading repository execution code.
+owns agent tool names, tool input schemas, tool order
+excludes operation execution, provider SDK transport, repository scope
+rel workflow>llmnav.agent.protocol

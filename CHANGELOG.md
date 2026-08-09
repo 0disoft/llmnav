@@ -9,6 +9,7 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 ### Added
 
 * Added stable provider-neutral agent tool schemas and a bounded operation dispatcher for query, show, context, and check.
+* Added deterministic prompt-prefix bundles with explicit package, repository, and module cache partitions.
 
 ## [0.4.0] — 2026-08-09
 

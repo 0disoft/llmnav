@@ -176,6 +176,7 @@ Line-comment cards require an explicit terminator and work with `//`, `#`, and `
 | `llmnav doctor` | Verify installation, cache integrity, transaction recovery, and drift |
 | `llmnav spec` | Print source-spec vocabularies and key order |
 | `llmnav tools` | Print stable provider-neutral agent tool schemas |
+| `llmnav bundle` | Inspect the generated prompt-prefix cache partitions |
 
 See [docs/cli.md](docs/cli.md) for every option and exit code.
 
@@ -201,6 +202,7 @@ See [docs/cli.md](docs/cli.md) for every option and exit code.
     file-state.json         # deterministic parsed-file state
     graph.json              # qualified nodes and provenance-aware edges
     graph-state.json        # disposable content-addressed graph partitions
+    prompt-prefix.json      # explicit package, repository, and module cache partitions
     repo-core.txt
     agent-context.md
     manifest.json

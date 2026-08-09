@@ -176,7 +176,7 @@ const catalogs = describeAffectedCatalogs(
 );
 ```
 
-Changed-card records distinguish semantic, structure, and body dimensions. Catalog records include only repository, module, and agent-context artifacts.
+Changed-card records distinguish semantic, structure, and body dimensions. Catalog records include only repository, module, agent-context, and prompt-prefix artifacts.
 
 ## Recover or commit a cache transaction
 
@@ -261,6 +261,8 @@ const result = await executeAgentOperation(
 ```
 
 The trusted wrapper binds `root`; the model supplies only the validated operation input. Results use one schemaVersion 1 envelope containing `operation`, `ok`, `data`, and `error`. Input errors use `LNVAP002`, missing IDs use `LNVAP404`, and unexpected operation failures use `LNVAP500`.
+
+`buildPromptPrefixBundle(input)` constructs ordered package, repository, and module partitions with normalized newlines, SHA-256 content hashes, estimated token counts, and explicit cache-boundary hints. `renderPromptPrefixBundle` serializes it deterministically. `loadPromptPrefixBundle(root)` accepts only a schema-compatible artifact whose exact bytes match `manifest.json`.
 
 ## Compatibility boundary
 

@@ -1,7 +1,7 @@
 /* llmnav/1 module
 id=llmnav.agent.protocol
-role=Expose stable provider-neutral tool schemas and execute bounded repository navigation operations.
-owns=agent tool schemas|operation validation|provider-neutral result envelope
+role=Execute bounded repository navigation operations through one provider-neutral result envelope.
+owns=operation validation|operation dispatch|provider-neutral result envelope
 excludes=provider SDK transport|repository discovery|source mutation
 search=agent tool schema|provider neutral tools|tool dispatcher|agent operation protocol
 rel=workflow>llmnav.search.query
@@ -13,33 +13,12 @@ import { loadGraphInputs } from "./graph-input.js";
 import { scanProject } from "./project.js";
 import { buildContext, queryProject, showProjectCard } from "./search.js";
 import { countDiagnostics, validateProject } from "./validator.js";
+import { getAgentToolDefinitions } from "./agent-tools.js";
 
-export const AGENT_TOOL_SCHEMA_VERSION = 1;
+export { AGENT_TOOL_SCHEMA_VERSION, getAgentToolDefinitions } from "./agent-tools.js";
 export const AGENT_OPERATION_SCHEMA_VERSION = 1;
 
-const DEFINITIONS = [
-  tool("llmnav_query", "Find the most relevant semantic cards for a coding task.", {
-    task: stringProperty("Task language to search for."),
-    top: integerProperty("Maximum results.", 1, 100, 5),
-  }, ["task"]),
-  tool("llmnav_show", "Resolve one local or qualified workspace semantic ID.", {
-    id: stringProperty("Semantic ID or repository-qualified semantic ID."),
-  }, ["id"]),
-  tool("llmnav_context", "Build bounded semantic and graph context around one ID.", {
-    id: stringProperty("Semantic ID or repository-qualified semantic ID."),
-    depth: integerProperty("Maximum graph traversal depth.", 0, 8, 1),
-    budget: integerProperty("Approximate token budget.", 128, 100000, 2500),
-    maxEdges: integerProperty("Maximum graph edges to inspect and pack.", 0, 1000, 24),
-  }, ["id"]),
-  tool("llmnav_check", "Validate semantic cards and configured graph inputs without mutation.", {
-    paths: {
-      type: "array",
-      description: "Optional repository-relative paths to validate.",
-      items: { type: "string", minLength: 1 },
-      default: [],
-    },
-  }),
-];
+const DEFINITIONS = getAgentToolDefinitions();
 
 const OPERATIONS = new Map([
   ["llmnav_query", "query"],
@@ -47,10 +26,6 @@ const OPERATIONS = new Map([
   ["llmnav_context", "context"],
   ["llmnav_check", "check"],
 ]);
-
-export function getAgentToolDefinitions() {
-  return structuredClone(DEFINITIONS);
-}
 
 export async function executeAgentOperation(root, name, input = {}) {
   const canonicalName = String(name);
@@ -90,28 +65,6 @@ export async function executeAgentOperation(root, name, input = {}) {
   } catch (error) {
     return failure(operation, "LNVAP500", error instanceof Error ? error.message : String(error));
   }
-}
-
-function tool(name, description, properties, required = []) {
-  return {
-    schemaVersion: AGENT_TOOL_SCHEMA_VERSION,
-    name,
-    description,
-    inputSchema: {
-      type: "object",
-      additionalProperties: false,
-      properties,
-      required,
-    },
-  };
-}
-
-function stringProperty(description) {
-  return { type: "string", minLength: 1, description };
-}
-
-function integerProperty(description, minimum, maximum, defaultValue) {
-  return { type: "integer", minimum, maximum, default: defaultValue, description };
 }
 
 function validateInput(schema, input) {

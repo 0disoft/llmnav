@@ -1,0 +1,194 @@
+{
+  "assembly": {
+    "basePartitionIds": [
+      "package:tool-definitions",
+      "package:agent-protocol",
+      "repository:core"
+    ],
+    "modulePartitionIds": [
+      "module:example.auth",
+      "module:example.billing",
+      "module:example.privacy",
+      "module:llmnav.agent",
+      "module:llmnav.cli",
+      "module:llmnav.contract",
+      "module:llmnav.diagnostics",
+      "module:llmnav.eval",
+      "module:llmnav.graph",
+      "module:llmnav.index",
+      "module:llmnav.project",
+      "module:llmnav.rules",
+      "module:llmnav.search",
+      "module:llmnav.structure",
+      "module:llmnav.syntax"
+    ],
+    "volatileContextAfter": true
+  },
+  "bundleHash": "65517cacf6a3e679cbab403d048225dc530e1c5b0646e6f50b13d498a2e1631a",
+  "partitions": [
+    {
+      "cacheBoundaryAfter": true,
+      "cacheScope": "package",
+      "content": "[\n  {\n    \"description\": \"Find the most relevant semantic cards for a coding task.\",\n    \"inputSchema\": {\n      \"additionalProperties\": false,\n      \"properties\": {\n        \"task\": {\n          \"description\": \"Task language to search for.\",\n          \"minLength\": 1,\n          \"type\": \"string\"\n        },\n        \"top\": {\n          \"default\": 5,\n          \"description\": \"Maximum results.\",\n          \"maximum\": 100,\n          \"minimum\": 1,\n          \"type\": \"integer\"\n        }\n      },\n      \"required\": [\n        \"task\"\n      ],\n      \"type\": \"object\"\n    },\n    \"name\": \"llmnav_query\",\n    \"schemaVersion\": 1\n  },\n  {\n    \"description\": \"Resolve one local or qualified workspace semantic ID.\",\n    \"inputSchema\": {\n      \"additionalProperties\": false,\n      \"properties\": {\n        \"id\": {\n          \"description\": \"Semantic ID or repository-qualified semantic ID.\",\n          \"minLength\": 1,\n          \"type\": \"string\"\n        }\n      },\n      \"required\": [\n        \"id\"\n      ],\n      \"type\": \"object\"\n    },\n    \"name\": \"llmnav_show\",\n    \"schemaVersion\": 1\n  },\n  {\n    \"description\": \"Build bounded semantic and graph context around one ID.\",\n    \"inputSchema\": {\n      \"additionalProperties\": false,\n      \"properties\": {\n        \"budget\": {\n          \"default\": 2500,\n          \"description\": \"Approximate token budget.\",\n          \"maximum\": 100000,\n          \"minimum\": 128,\n          \"type\": \"integer\"\n        },\n        \"depth\": {\n          \"default\": 1,\n          \"description\": \"Maximum graph traversal depth.\",\n          \"maximum\": 8,\n          \"minimum\": 0,\n          \"type\": \"integer\"\n        },\n        \"id\": {\n          \"description\": \"Semantic ID or repository-qualified semantic ID.\",\n          \"minLength\": 1,\n          \"type\": \"string\"\n        },\n        \"maxEdges\": {\n          \"default\": 24,\n          \"description\": \"Maximum graph edges to inspect and pack.\",\n          \"maximum\": 1000,\n          \"minimum\": 0,\n          \"type\": \"integer\"\n        }\n      },\n      \"required\": [\n        \"id\"\n      ],\n      \"type\": \"object\"\n    },\n    \"name\": \"llmnav_context\",\n    \"schemaVersion\": 1\n  },\n  {\n    \"description\": \"Validate semantic cards and configured graph inputs without mutation.\",\n    \"inputSchema\": {\n      \"additionalProperties\": false,\n      \"properties\": {\n        \"paths\": {\n          \"default\": [],\n          \"description\": \"Optional repository-relative paths to validate.\",\n          \"items\": {\n            \"minLength\": 1,\n            \"type\": \"string\"\n          },\n          \"type\": \"array\"\n        }\n      },\n      \"required\": [],\n      \"type\": \"object\"\n    },\n    \"name\": \"llmnav_check\",\n    \"schemaVersion\": 1\n  }\n]\n",
+      "contentHash": "d0fb5a43b36f123589b217e0ebefaf4f81c43a9c333654b0f9e88e26a3ec7ce1",
+      "contentType": "application/json",
+      "estimatedTokens": 665,
+      "id": "package:tool-definitions"
+    },
+    {
+      "cacheBoundaryAfter": true,
+      "cacheScope": "package",
+      "content": "## LLMNav code navigation\n\n<!-- llmnav:start -->\nBefore broad grep, directory scans, or opening many source files, run `npm exec -- llmnav query \"<task>\" --top 5`.\n\nResolve the selected semantic ID with `npm exec -- llmnav show <id>`. Use `npm exec -- llmnav context <id> --depth 1 --budget 2500` when related policy, workflow, fallback, migration, or test cards are needed.\n\nWhen the host supports structured tools, load the provider-neutral definitions from `npm exec -- llmnav tools --json`. Keep the repository root bound by the host rather than accepting it from model-generated tool input.\n\nRead generated cards and signatures before opening full symbol bodies. Treat paths, line numbers, signatures, imports, and hashes as generated data rather than source-of-truth annotations.\n\nKeep an existing LLMNav ID when a symbol or file is renamed or moved. Change `role`, `invariant`, `effect`, `risk`, and semantic `rel` values only when behavior or contracts change.\n\nDo not add hand-maintained `calls`, `imports`, `references`, `implements`, `exports`, or `overrides` relations. Do not put paths, line numbers, commit hashes, timestamps, callers, or current signatures in LLMNav source comments.\n\nAfter semantic changes, run `npm exec -- llmnav format`, `npm exec -- llmnav check`, and `npm exec -- llmnav generate`. Use broad text search only when LLMNav returns no credible candidate.\n<!-- llmnav:end -->",
+      "contentHash": "fad435843cd9f27530c5072b815aed73688154db300d547f76cdddc1aaae9ab5",
+      "contentType": "text/markdown",
+      "estimatedTokens": 353,
+      "id": "package:agent-protocol"
+    },
+    {
+      "cacheBoundaryAfter": true,
+      "cacheScope": "repository",
+      "content": "llmnav-catalog/1 repository=llmnav catalog=repository\nRead semantic cards before opening source. Resolve current paths and signatures with llmnav query or show.\n\n@example.auth.session\nrole Own refresh-token rotation, replay detection, and family revocation for the example service.\nowns refresh-token family, session revocation\nexcludes access-token signing, user profile storage\ninvariant One token family has at most one live refresh token.\n\n@example.billing.credit\nrole Own credit reservation and capture boundaries for generation jobs.\nowns credit reservation, reservation capture\nexcludes provider invoice settlement, subscription entitlement\ninvariant Captured credits never exceed the active reservation.\n\n@example.privacy.export\nrole Own preparation and expiry of user data export jobs.\nowns export manifest, temporary export object\nexcludes account deletion, long-term archive storage\ninvariant Every export object expires after the configured retention window.\n\n@llmnav.agent.install\nrole Install one managed navigation protocol into instruction files used by major coding agents.\nowns agent instruction adapters, managed instruction blocks\nexcludes postinstall mutation, agent execution\nrel workflow>llmnav.search.query\n\n@llmnav.cli.dispatch\nrole Expose initialization, validation, generation, search, evaluation, and diagnostics through one CLI.\nowns command dispatch, terminal output, exit codes\nexcludes semantic rule definitions, index persistence format\nrel workflow>llmnav.project.initialize, workflow>llmnav.rules.validate, workflow>llmnav.search.query, workflow>llmnav.eval.measure\n\n@llmnav.eval.measure\nrole Measure whether repository task queries retrieve expected semantic IDs within configured rank gates.\nowns search regression tests, recall metrics, evaluation gates\nexcludes benchmark task execution, model quality scoring\nrel workflow>llmnav.search.query\n\n@llmnav.index.generate\nrole Compile validated semantic cards into deterministic repository and module catalogs for coding agents.\nowns stable card order, generated index, cache catalogs\nexcludes source semantics, agent search decisions\nrel workflow>llmnav.rules.validate, workflow>llmnav.index.incremental, workflow>llmnav.index.inverted, workflow>llmnav.index.transaction\n\n@llmnav.project.initialize\nrole Create a repository's LLMNav configuration, registry, schemas, agent instructions, and initial index.\nowns project bootstrap, configuration templates, initial generation\nexcludes package installation, automatic annotation\nrel workflow>llmnav.agent.install, workflow>llmnav.index.generate\n\n@llmnav.rules.validate\nrole Reject unstable, ambiguous, oversized, or structurally invalid LLMNav metadata before indexing.\nowns semantic lint rules, coverage rules, registry consistency\nexcludes source rewriting, search ranking\nrel workflow>llmnav.syntax.parse\n\n@llmnav.search.query\nrole Rank cards from task language and pack confidence-weighted repository graph context.\nowns query ranking, graph ranking, multilingual aliases, context expansion\nexcludes embedding generation, source mutation\nrel workflow>llmnav.index.generate, workflow>llmnav.index.inverted, workflow>llmnav.graph.generate\n\n@llmnav.syntax.parse\nrole Parse LLMNav source comments into deterministic semantic cards and rewrite them canonically.\nowns comment grammar, card materialization, canonical serialization\nexcludes semantic validation, repository search\n\n@llmnav.index.changes\nrole Describe changed cards, affected boundaries, and generated catalogs as stable machine-readable records.\nowns card diff, boundary impact report, catalog impact report, change ordering\nexcludes source mutation, cache commit\nrel workflow>llmnav.index.generate\n\n@llmnav.index.incremental\nrole Reuse unchanged file parses and card records while rebuilding deterministic generated artifacts.\nowns file fingerprints, parsed-file state, incremental scan metrics\nexcludes source comment mutation, cache directory commit\nrel workflow>llmnav.index.generate\n\n@llmnav.index.inverted\nrole Compile searchable card fields into a deterministic inverted index that can be updated one card at a time.\nowns posting lists, card search documents, incremental token reuse\nexcludes semantic source syntax, query presentation\nrel workflow>llmnav.search.tokenize, workflow>llmnav.index.generate\n\n@llmnav.index.transaction\nrole Commit a complete generated cache with rollback and crash recovery across POSIX and Windows rename behavior.\nowns cache staging, directory swap, generation recovery\nexcludes artifact semantics, source indexing\nrel workflow>llmnav.index.generate\n\n@llmnav.search.tokenize\nrole Normalize task text and emit deterministic word and CJK n-gram tokens for semantic retrieval.\nowns query normalization, CJK n-grams, tokenizer version\nexcludes card ranking, inverted-index persistence\nrel workflow>llmnav.search.query\n\n@llmnav.contract.fingerprint\nrole Fingerprint repository API and configuration contracts without coupling them to source locations.\nowns contract fingerprint schema, export selection, contract drift comparison\nexcludes semantic version decisions, source mutation\nrel workflow>llmnav.index.generate\n\n@llmnav.structure.boundaries\nrole Detect route, event, schema, migration, and command boundaries from generated local evidence.\nowns boundary kinds, confidence assignment, boundary evidence\nexcludes framework execution, source annotations\nrel workflow>llmnav.index.generate\n\n@llmnav.index.search-shards\nrole Split a compact search index into deterministic card-range artifacts without retokenizing documents.\nowns search shard schema, card range partitioning, shard manifest\nexcludes query ranking, source parsing\nrel workflow>llmnav.index.inverted, workflow>llmnav.index.generate\n\n@llmnav.graph.import\nrole Load and validate optional generated definition and reference indexes without executing repository code.\nowns graph import schema, input normalization, graph input diagnostics\nexcludes graph ranking, source mutation\nrel workflow>llmnav.index.generate\n\n@llmnav.graph.generate\nrole Build deterministic repository graphs with content-addressed partitions and resolve qualified IDs across workspace nodes.\nowns graph schema, edge normalization, local import resolution, workspace ID resolution, graph partition invalidation\nexcludes query scoring, workspace file discovery\nrel workflow>llmnav.graph.import, workflow>llmnav.index.generate\n\n@llmnav.agent.prompt-bundle\nrole Assemble deterministic prompt-prefix partitions with explicit cache scope and integrity hashes.\nowns prompt bundle schema, partition ordering, cache boundaries, bundle integrity\nexcludes provider cache API calls, volatile task context, source discovery\nrel workflow>llmnav.agent.tool-schema, workflow>llmnav.agent.install, workflow>llmnav.index.generate\n",
+      "contentHash": "9dda107e1a73c8de7358828c9e1089d3ffc091b2cd31bb8cf32759d131ca493f",
+      "contentType": "text/plain",
+      "estimatedTokens": 1695,
+      "id": "repository:core"
+    },
+    {
+      "cacheBoundaryAfter": true,
+      "cacheScope": "module",
+      "content": "llmnav-catalog/1 repository=llmnav catalog=example.auth\nRead semantic cards before opening source. Resolve current paths and signatures with llmnav query or show.\n\n@example.auth.session\nrole Own refresh-token rotation, replay detection, and family revocation for the example service.\nowns refresh-token family, session revocation\nexcludes access-token signing, user profile storage\ninvariant One token family has at most one live refresh token.\n\n@example.auth.session.rotate\nrole Rotate one refresh-token family atomically and reject a replayed token.\ninvariant At most one live refresh token exists per family. Replay revokes the entire token family.\neffect db.write(session_tokens), event.emit(auth.session.revoked)\nrisk auth, concurrency\nrel test>example.auth.session.rotate-contract\n\n@example.auth.session.rotate-contract\nrole Verify rotation preserves single-token and replay-revocation guarantees.\n",
+      "contentHash": "ae0aebf37a7f541ec0af5a36c1584452703b5b4fcafd6f397d0a7a402c3a76e1",
+      "contentType": "text/plain",
+      "estimatedTokens": 226,
+      "id": "module:example.auth"
+    },
+    {
+      "cacheBoundaryAfter": true,
+      "cacheScope": "module",
+      "content": "llmnav-catalog/1 repository=llmnav catalog=example.billing\nRead semantic cards before opening source. Resolve current paths and signatures with llmnav query or show.\n\n@example.billing.credit\nrole Own credit reservation and capture boundaries for generation jobs.\nowns credit reservation, reservation capture\nexcludes provider invoice settlement, subscription entitlement\ninvariant Captured credits never exceed the active reservation.\n\n@example.billing.credit.reserve\nrole Reserve credits before an external generation job starts.\ninvariant One idempotency key creates at most one active reservation.\neffect db.write(credit_reservations)\nrisk concurrency\n",
+      "contentHash": "957e2c984d5c121e598956c4f78525016505b1c97d6a94273866d92c4166fecd",
+      "contentType": "text/plain",
+      "estimatedTokens": 164,
+      "id": "module:example.billing"
+    },
+    {
+      "cacheBoundaryAfter": true,
+      "cacheScope": "module",
+      "content": "llmnav-catalog/1 repository=llmnav catalog=example.privacy\nRead semantic cards before opening source. Resolve current paths and signatures with llmnav query or show.\n\n@example.privacy.export\nrole Own preparation and expiry of user data export jobs.\nowns export manifest, temporary export object\nexcludes account deletion, long-term archive storage\ninvariant Every export object expires after the configured retention window.\n\n@example.privacy.export.prepare\nrole Create one auditable export job without exposing its object key publicly.\ninvariant Only the requesting account can resolve the private object key.\neffect db.write(export_jobs), event.emit(privacy.export.requested)\nrisk privacy\nrel test>example.privacy.export.prepare-contract\n\n@example.privacy.export.prepare-contract\nrole Verify export preparation keeps object keys private and jobs auditable.\n",
+      "contentHash": "0948627bfa62f11088fbbf1aec835cab50c35d2d03f49eadefbddc221169e0b7",
+      "contentType": "text/plain",
+      "estimatedTokens": 215,
+      "id": "module:example.privacy"
+    },
+    {
+      "cacheBoundaryAfter": true,
+      "cacheScope": "module",
+      "content": "llmnav-catalog/1 repository=llmnav catalog=llmnav.agent\nRead semantic cards before opening source. Resolve current paths and signatures with llmnav query or show.\n\n@llmnav.agent.install\nrole Install one managed navigation protocol into instruction files used by major coding agents.\nowns agent instruction adapters, managed instruction blocks\nexcludes postinstall mutation, agent execution\nrel workflow>llmnav.search.query\n\n@llmnav.agent.protocol\nrole Execute bounded repository navigation operations through one provider-neutral result envelope.\nowns operation validation, operation dispatch, provider-neutral result envelope\nexcludes provider SDK transport, repository discovery, source mutation\nrel workflow>llmnav.search.query, workflow>llmnav.rules.validate\n\n@llmnav.agent.prompt-bundle\nrole Assemble deterministic prompt-prefix partitions with explicit cache scope and integrity hashes.\nowns prompt bundle schema, partition ordering, cache boundaries, bundle integrity\nexcludes provider cache API calls, volatile task context, source discovery\nrel workflow>llmnav.agent.tool-schema, workflow>llmnav.agent.install, workflow>llmnav.index.generate\n\n@llmnav.agent.tool-schema\nrole Publish stable provider-neutral tool definitions without loading repository execution code.\nowns agent tool names, tool input schemas, tool order\nexcludes operation execution, provider SDK transport, repository scope\nrel workflow>llmnav.agent.protocol\n",
+      "contentHash": "103966e354388abeb2b18acb5eca31c2fafc9d9bb5fb96d189698de760c7ebae",
+      "contentType": "text/plain",
+      "estimatedTokens": 359,
+      "id": "module:llmnav.agent"
+    },
+    {
+      "cacheBoundaryAfter": true,
+      "cacheScope": "module",
+      "content": "llmnav-catalog/1 repository=llmnav catalog=llmnav.cli\nRead semantic cards before opening source. Resolve current paths and signatures with llmnav query or show.\n\n@llmnav.cli.dispatch\nrole Expose initialization, validation, generation, search, evaluation, and diagnostics through one CLI.\nowns command dispatch, terminal output, exit codes\nexcludes semantic rule definitions, index persistence format\nrel workflow>llmnav.project.initialize, workflow>llmnav.rules.validate, workflow>llmnav.search.query, workflow>llmnav.eval.measure\n",
+      "contentHash": "871389f0e8131b0181ad4385f1aac4fea35dd53ba4ce315b1ce23f8a86655825",
+      "contentType": "text/plain",
+      "estimatedTokens": 133,
+      "id": "module:llmnav.cli"
+    },
+    {
+      "cacheBoundaryAfter": true,
+      "cacheScope": "module",
+      "content": "llmnav-catalog/1 repository=llmnav catalog=llmnav.contract\nRead semantic cards before opening source. Resolve current paths and signatures with llmnav query or show.\n\n@llmnav.contract.fingerprint\nrole Fingerprint repository API and configuration contracts without coupling them to source locations.\nowns contract fingerprint schema, export selection, contract drift comparison\nexcludes semantic version decisions, source mutation\nrel workflow>llmnav.index.generate\n",
+      "contentHash": "ca2e37e6162910796a3cf0e3681fa508249dbdf5d9421f3768ceac09df3e401a",
+      "contentType": "text/plain",
+      "estimatedTokens": 117,
+      "id": "module:llmnav.contract"
+    },
+    {
+      "cacheBoundaryAfter": true,
+      "cacheScope": "module",
+      "content": "llmnav-catalog/1 repository=llmnav catalog=llmnav.diagnostics\nRead semantic cards before opening source. Resolve current paths and signatures with llmnav query or show.\n\n@llmnav.diagnostics.sarif\nrole Serialize deterministic LLMNav diagnostics as a SARIF 2.1.0 result log.\nowns SARIF schema mapping, diagnostic rule table, artifact locations\nexcludes diagnostic discovery, file writes\nrel workflow>llmnav.rules.validate\n",
+      "contentHash": "1c7c41bc2ceb76949415fa54ba4b14fff774a49c508aa1bb0279ad4cf9c7c55e",
+      "contentType": "text/plain",
+      "estimatedTokens": 105,
+      "id": "module:llmnav.diagnostics"
+    },
+    {
+      "cacheBoundaryAfter": true,
+      "cacheScope": "module",
+      "content": "llmnav-catalog/1 repository=llmnav catalog=llmnav.eval\nRead semantic cards before opening source. Resolve current paths and signatures with llmnav query or show.\n\n@llmnav.eval.measure\nrole Measure whether repository task queries retrieve expected semantic IDs within configured rank gates.\nowns search regression tests, recall metrics, evaluation gates\nexcludes benchmark task execution, model quality scoring\nrel workflow>llmnav.search.query\n",
+      "contentHash": "b7c33761365f1863d42c63ac1ced6dfc665a582faeeafa653f623c363e2ac4d6",
+      "contentType": "text/plain",
+      "estimatedTokens": 111,
+      "id": "module:llmnav.eval"
+    },
+    {
+      "cacheBoundaryAfter": true,
+      "cacheScope": "module",
+      "content": "llmnav-catalog/1 repository=llmnav catalog=llmnav.graph\nRead semantic cards before opening source. Resolve current paths and signatures with llmnav query or show.\n\n@llmnav.graph.import\nrole Load and validate optional generated definition and reference indexes without executing repository code.\nowns graph import schema, input normalization, graph input diagnostics\nexcludes graph ranking, source mutation\nrel workflow>llmnav.index.generate\n\n@llmnav.graph.generate\nrole Build deterministic repository graphs with content-addressed partitions and resolve qualified IDs across workspace nodes.\nowns graph schema, edge normalization, local import resolution, workspace ID resolution, graph partition invalidation\nexcludes query scoring, workspace file discovery\nrel workflow>llmnav.graph.import, workflow>llmnav.index.generate\n",
+      "contentHash": "e03fbd752f6ec620f2a680a3f23bb94acb9ffd8ee28dab0149c57197a7201702",
+      "contentType": "text/plain",
+      "estimatedTokens": 206,
+      "id": "module:llmnav.graph"
+    },
+    {
+      "cacheBoundaryAfter": true,
+      "cacheScope": "module",
+      "content": "llmnav-catalog/1 repository=llmnav catalog=llmnav.index\nRead semantic cards before opening source. Resolve current paths and signatures with llmnav query or show.\n\n@llmnav.index.generate\nrole Compile validated semantic cards into deterministic repository and module catalogs for coding agents.\nowns stable card order, generated index, cache catalogs\nexcludes source semantics, agent search decisions\nrel workflow>llmnav.rules.validate, workflow>llmnav.index.incremental, workflow>llmnav.index.inverted, workflow>llmnav.index.transaction\n\n@llmnav.index.changes\nrole Describe changed cards, affected boundaries, and generated catalogs as stable machine-readable records.\nowns card diff, boundary impact report, catalog impact report, change ordering\nexcludes source mutation, cache commit\nrel workflow>llmnav.index.generate\n\n@llmnav.index.incremental\nrole Reuse unchanged file parses and card records while rebuilding deterministic generated artifacts.\nowns file fingerprints, parsed-file state, incremental scan metrics\nexcludes source comment mutation, cache directory commit\nrel workflow>llmnav.index.generate\n\n@llmnav.index.inverted\nrole Compile searchable card fields into a deterministic inverted index that can be updated one card at a time.\nowns posting lists, card search documents, incremental token reuse\nexcludes semantic source syntax, query presentation\nrel workflow>llmnav.search.tokenize, workflow>llmnav.index.generate\n\n@llmnav.index.transaction\nrole Commit a complete generated cache with rollback and crash recovery across POSIX and Windows rename behavior.\nowns cache staging, directory swap, generation recovery\nexcludes artifact semantics, source indexing\nrel workflow>llmnav.index.generate\n\n@llmnav.index.search-shards\nrole Split a compact search index into deterministic card-range artifacts without retokenizing documents.\nowns search shard schema, card range partitioning, shard manifest\nexcludes query ranking, source parsing\nrel workflow>llmnav.index.inverted, workflow>llmnav.index.generate\n",
+      "contentHash": "d102b0afb26a6be1ae81dc44fc8224ab685abeb4c035348c584d20259973d565",
+      "contentType": "text/plain",
+      "estimatedTokens": 505,
+      "id": "module:llmnav.index"
+    },
+    {
+      "cacheBoundaryAfter": true,
+      "cacheScope": "module",
+      "content": "llmnav-catalog/1 repository=llmnav catalog=llmnav.project\nRead semantic cards before opening source. Resolve current paths and signatures with llmnav query or show.\n\n@llmnav.project.initialize\nrole Create a repository's LLMNav configuration, registry, schemas, agent instructions, and initial index.\nowns project bootstrap, configuration templates, initial generation\nexcludes package installation, automatic annotation\nrel workflow>llmnav.agent.install, workflow>llmnav.index.generate\n",
+      "contentHash": "f74da215ab21f2f61714812ea2825c7a47e9f8169813f712150c6ad8097783ba",
+      "contentType": "text/plain",
+      "estimatedTokens": 122,
+      "id": "module:llmnav.project"
+    },
+    {
+      "cacheBoundaryAfter": true,
+      "cacheScope": "module",
+      "content": "llmnav-catalog/1 repository=llmnav catalog=llmnav.rules\nRead semantic cards before opening source. Resolve current paths and signatures with llmnav query or show.\n\n@llmnav.rules.validate\nrole Reject unstable, ambiguous, oversized, or structurally invalid LLMNav metadata before indexing.\nowns semantic lint rules, coverage rules, registry consistency\nexcludes source rewriting, search ranking\nrel workflow>llmnav.syntax.parse\n",
+      "contentHash": "08b21cecbf4f5125f639dfad960d3530ed1b21ecad74e134d2ca510199d2766d",
+      "contentType": "text/plain",
+      "estimatedTokens": 107,
+      "id": "module:llmnav.rules"
+    },
+    {
+      "cacheBoundaryAfter": true,
+      "cacheScope": "module",
+      "content": "llmnav-catalog/1 repository=llmnav catalog=llmnav.search\nRead semantic cards before opening source. Resolve current paths and signatures with llmnav query or show.\n\n@llmnav.search.query\nrole Rank cards from task language and pack confidence-weighted repository graph context.\nowns query ranking, graph ranking, multilingual aliases, context expansion\nexcludes embedding generation, source mutation\nrel workflow>llmnav.index.generate, workflow>llmnav.index.inverted, workflow>llmnav.graph.generate\n\n@llmnav.search.tokenize\nrole Normalize task text and emit deterministic word and CJK n-gram tokens for semantic retrieval.\nowns query normalization, CJK n-grams, tokenizer version\nexcludes card ranking, inverted-index persistence\nrel workflow>llmnav.search.query\n",
+      "contentHash": "4a3d078416b23b87e5923bb49178a8749a2ff2fad698bb9e811fc3f5fb27722d",
+      "contentType": "text/plain",
+      "estimatedTokens": 191,
+      "id": "module:llmnav.search"
+    },
+    {
+      "cacheBoundaryAfter": true,
+      "cacheScope": "module",
+      "content": "llmnav-catalog/1 repository=llmnav catalog=llmnav.structure\nRead semantic cards before opening source. Resolve current paths and signatures with llmnav query or show.\n\n@llmnav.structure.boundaries\nrole Detect route, event, schema, migration, and command boundaries from generated local evidence.\nowns boundary kinds, confidence assignment, boundary evidence\nexcludes framework execution, source annotations\nrel workflow>llmnav.index.generate\n",
+      "contentHash": "1574a667a2175d9a6ec86d753c6728f10a6bbf2887ba69dfcd3a030f283e05eb",
+      "contentType": "text/plain",
+      "estimatedTokens": 111,
+      "id": "module:llmnav.structure"
+    },
+    {
+      "cacheBoundaryAfter": true,
+      "cacheScope": "module",
+      "content": "llmnav-catalog/1 repository=llmnav catalog=llmnav.syntax\nRead semantic cards before opening source. Resolve current paths and signatures with llmnav query or show.\n\n@llmnav.syntax.parse\nrole Parse LLMNav source comments into deterministic semantic cards and rewrite them canonically.\nowns comment grammar, card materialization, canonical serialization\nexcludes semantic validation, repository search\n",
+      "contentHash": "a1f177762cc5a6e8d26ea4ca8c1ba36c840dbba98b0ed046ed4a1d19ed774916",
+      "contentType": "text/plain",
+      "estimatedTokens": 100,
+      "id": "module:llmnav.syntax"
+    }
+  ],
+  "repositoryId": "llmnav",
+  "schemaVersion": 1
+}

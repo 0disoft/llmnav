@@ -84,7 +84,9 @@ test and tool output
 
 The first two layers change rarely. The task and source bodies change frequently and belong after cache breakpoints.
 
-LLMNav emits catalogs but deliberately leaves provider-specific caching to the agent harness.
+Generation writes this ordering and the exact content into `.llmnav/cache/prompt-prefix.json`. Each partition records package, repository, or module cache scope, a content hash, an estimated token count, and an explicit boundary-after hint. `llmnav bundle` verifies the artifact against `manifest.json` before displaying it.
+
+The host selects only the modules relevant to the current task, preserves the declared base order, and appends volatile task, diff, source, and tool-result context after the selected partitions. LLMNav deliberately leaves provider-specific cache-control syntax to the host.
 
 ## Tool wrappers
 

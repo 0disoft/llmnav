@@ -43,6 +43,62 @@
       "to": "llmnav/llmnav.search.query"
     },
     {
+      "confidence": 1,
+      "from": "llmnav/llmnav.agent.prompt-bundle",
+      "id": "f23befe35d758f69f4fa4bdb6342ec302d2bf751a07ace88c403d829e89c4eae",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/prompt-bundle.js",
+        "source": "src/prompt-bundle.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.agent.install"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.agent.prompt-bundle",
+      "id": "5388e740ee3ad520fdc12d9689eca2644541b5ec7ef846cd3e2994b456f9e25a",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/prompt-bundle.js",
+        "source": "src/prompt-bundle.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.agent.tool-schema"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.agent.prompt-bundle",
+      "id": "844fe71836da25f6122badbcc2aa9c0839cbb583c72f99a40ce6398a83487c8a",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/prompt-bundle.js",
+        "source": "src/prompt-bundle.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.index.generate"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.agent.protocol",
+      "id": "5c73f063db76c0af02524c87a869c6e6bfb3db71dd97e36c8b0bb2afd2f3b615",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/agent-protocol.js",
+        "source": "src/agent-protocol.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.agent.tool-schema"
+    },
+    {
       "confidence": 0.85,
       "from": "llmnav/llmnav.agent.protocol",
       "id": "4a8b99e65fd35f1e9af502d233e4cc143cbe58d5cf5beb5b2b4fd60167b76de8",
@@ -111,6 +167,34 @@
         "type": "source-card"
       },
       "to": "llmnav/llmnav.search.query"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.agent.tool-schema",
+      "id": "c8603bdcb39f3d647b142ed1abb609452ecad94d518b281be11b03b8ed8604d5",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/agent-tools.js",
+        "source": "src/agent-tools.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.agent.protocol"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.cli.dispatch",
+      "id": "14b6f6b9cf3abc63c3a3800f980e11b915137f517c0a64497e54c073ea4018b4",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/cli.js",
+        "source": "src/cli.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.agent.prompt-bundle"
     },
     {
       "confidence": 0.85,
@@ -419,6 +503,48 @@
         "type": "source-card"
       },
       "to": "llmnav/llmnav.index.generate"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.index.generate",
+      "id": "8e259724bb150ce0ae1dcb33cd219033a534460fb67b8dd841f860b01af1b259",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/generator.js",
+        "source": "src/generator.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.agent.install"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.index.generate",
+      "id": "57289e7d9132a96cce47b8cf845a69bfac8528d7a5a6cf026c61307dcf041253",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/generator.js",
+        "source": "src/generator.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.agent.prompt-bundle"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.index.generate",
+      "id": "0c3db925099a0ca0431ae5f5819d2d44603464b0df6e6cb16c8258b729dc8195",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/generator.js",
+        "source": "src/generator.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.agent.tool-schema"
     },
     {
       "confidence": 0.85,
@@ -1215,6 +1341,28 @@
     {
       "definitions": [],
       "external": false,
+      "key": "llmnav/llmnav.agent.prompt-bundle",
+      "location": {
+        "declarationLine": null,
+        "endLine": 11,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/prompt-bundle.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Assemble deterministic prompt-prefix partitions with explicit cache scope and integrity hashes.",
+      "semanticId": "llmnav.agent.prompt-bundle",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
       "key": "llmnav/llmnav.agent.protocol",
       "location": {
         "declarationLine": null,
@@ -1230,8 +1378,30 @@
         "visibility": null
       },
       "repositoryId": "llmnav",
-      "role": "Expose stable provider-neutral tool schemas and execute bounded repository navigation operations.",
+      "role": "Execute bounded repository navigation operations through one provider-neutral result envelope.",
       "semanticId": "llmnav.agent.protocol",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
+      "key": "llmnav/llmnav.agent.tool-schema",
+      "location": {
+        "declarationLine": null,
+        "endLine": 9,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/agent-tools.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Publish stable provider-neutral tool definitions without loading repository execution code.",
+      "semanticId": "llmnav.agent.tool-schema",
       "unresolved": false
     },
     {
@@ -1633,11 +1803,11 @@
   ],
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "860233b4b61e4dec3aa3eac7f108dc305edd956643caf8e2fd892908a824fa92",
+  "sourceHash": "8862fed1ef1f19bfb58cdd65698cf6e164c493fb94e1ad59c80c9773385b12f0",
   "stats": {
-    "edgeCount": 68,
+    "edgeCount": 77,
     "importedIndexCount": 0,
-    "nodeCount": 28,
+    "nodeCount": 30,
     "unresolvedNodeCount": 0
   }
 }

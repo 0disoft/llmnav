@@ -78,6 +78,19 @@ When `generation.searchShardSize` is positive and the repository exceeds that ca
 
 Shards slice the already-built compact documents and postings, adjust local card ordinals, and never retokenize cards. Every shard independently satisfies the compact search-index compatibility checks for its card subset. The full `search-index.json` remains authoritative for built-in queries, preserving global document frequency and v0.2 ranking behavior. Cache transactions publish or remove the complete shard set atomically.
 
+## Prompt-prefix bundle
+
+`.llmnav/cache/prompt-prefix.json` schemaVersion 1 packages the exact stable prefix material without applying any provider-specific cache API. Its ordered partitions are:
+
+1. provider-neutral tool definitions with package cache scope
+2. the managed agent protocol with package cache scope
+3. the repository core catalog with repository cache scope
+4. module catalogs in semantic-ID order with module cache scope
+
+Every partition contains normalized content, SHA-256 content identity, an estimated token count, and an explicit boundary-after hint. The bundle records base and selectable module IDs separately and states that volatile context belongs after them. Its aggregate hash covers ordered partition IDs and content hashes.
+
+The artifact contains no timestamp, branch, diff, user task, absolute path, or provider setting. It is covered by `manifest.json` and published in the same cache transaction as its source catalogs. A consumer must preserve base order, choose only relevant module partitions, and add volatile context afterward.
+
 ## Repository graph
 
 `.llmnav/cache/graph.json` schemaVersion 1 is a deterministic derived artifact. It combines source-card semantic relations, resolvable relative imports, and configured generated definition/reference indexes. Nodes and edges use qualified repository keys. Edges retain confidence and provenance rather than flattening explicit and inferred evidence into one unqualified relation.

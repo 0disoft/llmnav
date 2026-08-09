@@ -5,6 +5,13 @@ export {
   executeAgentOperation,
   getAgentToolDefinitions,
 } from "./agent-protocol.js";
+export {
+  buildPromptPrefixBundle,
+  isCompatiblePromptPrefixBundle,
+  loadPromptPrefixBundle,
+  PROMPT_BUNDLE_SCHEMA_VERSION,
+  renderPromptPrefixBundle,
+} from "./prompt-bundle.js";
 export { compareCardIndexes, describeAffectedBoundaries, describeAffectedCatalogs } from "./changes.js";
 export { loadConfig, validateConfig } from "./config.js";
 export { BOUNDARY_KINDS, detectBoundaries } from "./boundaries.js";

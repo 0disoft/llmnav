@@ -35,6 +35,7 @@ import { diagnosticsToSarif } from "./sarif.js";
 import { loadGraphInputs } from "./graph-input.js";
 import { renderGraphNode } from "./graph.js";
 import { getAgentToolDefinitions } from "./agent-protocol.js";
+import { loadPromptPrefixBundle } from "./prompt-bundle.js";
 
 const VALUE_OPTIONS = new Set(["--root", "--format", "--top", "--depth", "--budget", "--max-edges", "--agents", "--file"]);
 
@@ -51,6 +52,7 @@ const COMMAND_OPTIONS = Object.freeze({
   doctor: new Set(["--root", "--json"]),
   spec: new Set(["--root", "--json"]),
   tools: new Set(["--json"]),
+  bundle: new Set(["--root", "--json"]),
   help: new Set(["--root", "--json"]),
 });
 
@@ -94,6 +96,8 @@ export async function runCli(argv) {
       return runDoctor(root, json);
     case "spec":
       return runSpec(json);
+    case "bundle":
+      return runBundle(root, json);
     case "help":
       printHelp();
       return 0;
@@ -311,6 +315,18 @@ function runTools(json) {
   return 0;
 }
 
+async function runBundle(root, json) {
+  const bundle = await loadPromptPrefixBundle(root);
+  if (json) console.log(JSON.stringify(bundle, null, 2));
+  else {
+    console.log(`llmnav-prompt-bundle/${bundle.schemaVersion} repository=${bundle.repositoryId} hash=${bundle.bundleHash}`);
+    for (const partition of bundle.partitions) {
+      console.log(`${partition.id}\tscope=${partition.cacheScope}\ttokens~${partition.estimatedTokens}\tsha256=${partition.contentHash}`);
+    }
+  }
+  return 0;
+}
+
 function printDiagnostics(diagnostics, format) {
   for (const item of diagnostics) {
     if (format === "github") {
@@ -420,6 +436,7 @@ Usage
   llmnav doctor
   llmnav spec
   llmnav tools [--json]
+  llmnav bundle [--json]
 
 Global options
   --root <path>    Project root

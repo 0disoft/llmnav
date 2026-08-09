@@ -59,6 +59,7 @@ export function describeAffectedCatalogs(changedFiles, cacheDirectory, config, p
   const known = new Map([
     [`${cacheRoot}/repo-core.txt`, { kind: "repository", id: "repository" }],
     [`${cacheRoot}/agent-context.md`, { kind: "agent-context", id: "agent-context" }],
+    [`${cacheRoot}/prompt-prefix.json`, { kind: "prompt-prefix", id: "prompt-prefix" }],
   ]);
   for (const index of [previousIndex, currentIndex]) {
     for (const module of buildModuleCatalogMetadata(index?.cards ?? [], config)) {

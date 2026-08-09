@@ -58,6 +58,13 @@ import {
   renderGraphState,
   renderRepositoryGraph,
 } from "./graph.js";
+import { AGENT_PROTOCOL } from "./agents.js";
+import { getAgentToolDefinitions } from "./agent-tools.js";
+import {
+  buildPromptPrefixBundle,
+  PROMPT_BUNDLE_SCHEMA_VERSION,
+  renderPromptPrefixBundle,
+} from "./prompt-bundle.js";
 
 export async function generateProject(root, options = {}) {
   const { config: recoveryConfig } = await loadConfig(root);
@@ -294,6 +301,14 @@ export function buildArtifactSet(project, order, options = {}) {
   }
 
   artifacts.set(`${cacheRoot}/agent-context.md`, renderAgentContext(project.config.repositoryId, moduleManifest));
+  const promptBundle = buildPromptPrefixBundle({
+    repositoryId: project.config.repositoryId,
+    toolDefinitions: getAgentToolDefinitions(),
+    agentProtocol: AGENT_PROTOCOL,
+    repositoryCore: artifacts.get(`${cacheRoot}/repo-core.txt`),
+    modules: moduleManifest.map((item) => ({ id: item.id, content: artifacts.get(item.file) })),
+  });
+  artifacts.set(`${cacheRoot}/prompt-prefix.json`, renderPromptPrefixBundle(promptBundle));
 
   const contentHashes = Object.fromEntries(
     [...artifacts.entries()]
@@ -312,11 +327,12 @@ export function buildArtifactSet(project, order, options = {}) {
     fileStateSchemaVersion: fileState.schemaVersion,
     graphSchemaVersion: GRAPH_SCHEMA_VERSION,
     graphStateSchemaVersion: GRAPH_STATE_SCHEMA_VERSION,
+    promptBundleSchemaVersion: PROMPT_BUNDLE_SCHEMA_VERSION,
     searchShardSchemaVersion: searchShards.manifest ? SEARCH_SHARD_SCHEMA_VERSION : null,
     files: contentHashes,
   };
   artifacts.set(`${cacheRoot}/manifest.json`, stableStringify(manifest));
-  return { artifacts, index, searchIndex, searchStats, fileState, graph, graphState, graphStats, moduleManifest };
+  return { artifacts, index, searchIndex, searchStats, fileState, graph, graphState, graphStats, promptBundle, moduleManifest };
 }
 
 function diagnosticForContractChange(change) {
