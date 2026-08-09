@@ -201,9 +201,9 @@ Keep source cards in one repository language. Map product wording, local languag
 {
   "version": 1,
   "aliases": {
-    "세션 갱신": "auth.session.rotate",
-    "토큰 재사용 공격": "auth.session.rotate",
-    "크레딧 선점": "billing.credit.reserve"
+    "session renewal": "auth.session.rotate",
+    "token replay attack": "auth.session.rotate",
+    "credit reservation": "billing.credit.reserve"
   }
 }
 ```

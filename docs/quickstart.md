@@ -116,9 +116,9 @@ The expected agent workflow is:
 {
   "version": 1,
   "aliases": {
-    "세션 갱신": "auth.session.rotate",
-    "토큰 재사용 공격": "auth.session.rotate",
-    "크레딧 선점": "billing.credit.reserve"
+    "session renewal": "auth.session.rotate",
+    "token replay attack": "auth.session.rotate",
+    "credit reservation": "billing.credit.reserve"
   }
 }
 ```
@@ -128,8 +128,8 @@ Aliases are evaluated before lexical ranking and receive a large deterministic s
 ## Add search regression cases
 
 ```jsonl
-{"query":"재사용된 리프레시 토큰이면 같은 세션을 모두 폐기","expected":["auth.session.rotate","auth.session.revoke-family"]}
-{"query":"외부 생성 작업 전에 크레딧을 먼저 묶어둔다","expected":["billing.credit.reserve"]}
+{"query":"revoke every session in the family when a refresh token is replayed","expected":["auth.session.rotate","auth.session.revoke-family"]}
+{"query":"reserve credits before starting an external generation job","expected":["billing.credit.reserve"]}
 ```
 
 ```sh

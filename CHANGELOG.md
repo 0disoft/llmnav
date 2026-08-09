@@ -6,6 +6,10 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 
 ## [Unreleased]
 
+### Changed
+
+* Replaced the remaining Korean documentation examples with English equivalents.
+
 ### Removed
 
 * Removed the Korean README so the project maintains one canonical English README.
