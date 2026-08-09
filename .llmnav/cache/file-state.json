@@ -107,14 +107,14 @@
             "role": "Own credit reservation and capture boundaries for generation jobs.",
             "scope": "module",
             "search": [
-              "credit hold",
-              "generation billing",
-              "reserve credits"
+              "credit reservation lifecycle",
+              "capture boundary",
+              "generation quota"
             ],
             "stability": "architecture",
             "unknown": []
           },
-          "end": 383,
+          "end": 399,
           "endLine": 11,
           "entries": [
             {
@@ -145,7 +145,7 @@
               "key": "search",
               "line": 8,
               "order": 4,
-              "value": "credit hold|generation billing|reserve credits"
+              "value": "credit reservation lifecycle|capture boundary|generation quota"
             },
             {
               "key": "invariant",
@@ -164,7 +164,7 @@
           "indent": "",
           "newline": "\n",
           "prefix": null,
-          "raw": "/* llmnav/1 module\nid=example.billing.credit\nrole=Own credit reservation and capture boundaries for generation jobs.\nowns=credit reservation|reservation capture\nexcludes=provider invoice settlement|subscription entitlement\nsearch=credit hold|generation billing|reserve credits\ninvariant=Captured credits never exceed the active reservation.\nstability=architecture\n*/",
+          "raw": "/* llmnav/1 module\nid=example.billing.credit\nrole=Own credit reservation and capture boundaries for generation jobs.\nowns=credit reservation|reservation capture\nexcludes=provider invoice settlement|subscription entitlement\nsearch=credit reservation lifecycle|capture boundary|generation quota\ninvariant=Captured credits never exceed the active reservation.\nstability=architecture\n*/",
           "scope": "module",
           "specVersion": "1",
           "start": 17,
@@ -197,7 +197,7 @@
             "stability": "contract",
             "unknown": []
           },
-          "end": 758,
+          "end": 774,
           "endLine": 26,
           "entries": [
             {
@@ -250,23 +250,23 @@
           "raw": "/* llmnav/1 symbol\nid=example.billing.credit.reserve\nrole=Reserve credits before an external generation job starts.\nsearch=credit hold|reserve credits|generation billing\ninvariant=One idempotency key creates at most one active reservation.\neffect=db.write(credit_reservations)\nrisk=concurrency\nstability=contract\n*/",
           "scope": "symbol",
           "specVersion": "1",
-          "start": 443,
+          "start": 459,
           "startLine": 18,
           "style": "block",
           "syntaxErrors": []
         }
       ],
-      "contentHash": "472ab94549b0b17821a8351c1e7f0cc938a97b14bb81364835aa8c5c177323e7",
+      "contentHash": "dc9fcb9e1a3430557e1403873e33b281d14fd3ced51f8888384db3a4f82db291",
       "declarations": [
         null,
         {
           "bodyHash": "e06dbef7345aecf6261d50ba5728819f5c641967c4bdf0c7bff5dbe2ac916bdb",
-          "endOffset": 924,
+          "endOffset": 940,
           "exported": true,
           "kind": "function",
           "language": "go",
           "line": 28,
-          "offset": 760,
+          "offset": 776,
           "receiver": null,
           "signature": "func ReserveCredits(accountID string, amount int64, idempotencyKey string) Reservation",
           "symbol": "ReserveCredits",
@@ -275,8 +275,8 @@
       ],
       "imports": [],
       "path": "examples/go/session/reserve.go",
-      "semanticBytes": 681,
-      "sourceBytes": 925
+      "semanticBytes": 697,
+      "sourceBytes": 941
     },
     {
       "blocks": [],
@@ -313,14 +313,14 @@
             "role": "Own preparation and expiry of user data export jobs.",
             "scope": "module",
             "search": [
-              "data export",
-              "privacy download",
-              "export archive"
+              "privacy export lifecycle",
+              "temporary archive",
+              "export expiry"
             ],
             "stability": "architecture",
             "unknown": []
           },
-          "end": 374,
+          "end": 387,
           "endLine": 9,
           "entries": [
             {
@@ -351,7 +351,7 @@
               "key": "search",
               "line": 6,
               "order": 4,
-              "value": "data export|privacy download|export archive"
+              "value": "privacy export lifecycle|temporary archive|export expiry"
             },
             {
               "key": "invariant",
@@ -370,7 +370,7 @@
           "indent": "",
           "newline": "\n",
           "prefix": "#",
-          "raw": "# llmnav/1 module\n# id=example.privacy.export\n# role=Own preparation and expiry of user data export jobs.\n# owns=export manifest|temporary export object\n# excludes=account deletion|long-term archive storage\n# search=data export|privacy download|export archive\n# invariant=Every export object expires after the configured retention window.\n# stability=architecture\n# /llmnav\n",
+          "raw": "# llmnav/1 module\n# id=example.privacy.export\n# role=Own preparation and expiry of user data export jobs.\n# owns=export manifest|temporary export object\n# excludes=account deletion|long-term archive storage\n# search=privacy export lifecycle|temporary archive|export expiry\n# invariant=Every export object expires after the configured retention window.\n# stability=architecture\n# /llmnav\n",
           "scope": "module",
           "specVersion": "1",
           "start": 0,
@@ -406,7 +406,7 @@
             "stability": "contract",
             "unknown": []
           },
-          "end": 923,
+          "end": 936,
           "endLine": 29,
           "entries": [
             {
@@ -465,7 +465,7 @@
           "raw": "# llmnav/1 symbol\n# id=example.privacy.export.prepare\n# role=Create one auditable export job without exposing its object key publicly.\n# search=data export|privacy download|export preparation\n# invariant=Only the requesting account can resolve the private object key.\n# effect=db.write(export_jobs)|event.emit(privacy.export.requested)\n# risk=privacy\n# rel=test>example.privacy.export.prepare-contract\n# stability=contract\n# /llmnav\n",
           "scope": "symbol",
           "specVersion": "1",
-          "start": 490,
+          "start": 503,
           "startLine": 20,
           "style": "line",
           "syntaxErrors": []
@@ -489,7 +489,7 @@
             "stability": "contract",
             "unknown": []
           },
-          "end": 1291,
+          "end": 1304,
           "endLine": 40,
           "entries": [
             {
@@ -524,23 +524,23 @@
           "raw": "# llmnav/1 symbol\n# id=example.privacy.export.prepare-contract\n# role=Verify export preparation keeps object keys private and jobs auditable.\n# search=export contract|private object key|export audit\n# stability=contract\n# /llmnav\n",
           "scope": "symbol",
           "specVersion": "1",
-          "start": 1061,
+          "start": 1074,
           "startLine": 35,
           "style": "line",
           "syntaxErrors": []
         }
       ],
-      "contentHash": "034485c2570a9cc6cf3782eaf3765ac199eaf3c105969d4c5276764f64b8cc7b",
+      "contentHash": "b268a17e7d93e79f2b90be7784e0ec12855ede596f9aa00cfcb14c0f32d5e815",
       "declarations": [
         null,
         {
           "bodyHash": "4760120b051e7ad5a7f82e770e7fa53882db793a25ff0c59bcc8cb6c0f4095b9",
-          "endOffset": 973,
+          "endOffset": 986,
           "exported": true,
           "kind": "function",
           "language": "python",
           "line": 31,
-          "offset": 924,
+          "offset": 937,
           "receiver": null,
           "signature": "def prepare_export(account_id: str) -> ExportJob: return ExportJob(job_id=f\"job",
           "symbol": "prepare_export",
@@ -548,12 +548,12 @@
         },
         {
           "bodyHash": "ffa5b2112d9f07da1a6121dabb9a897c41faba8b05b8c56ce90a79283dc7dd6a",
-          "endOffset": 1337,
+          "endOffset": 1350,
           "exported": true,
           "kind": "function",
           "language": "python",
           "line": 42,
-          "offset": 1292,
+          "offset": 1305,
           "receiver": null,
           "signature": "def assert_prepare_export_contract() -> None: \"\"\"Replace with repository-specific tests.\"\"\"",
           "symbol": "assert_prepare_export_contract",
@@ -564,8 +564,8 @@
         "dataclasses"
       ],
       "path": "examples/python/export_job.py",
-      "semanticBytes": 1037,
-      "sourceBytes": 1388
+      "semanticBytes": 1050,
+      "sourceBytes": 1401
     },
     {
       "blocks": [
@@ -589,14 +589,14 @@
             "role": "Own refresh-token rotation, replay detection, and family revocation for the example service.",
             "scope": "module",
             "search": [
-              "session renewal",
-              "refresh token",
-              "token replay"
+              "session lifecycle",
+              "token family",
+              "session revocation"
             ],
             "stability": "architecture",
             "unknown": []
           },
-          "end": 375,
+          "end": 382,
           "endLine": 9,
           "entries": [
             {
@@ -627,7 +627,7 @@
               "key": "search",
               "line": 6,
               "order": 4,
-              "value": "session renewal|refresh token|token replay"
+              "value": "session lifecycle|token family|session revocation"
             },
             {
               "key": "invariant",
@@ -646,7 +646,7 @@
           "indent": "",
           "newline": "\n",
           "prefix": null,
-          "raw": "/* llmnav/1 module\nid=example.auth.session\nrole=Own refresh-token rotation, replay detection, and family revocation for the example service.\nowns=refresh-token family|session revocation\nexcludes=access-token signing|user profile storage\nsearch=session renewal|refresh token|token replay\ninvariant=One token family has at most one live refresh token.\nstability=architecture\n*/",
+          "raw": "/* llmnav/1 module\nid=example.auth.session\nrole=Own refresh-token rotation, replay detection, and family revocation for the example service.\nowns=refresh-token family|session revocation\nexcludes=access-token signing|user profile storage\nsearch=session lifecycle|token family|session revocation\ninvariant=One token family has at most one live refresh token.\nstability=architecture\n*/",
           "scope": "module",
           "specVersion": "1",
           "start": 0,
@@ -685,7 +685,7 @@
             "stability": "contract",
             "unknown": []
           },
-          "end": 1020,
+          "end": 1027,
           "endLine": 31,
           "entries": [
             {
@@ -750,7 +750,7 @@
           "raw": "/* llmnav/1 symbol\nid=example.auth.session.rotate\nrole=Rotate one refresh-token family atomically and reject a replayed token.\nsearch=refresh token|token rotation|token replay|session renewal\ninvariant=At most one live refresh token exists per family.\ninvariant=Replay revokes the entire token family.\neffect=db.write(session_tokens)|event.emit(auth.session.revoked)\nrisk=auth|concurrency\nrel=test>example.auth.session.rotate-contract\nstability=contract\n*/",
           "scope": "symbol",
           "specVersion": "1",
-          "start": 564,
+          "start": 571,
           "startLine": 21,
           "style": "block",
           "syntaxErrors": []
@@ -774,7 +774,7 @@
             "stability": "contract",
             "unknown": []
           },
-          "end": 1422,
+          "end": 1429,
           "endLine": 45,
           "entries": [
             {
@@ -809,23 +809,23 @@
           "raw": "/* llmnav/1 symbol\nid=example.auth.session.rotate-contract\nrole=Verify rotation preserves single-token and replay-revocation guarantees.\nsearch=rotation contract|replay revocation|session invariant\nstability=contract\n*/",
           "scope": "symbol",
           "specVersion": "1",
-          "start": 1203,
+          "start": 1210,
           "startLine": 40,
           "style": "block",
           "syntaxErrors": []
         }
       ],
-      "contentHash": "5120d6b711e4179a586eaec5a01e84d219d648c9ff8599426badfaea46928e94",
+      "contentHash": "69bce8da44592a34705786e57df66a5f472f13bac357a9bd8b24c3c50f5c1ea1",
       "declarations": [
         null,
         {
           "bodyHash": "eb7d9275b5230b6d479ce043c5bc32070243df8fa4f03acde7d16651022de1d4",
-          "endOffset": 1201,
+          "endOffset": 1208,
           "exported": true,
           "kind": "function",
           "language": "typescript",
           "line": 33,
-          "offset": 1022,
+          "offset": 1029,
           "receiver": null,
           "signature": "export async function rotateSession( input: RotateSessionInput, ): Promise<RotateSessionResult>",
           "symbol": "rotateSession",
@@ -833,12 +833,12 @@
         },
         {
           "bodyHash": "33ab03e1cc071070bc94f3af10746e106629487bd2a1e18d79ff08adfd1ec126",
-          "endOffset": 1524,
+          "endOffset": 1531,
           "exported": true,
           "kind": "function",
           "language": "typescript",
           "line": 47,
-          "offset": 1424,
+          "offset": 1431,
           "receiver": null,
           "signature": "export function assertRotateSessionContract(): void",
           "symbol": "assertRotateSessionContract",
@@ -849,8 +849,8 @@
         "example"
       ],
       "path": "examples/typescript/src/session.ts",
-      "semanticBytes": 1050,
-      "sourceBytes": 1525
+      "semanticBytes": 1057,
+      "sourceBytes": 1532
     },
     {
       "blocks": [],

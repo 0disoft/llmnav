@@ -32,16 +32,16 @@
     "llmnav.structure.boundaries",
     "llmnav.syntax.parse"
   ],
-  "cardSetHash": "793ede78044c3f0c3fce0966cbb2eaae68a0b1a5ff91991e89d5f834304e461b",
+  "cardSetHash": "2ff9de05088a9d4e3db9933a21f78040bc6ba733ae04f74f91ce6565ef19e38b",
   "documentCount": 31,
   "documents": [
     [
-      "904cd0bd941b19fea1ea4b1f31bde95b6164462a7bea3ef2a67c36c18624fd55",
+      "e33846cca0cd7d954e5229f36f088982bcf6f4eb565ce4d1ac546aad35d41a6e",
       [
         "own refresh-token rotation, replay detection, and family revocation for the example service.",
-        "session renewal",
-        "refresh token",
-        "token replay",
+        "session lifecycle",
+        "token family",
+        "session revocation",
         "one token family has at most one live refresh token.",
         "refresh-token family",
         "session revocation"
@@ -69,12 +69,12 @@
       ]
     ],
     [
-      "fd31eba25874f818e177d456ad6d12f756627f3d4b28ba1cbbcbb7826f1da95d",
+      "b75e75d246a317ad0acfe639945bd5b2940c4d5239b930a1dcfd986e6162d6b8",
       [
         "own credit reservation and capture boundaries for generation jobs.",
-        "credit hold",
-        "generation billing",
-        "reserve credits",
+        "credit reservation lifecycle",
+        "capture boundary",
+        "generation quota",
         "captured credits never exceed the active reservation.",
         "credit reservation",
         "reservation capture"
@@ -91,12 +91,12 @@
       ]
     ],
     [
-      "a26d1c7fd768e620f9990f5d811fd01d4d0ad7a2104c967f2bd7a2e4fb784d58",
+      "c45ed94a1fe2d1106454f4c2c5273e830c4920447a506e2b1724274427383e17",
       [
         "own preparation and expiry of user data export jobs.",
-        "data export",
-        "privacy download",
-        "export archive",
+        "privacy export lifecycle",
+        "temporary archive",
+        "export expiry",
         "every export object expires after the configured retention window.",
         "export manifest",
         "temporary export object"
@@ -1245,8 +1245,6 @@
         3,
         [
           0,
-          1,
-          2,
           1
         ]
       ],
@@ -1315,6 +1313,13 @@
       ]
     ],
     [
+      [
+        3,
+        [
+          2,
+          1
+        ]
+      ],
       [
         19,
         [
@@ -1500,6 +1505,8 @@
         3,
         [
           1,
+          1,
+          2,
           1,
           3,
           1
@@ -2128,8 +2135,6 @@
       [
         3,
         [
-          2,
-          1,
           5,
           1
         ]
@@ -2158,8 +2163,6 @@
         5,
         [
           1,
-          1,
-          2,
           1
         ]
       ],
@@ -2525,13 +2528,6 @@
       ]
     ],
     [
-      [
-        5,
-        [
-          2,
-          1
-        ]
-      ],
       [
         6,
         [
@@ -2948,6 +2944,8 @@
         5,
         [
           1,
+          1,
+          2,
           1
         ]
       ]
@@ -3097,6 +3095,8 @@
         [
           1,
           1,
+          2,
+          1,
           3,
           1,
           5,
@@ -3540,13 +3540,6 @@
       ]
     ],
     [
-      [
-        3,
-        [
-          2,
-          1
-        ]
-      ],
       [
         4,
         [
@@ -4350,6 +4343,29 @@
         27,
         [
           1,
+          1
+        ]
+      ]
+    ],
+    [
+      [
+        0,
+        [
+          2,
+          1
+        ]
+      ],
+      [
+        3,
+        [
+          2,
+          1
+        ]
+      ],
+      [
+        5,
+        [
+          2,
           1
         ]
       ]
@@ -5875,6 +5891,15 @@
     ],
     [
       [
+        3,
+        [
+          2,
+          1
+        ]
+      ]
+    ],
+    [
+      [
         14,
         [
           2,
@@ -6034,8 +6059,6 @@
         [
           1,
           1,
-          2,
-          1,
           3,
           1,
           5,
@@ -6110,13 +6133,6 @@
     ],
     [
       [
-        0,
-        [
-          2,
-          1
-        ]
-      ],
-      [
         1,
         [
           2,
@@ -6138,8 +6154,6 @@
         0,
         [
           1,
-          1,
-          2,
           1
         ]
       ],
@@ -6302,6 +6316,8 @@
         [
           1,
           1,
+          2,
+          1,
           3,
           2,
           5,
@@ -6331,8 +6347,6 @@
       [
         3,
         [
-          2,
-          1,
           9,
           1
         ]
@@ -6476,6 +6490,8 @@
         [
           1,
           1,
+          2,
+          1,
           3,
           1
         ]
@@ -7067,7 +7083,7 @@
           0,
           1,
           2,
-          1,
+          2,
           3,
           1,
           9,
@@ -7717,6 +7733,8 @@
       [
         5,
         [
+          2,
+          1,
           3,
           1
         ]
@@ -7868,7 +7886,7 @@
           1,
           1,
           2,
-          2,
+          1,
           3,
           1,
           4,
@@ -8680,6 +8698,7 @@
     "keys",
     "kinds",
     "language",
+    "lifecycle",
     "line",
     "lint",
     "list",
@@ -8774,6 +8793,7 @@
     "quality",
     "queries",
     "query",
+    "quota",
     "range",
     "ranges",
     "rank",

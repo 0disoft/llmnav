@@ -3,11 +3,11 @@
   "fileStateSchemaVersion": 1,
   "files": {
     ".llmnav/cache/agent-context.md": "9945c9e454373cba8a292197e377cce47b4cab948449959f48864486240c8825",
-    ".llmnav/cache/cards.jsonl": "9b51b5bf8f1c60557960585bee159c4e78270a17e554d6d63df1c643e5736fa7",
-    ".llmnav/cache/file-state.json": "3d9f21c9406b88d6cb73e9596dc954897ddc3cca113424cd9fa28864580dd2e3",
+    ".llmnav/cache/cards.jsonl": "5adb8283ae493d87dced033ea6f664ce57cb2586b6494a7a14d432c0c7c99ee4",
+    ".llmnav/cache/file-state.json": "66192f881118105ff9261ce1eee11fd632da1a3d49a68b69e0ce2877d6cf8763",
     ".llmnav/cache/graph-state.json": "0ea208aa869ec5a0e9025c146fe34c901ea2cdf96f20cac1166548137983c1b3",
     ".llmnav/cache/graph.json": "e0c3c538eb157a412146c49d75eaddfd752fb12a2eb1e586cd901ab8d750a697",
-    ".llmnav/cache/index.json": "4bf78885309d4313ab037d1010c4f415f7210d46d7bc824ba072023975fa70a1",
+    ".llmnav/cache/index.json": "83ef2b4d4b5ee4e083ed83b6c26d60a7f91783f7bd4f82a6b757ffdff8209678",
     ".llmnav/cache/modules/example.auth.txt": "ae0aebf37a7f541ec0af5a36c1584452703b5b4fcafd6f397d0a7a402c3a76e1",
     ".llmnav/cache/modules/example.billing.txt": "957e2c984d5c121e598956c4f78525016505b1c97d6a94273866d92c4166fecd",
     ".llmnav/cache/modules/example.privacy.txt": "0948627bfa62f11088fbbf1aec835cab50c35d2d03f49eadefbddc221169e0b7",
@@ -25,7 +25,7 @@
     ".llmnav/cache/modules/llmnav.syntax.txt": "a1f177762cc5a6e8d26ea4ca8c1ba36c840dbba98b0ed046ed4a1d19ed774916",
     ".llmnav/cache/prompt-prefix.json": "9a7637c67245f26eee9f31a167c1d459a3c48a7c8a457506a2e094da8cc24aea",
     ".llmnav/cache/repo-core.txt": "9dda107e1a73c8de7358828c9e1089d3ffc091b2cd31bb8cf32759d131ca493f",
-    ".llmnav/cache/search-index.json": "de37f04bb4e78407fb7bce636bc6542d88b62958d5b5e7bb8e8a52e8179a64df"
+    ".llmnav/cache/search-index.json": "1d3ac15f89ef456c148ad18f67bd68c9e7d8c196b1efa3f7c9c209d798e55f19"
   },
   "graphSchemaVersion": 1,
   "graphStateSchemaVersion": 1,
@@ -33,9 +33,9 @@
   "promptBundleSchemaVersion": 1,
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "searchCardSetHash": "793ede78044c3f0c3fce0966cbb2eaae68a0b1a5ff91991e89d5f834304e461b",
+  "searchCardSetHash": "2ff9de05088a9d4e3db9933a21f78040bc6ba733ae04f74f91ce6565ef19e38b",
   "searchIndexSchemaVersion": 2,
   "searchShardSchemaVersion": null,
-  "sourceHash": "fe244847e86eca6f6c967e93a8bfd03359f309f32f8a06b9bc6c2e3d573cd784",
+  "sourceHash": "4276705a9e01d93730a02fb2190f08b65d6e5af22926495504f1151d160b2cd0",
   "specVersion": "1"
 }

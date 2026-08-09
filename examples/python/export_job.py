@@ -3,7 +3,7 @@
 # role=Own preparation and expiry of user data export jobs.
 # owns=export manifest|temporary export object
 # excludes=account deletion|long-term archive storage
-# search=data export|privacy download|export archive
+# search=privacy export lifecycle|temporary archive|export expiry
 # invariant=Every export object expires after the configured retention window.
 # stability=architecture
 # /llmnav

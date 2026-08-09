@@ -5,7 +5,7 @@ id=example.billing.credit
 role=Own credit reservation and capture boundaries for generation jobs.
 owns=credit reservation|reservation capture
 excludes=provider invoice settlement|subscription entitlement
-search=credit hold|generation billing|reserve credits
+search=credit reservation lifecycle|capture boundary|generation quota
 invariant=Captured credits never exceed the active reservation.
 stability=architecture
 */

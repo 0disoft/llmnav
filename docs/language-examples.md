@@ -30,7 +30,7 @@ id=auth.session
 role=Own refresh-token issuance, rotation, replay detection, and revocation.
 owns=refresh-token family|session revocation
 excludes=access-token signing|user profile storage
-search=session renewal|refresh token|token replay
+search=session lifecycle|token family|session revocation
 invariant=One token family has at most one live refresh token.
 stability=architecture
 */

@@ -7,8 +7,8 @@
         "user profile storage"
       ],
       "hashes": {
-        "body": "5120d6b711e4179a586eaec5a01e84d219d648c9ff8599426badfaea46928e94",
-        "semantic": "4d806e88c451b5674b9aac8a56bcb2dca884d039dac9cba7045160d3129c91bf",
+        "body": "69bce8da44592a34705786e57df66a5f472f13bac357a9bd8b24c3c50f5c1ea1",
+        "semantic": "6327d2eaf7fb8f428cf462c3f2df37574d50e73d371d826ee5f0ea3945c5118c",
         "structure": "ed14961b2c0332165f6508041b028cf225e0fb2cd655eb0c8bd1e32e2928a87b"
       },
       "id": "example.auth.session",
@@ -38,9 +38,9 @@
       "role": "Own refresh-token rotation, replay detection, and family revocation for the example service.",
       "scope": "module",
       "search": [
-        "session renewal",
-        "refresh token",
-        "token replay"
+        "session lifecycle",
+        "token family",
+        "session revocation"
       ],
       "stability": "architecture"
     },
@@ -141,8 +141,8 @@
         "subscription entitlement"
       ],
       "hashes": {
-        "body": "472ab94549b0b17821a8351c1e7f0cc938a97b14bb81364835aa8c5c177323e7",
-        "semantic": "27ae475c55b7919989f9d6d626bc4ee9f894660b94028e30e44e72cf28da32ff",
+        "body": "dc9fcb9e1a3430557e1403873e33b281d14fd3ced51f8888384db3a4f82db291",
+        "semantic": "ef56652fdc442bc5b4ae4284635b8532c6d927882d2150d29eddd5c4035e682d",
         "structure": "64c0afc6ac1f3a4be3ec59b6075e478b6e2b890c9c99d34f9197740926abfff7"
       },
       "id": "example.billing.credit",
@@ -170,9 +170,9 @@
       "role": "Own credit reservation and capture boundaries for generation jobs.",
       "scope": "module",
       "search": [
-        "credit hold",
-        "generation billing",
-        "reserve credits"
+        "credit reservation lifecycle",
+        "capture boundary",
+        "generation quota"
       ],
       "stability": "architecture"
     },
@@ -223,8 +223,8 @@
         "long-term archive storage"
       ],
       "hashes": {
-        "body": "034485c2570a9cc6cf3782eaf3765ac199eaf3c105969d4c5276764f64b8cc7b",
-        "semantic": "8a4339037abb5c808e505eb35993ca9bac451ff6edc771d4cbf91edd4eb02a1a",
+        "body": "b268a17e7d93e79f2b90be7784e0ec12855ede596f9aa00cfcb14c0f32d5e815",
+        "semantic": "1e0d15d69485ce492500a84e8ad1e9ef616737235a47e41e9ec0ae829025896a",
         "structure": "574e1aa8020e65f85b31915b4edc8c3169a18dd5855ee0a8cb4fe03c3b9cb2ef"
       },
       "id": "example.privacy.export",
@@ -254,9 +254,9 @@
       "role": "Own preparation and expiry of user data export jobs.",
       "scope": "module",
       "search": [
-        "data export",
-        "privacy download",
-        "export archive"
+        "privacy export lifecycle",
+        "temporary archive",
+        "export expiry"
       ],
       "stability": "architecture"
     },
@@ -2202,6 +2202,6 @@
   "generatedBy": "llmnav@0.5.0",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "fe244847e86eca6f6c967e93a8bfd03359f309f32f8a06b9bc6c2e3d573cd784",
+  "sourceHash": "4276705a9e01d93730a02fb2190f08b65d6e5af22926495504f1151d160b2cd0",
   "specVersion": "1"
 }
