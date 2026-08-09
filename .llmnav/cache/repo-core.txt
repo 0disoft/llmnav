@@ -107,3 +107,9 @@ role Detect route, event, schema, migration, and command boundaries from generat
 owns boundary kinds, confidence assignment, boundary evidence
 excludes framework execution, source annotations
 rel workflow>llmnav.index.generate
+
+@llmnav.index.search-shards
+role Split a compact search index into deterministic card-range artifacts without retokenizing documents.
+owns search shard schema, card range partitioning, shard manifest
+excludes query ranking, source parsing
+rel workflow>llmnav.index.inverted, workflow>llmnav.index.generate

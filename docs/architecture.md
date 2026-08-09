@@ -72,6 +72,12 @@ Generation compares the previous and current primary indexes to emit `affectedBo
 
 `.llmnav/cache/search-index.json` schemaVersion 2 with `compact-v1` encoding stores a sorted card-ID table, normalized phrase documents, a sorted token dictionary, and posting lists.
 
+### Optional search shards
+
+When `generation.searchShardSize` is positive and the repository exceeds that card count, generation emits `search-shards.json` schemaVersion 1 with `card-range-v1` encoding plus zero-padded shard files below `search-shards/`. Each manifest record contains the first and last semantic ID, card count, card-set hash, and artifact SHA-256.
+
+Shards slice the already-built compact documents and postings, adjust local card ordinals, and never retokenize cards. Every shard independently satisfies the compact search-index compatibility checks for its card subset. The full `search-index.json` remains authoritative for built-in queries, preserving global document frequency and v0.2 ranking behavior. Cache transactions publish or remove the complete shard set atomically.
+
 Each card entry stores a hash of its searchable fields and its normalized phrase fields. The global token dictionary is sorted once. Every dictionary entry points to a posting list encoded as sorted card ordinals and sparse field-frequency vectors. The ordinals resolve through the sorted `cardIds` table.
 
 Field order and field weights are versioned constants. Tokens, card IDs, object keys, and posting entries use locale-independent UTF-16 lexical comparison.

@@ -1537,7 +1537,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "331753d0510058642133d1f76e6655dd466a3a54cd4ac3fcda245ae952fe0248",
+      "contentHash": "edbcb0f2577b7a79a31dc8cd37439359b86c6b97d1a5c3a76144ebaed49241ee",
       "declarations": [],
       "imports": [
         " || value === ",
@@ -1572,6 +1572,7 @@
         "generation",
         "generation must be an object",
         "generation.moduleDepth must be an integer from 1 to 6",
+        "generation.searchShardSize",
         "genericSearchTerms",
         "includeExtensions",
         "lint",
@@ -1614,7 +1615,7 @@
       ],
       "path": "src/config.js",
       "semanticBytes": 0,
-      "sourceBytes": 12014
+      "sourceBytes": 12104
     },
     {
       "blocks": [
@@ -2124,7 +2125,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "b25f6b8249294c5ac536a57a25ba7be7167683fb58b13c4b775616aa3e7dd21c",
+      "contentHash": "25297715ebfd654fb071d5d1123b7976aa914adf54b4fabde3e3b4dc9ecd1bcb",
       "declarations": [
         null
       ],
@@ -2157,11 +2158,11 @@
         ",\n    `Repository: ${repositoryId}`,\n    ",
         ",\n    code: ",
         ",\n    message: `${label} contract fingerprint changed; review the affected contract before committing generated artifacts.`,\n    file,\n    line: 1,\n    column: 1,\n  };\n}\n\nfunction compareGeneratedDiagnostics(left, right) {\n  return compareText(left.file, right.file) ||\n    left.line - right.line ||\n    left.column - right.column ||\n    compareText(left.code, right.code) ||\n    compareText(left.message, right.message);\n}\n\nfunction indexedCard(record) {\n  const canonical = cardToCanonicalObject(record.card);\n  const boundaries = detectBoundaries(record);\n  const semanticPayload = stableJson(canonical);\n  const structurePayload = stableJson({\n    path: record.relativePath,\n    scope: record.block.scope,\n    symbol: record.declaration?.symbol ?? null,\n    kind: record.declaration?.kind ?? null,\n    signature: record.declaration?.signature ?? null,\n    language: record.declaration?.language ?? null,\n    exported: record.declaration?.exported ?? null,\n    visibility: record.declaration?.visibility ?? null,\n    receiver: record.declaration?.receiver ?? null,\n    imports: record.imports,\n    boundaries,\n  });\n  return {\n    ...canonical,\n    location: {\n      path: record.relativePath,\n      startLine: record.block.startLine,\n      endLine: record.block.endLine,\n      symbol: record.declaration?.symbol ?? null,\n      kind: record.declaration?.kind ?? null,\n      declarationLine: record.declaration?.line ?? null,\n      signature: record.declaration?.signature ?? null,\n      language: record.declaration?.language ?? null,\n      exported: record.declaration?.exported ?? null,\n      visibility: record.declaration?.visibility ?? null,\n      receiver: record.declaration?.receiver ?? null,\n    },\n    imports: record.imports,\n    boundaries,\n    hashes: {\n      semantic: sha256(semanticPayload),\n      structure: sha256(structurePayload),\n      body: record.bodyHash ?? sha256(record.source ?? ",
-        ",\n  );\n  artifacts.set(`${cacheRoot}/search-index.json`, renderSearchIndex(searchIndex));\n  artifacts.set(`${cacheRoot}/file-state.json`, renderFileState(fileState));\n\n  const repositoryCards = cards.filter((card) =>\n    project.config.generation.repositoryCatalogStabilities.includes(card.stability),\n  );\n  artifacts.set(`${cacheRoot}/repo-core.txt`, renderCatalog(project.config.repositoryId, ",
+        ",\n  );\n  artifacts.set(`${cacheRoot}/search-index.json`, renderSearchIndex(searchIndex));\n  artifacts.set(`${cacheRoot}/file-state.json`, renderFileState(fileState));\n  const searchShards = buildSearchShards(index, searchIndex, project.config.generation.searchShardSize);\n  if (searchShards.manifest) {\n    artifacts.set(`${cacheRoot}/search-shards.json`, stableStringify(searchShards.manifest));\n    for (const [relativePath, content] of searchShards.shards) {\n      artifacts.set(`${cacheRoot}/${relativePath}`, content);\n    }\n  }\n\n  const repositoryCards = cards.filter((card) =>\n    project.config.generation.repositoryCatalogStabilities.includes(card.stability),\n  );\n  artifacts.set(`${cacheRoot}/repo-core.txt`, renderCatalog(project.config.repositoryId, ",
         ",\n  ];\n  for (const card of cards) lines.push(renderSemanticCard(card), ",
         ",\n  ];\n  if (modules.length === 0) lines.push(",
         ", ",
-        ", repositoryCards));\n\n  const modules = groupByModule(cards, project.config.generation.moduleDepth);\n  const moduleManifest = [];\n  for (const [moduleId, moduleCards] of modules) {\n    const filtered = moduleCards.filter((card) =>\n      project.config.generation.moduleCatalogStabilities.includes(card.stability),\n    );\n    if (filtered.length === 0) continue;\n    const relativePath = `${cacheRoot}/modules/${safeModuleName(moduleId)}.txt`;\n    artifacts.set(relativePath, renderCatalog(project.config.repositoryId, moduleId, filtered));\n    moduleManifest.push({ id: moduleId, file: relativePath, cards: filtered.length });\n  }\n\n  artifacts.set(`${cacheRoot}/agent-context.md`, renderAgentContext(project.config.repositoryId, moduleManifest));\n\n  const contentHashes = Object.fromEntries(\n    [...artifacts.entries()]\n      .sort(([left], [right]) => compareText(left, right))\n      .map(([relativePath, content]) => [relativePath, sha256(content)]),\n  );\n  const manifest = {\n    schemaVersion: 1,\n    specVersion: SPEC_VERSION,\n    repositoryId: project.config.repositoryId,\n    cardCount: cards.length,\n    moduleCount: moduleManifest.length,\n    sourceHash: index.sourceHash,\n    searchCardSetHash: searchIndex.cardSetHash,\n    searchIndexSchemaVersion: searchIndex.schemaVersion,\n    fileStateSchemaVersion: fileState.schemaVersion,\n    files: contentHashes,\n  };\n  artifacts.set(`${cacheRoot}/manifest.json`, stableStringify(manifest));\n  return { artifacts, index, searchIndex, searchStats, fileState, moduleManifest };\n}\n\nfunction diagnosticForContractChange(change) {\n  const file = change.kind === ",
+        ", repositoryCards));\n\n  const modules = groupByModule(cards, project.config.generation.moduleDepth);\n  const moduleManifest = [];\n  for (const [moduleId, moduleCards] of modules) {\n    const filtered = moduleCards.filter((card) =>\n      project.config.generation.moduleCatalogStabilities.includes(card.stability),\n    );\n    if (filtered.length === 0) continue;\n    const relativePath = `${cacheRoot}/modules/${safeModuleName(moduleId)}.txt`;\n    artifacts.set(relativePath, renderCatalog(project.config.repositoryId, moduleId, filtered));\n    moduleManifest.push({ id: moduleId, file: relativePath, cards: filtered.length });\n  }\n\n  artifacts.set(`${cacheRoot}/agent-context.md`, renderAgentContext(project.config.repositoryId, moduleManifest));\n\n  const contentHashes = Object.fromEntries(\n    [...artifacts.entries()]\n      .sort(([left], [right]) => compareText(left, right))\n      .map(([relativePath, content]) => [relativePath, sha256(content)]),\n  );\n  const manifest = {\n    schemaVersion: 1,\n    specVersion: SPEC_VERSION,\n    repositoryId: project.config.repositoryId,\n    cardCount: cards.length,\n    moduleCount: moduleManifest.length,\n    sourceHash: index.sourceHash,\n    searchCardSetHash: searchIndex.cardSetHash,\n    searchIndexSchemaVersion: searchIndex.schemaVersion,\n    fileStateSchemaVersion: fileState.schemaVersion,\n    searchShardSchemaVersion: searchShards.manifest ? SEARCH_SHARD_SCHEMA_VERSION : null,\n    files: contentHashes,\n  };\n  artifacts.set(`${cacheRoot}/manifest.json`, stableStringify(manifest));\n  return { artifacts, index, searchIndex, searchStats, fileState, moduleManifest };\n}\n\nfunction diagnosticForContractChange(change) {\n  const file = change.kind === ",
         "./boundaries.js",
         "./changes.js",
         "./config.js",
@@ -2171,6 +2172,7 @@
         "./parser.js",
         "./project.js",
         "./registry.js",
+        "./search-shards.js",
         "./spec.js",
         "./transaction.js",
         "./util.js",
@@ -2191,7 +2193,7 @@
       ],
       "path": "src/generator.js",
       "semanticBytes": 476,
-      "sourceBytes": 17114
+      "sourceBytes": 17656
     },
     {
       "blocks": [
@@ -2309,11 +2311,12 @@
     },
     {
       "blocks": [],
-      "contentHash": "ccca60526addb1a7fd43221355d08beb7b9725156df1f8682ff211737ef8b73a",
+      "contentHash": "6efc3cfe1ff6a694d390081a5017a85a7eeda9660d435abc8174e295d74f072a",
       "declarations": [],
       "imports": [
         " | ",
-        " | string;\n  to?: string;\n  by?: string[];\n}\n\nexport interface Registry {\n  records: RegistryRecord[];\n  byId: Map<string, RegistryRecord>;\n}\n\nexport interface LlmnavConfig {\n  $schema?: string;\n  version: 1;\n  repositoryId: string;\n  sourceRoots: string[];\n  includeExtensions: string[];\n  excludeDirectories: string[];\n  excludeFiles: string[];\n  coverageRules: Array<Record<string, unknown>>;\n  lint: {\n    maxRoleLength: number;\n    maxSearchTerms: number;\n    minSearchTerms: number;\n    maxInvariants: number;\n    maxEffects: number;\n    maxRelations: number;\n    maxBlockBytes: Record<LlmnavScope, number>;\n    maxSemanticRatio: number;\n    minimumSourceBytesForRatio: number;\n    searchTermSaturation: number;\n    minimumCardsForSaturation: number;\n    genericSearchTerms: string[];\n    vagueRoleWords: string[];\n    strictRisks: string[];\n    additionalEffects: string[];\n    additionalRisks: string[];\n    additionalRelations: string[];\n    requireCanonicalOrder: boolean;\n    requireCanonicalFormatting: boolean;\n  };\n  generation: {\n    cacheDirectory: string;\n    moduleDepth: number;\n    repositoryCatalogStabilities: LlmnavStability[];\n    moduleCatalogStabilities: LlmnavStability[];\n  };\n  evaluation: {\n    queryFile: string;\n    minimumRecallAt1: number;\n    minimumRecallAt5: number;\n  };\n}\n\nexport interface ProjectFileRecord {\n  absolutePath: string;\n  relativePath: string;\n  source: string | null;\n  contentHash: string;\n  bodyHash: string;\n  sourceBytes: number;\n  semanticBytes: number;\n  blocks: LlmnavBlock[];\n  imports: string[];\n}\n\nexport interface ProjectRecord {\n  root: string;\n  absolutePath: string;\n  relativePath: string;\n  source: string | null;\n  bodyHash: string;\n  imports: string[];\n  block: LlmnavBlock;\n  card: LlmnavCard;\n  declaration: Declaration | null;\n}\n\nexport interface ScannedProject {\n  root: string;\n  config: LlmnavConfig;\n  configPath: string;\n  files: string[];\n  fileRecords: ProjectFileRecord[];\n  records: ProjectRecord[];\n  registry: Registry;\n  sourceBytes: number;\n  semanticBytes: number;\n}\n\nexport interface SerializedFileStateRecord {\n  path: string;\n  contentHash: string;\n  sourceBytes: number;\n  semanticBytes: number;\n  imports: string[];\n  blocks: LlmnavBlock[];\n  declarations: Array<Declaration | null>;\n}\n\nexport interface LlmnavFileState {\n  schemaVersion: number;\n  indexerVersion: number;\n  files: SerializedFileStateRecord[];\n}\n\nexport interface IncrementalFileStats {\n  totalFiles: number;\n  parsedFiles: number;\n  reusedFiles: number;\n  reusedFilesByStat: number;\n  reusedFilesByHash: number;\n  deletedFiles: number;\n  bytesRead: number;\n  cardsParsed: number;\n  cardsReused: number;\n}\n\nexport interface ChangedCardRecord {\n  id: string;\n  change: ",
+        " | string;\n  to?: string;\n  by?: string[];\n}\n\nexport interface Registry {\n  records: RegistryRecord[];\n  byId: Map<string, RegistryRecord>;\n}\n\nexport interface LlmnavConfig {\n  $schema?: string;\n  version: 1;\n  repositoryId: string;\n  sourceRoots: string[];\n  includeExtensions: string[];\n  excludeDirectories: string[];\n  excludeFiles: string[];\n  coverageRules: Array<Record<string, unknown>>;\n  lint: {\n    maxRoleLength: number;\n    maxSearchTerms: number;\n    minSearchTerms: number;\n    maxInvariants: number;\n    maxEffects: number;\n    maxRelations: number;\n    maxBlockBytes: Record<LlmnavScope, number>;\n    maxSemanticRatio: number;\n    minimumSourceBytesForRatio: number;\n    searchTermSaturation: number;\n    minimumCardsForSaturation: number;\n    genericSearchTerms: string[];\n    vagueRoleWords: string[];\n    strictRisks: string[];\n    additionalEffects: string[];\n    additionalRisks: string[];\n    additionalRelations: string[];\n    requireCanonicalOrder: boolean;\n    requireCanonicalFormatting: boolean;\n  };\n  generation: {\n    cacheDirectory: string;\n    moduleDepth: number;\n    searchShardSize: number;\n    repositoryCatalogStabilities: LlmnavStability[];\n    moduleCatalogStabilities: LlmnavStability[];\n  };\n  evaluation: {\n    queryFile: string;\n    minimumRecallAt1: number;\n    minimumRecallAt5: number;\n  };\n}\n\nexport interface ProjectFileRecord {\n  absolutePath: string;\n  relativePath: string;\n  source: string | null;\n  contentHash: string;\n  bodyHash: string;\n  sourceBytes: number;\n  semanticBytes: number;\n  blocks: LlmnavBlock[];\n  imports: string[];\n}\n\nexport interface ProjectRecord {\n  root: string;\n  absolutePath: string;\n  relativePath: string;\n  source: string | null;\n  bodyHash: string;\n  imports: string[];\n  block: LlmnavBlock;\n  card: LlmnavCard;\n  declaration: Declaration | null;\n}\n\nexport interface ScannedProject {\n  root: string;\n  config: LlmnavConfig;\n  configPath: string;\n  files: string[];\n  fileRecords: ProjectFileRecord[];\n  records: ProjectRecord[];\n  registry: Registry;\n  sourceBytes: number;\n  semanticBytes: number;\n}\n\nexport interface SerializedFileStateRecord {\n  path: string;\n  contentHash: string;\n  sourceBytes: number;\n  semanticBytes: number;\n  imports: string[];\n  blocks: LlmnavBlock[];\n  declarations: Array<Declaration | null>;\n}\n\nexport interface LlmnavFileState {\n  schemaVersion: number;\n  indexerVersion: number;\n  files: SerializedFileStateRecord[];\n}\n\nexport interface IncrementalFileStats {\n  totalFiles: number;\n  parsedFiles: number;\n  reusedFiles: number;\n  reusedFilesByStat: number;\n  reusedFilesByHash: number;\n  deletedFiles: number;\n  bytesRead: number;\n  cardsParsed: number;\n  cardsReused: number;\n}\n\nexport interface ChangedCardRecord {\n  id: string;\n  change: ",
+        ";\n    repositoryId: string;\n    sourceCardSetHash: string;\n    shardSize: number;\n    shardCount: number;\n    shards: Array<{ file: string; firstId: string; lastId: string; cardCount: number; cardSetHash: string; sha256: string }>;\n  };\n  shards: Map<string, string>;\n};\nexport function buildContractFingerprints(project: ScannedProject, cards: IndexedCard[]): ContractFingerprints;\nexport function compareContractFingerprints(previous: ContractFingerprints | null | undefined, current: ContractFingerprints | null | undefined): ContractFingerprintChange[];\nexport function compareCardIndexes(previousIndex: LlmnavIndex | null, currentIndex: LlmnavIndex): ChangedCardRecord[];\nexport function describeAffectedBoundaries(changedCards: ChangedCardRecord[], config: LlmnavConfig, previousIndex: LlmnavIndex | null, currentIndex: LlmnavIndex): AffectedBoundaryRecord[];\nexport function describeAffectedCatalogs(changedFiles: string[], cacheDirectory: string, config: LlmnavConfig, previousIndex: LlmnavIndex | null, currentIndex: LlmnavIndex): AffectedCatalogRecord[];\nexport function loadConfig(root: string): Promise<{ config: LlmnavConfig; configPath: string }>;\nexport function validateConfig(config: LlmnavConfig, configPath?: string): void;\nexport function findAttachedDeclaration(source: string, block: LlmnavBlock, filePath: string): Declaration | null;\nexport function extractImports(source: string, filePath: string): string[];\nexport function doctorProject(root: string): Promise<{ ok: boolean; checks: Array<{ name: string; ok: boolean; message: string }> }>;\nexport function evaluateProject(root: string, options?: { top?: number; file?: string }): Promise<EvaluationResult>;\nexport function collectSourceFiles(root: string, config: LlmnavConfig, requestedPaths?: string[]): Promise<string[]>;\nexport function findProjectRoot(start?: string): Promise<string>;\nexport function formatProject(root: string, options?: { check?: boolean; paths?: string[] }): Promise<{ ok: boolean; changedFiles: string[]; errors: Array<{ file: string; line: number; message: string }> }>;\nexport function buildArtifacts(project: ScannedProject, order: string[], options?: { previousSearchIndex?: LlmnavSearchIndex | null; fileState?: LlmnavFileState }): Map<string, string>;\nexport function buildArtifactSet(project: ScannedProject, order: string[], options?: { previousSearchIndex?: LlmnavSearchIndex | null; fileState?: LlmnavFileState }): { artifacts: Map<string, string>; index: LlmnavIndex; searchIndex: LlmnavSearchIndex; searchStats: SearchIndexStats; fileState: LlmnavFileState };\nexport function generateProject(root: string, options?: { check?: boolean; incremental?: boolean; useStatHints?: boolean; failpoint?: string }): Promise<GenerationResult>;\nexport function renderCompactCard(card: IndexedCard): string;\nexport function renderSemanticCard(card: IndexedCard): string;\nexport function scanProjectIncremental(root: string, options?: { paths?: string[]; useStatHints?: boolean; previousState?: LlmnavFileState }): Promise<{ project: ScannedProject; fileState: LlmnavFileState; stats: IncrementalFileStats; statHints: unknown; hintsPath: string }>;\nexport function buildFileStateFromProject(project: ScannedProject): LlmnavFileState;\nexport function renderFileState(fileState: LlmnavFileState): string;\nexport function usableFileState(value: unknown): value is LlmnavFileState;\nexport function initializeProject(root: string, options?: { force?: boolean; packageScripts?: boolean; agents?: string[] }): Promise<{ ok: boolean; changed: string[]; generated: GenerationResult }>;\nexport function buildInvertedIndex(index: LlmnavIndex, previous?: LlmnavSearchIndex | null): { searchIndex: LlmnavSearchIndex; stats: SearchIndexStats };\nexport function buildSearchDocument(card: IndexedCard, hash?: string): SearchDocument;\nexport function isCompatibleSearchIndex(searchIndex: unknown, repositoryId?: string): searchIndex is LlmnavSearchIndex;\nexport function renderSearchIndex(searchIndex: LlmnavSearchIndex): string;\nexport function searchCardSetHash(cards: IndexedCard[]): string;\nexport function searchDocumentHash(card: IndexedCard): string;\nexport function verifySearchIndex(index: LlmnavIndex, searchIndex: LlmnavSearchIndex): boolean;\nexport function canonicalizeSource(source: string, filePath?: string): { source: string; changed: boolean; blocks: LlmnavBlock[]; errors: Array<{ line: number; message: string }> };\nexport function cardToCanonicalObject(card: LlmnavCard): Record<string, string | string[]>;\nexport function formatLlmnavBlock(block: LlmnavBlock): string;\nexport function parseLlmnavBlocks(source: string, filePath?: string): LlmnavBlock[];\nexport function scanProject(root: string, options?: { paths?: string[] }): Promise<ScannedProject>;\nexport function ensureActiveIds(root: string, registry: Registry, ids: string[]): Promise<void>;\nexport function loadRegistry(root: string): Promise<Registry>;\nexport function resolveRegistryId(registry: Registry, id: string): { id: string; state: string; [key: string]: unknown };\nexport function buildContext(root: string, id: string, options?: { depth?: number; budget?: number }): Promise<{ id: string; depth: number; budget: number; included: string[]; text: string }>;\nexport function loadSearchData(root: string): Promise<{ index: LlmnavIndex; searchIndex: LlmnavSearchIndex; lexicon: { version?: number; aliases: Record<string, string | string[]> } }>;\nexport function queryIndex(index: LlmnavIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> }; invertedIndex?: LlmnavSearchIndex; metrics?: SearchMetrics }): SearchResult[];\nexport function queryPreparedIndex(index: LlmnavIndex, searchIndex: LlmnavSearchIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> }; metrics?: SearchMetrics }): SearchResult[];\nexport function queryIndexLegacy(index: LlmnavIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> } }): SearchResult[];\nexport function queryProject(root: string, query: string, options?: { top?: number }): Promise<SearchResult[]>;\nexport function showProjectCard(root: string, id: string): Promise<{ card: IndexedCard | null; resolvedFrom: unknown }>;\nexport function tokenize(value: string): string[];\nexport function normalizeSearchText(value: string): string;\nexport function commitGeneratedCache(root: string, cacheDirectory: string, artifacts: Map<string, string>, options?: Record<string, unknown>): Promise<TransactionResult>;\nexport function recoverGenerationTransaction(root: string, options?: { cacheDirectory?: string; renameOptions?: Record<string, unknown> }): Promise<{ recovered: boolean; action: string }>;\nexport function renameWithRetry(source: string, destination: string, options?: Record<string, unknown>): Promise<void>;\nexport function removeWithRetry(target: string, options?: Record<string, unknown>): Promise<void>;\nexport function countDiagnostics(diagnostics: Diagnostic[]): { error: number; warning: number; info: number };\nexport function diagnostic(severity: DiagnosticSeverity, code: string, message: string, file: string, line?: number, column?: number): Diagnostic;\nexport function validateProject(project: ScannedProject): Diagnostic[];\n\nexport * from ",
         ";\n  confidence: ",
         ";\n  dimensions: Array<",
         ";\n  evidence: string[];\n}\n\nexport interface Diagnostic {\n  severity: DiagnosticSeverity;\n  code: string;\n  message: string;\n  file: string;\n  line: number;\n  column: number;\n}\n\nexport interface IndexedLocation {\n  path: string;\n  startLine: number;\n  endLine: number;\n  symbol: string | null;\n  kind: string | null;\n  declarationLine: number | null;\n  signature: string | null;\n  language: Declaration[",
@@ -2324,8 +2327,9 @@
         ";\n  receiver: string | null;\n  line: number;\n  offset: number;\n  endOffset: number;\n  bodyHash: string;\n}\n\nexport interface DetectedBoundary {\n  kind: ",
         ";\n  tokenizerVersion: number;\n  repositoryId: string;\n  cardSetHash: string;\n  documentCount: number;\n  fieldOrder: string[];\n  cardIds: string[];\n  tokens: string[];\n  documents: CompactSearchDocument[];\n  postings: CompactSearchPosting[][];\n}\n\nexport interface SearchIndexStats {\n  previousUsable: boolean;\n  totalCards: number;\n  reusedCards: number;\n  indexedCards: number;\n  removedCards: number;\n  changedIds: string[];\n  removedIds: string[];\n  tokenCount: number;\n}\n\nexport interface SearchMetrics {\n  queryTokens?: number;\n  documentTokenizations?: number;\n  postingVisits?: number;\n  phraseDocumentsScanned?: number;\n  idDocumentsScanned?: number;\n}\n\nexport interface SearchResult {\n  id: string;\n  score: number;\n  reasons: string[];\n  role: string;\n  location: IndexedLocation;\n  card: IndexedCard;\n}\n\nexport interface RegistryRecord {\n  id: string;\n  state: ",
         ";\n  unknown?: Array<{ key: string; value: string; line: number }>;\n}\n\nexport interface LlmnavEntry {\n  key: string;\n  value: string;\n  line: number;\n  order: number;\n}\n\nexport interface LlmnavBlock {\n  specVersion: string;\n  filePath: string;\n  scope: LlmnavScope;\n  card: LlmnavCard;\n  entries: LlmnavEntry[];\n  syntaxErrors: Array<{ line: number; message: string }>;\n  style: ",
-        ";\nexport const CONTRACT_FINGERPRINT_SCHEMA_VERSION: 1;\nexport const FILE_STATE_SCHEMA_VERSION: number;\nexport const SOURCE_INDEXER_VERSION: number;\nexport const SEARCH_INDEX_ENCODING: ",
-        ";\nexport const SEARCH_INDEX_SCHEMA_VERSION: 2;\nexport const SEARCH_FIELD_ORDER: readonly string[];\nexport const SEARCH_FIELD_WEIGHTS: Readonly<Record<string, number>>;\nexport const TOKENIZER_VERSION: number;\nexport const TRANSACTION_SCHEMA_VERSION: number;\nexport const TRANSACTION_ABORT_EXIT_CODE: number;\n\nexport function installAgentInstructions(root: string, adapters?: string[]): Promise<string[]>;\nexport function detectBoundaries(record: ProjectRecord): DetectedBoundary[];\nexport function diagnosticsToSarif(diagnostics: Diagnostic[]): Record<string, unknown>;\nexport function buildContractFingerprints(project: ScannedProject, cards: IndexedCard[]): ContractFingerprints;\nexport function compareContractFingerprints(previous: ContractFingerprints | null | undefined, current: ContractFingerprints | null | undefined): ContractFingerprintChange[];\nexport function compareCardIndexes(previousIndex: LlmnavIndex | null, currentIndex: LlmnavIndex): ChangedCardRecord[];\nexport function describeAffectedBoundaries(changedCards: ChangedCardRecord[], config: LlmnavConfig, previousIndex: LlmnavIndex | null, currentIndex: LlmnavIndex): AffectedBoundaryRecord[];\nexport function describeAffectedCatalogs(changedFiles: string[], cacheDirectory: string, config: LlmnavConfig, previousIndex: LlmnavIndex | null, currentIndex: LlmnavIndex): AffectedCatalogRecord[];\nexport function loadConfig(root: string): Promise<{ config: LlmnavConfig; configPath: string }>;\nexport function validateConfig(config: LlmnavConfig, configPath?: string): void;\nexport function findAttachedDeclaration(source: string, block: LlmnavBlock, filePath: string): Declaration | null;\nexport function extractImports(source: string, filePath: string): string[];\nexport function doctorProject(root: string): Promise<{ ok: boolean; checks: Array<{ name: string; ok: boolean; message: string }> }>;\nexport function evaluateProject(root: string, options?: { top?: number; file?: string }): Promise<EvaluationResult>;\nexport function collectSourceFiles(root: string, config: LlmnavConfig, requestedPaths?: string[]): Promise<string[]>;\nexport function findProjectRoot(start?: string): Promise<string>;\nexport function formatProject(root: string, options?: { check?: boolean; paths?: string[] }): Promise<{ ok: boolean; changedFiles: string[]; errors: Array<{ file: string; line: number; message: string }> }>;\nexport function buildArtifacts(project: ScannedProject, order: string[], options?: { previousSearchIndex?: LlmnavSearchIndex | null; fileState?: LlmnavFileState }): Map<string, string>;\nexport function buildArtifactSet(project: ScannedProject, order: string[], options?: { previousSearchIndex?: LlmnavSearchIndex | null; fileState?: LlmnavFileState }): { artifacts: Map<string, string>; index: LlmnavIndex; searchIndex: LlmnavSearchIndex; searchStats: SearchIndexStats; fileState: LlmnavFileState };\nexport function generateProject(root: string, options?: { check?: boolean; incremental?: boolean; useStatHints?: boolean; failpoint?: string }): Promise<GenerationResult>;\nexport function renderCompactCard(card: IndexedCard): string;\nexport function renderSemanticCard(card: IndexedCard): string;\nexport function scanProjectIncremental(root: string, options?: { paths?: string[]; useStatHints?: boolean; previousState?: LlmnavFileState }): Promise<{ project: ScannedProject; fileState: LlmnavFileState; stats: IncrementalFileStats; statHints: unknown; hintsPath: string }>;\nexport function buildFileStateFromProject(project: ScannedProject): LlmnavFileState;\nexport function renderFileState(fileState: LlmnavFileState): string;\nexport function usableFileState(value: unknown): value is LlmnavFileState;\nexport function initializeProject(root: string, options?: { force?: boolean; packageScripts?: boolean; agents?: string[] }): Promise<{ ok: boolean; changed: string[]; generated: GenerationResult }>;\nexport function buildInvertedIndex(index: LlmnavIndex, previous?: LlmnavSearchIndex | null): { searchIndex: LlmnavSearchIndex; stats: SearchIndexStats };\nexport function buildSearchDocument(card: IndexedCard, hash?: string): SearchDocument;\nexport function isCompatibleSearchIndex(searchIndex: unknown, repositoryId?: string): searchIndex is LlmnavSearchIndex;\nexport function renderSearchIndex(searchIndex: LlmnavSearchIndex): string;\nexport function searchCardSetHash(cards: IndexedCard[]): string;\nexport function searchDocumentHash(card: IndexedCard): string;\nexport function verifySearchIndex(index: LlmnavIndex, searchIndex: LlmnavSearchIndex): boolean;\nexport function canonicalizeSource(source: string, filePath?: string): { source: string; changed: boolean; blocks: LlmnavBlock[]; errors: Array<{ line: number; message: string }> };\nexport function cardToCanonicalObject(card: LlmnavCard): Record<string, string | string[]>;\nexport function formatLlmnavBlock(block: LlmnavBlock): string;\nexport function parseLlmnavBlocks(source: string, filePath?: string): LlmnavBlock[];\nexport function scanProject(root: string, options?: { paths?: string[] }): Promise<ScannedProject>;\nexport function ensureActiveIds(root: string, registry: Registry, ids: string[]): Promise<void>;\nexport function loadRegistry(root: string): Promise<Registry>;\nexport function resolveRegistryId(registry: Registry, id: string): { id: string; state: string; [key: string]: unknown };\nexport function buildContext(root: string, id: string, options?: { depth?: number; budget?: number }): Promise<{ id: string; depth: number; budget: number; included: string[]; text: string }>;\nexport function loadSearchData(root: string): Promise<{ index: LlmnavIndex; searchIndex: LlmnavSearchIndex; lexicon: { version?: number; aliases: Record<string, string | string[]> } }>;\nexport function queryIndex(index: LlmnavIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> }; invertedIndex?: LlmnavSearchIndex; metrics?: SearchMetrics }): SearchResult[];\nexport function queryPreparedIndex(index: LlmnavIndex, searchIndex: LlmnavSearchIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> }; metrics?: SearchMetrics }): SearchResult[];\nexport function queryIndexLegacy(index: LlmnavIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> } }): SearchResult[];\nexport function queryProject(root: string, query: string, options?: { top?: number }): Promise<SearchResult[]>;\nexport function showProjectCard(root: string, id: string): Promise<{ card: IndexedCard | null; resolvedFrom: unknown }>;\nexport function tokenize(value: string): string[];\nexport function normalizeSearchText(value: string): string;\nexport function commitGeneratedCache(root: string, cacheDirectory: string, artifacts: Map<string, string>, options?: Record<string, unknown>): Promise<TransactionResult>;\nexport function recoverGenerationTransaction(root: string, options?: { cacheDirectory?: string; renameOptions?: Record<string, unknown> }): Promise<{ recovered: boolean; action: string }>;\nexport function renameWithRetry(source: string, destination: string, options?: Record<string, unknown>): Promise<void>;\nexport function removeWithRetry(target: string, options?: Record<string, unknown>): Promise<void>;\nexport function countDiagnostics(diagnostics: Diagnostic[]): { error: number; warning: number; info: number };\nexport function diagnostic(severity: DiagnosticSeverity, code: string, message: string, file: string, line?: number, column?: number): Diagnostic;\nexport function validateProject(project: ScannedProject): Diagnostic[];\n\nexport * from ",
+        ";\nexport const SEARCH_INDEX_SCHEMA_VERSION: 2;\nexport const SEARCH_FIELD_ORDER: readonly string[];\nexport const SEARCH_FIELD_WEIGHTS: Readonly<Record<string, number>>;\nexport const TOKENIZER_VERSION: number;\nexport const TRANSACTION_SCHEMA_VERSION: number;\nexport const TRANSACTION_ABORT_EXIT_CODE: number;\n\nexport function installAgentInstructions(root: string, adapters?: string[]): Promise<string[]>;\nexport function detectBoundaries(record: ProjectRecord): DetectedBoundary[];\nexport function diagnosticsToSarif(diagnostics: Diagnostic[]): Record<string, unknown>;\nexport function buildSearchShards(index: LlmnavIndex, searchIndex: LlmnavSearchIndex, shardSize: number): {\n  manifest: null | {\n    schemaVersion: 1;\n    encoding: ",
+        ";\nexport const SEARCH_SHARD_ENCODING: ",
+        ";\nexport const SEARCH_SHARD_SCHEMA_VERSION: 1;\nexport const CONTRACT_FINGERPRINT_SCHEMA_VERSION: 1;\nexport const FILE_STATE_SCHEMA_VERSION: number;\nexport const SOURCE_INDEXER_VERSION: number;\nexport const SEARCH_INDEX_ENCODING: ",
         "> {\n  location: IndexedLocation;\n  imports: string[];\n  boundaries: DetectedBoundary[];\n  hashes: {\n    semantic: string;\n    structure: string;\n    body: string;\n  };\n}\n\nexport interface LlmnavIndex {\n  schemaVersion: 1;\n  specVersion: string;\n  generatedBy: string;\n  repositoryId: string;\n  contractFingerprints?: ContractFingerprints;\n  sourceHash: string;\n  cards: IndexedCard[];\n}\n\nexport interface ContractFingerprint {\n  sha256: string;\n  count?: number;\n}\n\nexport interface ContractFingerprints {\n  schemaVersion: 1;\n  exportedApi: ContractFingerprint;\n  configuration: ContractFingerprint;\n}\n\nexport interface ContractFingerprintChange {\n  kind: ",
         ">;\n  previous: Record<string, unknown> | null;\n  current: Record<string, unknown> | null;\n}\n\nexport interface AffectedCatalogRecord {\n  file: string;\n  kind: ",
         "] | null;\n  exported: boolean | null;\n  visibility: Declaration[",
@@ -2346,11 +2350,11 @@
       ],
       "path": "src/index.d.ts",
       "semanticBytes": 0,
-      "sourceBytes": 16616
+      "sourceBytes": 17194
     },
     {
       "blocks": [],
-      "contentHash": "d9467bb2970a7c6f68d6fe4491e52e300c82ad279c38fac9857af5b73e752377",
+      "contentHash": "a5c1bcd910426d63730a5549a7429214ba257391492c82358083d43471ebbe25",
       "declarations": [],
       "imports": [
         "./agents.js",
@@ -2371,6 +2375,7 @@
         "./project.js",
         "./registry.js",
         "./sarif.js",
+        "./search-shards.js",
         "./search.js",
         "./spec.js",
         "./tokenizer.js",
@@ -2379,7 +2384,7 @@
       ],
       "path": "src/index.js",
       "semanticBytes": 0,
-      "sourceBytes": 2255
+      "sourceBytes": 2370
     },
     {
       "blocks": [
@@ -3003,6 +3008,117 @@
           "card": {
             "effect": [],
             "excludes": [
+              "query ranking",
+              "source parsing"
+            ],
+            "id": "llmnav.index.search-shards",
+            "invariant": [],
+            "owns": [
+              "search shard schema",
+              "card range partitioning",
+              "shard manifest"
+            ],
+            "rel": [
+              "workflow>llmnav.index.inverted",
+              "workflow>llmnav.index.generate"
+            ],
+            "risk": [],
+            "role": "Split a compact search index into deterministic card-range artifacts without retokenizing documents.",
+            "scope": "module",
+            "search": [
+              "search index sharding",
+              "monorepo search artifacts",
+              "card range shard"
+            ],
+            "stability": "architecture",
+            "unknown": []
+          },
+          "end": 424,
+          "endLine": 10,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.index.search-shards"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Split a compact search index into deterministic card-range artifacts without retokenizing documents."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "search shard schema|card range partitioning|shard manifest"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "query ranking|source parsing"
+            },
+            {
+              "key": "search",
+              "line": 6,
+              "order": 4,
+              "value": "search index sharding|monorepo search artifacts|card range shard"
+            },
+            {
+              "key": "rel",
+              "line": 7,
+              "order": 5,
+              "value": "workflow>llmnav.index.inverted"
+            },
+            {
+              "key": "rel",
+              "line": 8,
+              "order": 6,
+              "value": "workflow>llmnav.index.generate"
+            },
+            {
+              "key": "stability",
+              "line": 9,
+              "order": 7,
+              "value": "architecture"
+            }
+          ],
+          "filePath": "src/search-shards.js",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.index.search-shards\nrole=Split a compact search index into deterministic card-range artifacts without retokenizing documents.\nowns=search shard schema|card range partitioning|shard manifest\nexcludes=query ranking|source parsing\nsearch=search index sharding|monorepo search artifacts|card range shard\nrel=workflow>llmnav.index.inverted\nrel=workflow>llmnav.index.generate\nstability=architecture\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "6ed0cc5936e2bae4abaa945d8ff69422686fe0fb99a31bcbfe00c0924ec367a5",
+      "declarations": [
+        null
+      ],
+      "imports": [
+        "./inverted-index.js",
+        "./util.js",
+        "0",
+        "card-range-v1",
+        "search shard size must be a non-negative integer"
+      ],
+      "path": "src/search-shards.js",
+      "semanticBytes": 424,
+      "sourceBytes": 2707
+    },
+    {
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
               "embedding generation",
               "source mutation"
             ],
@@ -3156,7 +3272,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "6fe76b8eebbdb5668bb3efef201188ebb77ccb49808a609573f5bbf69bf7a892",
+      "contentHash": "5c96e58ad7764eaa0e7b954aacc67b5792067ab948241c1a761c4b7d70b8fdcd",
       "declarations": [],
       "imports": [
         "*.bundle.js",
@@ -3303,7 +3419,7 @@
       ],
       "path": "src/spec.js",
       "semanticBytes": 0,
-      "sourceBytes": 4646
+      "sourceBytes": 4670
     },
     {
       "blocks": [
@@ -4312,6 +4428,49 @@
       "path": "tests/sarif.test.js",
       "semanticBytes": 0,
       "sourceBytes": 1075
+    },
+    {
+      "blocks": [],
+      "contentHash": "68acac045cd34949e42de4538b53ce786aa2db76954564c1cb2788ad1cb9a9a6",
+      "declarations": [],
+      "imports": [
+        "../src/generator.js",
+        "../src/initializer.js",
+        "../src/inverted-index.js",
+        "../src/search-shards.js",
+        "./helpers/synthetic.js",
+        ".llmnav",
+        "0000.json",
+        "0001.json",
+        ":",
+        "builds deterministic compatible card-range search shards",
+        "cache",
+        "config.json",
+        "does not emit shards at or below the configured size",
+        "first operation",
+        "generation publishes and removes configured search shards transactionally",
+        "llmnav-search-shards-",
+        "node:assert/strict",
+        "node:fs/promises",
+        "node:os",
+        "node:path",
+        "node:test",
+        "none",
+        "operations.ts",
+        "ops.first",
+        "ops.second",
+        "package.json",
+        "search-shards",
+        "search-shards.json",
+        "second operation",
+        "src",
+        "utf8",
+        "{",
+        "}\\n"
+      ],
+      "path": "tests/search-shards.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 3730
     },
     {
       "blocks": [],

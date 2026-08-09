@@ -220,6 +220,7 @@ export interface LlmnavConfig {
   generation: {
     cacheDirectory: string;
     moduleDepth: number;
+    searchShardSize: number;
     repositoryCatalogStabilities: LlmnavStability[];
     moduleCatalogStabilities: LlmnavStability[];
   };
@@ -373,6 +374,8 @@ export const AGENT_PROTOCOL: string;
 export const BOUNDARY_KINDS: readonly DetectedBoundary["kind"][];
 export const SARIF_SCHEMA: string;
 export const SARIF_VERSION: "2.1.0";
+export const SEARCH_SHARD_ENCODING: "card-range-v1";
+export const SEARCH_SHARD_SCHEMA_VERSION: 1;
 export const CONTRACT_FINGERPRINT_SCHEMA_VERSION: 1;
 export const FILE_STATE_SCHEMA_VERSION: number;
 export const SOURCE_INDEXER_VERSION: number;
@@ -387,6 +390,18 @@ export const TRANSACTION_ABORT_EXIT_CODE: number;
 export function installAgentInstructions(root: string, adapters?: string[]): Promise<string[]>;
 export function detectBoundaries(record: ProjectRecord): DetectedBoundary[];
 export function diagnosticsToSarif(diagnostics: Diagnostic[]): Record<string, unknown>;
+export function buildSearchShards(index: LlmnavIndex, searchIndex: LlmnavSearchIndex, shardSize: number): {
+  manifest: null | {
+    schemaVersion: 1;
+    encoding: "card-range-v1";
+    repositoryId: string;
+    sourceCardSetHash: string;
+    shardSize: number;
+    shardCount: number;
+    shards: Array<{ file: string; firstId: string; lastId: string; cardCount: number; cardSetHash: string; sha256: string }>;
+  };
+  shards: Map<string, string>;
+};
 export function buildContractFingerprints(project: ScannedProject, cards: IndexedCard[]): ContractFingerprints;
 export function compareContractFingerprints(previous: ContractFingerprints | null | undefined, current: ContractFingerprints | null | undefined): ContractFingerprintChange[];
 export function compareCardIndexes(previousIndex: LlmnavIndex | null, currentIndex: LlmnavIndex): ChangedCardRecord[];

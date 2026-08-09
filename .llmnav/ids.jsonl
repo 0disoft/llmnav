@@ -22,3 +22,4 @@
 {"id":"llmnav.contract.fingerprint","state":"active"}
 {"id":"llmnav.structure.boundaries","state":"active"}
 {"id":"llmnav.diagnostics.sarif","state":"active"}
+{"id":"llmnav.index.search-shards","state":"active"}

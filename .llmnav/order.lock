@@ -22,3 +22,4 @@ llmnav.search.tokenize
 llmnav.contract.fingerprint
 llmnav.structure.boundaries
 llmnav.diagnostics.sarif
+llmnav.index.search-shards

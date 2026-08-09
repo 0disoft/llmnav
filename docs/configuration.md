@@ -42,6 +42,7 @@
   "generation": {
     "cacheDirectory": ".llmnav/cache",
     "moduleDepth": 2,
+    "searchShardSize": 0,
     "repositoryCatalogStabilities": ["architecture"],
     "moduleCatalogStabilities": ["architecture", "contract"]
   },
@@ -97,6 +98,8 @@ Search saturation warns when one exact search phrase appears in too many cards. 
 `generation.cacheDirectory` must be a relative path below `.llmnav/`. Generation removes and rebuilds that directory, so it cannot be pointed at ordinary source or arbitrary repository paths.
 
 `moduleDepth` groups IDs by their first segments. With a depth of two, `auth.session.rotate` belongs to the `auth.session` catalog.
+
+`searchShardSize` is `0` by default. Set a positive card limit in very large repositories to emit deterministic `search-shards.json` and `search-shards/NNNN.json` artifacts. Shards are sliced from the compact index without retokenizing cards. The compatible `search-index.json` remains available for existing consumers and preserves ranking behavior.
 
 Stability filters decide which cards enter long-lived repository and module prompt material. Every card remains in `index.json` regardless of catalog filters.
 

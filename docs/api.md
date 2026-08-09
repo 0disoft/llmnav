@@ -215,6 +215,8 @@ import {
   FILE_STATE_SCHEMA_VERSION,
   SEARCH_INDEX_ENCODING,
   SEARCH_INDEX_SCHEMA_VERSION,
+  SEARCH_SHARD_ENCODING,
+  SEARCH_SHARD_SCHEMA_VERSION,
   SOURCE_INDEXER_VERSION,
   TOKENIZER_VERSION,
   TRANSACTION_SCHEMA_VERSION,
@@ -223,6 +225,8 @@ import {
 ```
 
 `diagnosticsToSarif(diagnostics)` maps existing diagnostics to a deterministic SARIF 2.1.0 object without discovering or mutating diagnostics.
+
+`buildSearchShards(index, searchIndex, shardSize)` returns a deterministic manifest and map of card-range shard contents. A size of zero or a card count at or below the limit returns no shard artifacts. The function slices compact postings and documents rather than rebuilding search documents.
 
 The normative source vocabulary remains available from `llmnav/spec`.
 

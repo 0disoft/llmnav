@@ -49,6 +49,7 @@ import { commitGeneratedCache, recoverGenerationTransaction } from "./transactio
 import { loadConfig } from "./config.js";
 import { buildContractFingerprints, compareContractFingerprints } from "./contracts.js";
 import { detectBoundaries } from "./boundaries.js";
+import { buildSearchShards, SEARCH_SHARD_SCHEMA_VERSION } from "./search-shards.js";
 
 export async function generateProject(root, options = {}) {
   const { config: recoveryConfig } = await loadConfig(root);
@@ -249,6 +250,13 @@ export function buildArtifactSet(project, order, options = {}) {
   );
   artifacts.set(`${cacheRoot}/search-index.json`, renderSearchIndex(searchIndex));
   artifacts.set(`${cacheRoot}/file-state.json`, renderFileState(fileState));
+  const searchShards = buildSearchShards(index, searchIndex, project.config.generation.searchShardSize);
+  if (searchShards.manifest) {
+    artifacts.set(`${cacheRoot}/search-shards.json`, stableStringify(searchShards.manifest));
+    for (const [relativePath, content] of searchShards.shards) {
+      artifacts.set(`${cacheRoot}/${relativePath}`, content);
+    }
+  }
 
   const repositoryCards = cards.filter((card) =>
     project.config.generation.repositoryCatalogStabilities.includes(card.stability),
@@ -284,6 +292,7 @@ export function buildArtifactSet(project, order, options = {}) {
     searchCardSetHash: searchIndex.cardSetHash,
     searchIndexSchemaVersion: searchIndex.schemaVersion,
     fileStateSchemaVersion: fileState.schemaVersion,
+    searchShardSchemaVersion: searchShards.manifest ? SEARCH_SHARD_SCHEMA_VERSION : null,
     files: contentHashes,
   };
   artifacts.set(`${cacheRoot}/manifest.json`, stableStringify(manifest));

@@ -4,6 +4,11 @@ export { loadConfig, validateConfig } from "./config.js";
 export { BOUNDARY_KINDS, detectBoundaries } from "./boundaries.js";
 export { diagnosticsToSarif, SARIF_SCHEMA, SARIF_VERSION } from "./sarif.js";
 export {
+  buildSearchShards,
+  SEARCH_SHARD_ENCODING,
+  SEARCH_SHARD_SCHEMA_VERSION,
+} from "./search-shards.js";
+export {
   buildContractFingerprints,
   compareContractFingerprints,
   CONTRACT_FINGERPRINT_SCHEMA_VERSION,

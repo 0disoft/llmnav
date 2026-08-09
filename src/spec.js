@@ -222,6 +222,7 @@ export const DEFAULT_CONFIG = Object.freeze({
   generation: {
     cacheDirectory: ".llmnav/cache",
     moduleDepth: 2,
+    searchShardSize: 0,
     repositoryCatalogStabilities: ["architecture"],
     moduleCatalogStabilities: ["architecture", "contract"],
   },

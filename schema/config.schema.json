@@ -230,6 +230,10 @@
           "minimum": 1,
           "maximum": 6
         },
+        "searchShardSize": {
+          "type": "integer",
+          "minimum": 0
+        },
         "repositoryCatalogStabilities": {
           "type": "array",
           "items": {

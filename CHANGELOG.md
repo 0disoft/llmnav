@@ -12,6 +12,7 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 * Added TypeScript and Go declaration enrichment, declaration-level body hashes, and generated route, event, schema, migration, and command boundaries.
 * Added deterministic affected-boundary reports with modules, relations, and reverse semantic dependents.
 * Added deterministic SARIF 2.1.0 diagnostic serialization and `llmnav check --format sarif`.
+* Added opt-in deterministic card-range search shards with manifest hashes and transactional stale-shard removal.
 
 ### Changed
 

@@ -629,9 +629,9 @@
         "agent search decisions"
       ],
       "hashes": {
-        "body": "b25f6b8249294c5ac536a57a25ba7be7167683fb58b13c4b775616aa3e7dd21c",
+        "body": "25297715ebfd654fb071d5d1123b7976aa914adf54b4fabde3e3b4dc9ecd1bcb",
         "semantic": "7052622c9732ab29e37c3ab87f848188e931f601684e811e7bb8adef31fbfe85",
-        "structure": "9945931c87c0670b09512119525374f2ed8c9727f9ccba14ce17b4ae332dd15a"
+        "structure": "6ca6f4e969b1986c3886799f3f2b2f6be21a0113489a5580fe7481377e5173f5"
       },
       "id": "llmnav.index.generate",
       "imports": [
@@ -663,11 +663,11 @@
         ",\n    `Repository: ${repositoryId}`,\n    ",
         ",\n    code: ",
         ",\n    message: `${label} contract fingerprint changed; review the affected contract before committing generated artifacts.`,\n    file,\n    line: 1,\n    column: 1,\n  };\n}\n\nfunction compareGeneratedDiagnostics(left, right) {\n  return compareText(left.file, right.file) ||\n    left.line - right.line ||\n    left.column - right.column ||\n    compareText(left.code, right.code) ||\n    compareText(left.message, right.message);\n}\n\nfunction indexedCard(record) {\n  const canonical = cardToCanonicalObject(record.card);\n  const boundaries = detectBoundaries(record);\n  const semanticPayload = stableJson(canonical);\n  const structurePayload = stableJson({\n    path: record.relativePath,\n    scope: record.block.scope,\n    symbol: record.declaration?.symbol ?? null,\n    kind: record.declaration?.kind ?? null,\n    signature: record.declaration?.signature ?? null,\n    language: record.declaration?.language ?? null,\n    exported: record.declaration?.exported ?? null,\n    visibility: record.declaration?.visibility ?? null,\n    receiver: record.declaration?.receiver ?? null,\n    imports: record.imports,\n    boundaries,\n  });\n  return {\n    ...canonical,\n    location: {\n      path: record.relativePath,\n      startLine: record.block.startLine,\n      endLine: record.block.endLine,\n      symbol: record.declaration?.symbol ?? null,\n      kind: record.declaration?.kind ?? null,\n      declarationLine: record.declaration?.line ?? null,\n      signature: record.declaration?.signature ?? null,\n      language: record.declaration?.language ?? null,\n      exported: record.declaration?.exported ?? null,\n      visibility: record.declaration?.visibility ?? null,\n      receiver: record.declaration?.receiver ?? null,\n    },\n    imports: record.imports,\n    boundaries,\n    hashes: {\n      semantic: sha256(semanticPayload),\n      structure: sha256(structurePayload),\n      body: record.bodyHash ?? sha256(record.source ?? ",
-        ",\n  );\n  artifacts.set(`${cacheRoot}/search-index.json`, renderSearchIndex(searchIndex));\n  artifacts.set(`${cacheRoot}/file-state.json`, renderFileState(fileState));\n\n  const repositoryCards = cards.filter((card) =>\n    project.config.generation.repositoryCatalogStabilities.includes(card.stability),\n  );\n  artifacts.set(`${cacheRoot}/repo-core.txt`, renderCatalog(project.config.repositoryId, ",
+        ",\n  );\n  artifacts.set(`${cacheRoot}/search-index.json`, renderSearchIndex(searchIndex));\n  artifacts.set(`${cacheRoot}/file-state.json`, renderFileState(fileState));\n  const searchShards = buildSearchShards(index, searchIndex, project.config.generation.searchShardSize);\n  if (searchShards.manifest) {\n    artifacts.set(`${cacheRoot}/search-shards.json`, stableStringify(searchShards.manifest));\n    for (const [relativePath, content] of searchShards.shards) {\n      artifacts.set(`${cacheRoot}/${relativePath}`, content);\n    }\n  }\n\n  const repositoryCards = cards.filter((card) =>\n    project.config.generation.repositoryCatalogStabilities.includes(card.stability),\n  );\n  artifacts.set(`${cacheRoot}/repo-core.txt`, renderCatalog(project.config.repositoryId, ",
         ",\n  ];\n  for (const card of cards) lines.push(renderSemanticCard(card), ",
         ",\n  ];\n  if (modules.length === 0) lines.push(",
         ", ",
-        ", repositoryCards));\n\n  const modules = groupByModule(cards, project.config.generation.moduleDepth);\n  const moduleManifest = [];\n  for (const [moduleId, moduleCards] of modules) {\n    const filtered = moduleCards.filter((card) =>\n      project.config.generation.moduleCatalogStabilities.includes(card.stability),\n    );\n    if (filtered.length === 0) continue;\n    const relativePath = `${cacheRoot}/modules/${safeModuleName(moduleId)}.txt`;\n    artifacts.set(relativePath, renderCatalog(project.config.repositoryId, moduleId, filtered));\n    moduleManifest.push({ id: moduleId, file: relativePath, cards: filtered.length });\n  }\n\n  artifacts.set(`${cacheRoot}/agent-context.md`, renderAgentContext(project.config.repositoryId, moduleManifest));\n\n  const contentHashes = Object.fromEntries(\n    [...artifacts.entries()]\n      .sort(([left], [right]) => compareText(left, right))\n      .map(([relativePath, content]) => [relativePath, sha256(content)]),\n  );\n  const manifest = {\n    schemaVersion: 1,\n    specVersion: SPEC_VERSION,\n    repositoryId: project.config.repositoryId,\n    cardCount: cards.length,\n    moduleCount: moduleManifest.length,\n    sourceHash: index.sourceHash,\n    searchCardSetHash: searchIndex.cardSetHash,\n    searchIndexSchemaVersion: searchIndex.schemaVersion,\n    fileStateSchemaVersion: fileState.schemaVersion,\n    files: contentHashes,\n  };\n  artifacts.set(`${cacheRoot}/manifest.json`, stableStringify(manifest));\n  return { artifacts, index, searchIndex, searchStats, fileState, moduleManifest };\n}\n\nfunction diagnosticForContractChange(change) {\n  const file = change.kind === ",
+        ", repositoryCards));\n\n  const modules = groupByModule(cards, project.config.generation.moduleDepth);\n  const moduleManifest = [];\n  for (const [moduleId, moduleCards] of modules) {\n    const filtered = moduleCards.filter((card) =>\n      project.config.generation.moduleCatalogStabilities.includes(card.stability),\n    );\n    if (filtered.length === 0) continue;\n    const relativePath = `${cacheRoot}/modules/${safeModuleName(moduleId)}.txt`;\n    artifacts.set(relativePath, renderCatalog(project.config.repositoryId, moduleId, filtered));\n    moduleManifest.push({ id: moduleId, file: relativePath, cards: filtered.length });\n  }\n\n  artifacts.set(`${cacheRoot}/agent-context.md`, renderAgentContext(project.config.repositoryId, moduleManifest));\n\n  const contentHashes = Object.fromEntries(\n    [...artifacts.entries()]\n      .sort(([left], [right]) => compareText(left, right))\n      .map(([relativePath, content]) => [relativePath, sha256(content)]),\n  );\n  const manifest = {\n    schemaVersion: 1,\n    specVersion: SPEC_VERSION,\n    repositoryId: project.config.repositoryId,\n    cardCount: cards.length,\n    moduleCount: moduleManifest.length,\n    sourceHash: index.sourceHash,\n    searchCardSetHash: searchIndex.cardSetHash,\n    searchIndexSchemaVersion: searchIndex.schemaVersion,\n    fileStateSchemaVersion: fileState.schemaVersion,\n    searchShardSchemaVersion: searchShards.manifest ? SEARCH_SHARD_SCHEMA_VERSION : null,\n    files: contentHashes,\n  };\n  artifacts.set(`${cacheRoot}/manifest.json`, stableStringify(manifest));\n  return { artifacts, index, searchIndex, searchStats, fileState, moduleManifest };\n}\n\nfunction diagnosticForContractChange(change) {\n  const file = change.kind === ",
         "./boundaries.js",
         "./changes.js",
         "./config.js",
@@ -677,6 +677,7 @@
         "./parser.js",
         "./project.js",
         "./registry.js",
+        "./search-shards.js",
         "./spec.js",
         "./transaction.js",
         "./util.js",
@@ -1652,11 +1653,61 @@
         "static analysis report"
       ],
       "stability": "contract"
+    },
+    {
+      "boundaries": [],
+      "excludes": [
+        "query ranking",
+        "source parsing"
+      ],
+      "hashes": {
+        "body": "6ed0cc5936e2bae4abaa945d8ff69422686fe0fb99a31bcbfe00c0924ec367a5",
+        "semantic": "2c3afaea0356d6e78a394054d1078bdb02b77df800d72886f94fbdf339cec43f",
+        "structure": "56522165d2656c8173e3690d2c71aa70a9c934201bff5c65294d3bebe43842cc"
+      },
+      "id": "llmnav.index.search-shards",
+      "imports": [
+        "./inverted-index.js",
+        "./util.js",
+        "0",
+        "card-range-v1",
+        "search shard size must be a non-negative integer"
+      ],
+      "location": {
+        "declarationLine": null,
+        "endLine": 10,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/search-shards.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "owns": [
+        "search shard schema",
+        "card range partitioning",
+        "shard manifest"
+      ],
+      "rel": [
+        "workflow>llmnav.index.inverted",
+        "workflow>llmnav.index.generate"
+      ],
+      "role": "Split a compact search index into deterministic card-range artifacts without retokenizing documents.",
+      "scope": "module",
+      "search": [
+        "search index sharding",
+        "monorepo search artifacts",
+        "card range shard"
+      ],
+      "stability": "architecture"
     }
   ],
   "contractFingerprints": {
     "configuration": {
-      "sha256": "832231f16ca78ad5551ab99221175a70f538ac0b819529335e65dd2429db9436"
+      "sha256": "3a8c4d5d9bcc8fe4929e33f03ab06ec8c017817b40419955bb276a95f0dc6bea"
     },
     "exportedApi": {
       "count": 5,
@@ -1667,6 +1718,6 @@
   "generatedBy": "llmnav@0.2.0",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "4c3e240a21fc1520104079adcb08e2380f9a47ff5dd6bbc4ffe679f50ae97bc2",
+  "sourceHash": "a16a7dece781ff932c6f79b278a327922f354060f607ea8483f87b7279dbd9a3",
   "specVersion": "1"
 }

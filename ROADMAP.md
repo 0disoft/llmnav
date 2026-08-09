@@ -41,9 +41,6 @@ Implemented during 0.3 development:
 * selective body hashes at declaration granularity
 * richer affected-boundary reports
 * SARIF diagnostic output
-
-Planned:
-
 * sharded generated search artifacts for very large monorepos
 
 ## 0.4 — repository graphs

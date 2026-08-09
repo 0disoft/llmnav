@@ -1,11 +1,11 @@
 {
-  "cardCount": 24,
+  "cardCount": 25,
   "fileStateSchemaVersion": 1,
   "files": {
-    ".llmnav/cache/agent-context.md": "a6caab36b365c47ad495c32b81f03f4cc5c2128806bd450b4a52ec09d13f4add",
-    ".llmnav/cache/cards.jsonl": "95580d2dda8ae9dfba749def586d85d2f2b7c23dff3af7c2a7a4f6f800ed6b98",
-    ".llmnav/cache/file-state.json": "10a5cd33a9251c905271ba1dade17a75ad393bd64da7dad1cda94a4541ed382b",
-    ".llmnav/cache/index.json": "6bafeed09805b728ae0c9a8402cfdafc3c288ed183077fc12408d79e7a83d55d",
+    ".llmnav/cache/agent-context.md": "953df7afaf2a2322a70532ca9ff9f527b2b4dcc1cd399094987a4c005ff9a340",
+    ".llmnav/cache/cards.jsonl": "173cd8098416e4cf38cfa00e2d0a93e4a54e98932d329ece0e101cca1d6b4598",
+    ".llmnav/cache/file-state.json": "4b990e068c7c0d6af0e80e60c715d3450bb5987b7e8cfc67220271bbfd4ce129",
+    ".llmnav/cache/index.json": "a36ea0fcfedbca99799b2d0aa7d88bbaede9bc6db2fa3be71418d9f14a4dc286",
     ".llmnav/cache/modules/example.auth.txt": "ae0aebf37a7f541ec0af5a36c1584452703b5b4fcafd6f397d0a7a402c3a76e1",
     ".llmnav/cache/modules/example.billing.txt": "957e2c984d5c121e598956c4f78525016505b1c97d6a94273866d92c4166fecd",
     ".llmnav/cache/modules/example.privacy.txt": "0948627bfa62f11088fbbf1aec835cab50c35d2d03f49eadefbddc221169e0b7",
@@ -14,20 +14,21 @@
     ".llmnav/cache/modules/llmnav.contract.txt": "ca2e37e6162910796a3cf0e3681fa508249dbdf5d9421f3768ceac09df3e401a",
     ".llmnav/cache/modules/llmnav.diagnostics.txt": "1c7c41bc2ceb76949415fa54ba4b14fff774a49c508aa1bb0279ad4cf9c7c55e",
     ".llmnav/cache/modules/llmnav.eval.txt": "b7c33761365f1863d42c63ac1ced6dfc665a582faeeafa653f623c363e2ac4d6",
-    ".llmnav/cache/modules/llmnav.index.txt": "6913917ea3424178c2123735477e2d9a39b0739e6a6eedd09c66b9703b32eb60",
+    ".llmnav/cache/modules/llmnav.index.txt": "d102b0afb26a6be1ae81dc44fc8224ab685abeb4c035348c584d20259973d565",
     ".llmnav/cache/modules/llmnav.project.txt": "f74da215ab21f2f61714812ea2825c7a47e9f8169813f712150c6ad8097783ba",
     ".llmnav/cache/modules/llmnav.rules.txt": "08b21cecbf4f5125f639dfad960d3530ed1b21ecad74e134d2ca510199d2766d",
     ".llmnav/cache/modules/llmnav.search.txt": "19d62c8c0be8b7a2f7323b6b88673c6e93c45bb66841ebf3df7835a5e731ce52",
     ".llmnav/cache/modules/llmnav.structure.txt": "1574a667a2175d9a6ec86d753c6728f10a6bbf2887ba69dfcd3a030f283e05eb",
     ".llmnav/cache/modules/llmnav.syntax.txt": "a1f177762cc5a6e8d26ea4ca8c1ba36c840dbba98b0ed046ed4a1d19ed774916",
-    ".llmnav/cache/repo-core.txt": "c601904a8037b108c24f5caed349dc9d6a5169da75276fb15ede72027d0df476",
-    ".llmnav/cache/search-index.json": "6fc87d734ebf552f389bb9ae86c131a86de22a8a762230ea44596e7f417115a0"
+    ".llmnav/cache/repo-core.txt": "fdb0814c249089b71df2d71983bcf69ed2a08dd087c1ad3a859307dc92944e7d",
+    ".llmnav/cache/search-index.json": "6876e111fb99af6f29799002bc50e0e2af2ee785d737923a6d8d76ea895bbb8b"
   },
   "moduleCount": 14,
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "searchCardSetHash": "b8445d3b21b2d4df21df4fb9b2701161c1947545874b844741b06b2f48de9832",
+  "searchCardSetHash": "62cdd2312043043d27e8a465eb08cbc24b0f0915a337ac2534fa862d634735c5",
   "searchIndexSchemaVersion": 2,
-  "sourceHash": "4c3e240a21fc1520104079adcb08e2380f9a47ff5dd6bbc4ffe679f50ae97bc2",
+  "searchShardSchemaVersion": null,
+  "sourceHash": "a16a7dece781ff932c6f79b278a327922f354060f607ea8483f87b7279dbd9a3",
   "specVersion": "1"
 }

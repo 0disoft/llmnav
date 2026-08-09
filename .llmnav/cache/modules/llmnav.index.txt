@@ -30,3 +30,9 @@ role Commit a complete generated cache with rollback and crash recovery across P
 owns cache staging, directory swap, generation recovery
 excludes artifact semantics, source indexing
 rel workflow>llmnav.index.generate
+
+@llmnav.index.search-shards
+role Split a compact search index into deterministic card-range artifacts without retokenizing documents.
+owns search shard schema, card range partitioning, shard manifest
+excludes query ranking, source parsing
+rel workflow>llmnav.index.inverted, workflow>llmnav.index.generate

@@ -199,6 +199,7 @@ function validateGeneration(generation, problems) {
   if (!Number.isInteger(generation.moduleDepth) || generation.moduleDepth < 1 || generation.moduleDepth > 6) {
     problems.push("generation.moduleDepth must be an integer from 1 to 6");
   }
+  validateInteger(generation.searchShardSize, "generation.searchShardSize", problems, 0);
   for (const key of ["repositoryCatalogStabilities", "moduleCatalogStabilities"]) {
     validateStringArray(generation[key], `generation.${key}`, problems, { unique: true });
     if (Array.isArray(generation[key])) {
