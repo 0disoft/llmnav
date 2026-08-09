@@ -12,6 +12,7 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 
 * Made tag publication idempotent only when the existing npm tarball integrity matches the tagged package.
 * Documented the provenance override and browser authentication required for a manual first publication.
+* Aligned the package author and MIT copyright holder with the public `0disoft` identity.
 
 ## [0.5.1] — 2026-08-09
 
