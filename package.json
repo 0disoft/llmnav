@@ -15,6 +15,10 @@
       "types": "./src/spec.d.ts",
       "import": "./src/spec.js"
     },
+    "./examples/provider-neutral-host.mjs": {
+      "types": "./examples/provider-neutral-host.d.mts",
+      "import": "./examples/provider-neutral-host.mjs"
+    },
     "./package.json": "./package.json"
   },
   "files": [
@@ -23,6 +27,8 @@
     "templates",
     "schema",
     "docs",
+    "examples/provider-neutral-host.mjs",
+    "examples/provider-neutral-host.d.mts",
     "README.md",
     "CHANGELOG.md",
     "ROADMAP.md",

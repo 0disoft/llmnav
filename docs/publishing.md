@@ -47,7 +47,7 @@ npm run smoke:pack
 npm pack --dry-run
 ```
 
-Inspect the tarball list. The package intentionally includes the CLI, source API, type declarations, schema, templates, documentation, README files, changelog, roadmap, and license. Tests, benchmark harnesses, development scripts, and examples remain in GitHub but are not installed into consumer projects. `npm run smoke:pack` verifies the exact tarball in a clean temporary project.
+Inspect the tarball list. The package intentionally includes the CLI, source API, type declarations, schema, templates, documentation, the typed provider-neutral host example, README, changelog, roadmap, and license. Tests, benchmark harnesses, and development scripts remain in GitHub but are not installed into consumer projects. `npm run smoke:pack` verifies the exact tarball and example export in a clean temporary project.
 
 ## 5. Publish the first release
 

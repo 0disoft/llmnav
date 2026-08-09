@@ -279,6 +279,19 @@
       "sourceBytes": 925
     },
     {
+      "blocks": [],
+      "contentHash": "714977bd665f9347762153c7fae851584fa126b44b39fd8075ace3018cb4a4d4",
+      "declarations": [],
+      "imports": [
+        ", ",
+        "llmnav",
+        "module:"
+      ],
+      "path": "examples/provider-neutral-host.mjs",
+      "semanticBytes": 0,
+      "sourceBytes": 1095
+    },
+    {
       "blocks": [
         {
           "card": {
@@ -874,11 +887,13 @@
     },
     {
       "blocks": [],
-      "contentHash": "4c48a48c5b6eb5b0131fa38edee344ee5155410537609a32707a05c8acb2321d",
+      "contentHash": "ff54d08adbb24ce8a8c6a86aaaea80a619c8478e0681daee76eb36a02027f3ce",
       "declarations": [],
       "imports": [
         "--agents",
         "--check",
+        "--eval",
+        "--input-type=module",
         "--json",
         "--root",
         "../",
@@ -891,6 +906,8 @@
         "generate",
         "init",
         "llmnav",
+        "llmnav/examples/provider-neutral-host.mjs",
+        "llmnav_query",
         "no result",
         "node:child_process",
         "node:fs/promises",
@@ -906,7 +923,7 @@
       ],
       "path": "scripts/pack-smoke.js",
       "semanticBytes": 0,
-      "sourceBytes": 3856
+      "sourceBytes": 4285
     },
     {
       "blocks": [],
@@ -5620,6 +5637,43 @@
       "path": "tests/prompt-bundle.test.js",
       "semanticBytes": 0,
       "sourceBytes": 3147
+    },
+    {
+      "blocks": [],
+      "contentHash": "0682da873b4541d4a9e67c2e38ee9e1c9778795759ae1457b6eb75bd61b9209b",
+      "declarations": [],
+      "imports": [
+        "../examples/provider-neutral-host.mjs",
+        "../src/initializer.js",
+        ":",
+        "auth.session",
+        "auth.ts",
+        "llmnav-neutral-host-",
+        "llmnav_check",
+        "llmnav_context",
+        "llmnav_query",
+        "llmnav_show",
+        "missing.module",
+        "module:auth.session",
+        "node:assert/strict",
+        "node:fs/promises",
+        "node:os",
+        "node:path",
+        "node:test",
+        "none",
+        "package.json",
+        "package:agent-protocol",
+        "package:tool-definitions",
+        "replayed refresh token",
+        "repository:core",
+        "runs the packaged provider-neutral host example",
+        "src",
+        "{",
+        "}\\n"
+      ],
+      "path": "tests/provider-neutral-example.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 1836
     },
     {
       "blocks": [],

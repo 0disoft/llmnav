@@ -46,6 +46,18 @@ if (PACKAGE_VERSION !== "0.4.0" || SEARCH_INDEX_SCHEMA_VERSION !== 2 || SEARCH_I
   run(process.execPath, [cli, "init", "--agents", "none", "--root", project], project);
   const generation = JSON.parse(run(process.execPath, [cli, "generate", "--root", project, "--json"], project));
   if (!generation.ok) throw new Error(`Installed generation failed: ${JSON.stringify(generation)}`);
+  run(
+    process.execPath,
+    [
+      "--input-type=module",
+      "--eval",
+      `import { createLlmnavHost } from "llmnav/examples/provider-neutral-host.mjs";
+const host = await createLlmnavHost(process.cwd());
+const result = await host.execute({ name: "llmnav_query", input: { task: "replayed refresh token" } });
+if (!result.ok || result.data[0]?.id !== "auth.session.rotate") process.exit(1);`,
+    ],
+    project,
+  );
   const results = JSON.parse(run(process.execPath, [cli, "query", "replayed refresh token", "--root", project, "--json"], project));
   if (results[0]?.id !== "auth.session.rotate") {
     throw new Error(`Installed query returned ${results[0]?.id ?? "no result"}.`);

@@ -103,6 +103,8 @@ Suggested contract:
 
 Every execution returns the same schemaVersion 1 envelope with `operation`, `ok`, `data`, and `error`. Expected validation and not-found failures use stable `LNVAP` codes. Keep the definition and operation order stable across sessions so provider prompt caches can reuse the tool prefix.
 
+See [Provider-neutral host integration](provider-neutral-integration.md) for the packaged typed adapter and complete host-boundary examples.
+
 ## Failure behavior
 
 An agent should not stop when a repository is partially annotated.
