@@ -32,6 +32,7 @@ import {
 } from "./spec.js";
 import { parseInteger } from "./util.js";
 import { diagnosticsToSarif } from "./sarif.js";
+import { loadGraphInputs } from "./graph-input.js";
 
 const VALUE_OPTIONS = new Set(["--root", "--format", "--top", "--depth", "--budget", "--agents", "--file"]);
 
@@ -121,7 +122,8 @@ async function runCheck(root, args, json) {
   if (!["text", "json", "github", "sarif"].includes(format)) throw usageError(`Unknown diagnostic format ${JSON.stringify(format)}.`);
   const paths = getPositionals(args);
   const project = await scanProject(root, { paths });
-  const diagnostics = validateProject(project);
+  const graphInputs = await loadGraphInputs(root, project.config);
+  const diagnostics = [...validateProject(project), ...graphInputs.diagnostics].sort(compareCliDiagnostics);
   const counts = countDiagnostics(diagnostics);
   const ok = counts.error === 0;
   if (format === "json") {
@@ -305,6 +307,11 @@ function printDiagnostics(diagnostics, format) {
       console.log(`${item.file}:${item.line}:${item.column} ${item.severity} ${item.code} ${item.message}`);
     }
   }
+}
+
+function compareCliDiagnostics(left, right) {
+  return left.file.localeCompare(right.file, "en") || left.line - right.line || left.column - right.column ||
+    left.code.localeCompare(right.code, "en") || left.message.localeCompare(right.message, "en");
 }
 
 

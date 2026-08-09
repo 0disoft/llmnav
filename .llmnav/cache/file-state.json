@@ -1431,7 +1431,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "a69e2d4168712c291f76e36a28bcb28e93f644aef10f626b41c7aae3710b3494",
+      "contentHash": "d352de7820e25fb4b751dfcc46f212bd5520fc2cd7f404016838d9ae2bf926cf",
       "declarations": [
         null
       ],
@@ -1447,6 +1447,8 @@
         ") {\n      const name = argument.split(",
         ") {\n      values.push(...args.slice(index + 1));\n      break;\n    }\n    if (argument.startsWith(",
         ") || argument === ",
+        ") || left.line - right.line || left.column - right.column ||\n    left.code.localeCompare(right.code, ",
+        ") || left.message.localeCompare(right.message, ",
         ")) continue;\n    const separator = argument.indexOf(",
         ")) throw usageError(`Option ${name} requires a value.`);\n        index += 1;\n      }\n    } else if (separator >= 0) {\n      throw usageError(`Flag ${name} does not accept a value.`);\n    }\n  }\n}\n\nfunction getPositionals(args) {\n  const values = [];\n  for (let index = 0; index < args.length; index += 1) {\n    const argument = args[index];\n    if (argument === ",
         "),\n  });\n  if (json) {\n    console.log(JSON.stringify(result, null, 2));\n  } else {\n    for (const error of result.errors) console.error(error);\n    for (const item of result.cases.filter((testCase) => !testCase.passAt5)) {\n      console.error(`miss ${JSON.stringify(item.query)} expected=${item.expected.join(",
@@ -1454,6 +1456,7 @@
         ");\n    const name = separator >= 0 ? argument.slice(0, separator) : argument;\n    if (!allowed.has(name)) throw usageError(`Unknown option ${name} for command ${command}.`);\n    if (VALUE_OPTIONS.has(name)) {\n      const inlineValue = separator >= 0 ? argument.slice(separator + 1) : null;\n      if (inlineValue !== null) {\n        if (!inlineValue) throw usageError(`Option ${name} requires a value.`);\n      } else {\n        const next = args[index + 1];\n        if (next === undefined || next.startsWith(",
         ");\n    return 2;\n  }\n  const result = await buildContext(root, id, {\n    depth: parseCliIntegerOption(args, ",
         ");\n    return 2;\n  }\n  const result = await showProjectCard(root, id);\n  if (!result.card) {\n    if (json) console.log(JSON.stringify(result, null, 2));\n    else console.error(`Unknown or inactive semantic ID ${id}.`);\n    return 1;\n  }\n  if (json) console.log(JSON.stringify(result, null, 2));\n  else {\n    if (result.resolvedFrom) console.log(`resolved ${id} -> ${result.card.id}\\n`);\n    console.log(renderCompactCard(result.card));\n  }\n  return 0;\n}\n\nasync function runContext(root, args, json) {\n  const id = getPositionals(args)[0];\n  if (!id) {\n    console.error(",
+        ");\n}\n\n\n\nfunction parseCliIntegerOption(args, name, fallback) {\n  const value = getOption(args, name);\n  if (value === undefined) return fallback;\n  if (!/^-?\\d+$/u.test(value)) throw usageError(`Option ${name} requires an integer.`);\n  return parseInteger(value, fallback);\n}\n\nfunction usageError(message) {\n  const error = new Error(message);\n  error.exitCode = 2;\n  return error;\n}\n\nfunction validateOptions(command, args) {\n  const allowed = COMMAND_OPTIONS[command];\n  if (!allowed) return;\n  for (let index = 0; index < args.length; index += 1) {\n    const argument = args[index];\n    if (argument === ",
         ");\n}\n\nfunction printHelp() {\n  console.log(`llmnav ${PACKAGE_VERSION}\n\nDeterministic semantic navigation for LLM coding agents.\n\nUsage\n  llmnav init [--agents all|agents,claude,copilot,cursor] [--package-scripts]\n  llmnav check [paths...] [--format text|json|github|sarif]\n  llmnav format [paths...] [--check]\n  llmnav generate [--check]\n  llmnav query ",
         ")} actual=${item.actual.join(",
         ")}`);\n    console.log(`effects ${EFFECT_KINDS.join(",
@@ -1490,6 +1493,7 @@
         "./files.js",
         "./formatter.js",
         "./generator.js",
+        "./graph-input.js",
         "./initializer.js",
         "./project.js",
         "./sarif.js",
@@ -1497,7 +1501,7 @@
         "./spec.js",
         "./util.js",
         "./validator.js",
-        ";\n      console.log(\n        `::${command} file=${escapeWorkflow(item.file)},line=${item.line},col=${item.column},title=${item.code}::${escapeWorkflow(item.message)}`,\n      );\n    } else {\n      console.log(`${item.file}:${item.line}:${item.column} ${item.severity} ${item.code} ${item.message}`);\n    }\n  }\n}\n\n\n\nfunction parseCliIntegerOption(args, name, fallback) {\n  const value = getOption(args, name);\n  if (value === undefined) return fallback;\n  if (!/^-?\\d+$/u.test(value)) throw usageError(`Option ${name} requires an integer.`);\n  return parseInteger(value, fallback);\n}\n\nfunction usageError(message) {\n  const error = new Error(message);\n  error.exitCode = 2;\n  return error;\n}\n\nfunction validateOptions(command, args) {\n  const allowed = COMMAND_OPTIONS[command];\n  if (!allowed) return;\n  for (let index = 0; index < args.length; index += 1) {\n    const argument = args[index];\n    if (argument === ",
+        ";\n      console.log(\n        `::${command} file=${escapeWorkflow(item.file)},line=${item.line},col=${item.column},title=${item.code}::${escapeWorkflow(item.message)}`,\n      );\n    } else {\n      console.log(`${item.file}:${item.line}:${item.column} ${item.severity} ${item.code} ${item.message}`);\n    }\n  }\n}\n\nfunction compareCliDiagnostics(left, right) {\n  return left.file.localeCompare(right.file, ",
         ";\n      const line = result.location?.declarationLine ?? result.location?.startLine ?? 1;\n      console.log(`${index + 1}. @${result.id} score=${result.score}`);\n      console.log(`   ${result.role}`);\n      console.log(`   ${result.location?.path ?? ",
         "All LLMNav blocks are canonical.",
         "Generated LLMNav files are current.",
@@ -1533,11 +1537,11 @@
       ],
       "path": "src/cli.js",
       "semanticBytes": 473,
-      "sourceBytes": 14079
+      "sourceBytes": 14516
     },
     {
       "blocks": [],
-      "contentHash": "edbcb0f2577b7a79a31dc8cd37439359b86c6b97d1a5c3a76144ebaed49241ee",
+      "contentHash": "44cb299f50c5ddf5b85506f80be3ce03f76e395ca953efdc0b7051e7a3b85b04",
       "declarations": [],
       "imports": [
         " || value === ",
@@ -1574,6 +1578,9 @@
         "generation.moduleDepth must be an integer from 1 to 6",
         "generation.searchShardSize",
         "genericSearchTerms",
+        "graph",
+        "graph must be an object",
+        "graph.indexFiles",
         "includeExtensions",
         "lint",
         "lint must be an object",
@@ -1615,7 +1622,7 @@
       ],
       "path": "src/config.js",
       "semanticBytes": 0,
-      "sourceBytes": 12104
+      "sourceBytes": 12735
     },
     {
       "blocks": [
@@ -2125,7 +2132,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "25297715ebfd654fb071d5d1123b7976aa914adf54b4fabde3e3b4dc9ecd1bcb",
+      "contentHash": "dabbbeb75b3271c08fe025cf500ef1adaa4dcd543957ebb91479a6c640553997",
       "declarations": [
         null
       ],
@@ -2167,6 +2174,7 @@
         "./changes.js",
         "./config.js",
         "./contracts.js",
+        "./graph-input.js",
         "./incremental.js",
         "./inverted-index.js",
         "./parser.js",
@@ -2193,7 +2201,141 @@
       ],
       "path": "src/generator.js",
       "semanticBytes": 476,
-      "sourceBytes": 17656
+      "sourceBytes": 17887
+    },
+    {
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
+              "graph ranking",
+              "source mutation"
+            ],
+            "id": "llmnav.graph.import",
+            "invariant": [],
+            "owns": [
+              "graph import schema",
+              "input normalization",
+              "graph input diagnostics"
+            ],
+            "rel": [
+              "workflow>llmnav.index.generate"
+            ],
+            "risk": [],
+            "role": "Load and validate optional generated definition and reference indexes without executing repository code.",
+            "scope": "module",
+            "search": [
+              "definition index import",
+              "reference index import",
+              "graph input validation"
+            ],
+            "stability": "architecture",
+            "unknown": []
+          },
+          "end": 397,
+          "endLine": 9,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.graph.import"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Load and validate optional generated definition and reference indexes without executing repository code."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "graph import schema|input normalization|graph input diagnostics"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "graph ranking|source mutation"
+            },
+            {
+              "key": "search",
+              "line": 6,
+              "order": 4,
+              "value": "definition index import|reference index import|graph input validation"
+            },
+            {
+              "key": "rel",
+              "line": 7,
+              "order": 5,
+              "value": "workflow>llmnav.index.generate"
+            },
+            {
+              "key": "stability",
+              "line": 8,
+              "order": 6,
+              "value": "architecture"
+            }
+          ],
+          "filePath": "src/graph-input.js",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.graph.import\nrole=Load and validate optional generated definition and reference indexes without executing repository code.\nowns=graph import schema|input normalization|graph input diagnostics\nexcludes=graph ranking|source mutation\nsearch=definition index import|reference index import|graph input validation\nrel=workflow>llmnav.index.generate\nstability=architecture\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "00c8cc44b535ceb6f883508f5bfa8b112fa9975926890c906ac96a04d24bf2ba",
+      "declarations": [
+        null
+      ],
+      "imports": [
+        " || !/^[a-z][a-z0-9-]*$/u.test(value.kind)) {\n    throw new Error(`${name}.kind must be a controlled lower-case identifier`);\n  }\n  const normalizedPath = value.path === undefined ? null : normalizeSourcePath(value.path, `${name}.path`);\n  if (value.line !== undefined && (!Number.isInteger(value.line) || value.line < 1)) {\n    throw new Error(`${name}.line must be a positive integer when present`);\n  }\n  const confidence = value.confidence ?? 0.8;\n  if (typeof confidence !== ",
+        " || !Number.isFinite(confidence) || confidence < 0 || confidence > 1) {\n    throw new Error(`${name}.confidence must be a number from 0 to 1`);\n  }\n  return {\n    from,\n    to,\n    kind: value.kind,\n    path: normalizedPath,\n    line: value.line ?? null,\n    confidence,\n  };\n}\n\nfunction normalizeSemanticKey(value, repositoryId, name) {\n  if (typeof value !== ",
+        " || !value.generator.trim())) {\n    throw new Error(",
+        " || !value.kind.trim())) {\n    throw new Error(`${name}.kind must be a non-empty string when present`);\n  }\n  return {\n    id,\n    symbol: value.symbol.trim(),\n    path: normalizedPath,\n    line: value.line ?? null,\n    kind: value.kind?.trim() ?? null,\n  };\n}\n\nfunction normalizeReference(value, index, repositoryId) {\n  const name = `references[${index}]`;\n  assertObject(value, name);\n  assertKeys(value, new Set([",
+        " || !value.symbol.trim()) throw new Error(`${name}.symbol must be a non-empty string`);\n  const normalizedPath = normalizeSourcePath(value.path, `${name}.path`);\n  if (value.line !== undefined && (!Number.isInteger(value.line) || value.line < 1)) {\n    throw new Error(`${name}.line must be a positive integer when present`);\n  }\n  if (value.kind !== undefined && (typeof value.kind !== ",
+        " || !value.trim()) throw new Error(`${name} must be a non-empty relative path`);\n  if (value.includes(",
+        " || Array.isArray(value)) throw new Error(`${name} must be an object`);\n}\n\nfunction assertKeys(value, allowed, name) {\n  for (const key of Object.keys(value)) {\n    if (!allowed.has(key)) throw new Error(`${name} contains unknown property ${JSON.stringify(key)}`);\n  }\n}\n\nfunction compareReferences(left, right) {\n  return compareText(left.from, right.from) || compareText(left.to, right.to) || compareText(left.kind, right.kind) ||\n    compareText(left.path ?? ",
+        ") throw new Error(`${name} must be a semantic ID`);\n  const normalized = value.trim();\n  if (ID_PATTERN.test(normalized)) return `${repositoryId}/${normalized}`;\n  if (CROSS_REPO_ID_PATTERN.test(normalized)) return normalized;\n  throw new Error(`${name} must be a local or repository-qualified semantic ID`);\n}\n\nfunction normalizeSourcePath(value, name) {\n  if (typeof value !== ",
+        ") || /\\p{Cc}/u.test(value)) {\n    throw new Error(`${name} must be a safe forward-slash relative path`);\n  }\n  return toPosix(value);\n}\n\nfunction assertObject(value, name) {\n  if (!value || typeof value !== ",
+        ") || /^(?:[A-Za-z]:|\\/|~\\/)/u.test(value) || value.split(",
+        ")) {\n    throw new Error(",
+        ").includes(",
+        ");\n\n  const definitions = value.definitions.map((item, index) => normalizeDefinition(item, index, value.repositoryId));\n  const definitionIds = new Set();\n  for (const definition of definitions) {\n    if (definitionIds.has(definition.id)) throw new Error(`definitions contains duplicate ID ${definition.id}`);\n    definitionIds.add(definition.id);\n  }\n  const references = value.references.map((item, index) => normalizeReference(item, index, value.repositoryId));\n  definitions.sort((left, right) => compareText(left.id, right.id));\n  references.sort(compareReferences);\n\n  return {\n    file: toPosix(file),\n    contentHash,\n    schemaVersion: GRAPH_INPUT_SCHEMA_VERSION,\n    repositoryId: value.repositoryId,\n    generator: value.generator?.trim() ?? null,\n    definitions,\n    references,\n  };\n}\n\nfunction normalizeDefinition(value, index, repositoryId) {\n  const name = `definitions[${index}]`;\n  assertObject(value, name);\n  assertKeys(value, new Set([",
+        ");\n  if (!Array.isArray(value.references)) throw new Error(",
+        ");\n  }\n  if (!Array.isArray(value.definitions)) throw new Error(",
+        ");\n  }\n  if (value.generator !== undefined && (typeof value.generator !== ",
+        ", ",
+        ", right.path ?? ",
+        "./spec.js",
+        "./util.js",
+        "./validator.js",
+        "<graph-index>",
+        "LNV014",
+        "]), name);\n  const from = normalizeSemanticKey(value.from, repositoryId, `${name}.from`);\n  const to = normalizeSemanticKey(value.to, repositoryId, `${name}.to`);\n  if (typeof value.kind !== ",
+        "]), name);\n  const id = normalizeSemanticKey(value.id, repositoryId, `${name}.id`);\n  if (typeof value.symbol !== ",
+        "definitions",
+        "error",
+        "file does not exist",
+        "generator",
+        "graph index",
+        "node:path",
+        "references",
+        "repositoryId",
+        "schemaVersion",
+        "schemaVersion must be 1"
+      ],
+      "path": "src/graph-input.js",
+      "semanticBytes": 397,
+      "sourceBytes": 6741
     },
     {
       "blocks": [
@@ -2311,11 +2453,11 @@
     },
     {
       "blocks": [],
-      "contentHash": "6efc3cfe1ff6a694d390081a5017a85a7eeda9660d435abc8174e295d74f072a",
+      "contentHash": "acd016c400cc805207d7b901d986346a54bd7b082188faf9bce17c730bcf8d7a",
       "declarations": [],
       "imports": [
         " | ",
-        " | string;\n  to?: string;\n  by?: string[];\n}\n\nexport interface Registry {\n  records: RegistryRecord[];\n  byId: Map<string, RegistryRecord>;\n}\n\nexport interface LlmnavConfig {\n  $schema?: string;\n  version: 1;\n  repositoryId: string;\n  sourceRoots: string[];\n  includeExtensions: string[];\n  excludeDirectories: string[];\n  excludeFiles: string[];\n  coverageRules: Array<Record<string, unknown>>;\n  lint: {\n    maxRoleLength: number;\n    maxSearchTerms: number;\n    minSearchTerms: number;\n    maxInvariants: number;\n    maxEffects: number;\n    maxRelations: number;\n    maxBlockBytes: Record<LlmnavScope, number>;\n    maxSemanticRatio: number;\n    minimumSourceBytesForRatio: number;\n    searchTermSaturation: number;\n    minimumCardsForSaturation: number;\n    genericSearchTerms: string[];\n    vagueRoleWords: string[];\n    strictRisks: string[];\n    additionalEffects: string[];\n    additionalRisks: string[];\n    additionalRelations: string[];\n    requireCanonicalOrder: boolean;\n    requireCanonicalFormatting: boolean;\n  };\n  generation: {\n    cacheDirectory: string;\n    moduleDepth: number;\n    searchShardSize: number;\n    repositoryCatalogStabilities: LlmnavStability[];\n    moduleCatalogStabilities: LlmnavStability[];\n  };\n  evaluation: {\n    queryFile: string;\n    minimumRecallAt1: number;\n    minimumRecallAt5: number;\n  };\n}\n\nexport interface ProjectFileRecord {\n  absolutePath: string;\n  relativePath: string;\n  source: string | null;\n  contentHash: string;\n  bodyHash: string;\n  sourceBytes: number;\n  semanticBytes: number;\n  blocks: LlmnavBlock[];\n  imports: string[];\n}\n\nexport interface ProjectRecord {\n  root: string;\n  absolutePath: string;\n  relativePath: string;\n  source: string | null;\n  bodyHash: string;\n  imports: string[];\n  block: LlmnavBlock;\n  card: LlmnavCard;\n  declaration: Declaration | null;\n}\n\nexport interface ScannedProject {\n  root: string;\n  config: LlmnavConfig;\n  configPath: string;\n  files: string[];\n  fileRecords: ProjectFileRecord[];\n  records: ProjectRecord[];\n  registry: Registry;\n  sourceBytes: number;\n  semanticBytes: number;\n}\n\nexport interface SerializedFileStateRecord {\n  path: string;\n  contentHash: string;\n  sourceBytes: number;\n  semanticBytes: number;\n  imports: string[];\n  blocks: LlmnavBlock[];\n  declarations: Array<Declaration | null>;\n}\n\nexport interface LlmnavFileState {\n  schemaVersion: number;\n  indexerVersion: number;\n  files: SerializedFileStateRecord[];\n}\n\nexport interface IncrementalFileStats {\n  totalFiles: number;\n  parsedFiles: number;\n  reusedFiles: number;\n  reusedFilesByStat: number;\n  reusedFilesByHash: number;\n  deletedFiles: number;\n  bytesRead: number;\n  cardsParsed: number;\n  cardsReused: number;\n}\n\nexport interface ChangedCardRecord {\n  id: string;\n  change: ",
+        " | string;\n  to?: string;\n  by?: string[];\n}\n\nexport interface Registry {\n  records: RegistryRecord[];\n  byId: Map<string, RegistryRecord>;\n}\n\nexport interface LlmnavConfig {\n  $schema?: string;\n  version: 1;\n  repositoryId: string;\n  sourceRoots: string[];\n  includeExtensions: string[];\n  excludeDirectories: string[];\n  excludeFiles: string[];\n  coverageRules: Array<Record<string, unknown>>;\n  graph: {\n    indexFiles: string[];\n  };\n  lint: {\n    maxRoleLength: number;\n    maxSearchTerms: number;\n    minSearchTerms: number;\n    maxInvariants: number;\n    maxEffects: number;\n    maxRelations: number;\n    maxBlockBytes: Record<LlmnavScope, number>;\n    maxSemanticRatio: number;\n    minimumSourceBytesForRatio: number;\n    searchTermSaturation: number;\n    minimumCardsForSaturation: number;\n    genericSearchTerms: string[];\n    vagueRoleWords: string[];\n    strictRisks: string[];\n    additionalEffects: string[];\n    additionalRisks: string[];\n    additionalRelations: string[];\n    requireCanonicalOrder: boolean;\n    requireCanonicalFormatting: boolean;\n  };\n  generation: {\n    cacheDirectory: string;\n    moduleDepth: number;\n    searchShardSize: number;\n    repositoryCatalogStabilities: LlmnavStability[];\n    moduleCatalogStabilities: LlmnavStability[];\n  };\n  evaluation: {\n    queryFile: string;\n    minimumRecallAt1: number;\n    minimumRecallAt5: number;\n  };\n}\n\nexport interface ProjectFileRecord {\n  absolutePath: string;\n  relativePath: string;\n  source: string | null;\n  contentHash: string;\n  bodyHash: string;\n  sourceBytes: number;\n  semanticBytes: number;\n  blocks: LlmnavBlock[];\n  imports: string[];\n}\n\nexport interface ProjectRecord {\n  root: string;\n  absolutePath: string;\n  relativePath: string;\n  source: string | null;\n  bodyHash: string;\n  imports: string[];\n  block: LlmnavBlock;\n  card: LlmnavCard;\n  declaration: Declaration | null;\n}\n\nexport interface ScannedProject {\n  root: string;\n  config: LlmnavConfig;\n  configPath: string;\n  files: string[];\n  fileRecords: ProjectFileRecord[];\n  records: ProjectRecord[];\n  registry: Registry;\n  sourceBytes: number;\n  semanticBytes: number;\n  graphInputs?: GraphInputIndex[];\n}\n\nexport interface GraphDefinition {\n  id: string;\n  symbol: string;\n  path: string;\n  line: number | null;\n  kind: string | null;\n}\n\nexport interface GraphReference {\n  from: string;\n  to: string;\n  kind: string;\n  path: string | null;\n  line: number | null;\n  confidence: number;\n}\n\nexport interface GraphInputIndex {\n  file: string;\n  contentHash: string | null;\n  schemaVersion: 1;\n  repositoryId: string;\n  generator: string | null;\n  definitions: GraphDefinition[];\n  references: GraphReference[];\n}\n\nexport interface SerializedFileStateRecord {\n  path: string;\n  contentHash: string;\n  sourceBytes: number;\n  semanticBytes: number;\n  imports: string[];\n  blocks: LlmnavBlock[];\n  declarations: Array<Declaration | null>;\n}\n\nexport interface LlmnavFileState {\n  schemaVersion: number;\n  indexerVersion: number;\n  files: SerializedFileStateRecord[];\n}\n\nexport interface IncrementalFileStats {\n  totalFiles: number;\n  parsedFiles: number;\n  reusedFiles: number;\n  reusedFilesByStat: number;\n  reusedFilesByHash: number;\n  deletedFiles: number;\n  bytesRead: number;\n  cardsParsed: number;\n  cardsReused: number;\n}\n\nexport interface ChangedCardRecord {\n  id: string;\n  change: ",
         ";\n    repositoryId: string;\n    sourceCardSetHash: string;\n    shardSize: number;\n    shardCount: number;\n    shards: Array<{ file: string; firstId: string; lastId: string; cardCount: number; cardSetHash: string; sha256: string }>;\n  };\n  shards: Map<string, string>;\n};\nexport function buildContractFingerprints(project: ScannedProject, cards: IndexedCard[]): ContractFingerprints;\nexport function compareContractFingerprints(previous: ContractFingerprints | null | undefined, current: ContractFingerprints | null | undefined): ContractFingerprintChange[];\nexport function compareCardIndexes(previousIndex: LlmnavIndex | null, currentIndex: LlmnavIndex): ChangedCardRecord[];\nexport function describeAffectedBoundaries(changedCards: ChangedCardRecord[], config: LlmnavConfig, previousIndex: LlmnavIndex | null, currentIndex: LlmnavIndex): AffectedBoundaryRecord[];\nexport function describeAffectedCatalogs(changedFiles: string[], cacheDirectory: string, config: LlmnavConfig, previousIndex: LlmnavIndex | null, currentIndex: LlmnavIndex): AffectedCatalogRecord[];\nexport function loadConfig(root: string): Promise<{ config: LlmnavConfig; configPath: string }>;\nexport function validateConfig(config: LlmnavConfig, configPath?: string): void;\nexport function findAttachedDeclaration(source: string, block: LlmnavBlock, filePath: string): Declaration | null;\nexport function extractImports(source: string, filePath: string): string[];\nexport function doctorProject(root: string): Promise<{ ok: boolean; checks: Array<{ name: string; ok: boolean; message: string }> }>;\nexport function evaluateProject(root: string, options?: { top?: number; file?: string }): Promise<EvaluationResult>;\nexport function collectSourceFiles(root: string, config: LlmnavConfig, requestedPaths?: string[]): Promise<string[]>;\nexport function findProjectRoot(start?: string): Promise<string>;\nexport function formatProject(root: string, options?: { check?: boolean; paths?: string[] }): Promise<{ ok: boolean; changedFiles: string[]; errors: Array<{ file: string; line: number; message: string }> }>;\nexport function buildArtifacts(project: ScannedProject, order: string[], options?: { previousSearchIndex?: LlmnavSearchIndex | null; fileState?: LlmnavFileState }): Map<string, string>;\nexport function buildArtifactSet(project: ScannedProject, order: string[], options?: { previousSearchIndex?: LlmnavSearchIndex | null; fileState?: LlmnavFileState }): { artifacts: Map<string, string>; index: LlmnavIndex; searchIndex: LlmnavSearchIndex; searchStats: SearchIndexStats; fileState: LlmnavFileState };\nexport function generateProject(root: string, options?: { check?: boolean; incremental?: boolean; useStatHints?: boolean; failpoint?: string }): Promise<GenerationResult>;\nexport function renderCompactCard(card: IndexedCard): string;\nexport function renderSemanticCard(card: IndexedCard): string;\nexport function scanProjectIncremental(root: string, options?: { paths?: string[]; useStatHints?: boolean; previousState?: LlmnavFileState }): Promise<{ project: ScannedProject; fileState: LlmnavFileState; stats: IncrementalFileStats; statHints: unknown; hintsPath: string }>;\nexport function buildFileStateFromProject(project: ScannedProject): LlmnavFileState;\nexport function renderFileState(fileState: LlmnavFileState): string;\nexport function usableFileState(value: unknown): value is LlmnavFileState;\nexport function initializeProject(root: string, options?: { force?: boolean; packageScripts?: boolean; agents?: string[] }): Promise<{ ok: boolean; changed: string[]; generated: GenerationResult }>;\nexport function buildInvertedIndex(index: LlmnavIndex, previous?: LlmnavSearchIndex | null): { searchIndex: LlmnavSearchIndex; stats: SearchIndexStats };\nexport function buildSearchDocument(card: IndexedCard, hash?: string): SearchDocument;\nexport function isCompatibleSearchIndex(searchIndex: unknown, repositoryId?: string): searchIndex is LlmnavSearchIndex;\nexport function renderSearchIndex(searchIndex: LlmnavSearchIndex): string;\nexport function searchCardSetHash(cards: IndexedCard[]): string;\nexport function searchDocumentHash(card: IndexedCard): string;\nexport function verifySearchIndex(index: LlmnavIndex, searchIndex: LlmnavSearchIndex): boolean;\nexport function canonicalizeSource(source: string, filePath?: string): { source: string; changed: boolean; blocks: LlmnavBlock[]; errors: Array<{ line: number; message: string }> };\nexport function cardToCanonicalObject(card: LlmnavCard): Record<string, string | string[]>;\nexport function formatLlmnavBlock(block: LlmnavBlock): string;\nexport function parseLlmnavBlocks(source: string, filePath?: string): LlmnavBlock[];\nexport function scanProject(root: string, options?: { paths?: string[] }): Promise<ScannedProject>;\nexport function ensureActiveIds(root: string, registry: Registry, ids: string[]): Promise<void>;\nexport function loadRegistry(root: string): Promise<Registry>;\nexport function resolveRegistryId(registry: Registry, id: string): { id: string; state: string; [key: string]: unknown };\nexport function buildContext(root: string, id: string, options?: { depth?: number; budget?: number }): Promise<{ id: string; depth: number; budget: number; included: string[]; text: string }>;\nexport function loadSearchData(root: string): Promise<{ index: LlmnavIndex; searchIndex: LlmnavSearchIndex; lexicon: { version?: number; aliases: Record<string, string | string[]> } }>;\nexport function queryIndex(index: LlmnavIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> }; invertedIndex?: LlmnavSearchIndex; metrics?: SearchMetrics }): SearchResult[];\nexport function queryPreparedIndex(index: LlmnavIndex, searchIndex: LlmnavSearchIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> }; metrics?: SearchMetrics }): SearchResult[];\nexport function queryIndexLegacy(index: LlmnavIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> } }): SearchResult[];\nexport function queryProject(root: string, query: string, options?: { top?: number }): Promise<SearchResult[]>;\nexport function showProjectCard(root: string, id: string): Promise<{ card: IndexedCard | null; resolvedFrom: unknown }>;\nexport function tokenize(value: string): string[];\nexport function normalizeSearchText(value: string): string;\nexport function commitGeneratedCache(root: string, cacheDirectory: string, artifacts: Map<string, string>, options?: Record<string, unknown>): Promise<TransactionResult>;\nexport function recoverGenerationTransaction(root: string, options?: { cacheDirectory?: string; renameOptions?: Record<string, unknown> }): Promise<{ recovered: boolean; action: string }>;\nexport function renameWithRetry(source: string, destination: string, options?: Record<string, unknown>): Promise<void>;\nexport function removeWithRetry(target: string, options?: Record<string, unknown>): Promise<void>;\nexport function countDiagnostics(diagnostics: Diagnostic[]): { error: number; warning: number; info: number };\nexport function diagnostic(severity: DiagnosticSeverity, code: string, message: string, file: string, line?: number, column?: number): Diagnostic;\nexport function validateProject(project: ScannedProject): Diagnostic[];\n\nexport * from ",
         ";\n  confidence: ",
         ";\n  dimensions: Array<",
@@ -2327,7 +2469,7 @@
         ";\n  receiver: string | null;\n  line: number;\n  offset: number;\n  endOffset: number;\n  bodyHash: string;\n}\n\nexport interface DetectedBoundary {\n  kind: ",
         ";\n  tokenizerVersion: number;\n  repositoryId: string;\n  cardSetHash: string;\n  documentCount: number;\n  fieldOrder: string[];\n  cardIds: string[];\n  tokens: string[];\n  documents: CompactSearchDocument[];\n  postings: CompactSearchPosting[][];\n}\n\nexport interface SearchIndexStats {\n  previousUsable: boolean;\n  totalCards: number;\n  reusedCards: number;\n  indexedCards: number;\n  removedCards: number;\n  changedIds: string[];\n  removedIds: string[];\n  tokenCount: number;\n}\n\nexport interface SearchMetrics {\n  queryTokens?: number;\n  documentTokenizations?: number;\n  postingVisits?: number;\n  phraseDocumentsScanned?: number;\n  idDocumentsScanned?: number;\n}\n\nexport interface SearchResult {\n  id: string;\n  score: number;\n  reasons: string[];\n  role: string;\n  location: IndexedLocation;\n  card: IndexedCard;\n}\n\nexport interface RegistryRecord {\n  id: string;\n  state: ",
         ";\n  unknown?: Array<{ key: string; value: string; line: number }>;\n}\n\nexport interface LlmnavEntry {\n  key: string;\n  value: string;\n  line: number;\n  order: number;\n}\n\nexport interface LlmnavBlock {\n  specVersion: string;\n  filePath: string;\n  scope: LlmnavScope;\n  card: LlmnavCard;\n  entries: LlmnavEntry[];\n  syntaxErrors: Array<{ line: number; message: string }>;\n  style: ",
-        ";\nexport const SEARCH_INDEX_SCHEMA_VERSION: 2;\nexport const SEARCH_FIELD_ORDER: readonly string[];\nexport const SEARCH_FIELD_WEIGHTS: Readonly<Record<string, number>>;\nexport const TOKENIZER_VERSION: number;\nexport const TRANSACTION_SCHEMA_VERSION: number;\nexport const TRANSACTION_ABORT_EXIT_CODE: number;\n\nexport function installAgentInstructions(root: string, adapters?: string[]): Promise<string[]>;\nexport function detectBoundaries(record: ProjectRecord): DetectedBoundary[];\nexport function diagnosticsToSarif(diagnostics: Diagnostic[]): Record<string, unknown>;\nexport function buildSearchShards(index: LlmnavIndex, searchIndex: LlmnavSearchIndex, shardSize: number): {\n  manifest: null | {\n    schemaVersion: 1;\n    encoding: ",
+        ";\nexport const SEARCH_INDEX_SCHEMA_VERSION: 2;\nexport const SEARCH_FIELD_ORDER: readonly string[];\nexport const SEARCH_FIELD_WEIGHTS: Readonly<Record<string, number>>;\nexport const TOKENIZER_VERSION: number;\nexport const TRANSACTION_SCHEMA_VERSION: number;\nexport const TRANSACTION_ABORT_EXIT_CODE: number;\n\nexport function installAgentInstructions(root: string, adapters?: string[]): Promise<string[]>;\nexport function detectBoundaries(record: ProjectRecord): DetectedBoundary[];\nexport function normalizeGraphInput(value: unknown, file?: string, contentHash?: string | null): GraphInputIndex;\nexport function loadGraphInputs(root: string, config: LlmnavConfig): Promise<{ indexes: GraphInputIndex[]; diagnostics: Diagnostic[] }>;\nexport function diagnosticsToSarif(diagnostics: Diagnostic[]): Record<string, unknown>;\nexport function buildSearchShards(index: LlmnavIndex, searchIndex: LlmnavSearchIndex, shardSize: number): {\n  manifest: null | {\n    schemaVersion: 1;\n    encoding: ",
         ";\nexport const SEARCH_SHARD_ENCODING: ",
         ";\nexport const SEARCH_SHARD_SCHEMA_VERSION: 1;\nexport const CONTRACT_FINGERPRINT_SCHEMA_VERSION: 1;\nexport const FILE_STATE_SCHEMA_VERSION: number;\nexport const SOURCE_INDEXER_VERSION: number;\nexport const SEARCH_INDEX_ENCODING: ",
         "> {\n  location: IndexedLocation;\n  imports: string[];\n  boundaries: DetectedBoundary[];\n  hashes: {\n    semantic: string;\n    structure: string;\n    body: string;\n  };\n}\n\nexport interface LlmnavIndex {\n  schemaVersion: 1;\n  specVersion: string;\n  generatedBy: string;\n  repositoryId: string;\n  contractFingerprints?: ContractFingerprints;\n  sourceHash: string;\n  cards: IndexedCard[];\n}\n\nexport interface ContractFingerprint {\n  sha256: string;\n  count?: number;\n}\n\nexport interface ContractFingerprints {\n  schemaVersion: 1;\n  exportedApi: ContractFingerprint;\n  configuration: ContractFingerprint;\n}\n\nexport interface ContractFingerprintChange {\n  kind: ",
@@ -2337,7 +2479,7 @@
         "];\n  dimensions: ChangedCardRecord[",
         "];\n  modules: string[];\n  boundaries: DetectedBoundary[];\n  relatedIds: string[];\n  dependentIds: string[];\n}\n\nexport interface TransactionResult {\n  committed: boolean;\n  skipped: boolean;\n  recovered: boolean;\n  recoveryAction: string;\n  transactionId?: string;\n  replacedExisting?: boolean;\n}\n\nexport interface GenerationResult {\n  ok: boolean;\n  diagnostics: Diagnostic[];\n  changedFiles: string[];\n  changedCards: ChangedCardRecord[];\n  affectedBoundaries: AffectedBoundaryRecord[];\n  affectedCatalogs: AffectedCatalogRecord[];\n  project: ScannedProject;\n  counts: { error: number; warning: number; info: number };\n  artifacts?: Map<string, string>;\n  index?: LlmnavIndex;\n  searchIndex?: LlmnavSearchIndex;\n  incremental: {\n    enabled: boolean;\n    files: IncrementalFileStats;\n    cards: SearchIndexStats | null;\n    statHintsPersisted?: boolean;\n    statHintsError?: string | null;\n  };\n  transaction: TransactionResult;\n}\n\nexport interface EvaluationResult {\n  ok: boolean;\n  errors: string[];\n  cases: Array<{\n    query: string;\n    expected: string[];\n    actual: string[];\n    rank: number | null;\n    passAt1: boolean;\n    passAt5: boolean;\n  }>;\n  metrics: {\n    total: number;\n    recallAt1: number;\n    recallAt5: number;\n    meanReciprocalRank: number;\n  };\n  thresholds?: LlmnavConfig[",
         "];\n}\n\nexport const AGENT_PROTOCOL: string;\nexport const BOUNDARY_KINDS: readonly DetectedBoundary[",
-        "][];\nexport const SARIF_SCHEMA: string;\nexport const SARIF_VERSION: ",
+        "][];\nexport const GRAPH_INPUT_SCHEMA_VERSION: 1;\nexport const SARIF_SCHEMA: string;\nexport const SARIF_VERSION: ",
         "architecture",
         "contract",
         "error",
@@ -2350,11 +2492,11 @@
       ],
       "path": "src/index.d.ts",
       "semanticBytes": 0,
-      "sourceBytes": 17194
+      "sourceBytes": 18071
     },
     {
       "blocks": [],
-      "contentHash": "a5c1bcd910426d63730a5549a7429214ba257391492c82358083d43471ebbe25",
+      "contentHash": "4d6f7d1b8470e9c751cc008390b22029cbfb66c7c06b32846e57e53543346ef0",
       "declarations": [],
       "imports": [
         "./agents.js",
@@ -2368,6 +2510,7 @@
         "./files.js",
         "./formatter.js",
         "./generator.js",
+        "./graph-input.js",
         "./incremental.js",
         "./initializer.js",
         "./inverted-index.js",
@@ -2384,7 +2527,7 @@
       ],
       "path": "src/index.js",
       "semanticBytes": 0,
-      "sourceBytes": 2370
+      "sourceBytes": 2471
     },
     {
       "blocks": [
@@ -3272,7 +3415,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "615413cd44802fb768f4dc51801abee1683378ab9e9646c1b6b76073a04427c9",
+      "contentHash": "102637e7d801d59ff31799a6e2f5e4e6fc77fae6d36d010e6508e171e8225a1b",
       "declarations": [],
       "imports": [
         "*.bundle.js",
@@ -3419,7 +3562,7 @@
       ],
       "path": "src/spec.js",
       "semanticBytes": 0,
-      "sourceBytes": 4670
+      "sourceBytes": 4706
     },
     {
       "blocks": [
@@ -4135,6 +4278,62 @@
       "path": "tests/determinism.test.js",
       "semanticBytes": 0,
       "sourceBytes": 2030
+    },
+    {
+      "blocks": [],
+      "contentHash": "6c0a09ce22ccce897b701416e2bd8d07d73e522d6dc25abfef745a0efa6f1465",
+      "declarations": [],
+      "imports": [
+        ",",
+        "../src/graph-input.js",
+        "../src/spec.js",
+        ".llmnav",
+        ".llmnav/imports/bad.json",
+        ".llmnav/imports/missing.json",
+        ".llmnav/imports/payments.json",
+        ":",
+        ":1,",
+        ":[]}\\n",
+        ":[{",
+        "LNV014",
+        "a",
+        "a.ts",
+        "abc",
+        "accounts/auth.session.rotate",
+        "b",
+        "b.ts",
+        "bad.json",
+        "billing.capture.run",
+        "calls",
+        "error",
+        "from.id",
+        "function",
+        "imports",
+        "llmnav-graph-input-",
+        "node:assert/strict",
+        "node:fs/promises",
+        "node:os",
+        "node:path",
+        "node:test",
+        "normalizes generated definition and reference indexes deterministically",
+        "payments",
+        "payments/billing.capture.run",
+        "rejects malformed or escaping graph indexes with LNV014",
+        "rejects unknown fields, duplicate definitions, and invalid confidence",
+        "repo",
+        "rotate",
+        "runCapture",
+        "same.id",
+        "scip-adapter@1",
+        "src/capture.ts",
+        "src/external.ts",
+        "to.id",
+        "{",
+        "}],"
+      ],
+      "path": "tests/graph-input.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 2937
     },
     {
       "blocks": [],

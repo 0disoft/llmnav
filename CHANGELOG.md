@@ -6,6 +6,10 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 
 ## [Unreleased]
 
+### Added
+
+* Added strict repository-local imports for generated definition and reference indexes with `LNV014` diagnostics.
+
 ## [0.3.0] — 2026-08-09
 
 ### Added

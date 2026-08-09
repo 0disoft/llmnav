@@ -18,6 +18,7 @@ const TOP_LEVEL_KEYS = new Set(Object.keys(DEFAULT_CONFIG));
 const LINT_KEYS = new Set(Object.keys(DEFAULT_CONFIG.lint));
 const GENERATION_KEYS = new Set(Object.keys(DEFAULT_CONFIG.generation));
 const EVALUATION_KEYS = new Set(Object.keys(DEFAULT_CONFIG.evaluation));
+const GRAPH_KEYS = new Set(Object.keys(DEFAULT_CONFIG.graph));
 const COVERAGE_KEYS = new Set(["name", "match", "scope", "requiredFields"]);
 
 export async function loadConfig(root) {
@@ -60,6 +61,7 @@ export function validateConfig(config, configPath = ".llmnav/config.json") {
   validateStringArray(config.excludeDirectories, "excludeDirectories", problems, { unique: true });
   validateStringArray(config.excludeFiles, "excludeFiles", problems, { unique: true });
   validateCoverageRules(config.coverageRules, problems);
+  validateGraph(config.graph, problems);
 
   validateLint(config.lint, problems);
   validateGeneration(config.generation, problems);
@@ -67,6 +69,21 @@ export function validateConfig(config, configPath = ".llmnav/config.json") {
 
   if (problems.length > 0) {
     throw new Error(`${configPath}:\n${problems.map((problem) => `  ${problem}`).join("\n")}`);
+  }
+}
+
+function validateGraph(graph, problems) {
+  if (!isObject(graph)) {
+    problems.push("graph must be an object");
+    return;
+  }
+  validateObjectKeys(graph, GRAPH_KEYS, "graph", problems);
+  validateStringArray(graph.indexFiles, "graph.indexFiles", problems, { unique: true });
+  if (Array.isArray(graph.indexFiles)) {
+    for (const [index, file] of graph.indexFiles.entries()) {
+      const problem = validateProjectRelativePath(file);
+      if (problem) problems.push(`graph.indexFiles[${index}] ${problem}`);
+    }
   }
 }
 

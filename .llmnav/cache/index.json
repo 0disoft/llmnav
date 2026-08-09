@@ -438,9 +438,9 @@
         "index persistence format"
       ],
       "hashes": {
-        "body": "a69e2d4168712c291f76e36a28bcb28e93f644aef10f626b41c7aae3710b3494",
+        "body": "d352de7820e25fb4b751dfcc46f212bd5520fc2cd7f404016838d9ae2bf926cf",
         "semantic": "ce9c7cd107639f96de4f26b913a7e6bdd206af278fbd30acf02ff833ac9d3498",
-        "structure": "1474bcd18a15b38bc00df18e3f60c1ce0cda47744c08a3f76c4440b89e6c77c0"
+        "structure": "8d5f371263ee8a5ed9f6bae7aeea64b0a4c21e9ef753dac0273995a015e3e95a"
       },
       "id": "llmnav.cli.dispatch",
       "imports": [
@@ -455,6 +455,8 @@
         ") {\n      const name = argument.split(",
         ") {\n      values.push(...args.slice(index + 1));\n      break;\n    }\n    if (argument.startsWith(",
         ") || argument === ",
+        ") || left.line - right.line || left.column - right.column ||\n    left.code.localeCompare(right.code, ",
+        ") || left.message.localeCompare(right.message, ",
         ")) continue;\n    const separator = argument.indexOf(",
         ")) throw usageError(`Option ${name} requires a value.`);\n        index += 1;\n      }\n    } else if (separator >= 0) {\n      throw usageError(`Flag ${name} does not accept a value.`);\n    }\n  }\n}\n\nfunction getPositionals(args) {\n  const values = [];\n  for (let index = 0; index < args.length; index += 1) {\n    const argument = args[index];\n    if (argument === ",
         "),\n  });\n  if (json) {\n    console.log(JSON.stringify(result, null, 2));\n  } else {\n    for (const error of result.errors) console.error(error);\n    for (const item of result.cases.filter((testCase) => !testCase.passAt5)) {\n      console.error(`miss ${JSON.stringify(item.query)} expected=${item.expected.join(",
@@ -462,6 +464,7 @@
         ");\n    const name = separator >= 0 ? argument.slice(0, separator) : argument;\n    if (!allowed.has(name)) throw usageError(`Unknown option ${name} for command ${command}.`);\n    if (VALUE_OPTIONS.has(name)) {\n      const inlineValue = separator >= 0 ? argument.slice(separator + 1) : null;\n      if (inlineValue !== null) {\n        if (!inlineValue) throw usageError(`Option ${name} requires a value.`);\n      } else {\n        const next = args[index + 1];\n        if (next === undefined || next.startsWith(",
         ");\n    return 2;\n  }\n  const result = await buildContext(root, id, {\n    depth: parseCliIntegerOption(args, ",
         ");\n    return 2;\n  }\n  const result = await showProjectCard(root, id);\n  if (!result.card) {\n    if (json) console.log(JSON.stringify(result, null, 2));\n    else console.error(`Unknown or inactive semantic ID ${id}.`);\n    return 1;\n  }\n  if (json) console.log(JSON.stringify(result, null, 2));\n  else {\n    if (result.resolvedFrom) console.log(`resolved ${id} -> ${result.card.id}\\n`);\n    console.log(renderCompactCard(result.card));\n  }\n  return 0;\n}\n\nasync function runContext(root, args, json) {\n  const id = getPositionals(args)[0];\n  if (!id) {\n    console.error(",
+        ");\n}\n\n\n\nfunction parseCliIntegerOption(args, name, fallback) {\n  const value = getOption(args, name);\n  if (value === undefined) return fallback;\n  if (!/^-?\\d+$/u.test(value)) throw usageError(`Option ${name} requires an integer.`);\n  return parseInteger(value, fallback);\n}\n\nfunction usageError(message) {\n  const error = new Error(message);\n  error.exitCode = 2;\n  return error;\n}\n\nfunction validateOptions(command, args) {\n  const allowed = COMMAND_OPTIONS[command];\n  if (!allowed) return;\n  for (let index = 0; index < args.length; index += 1) {\n    const argument = args[index];\n    if (argument === ",
         ");\n}\n\nfunction printHelp() {\n  console.log(`llmnav ${PACKAGE_VERSION}\n\nDeterministic semantic navigation for LLM coding agents.\n\nUsage\n  llmnav init [--agents all|agents,claude,copilot,cursor] [--package-scripts]\n  llmnav check [paths...] [--format text|json|github|sarif]\n  llmnav format [paths...] [--check]\n  llmnav generate [--check]\n  llmnav query ",
         ")} actual=${item.actual.join(",
         ")}`);\n    console.log(`effects ${EFFECT_KINDS.join(",
@@ -498,6 +501,7 @@
         "./files.js",
         "./formatter.js",
         "./generator.js",
+        "./graph-input.js",
         "./initializer.js",
         "./project.js",
         "./sarif.js",
@@ -505,7 +509,7 @@
         "./spec.js",
         "./util.js",
         "./validator.js",
-        ";\n      console.log(\n        `::${command} file=${escapeWorkflow(item.file)},line=${item.line},col=${item.column},title=${item.code}::${escapeWorkflow(item.message)}`,\n      );\n    } else {\n      console.log(`${item.file}:${item.line}:${item.column} ${item.severity} ${item.code} ${item.message}`);\n    }\n  }\n}\n\n\n\nfunction parseCliIntegerOption(args, name, fallback) {\n  const value = getOption(args, name);\n  if (value === undefined) return fallback;\n  if (!/^-?\\d+$/u.test(value)) throw usageError(`Option ${name} requires an integer.`);\n  return parseInteger(value, fallback);\n}\n\nfunction usageError(message) {\n  const error = new Error(message);\n  error.exitCode = 2;\n  return error;\n}\n\nfunction validateOptions(command, args) {\n  const allowed = COMMAND_OPTIONS[command];\n  if (!allowed) return;\n  for (let index = 0; index < args.length; index += 1) {\n    const argument = args[index];\n    if (argument === ",
+        ";\n      console.log(\n        `::${command} file=${escapeWorkflow(item.file)},line=${item.line},col=${item.column},title=${item.code}::${escapeWorkflow(item.message)}`,\n      );\n    } else {\n      console.log(`${item.file}:${item.line}:${item.column} ${item.severity} ${item.code} ${item.message}`);\n    }\n  }\n}\n\nfunction compareCliDiagnostics(left, right) {\n  return left.file.localeCompare(right.file, ",
         ";\n      const line = result.location?.declarationLine ?? result.location?.startLine ?? 1;\n      console.log(`${index + 1}. @${result.id} score=${result.score}`);\n      console.log(`   ${result.role}`);\n      console.log(`   ${result.location?.path ?? ",
         "All LLMNav blocks are canonical.",
         "Generated LLMNav files are current.",
@@ -629,9 +633,9 @@
         "agent search decisions"
       ],
       "hashes": {
-        "body": "25297715ebfd654fb071d5d1123b7976aa914adf54b4fabde3e3b4dc9ecd1bcb",
+        "body": "dabbbeb75b3271c08fe025cf500ef1adaa4dcd543957ebb91479a6c640553997",
         "semantic": "7052622c9732ab29e37c3ab87f848188e931f601684e811e7bb8adef31fbfe85",
-        "structure": "6ca6f4e969b1986c3886799f3f2b2f6be21a0113489a5580fe7481377e5173f5"
+        "structure": "a0f4b6bffb0cad042d56d7e70927facf58ab8f4104faae3e33104dc05368cd3f"
       },
       "id": "llmnav.index.generate",
       "imports": [
@@ -672,6 +676,7 @@
         "./changes.js",
         "./config.js",
         "./contracts.js",
+        "./graph-input.js",
         "./incremental.js",
         "./inverted-index.js",
         "./parser.js",
@@ -1703,11 +1708,90 @@
         "card range shard"
       ],
       "stability": "architecture"
+    },
+    {
+      "boundaries": [],
+      "excludes": [
+        "graph ranking",
+        "source mutation"
+      ],
+      "hashes": {
+        "body": "00c8cc44b535ceb6f883508f5bfa8b112fa9975926890c906ac96a04d24bf2ba",
+        "semantic": "c4122aabf96e2489fbb8561b5614b963a8dabc6762a85e8fb378b472dd3fc9dd",
+        "structure": "cbf45c6e4c463ff841b793c54370af10efffcc1d2fa1d12ae1fd43737335e98d"
+      },
+      "id": "llmnav.graph.import",
+      "imports": [
+        " || !/^[a-z][a-z0-9-]*$/u.test(value.kind)) {\n    throw new Error(`${name}.kind must be a controlled lower-case identifier`);\n  }\n  const normalizedPath = value.path === undefined ? null : normalizeSourcePath(value.path, `${name}.path`);\n  if (value.line !== undefined && (!Number.isInteger(value.line) || value.line < 1)) {\n    throw new Error(`${name}.line must be a positive integer when present`);\n  }\n  const confidence = value.confidence ?? 0.8;\n  if (typeof confidence !== ",
+        " || !Number.isFinite(confidence) || confidence < 0 || confidence > 1) {\n    throw new Error(`${name}.confidence must be a number from 0 to 1`);\n  }\n  return {\n    from,\n    to,\n    kind: value.kind,\n    path: normalizedPath,\n    line: value.line ?? null,\n    confidence,\n  };\n}\n\nfunction normalizeSemanticKey(value, repositoryId, name) {\n  if (typeof value !== ",
+        " || !value.generator.trim())) {\n    throw new Error(",
+        " || !value.kind.trim())) {\n    throw new Error(`${name}.kind must be a non-empty string when present`);\n  }\n  return {\n    id,\n    symbol: value.symbol.trim(),\n    path: normalizedPath,\n    line: value.line ?? null,\n    kind: value.kind?.trim() ?? null,\n  };\n}\n\nfunction normalizeReference(value, index, repositoryId) {\n  const name = `references[${index}]`;\n  assertObject(value, name);\n  assertKeys(value, new Set([",
+        " || !value.symbol.trim()) throw new Error(`${name}.symbol must be a non-empty string`);\n  const normalizedPath = normalizeSourcePath(value.path, `${name}.path`);\n  if (value.line !== undefined && (!Number.isInteger(value.line) || value.line < 1)) {\n    throw new Error(`${name}.line must be a positive integer when present`);\n  }\n  if (value.kind !== undefined && (typeof value.kind !== ",
+        " || !value.trim()) throw new Error(`${name} must be a non-empty relative path`);\n  if (value.includes(",
+        " || Array.isArray(value)) throw new Error(`${name} must be an object`);\n}\n\nfunction assertKeys(value, allowed, name) {\n  for (const key of Object.keys(value)) {\n    if (!allowed.has(key)) throw new Error(`${name} contains unknown property ${JSON.stringify(key)}`);\n  }\n}\n\nfunction compareReferences(left, right) {\n  return compareText(left.from, right.from) || compareText(left.to, right.to) || compareText(left.kind, right.kind) ||\n    compareText(left.path ?? ",
+        ") throw new Error(`${name} must be a semantic ID`);\n  const normalized = value.trim();\n  if (ID_PATTERN.test(normalized)) return `${repositoryId}/${normalized}`;\n  if (CROSS_REPO_ID_PATTERN.test(normalized)) return normalized;\n  throw new Error(`${name} must be a local or repository-qualified semantic ID`);\n}\n\nfunction normalizeSourcePath(value, name) {\n  if (typeof value !== ",
+        ") || /\\p{Cc}/u.test(value)) {\n    throw new Error(`${name} must be a safe forward-slash relative path`);\n  }\n  return toPosix(value);\n}\n\nfunction assertObject(value, name) {\n  if (!value || typeof value !== ",
+        ") || /^(?:[A-Za-z]:|\\/|~\\/)/u.test(value) || value.split(",
+        ")) {\n    throw new Error(",
+        ").includes(",
+        ");\n\n  const definitions = value.definitions.map((item, index) => normalizeDefinition(item, index, value.repositoryId));\n  const definitionIds = new Set();\n  for (const definition of definitions) {\n    if (definitionIds.has(definition.id)) throw new Error(`definitions contains duplicate ID ${definition.id}`);\n    definitionIds.add(definition.id);\n  }\n  const references = value.references.map((item, index) => normalizeReference(item, index, value.repositoryId));\n  definitions.sort((left, right) => compareText(left.id, right.id));\n  references.sort(compareReferences);\n\n  return {\n    file: toPosix(file),\n    contentHash,\n    schemaVersion: GRAPH_INPUT_SCHEMA_VERSION,\n    repositoryId: value.repositoryId,\n    generator: value.generator?.trim() ?? null,\n    definitions,\n    references,\n  };\n}\n\nfunction normalizeDefinition(value, index, repositoryId) {\n  const name = `definitions[${index}]`;\n  assertObject(value, name);\n  assertKeys(value, new Set([",
+        ");\n  if (!Array.isArray(value.references)) throw new Error(",
+        ");\n  }\n  if (!Array.isArray(value.definitions)) throw new Error(",
+        ");\n  }\n  if (value.generator !== undefined && (typeof value.generator !== ",
+        ", ",
+        ", right.path ?? ",
+        "./spec.js",
+        "./util.js",
+        "./validator.js",
+        "<graph-index>",
+        "LNV014",
+        "]), name);\n  const from = normalizeSemanticKey(value.from, repositoryId, `${name}.from`);\n  const to = normalizeSemanticKey(value.to, repositoryId, `${name}.to`);\n  if (typeof value.kind !== ",
+        "]), name);\n  const id = normalizeSemanticKey(value.id, repositoryId, `${name}.id`);\n  if (typeof value.symbol !== ",
+        "definitions",
+        "error",
+        "file does not exist",
+        "generator",
+        "graph index",
+        "node:path",
+        "references",
+        "repositoryId",
+        "schemaVersion",
+        "schemaVersion must be 1"
+      ],
+      "location": {
+        "declarationLine": null,
+        "endLine": 9,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/graph-input.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "owns": [
+        "graph import schema",
+        "input normalization",
+        "graph input diagnostics"
+      ],
+      "rel": [
+        "workflow>llmnav.index.generate"
+      ],
+      "role": "Load and validate optional generated definition and reference indexes without executing repository code.",
+      "scope": "module",
+      "search": [
+        "definition index import",
+        "reference index import",
+        "graph input validation"
+      ],
+      "stability": "architecture"
     }
   ],
   "contractFingerprints": {
     "configuration": {
-      "sha256": "3a8c4d5d9bcc8fe4929e33f03ab06ec8c017817b40419955bb276a95f0dc6bea"
+      "sha256": "6f8169cb348aca7b2866252eced29e782451f541a6db49b6b6724d1af2541d3b"
     },
     "exportedApi": {
       "count": 5,
@@ -1718,6 +1802,6 @@
   "generatedBy": "llmnav@0.3.0",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "a16a7dece781ff932c6f79b278a327922f354060f607ea8483f87b7279dbd9a3",
+  "sourceHash": "ddcd4962fcde365618a1b3c2abdde6dde7afed2b8fea0e2c28c1a54a47a9d92b",
   "specVersion": "1"
 }

@@ -194,6 +194,9 @@ export const DEFAULT_CONFIG = Object.freeze({
   excludeDirectories: [...DEFAULT_EXCLUDED_DIRECTORIES],
   excludeFiles: ["*.min.js", "*.bundle.js", "*.generated.*", "*.gen.*"],
   coverageRules: [],
+  graph: {
+    indexFiles: [],
+  },
   lint: {
     maxRoleLength: 180,
     maxSearchTerms: 6,

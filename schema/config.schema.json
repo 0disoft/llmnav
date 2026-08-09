@@ -101,6 +101,20 @@
         }
       }
     },
+    "graph": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "indexFiles": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^(?!/|[A-Za-z]:|.*(?:^|/)\\.\\.(?:/|$))[^\\\\]+$"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
     "lint": {
       "type": "object",
       "additionalProperties": false,

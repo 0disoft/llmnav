@@ -14,6 +14,9 @@
   "excludeDirectories": ["node_modules", "dist", "target"],
   "excludeFiles": ["*.generated.*", "*.gen.*"],
   "coverageRules": [],
+  "graph": {
+    "indexFiles": []
+  },
   "lint": {
     "maxRoleLength": 180,
     "maxSearchTerms": 6,
@@ -102,6 +105,10 @@ Search saturation warns when one exact search phrase appears in too many cards. 
 `searchShardSize` is `0` by default. Set a positive card limit in very large repositories to emit deterministic `search-shards.json` and `search-shards/NNNN.json` artifacts. Shards are sliced from the compact index without retokenizing cards. The compatible `search-index.json` remains available for existing consumers and preserves ranking behavior.
 
 Stability filters decide which cards enter long-lived repository and module prompt material. Every card remains in `index.json` regardless of catalog filters.
+
+## Graph inputs
+
+`graph.indexFiles` lists optional generated definition and reference indexes. Paths must remain inside the repository and are loaded as data only. See [Repository graph](graph.md) for the schema and validation contract.
 
 ## Evaluation
 

@@ -101,6 +101,20 @@
         }
       }
     },
+    "graph": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "indexFiles": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^(?!/|[A-Za-z]:|.*(?:^|/)\\.\\.(?:/|$))[^\\\\]+$"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
     "lint": {
       "type": "object",
       "additionalProperties": false,
@@ -229,6 +243,10 @@
           "type": "integer",
           "minimum": 1,
           "maximum": 6
+        },
+        "searchShardSize": {
+          "type": "integer",
+          "minimum": 0
         },
         "repositoryCatalogStabilities": {
           "type": "array",

@@ -23,3 +23,4 @@
 {"id":"llmnav.structure.boundaries","state":"active"}
 {"id":"llmnav.diagnostics.sarif","state":"active"}
 {"id":"llmnav.index.search-shards","state":"active"}
+{"id":"llmnav.graph.import","state":"active"}

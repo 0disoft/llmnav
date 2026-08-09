@@ -113,3 +113,9 @@ role Split a compact search index into deterministic card-range artifacts withou
 owns search shard schema, card range partitioning, shard manifest
 excludes query ranking, source parsing
 rel workflow>llmnav.index.inverted, workflow>llmnav.index.generate
+
+@llmnav.graph.import
+role Load and validate optional generated definition and reference indexes without executing repository code.
+owns graph import schema, input normalization, graph input diagnostics
+excludes graph ranking, source mutation
+rel workflow>llmnav.index.generate

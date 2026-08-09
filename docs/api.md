@@ -228,6 +228,8 @@ import {
 
 `buildSearchShards(index, searchIndex, shardSize)` returns a deterministic manifest and map of card-range shard contents. A size of zero or a card count at or below the limit returns no shard artifacts. The function slices compact postings and documents rather than rebuilding search documents.
 
+`normalizeGraphInput(value, file, contentHash)` validates and normalizes one schemaVersion 1 definition/reference index. `loadGraphInputs(root, config)` reads configured repository-local inputs and returns normalized indexes plus deterministic `LNV014` diagnostics without executing project code.
+
 The normative source vocabulary remains available from `llmnav/spec`.
 
 ```js

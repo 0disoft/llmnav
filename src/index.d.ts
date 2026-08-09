@@ -196,6 +196,9 @@ export interface LlmnavConfig {
   excludeDirectories: string[];
   excludeFiles: string[];
   coverageRules: Array<Record<string, unknown>>;
+  graph: {
+    indexFiles: string[];
+  };
   lint: {
     maxRoleLength: number;
     maxSearchTerms: number;
@@ -265,6 +268,34 @@ export interface ScannedProject {
   registry: Registry;
   sourceBytes: number;
   semanticBytes: number;
+  graphInputs?: GraphInputIndex[];
+}
+
+export interface GraphDefinition {
+  id: string;
+  symbol: string;
+  path: string;
+  line: number | null;
+  kind: string | null;
+}
+
+export interface GraphReference {
+  from: string;
+  to: string;
+  kind: string;
+  path: string | null;
+  line: number | null;
+  confidence: number;
+}
+
+export interface GraphInputIndex {
+  file: string;
+  contentHash: string | null;
+  schemaVersion: 1;
+  repositoryId: string;
+  generator: string | null;
+  definitions: GraphDefinition[];
+  references: GraphReference[];
 }
 
 export interface SerializedFileStateRecord {
@@ -372,6 +403,7 @@ export interface EvaluationResult {
 
 export const AGENT_PROTOCOL: string;
 export const BOUNDARY_KINDS: readonly DetectedBoundary["kind"][];
+export const GRAPH_INPUT_SCHEMA_VERSION: 1;
 export const SARIF_SCHEMA: string;
 export const SARIF_VERSION: "2.1.0";
 export const SEARCH_SHARD_ENCODING: "card-range-v1";
@@ -389,6 +421,8 @@ export const TRANSACTION_ABORT_EXIT_CODE: number;
 
 export function installAgentInstructions(root: string, adapters?: string[]): Promise<string[]>;
 export function detectBoundaries(record: ProjectRecord): DetectedBoundary[];
+export function normalizeGraphInput(value: unknown, file?: string, contentHash?: string | null): GraphInputIndex;
+export function loadGraphInputs(root: string, config: LlmnavConfig): Promise<{ indexes: GraphInputIndex[]; diagnostics: Diagnostic[] }>;
 export function diagnosticsToSarif(diagnostics: Diagnostic[]): Record<string, unknown>;
 export function buildSearchShards(index: LlmnavIndex, searchIndex: LlmnavSearchIndex, shardSize: number): {
   manifest: null | {

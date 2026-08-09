@@ -50,6 +50,7 @@ import { loadConfig } from "./config.js";
 import { buildContractFingerprints, compareContractFingerprints } from "./contracts.js";
 import { detectBoundaries } from "./boundaries.js";
 import { buildSearchShards, SEARCH_SHARD_SCHEMA_VERSION } from "./search-shards.js";
+import { loadGraphInputs } from "./graph-input.js";
 
 export async function generateProject(root, options = {}) {
   const { config: recoveryConfig } = await loadConfig(root);
@@ -88,7 +89,9 @@ export async function generateProject(root, options = {}) {
     ({ project, fileState, statHints, hintsPath, stats: scanStats } = incremental);
   }
 
-  const diagnostics = validateProject(project);
+  const graphInputs = await loadGraphInputs(root, project.config);
+  project.graphInputs = graphInputs.indexes;
+  const diagnostics = [...validateProject(project), ...graphInputs.diagnostics].sort(compareGeneratedDiagnostics);
   let counts = countDiagnostics(diagnostics);
   if (counts.error > 0) {
     return {

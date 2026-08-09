@@ -1,0 +1,8 @@
+llmnav-catalog/1 repository=llmnav catalog=llmnav.graph
+Read semantic cards before opening source. Resolve current paths and signatures with llmnav query or show.
+
+@llmnav.graph.import
+role Load and validate optional generated definition and reference indexes without executing repository code.
+owns graph import schema, input normalization, graph input diagnostics
+excludes graph ranking, source mutation
+rel workflow>llmnav.index.generate

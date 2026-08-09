@@ -176,6 +176,7 @@ Errors block generation. Warnings do not block `check` by default.
 | `LNV011` | parser or declaration attachment failure |
 | `LNV012` | deleted or renamed ID lacks lifecycle handling |
 | `LNV013` | card or repository comment budget exceeded |
+| `LNV014` | generated graph input is missing, malformed, unsafe, or incompatible |
 | `LNV014` | search regression gate failure |
 
 ## Pull-request review
