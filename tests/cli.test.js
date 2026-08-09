@@ -1,9 +1,12 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
+import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
+import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 import { runCli } from "../src/cli.js";
+import { initializeProject } from "../src/initializer.js";
 
 test("rejects unknown command options", async () => {
   await assert.rejects(() => runCli(["query", "refresh token", "--tp", "5"]), /Unknown option --tp/u);
@@ -47,4 +50,21 @@ test("prints provider-neutral tool schemas outside a repository", () => {
     "llmnav_context",
     "llmnav_check",
   ]);
+});
+
+test("generate --full bypasses incremental accelerators", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-cli-full-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await writeFile(path.join(root, "package.json"), '{"name":"full-check"}\n');
+  await writeFile(
+    path.join(root, "source.js"),
+    "/* llmnav/1 symbol\nid=full.check.source\nrole=Prove full verification reads canonical source.\nsearch=full verification|source truth\nstability=contract\n*/\nexport function verifySource() {}\n",
+  );
+  await initializeProject(root, { agents: ["none"] });
+  const cli = fileURLToPath(new URL("../bin/llmnav.js", import.meta.url));
+  const result = spawnSync(process.execPath, [cli, "generate", "--root", root, "--full", "--check", "--json"], {
+    encoding: "utf8",
+  });
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(JSON.parse(result.stdout).incremental.enabled, false);
 });

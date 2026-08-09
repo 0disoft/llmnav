@@ -41,7 +41,7 @@
     "test": "node --test",
     "test:coverage": "node --test --experimental-test-coverage",
     "lint": "node ./scripts/lint-repo.js",
-    "check": "npm run lint && npm test && node ./bin/llmnav.js check --root . && node ./bin/llmnav.js generate --root . --check",
+    "check": "npm run lint && npm test && node ./bin/llmnav.js check --root . && node ./bin/llmnav.js generate --root . --full --check",
     "pack:check": "npm pack --dry-run",
     "release:check": "node ./scripts/release-check.js",
     "prepublishOnly": "npm run check && npm run release:check && npm run pack:check",

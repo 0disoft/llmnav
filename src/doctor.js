@@ -89,10 +89,10 @@ export async function doctorProject(root) {
     if (valid) checks.push(pass("manifest", "generated cache hashes are valid"));
   }
 
-  const generated = await generateProject(root, { check: true });
+  const generated = await generateProject(root, { check: true, incremental: false });
   checks.push(
     generated.ok
-      ? pass("generated", "generated files are current")
+      ? pass("generated", "generated files match a full source rebuild")
       : fail("generated", `regenerate ${generated.changedFiles.join(", ") || "after fixing diagnostics"}`),
   );
 

@@ -58,8 +58,8 @@ Canonicalizes key order, list serialization, spacing, and terminators. The forma
 ## `llmnav generate`
 
 ```sh
-llmnav generate [--check] [--json]
-llmnav index [--check] [--json]
+llmnav generate [--check] [--full] [--json]
+llmnav index [--check] [--full] [--json]
 ```
 
 `index` remains an alias for `generate`.
@@ -76,6 +76,8 @@ Generation performs these operations:
 8. Persist volatile stat hints after the deterministic cache commits.
 
 `--check`, also accepted as `--verify`, performs no writes and fails when generated artifacts differ. It still validates whether a pending transaction must be recovered before reading the cache.
+
+`--full` bypasses `file-state.json`, `search-index.json`, and `graph-state.json` accelerators and rebuilds every derived artifact from canonical source. CI, release, and trust-boundary verification should use `--full --check`; incremental mode remains the default for local iteration.
 
 Generation stops before cache mutation when semantic validation contains errors.
 
@@ -193,7 +195,7 @@ Checks:
 * primary index and inverted-index consistency
 * file-state schema compatibility
 * manifest hashes
-* generated-file drift
+* generated-file drift against a full source rebuild
 * unreplaced release metadata in the LLMNav repository itself
 
 `doctor` may perform transaction recovery, but it does not regenerate stale cache content.

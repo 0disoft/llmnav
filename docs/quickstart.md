@@ -87,7 +87,7 @@ npx llmnav generate --json
 CI should run:
 
 ```sh
-npx llmnav generate --check
+npx llmnav generate --full --check
 ```
 
 That command fails when generated files, the registry, or the stable order lock differ from current source. It does not replace the live cache. Normal generation stages and verifies a complete replacement before committing it.

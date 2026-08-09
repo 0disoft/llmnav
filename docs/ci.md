@@ -7,7 +7,7 @@ A practical LLMNav gate has four stages.
 ```sh
 npx llmnav format --check
 npx llmnav check --format github
-npx llmnav generate --check
+npx llmnav generate --full --check
 npx llmnav eval
 ```
 
@@ -17,7 +17,7 @@ npx llmnav eval
 
 Use `npx llmnav check --format sarif > llmnav.sarif` when a code-scanning system accepts SARIF 2.1.0 rather than GitHub workflow annotations. SARIF output is deterministic for the same ordered diagnostics and uses repository-relative paths.
 
-`generate --check` performs an incremental read-only reconstruction and rejects stale primary indexes, inverted indexes, file state, manifests, and catalogs.
+`generate --full --check` performs a read-only reconstruction from canonical source and rejects stale or poisoned primary indexes, inverted indexes, file state, graph state, manifests, and catalogs. Use plain incremental generation during local iteration; release and CI gates should not trust disposable accelerators.
 
 `eval` catches ranking regressions that remain syntactically valid.
 
@@ -82,7 +82,7 @@ jobs:
       - run: npm ci
       - run: npx llmnav format --check
       - run: npx llmnav check --format github
-      - run: npx llmnav generate --check
+      - run: npx llmnav generate --full --check
       - run: npx llmnav eval
 ```
 

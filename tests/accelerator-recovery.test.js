@@ -55,6 +55,7 @@ test("generation repairs malformed incremental accelerators from source", async 
   const doctor = await doctorProject(root);
   assert.ok(doctor.checks.some((check) => check.name === "search-index-integrity" && check.ok));
   assert.ok(doctor.checks.some((check) => check.name === "file-state-integrity" && check.ok));
+  assert.ok(doctor.checks.some((check) => check.message === "generated files match a full source rebuild"));
 });
 
 

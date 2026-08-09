@@ -44,8 +44,8 @@ const COMMAND_OPTIONS = Object.freeze({
   init: new Set(["--agents", "--package-scripts", "--force", "--root", "--json"]),
   check: new Set(["--format", "--root", "--json"]),
   format: new Set(["--check", "--root", "--json"]),
-  generate: new Set(["--check", "--verify", "--root", "--json"]),
-  index: new Set(["--check", "--verify", "--root", "--json"]),
+  generate: new Set(["--check", "--verify", "--full", "--root", "--json"]),
+  index: new Set(["--check", "--verify", "--full", "--root", "--json"]),
   query: new Set(["--top", "--root", "--json"]),
   show: new Set(["--root", "--json"]),
   context: new Set(["--depth", "--budget", "--max-edges", "--root", "--json"]),
@@ -170,7 +170,7 @@ async function runFormat(root, args, json) {
 
 async function runGenerate(root, args, json) {
   const check = hasFlag(args, "--check") || hasFlag(args, "--verify");
-  const result = await generateProject(root, { check });
+  const result = await generateProject(root, { check, incremental: !hasFlag(args, "--full") });
   if (json) {
     console.log(
       JSON.stringify(
@@ -440,7 +440,7 @@ Usage
   llmnav init [--agents all|agents,claude,copilot,cursor] [--package-scripts]
   llmnav check [paths...] [--format text|json|github|sarif|editor]
   llmnav format [paths...] [--check]
-  llmnav generate [--check]
+  llmnav generate [--check] [--full]
   llmnav query "<task>" [--top 5]
   llmnav show <semantic-id>
   llmnav context <semantic-id> [--depth 1] [--budget 2500] [--max-edges 24]
