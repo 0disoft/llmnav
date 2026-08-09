@@ -44,6 +44,90 @@
     },
     {
       "confidence": 0.85,
+      "from": "llmnav/llmnav.agent.protocol",
+      "id": "4a8b99e65fd35f1e9af502d233e4cc143cbe58d5cf5beb5b2b4fd60167b76de8",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/agent-protocol.js",
+        "source": "src/agent-protocol.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.graph.import"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.agent.protocol",
+      "id": "8d860f0d37c3b328d1ec0d2a0b92bcf5b59b4faf5be3a66915a898db68d0e7ad",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/agent-protocol.js",
+        "source": "src/agent-protocol.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.rules.validate"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.agent.protocol",
+      "id": "81de8c36c2d1c9aed1541e009429817fcb09f4ea83828ae22f9c7aedcec9936a",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/agent-protocol.js",
+        "source": "src/agent-protocol.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.rules.validate"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.agent.protocol",
+      "id": "b5b88d17c4a94d7e4796aaaba74bc1058a2ba83a39607d4a2cb697c944020a22",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/agent-protocol.js",
+        "source": "src/agent-protocol.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.search.query"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.agent.protocol",
+      "id": "58c2c6a60c102dc8471df809504a3f0bcdf9b90a904c5e37a3423d3f11e12d69",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/agent-protocol.js",
+        "source": "src/agent-protocol.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.search.query"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.cli.dispatch",
+      "id": "f68431260213ddfcec79566595c3b831a88f5f6196d4ff42cec2fcd798c5794f",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/cli.js",
+        "source": "src/cli.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.agent.protocol"
+    },
+    {
+      "confidence": 0.85,
       "from": "llmnav/llmnav.cli.dispatch",
       "id": "eff41cd7c9d17709b02482666214d640574b399b164c1b28125a654ba91f1c0f",
       "kind": "imports",
@@ -1131,6 +1215,28 @@
     {
       "definitions": [],
       "external": false,
+      "key": "llmnav/llmnav.agent.protocol",
+      "location": {
+        "declarationLine": null,
+        "endLine": 10,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/agent-protocol.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Expose stable provider-neutral tool schemas and execute bounded repository navigation operations.",
+      "semanticId": "llmnav.agent.protocol",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
       "key": "llmnav/llmnav.cli.dispatch",
       "location": {
         "declarationLine": null,
@@ -1527,11 +1633,11 @@
   ],
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "becc6b168efe25fece149c73c215ec39470beff1b6780f6ee987d408cc789a18",
+  "sourceHash": "860233b4b61e4dec3aa3eac7f108dc305edd956643caf8e2fd892908a824fa92",
   "stats": {
-    "edgeCount": 62,
+    "edgeCount": 68,
     "importedIndexCount": 0,
-    "nodeCount": 27,
+    "nodeCount": 28,
     "unresolvedNodeCount": 0
   }
 }

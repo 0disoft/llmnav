@@ -1,4 +1,10 @@
 export { AGENT_PROTOCOL, installAgentInstructions } from "./agents.js";
+export {
+  AGENT_OPERATION_SCHEMA_VERSION,
+  AGENT_TOOL_SCHEMA_VERSION,
+  executeAgentOperation,
+  getAgentToolDefinitions,
+} from "./agent-protocol.js";
 export { compareCardIndexes, describeAffectedBoundaries, describeAffectedCatalogs } from "./changes.js";
 export { loadConfig, validateConfig } from "./config.js";
 export { BOUNDARY_KINDS, detectBoundaries } from "./boundaries.js";

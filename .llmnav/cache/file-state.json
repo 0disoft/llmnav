@@ -957,6 +957,151 @@
           "card": {
             "effect": [],
             "excludes": [
+              "provider SDK transport",
+              "repository discovery",
+              "source mutation"
+            ],
+            "id": "llmnav.agent.protocol",
+            "invariant": [],
+            "owns": [
+              "agent tool schemas",
+              "operation validation",
+              "provider-neutral result envelope"
+            ],
+            "rel": [
+              "workflow>llmnav.search.query",
+              "workflow>llmnav.rules.validate"
+            ],
+            "risk": [],
+            "role": "Expose stable provider-neutral tool schemas and execute bounded repository navigation operations.",
+            "scope": "module",
+            "search": [
+              "agent tool schema",
+              "provider neutral tools",
+              "tool dispatcher",
+              "agent operation protocol"
+            ],
+            "stability": "contract",
+            "unknown": []
+          },
+          "end": 472,
+          "endLine": 10,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.agent.protocol"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Expose stable provider-neutral tool schemas and execute bounded repository navigation operations."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "agent tool schemas|operation validation|provider-neutral result envelope"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "provider SDK transport|repository discovery|source mutation"
+            },
+            {
+              "key": "search",
+              "line": 6,
+              "order": 4,
+              "value": "agent tool schema|provider neutral tools|tool dispatcher|agent operation protocol"
+            },
+            {
+              "key": "rel",
+              "line": 7,
+              "order": 5,
+              "value": "workflow>llmnav.search.query"
+            },
+            {
+              "key": "rel",
+              "line": 8,
+              "order": 6,
+              "value": "workflow>llmnav.rules.validate"
+            },
+            {
+              "key": "stability",
+              "line": 9,
+              "order": 7,
+              "value": "contract"
+            }
+          ],
+          "filePath": "src/agent-protocol.js",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.agent.protocol\nrole=Expose stable provider-neutral tool schemas and execute bounded repository navigation operations.\nowns=agent tool schemas|operation validation|provider-neutral result envelope\nexcludes=provider SDK transport|repository discovery|source mutation\nsearch=agent tool schema|provider neutral tools|tool dispatcher|agent operation protocol\nrel=workflow>llmnav.search.query\nrel=workflow>llmnav.rules.validate\nstability=contract\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "04d7677c89cf12e5158a7c68b9e33064f38a97949d1c88f5548d4f417734525c",
+      "declarations": [
+        null
+      ],
+      "imports": [
+        ", ",
+        "./graph-input.js",
+        "./project.js",
+        "./search.js",
+        "./validator.js",
+        "Approximate token budget.",
+        "Build bounded semantic and graph context around one ID.",
+        "Find the most relevant semantic cards for a coding task.",
+        "LNVAP001",
+        "LNVAP002",
+        "LNVAP404",
+        "LNVAP500",
+        "Maximum graph edges to inspect and pack.",
+        "Maximum graph traversal depth.",
+        "Maximum results.",
+        "Operation input must be an object.",
+        "Optional repository-relative paths to validate.",
+        "Resolve one local or qualified workspace semantic ID.",
+        "Semantic ID or repository-qualified semantic ID.",
+        "Task language to search for.",
+        "Validate semantic cards and configured graph inputs without mutation.",
+        "array",
+        "check",
+        "context",
+        "en",
+        "id",
+        "integer",
+        "llmnav_check",
+        "llmnav_context",
+        "llmnav_query",
+        "llmnav_show",
+        "object",
+        "query",
+        "show",
+        "string",
+        "task",
+        "unknown"
+      ],
+      "path": "src/agent-protocol.js",
+      "semanticBytes": 472,
+      "sourceBytes": 6459
+    },
+    {
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
               "postinstall mutation",
               "agent execution"
             ],
@@ -1039,7 +1184,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "20fdbc37f99cfdf43691322cf9de803b00d7931ae89d047195dadd76b98d7017",
+      "contentHash": "c44de92d139b93e3fb0a0aa63677d70d28a2c22e4a28d1ecfaccd3db28b3dc25",
       "declarations": [
         null
       ],
@@ -1088,7 +1233,7 @@
       ],
       "path": "src/agents.js",
       "semanticBytes": 374,
-      "sourceBytes": 5853
+      "sourceBytes": 6076
     },
     {
       "blocks": [
@@ -1431,7 +1576,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "daf2904c6b40c9bc3b7114e93dbd2fe82bcc857d36ea6383c949963c7ac60aec",
+      "contentHash": "70810ac7ce08a8d120a05ce847845c5dfd9faf8f81464562ffd259107164c960",
       "declarations": [
         null
       ],
@@ -1465,7 +1610,7 @@
         ")}`);\n    console.log(`stability ${STABILITIES.join(",
         ")}`);\n    }\n    console.log(`cases ${result.metrics.total}`);\n    console.log(`recall@1 ${(result.metrics.recallAt1 * 100).toFixed(1)}%`);\n    console.log(`recall@5 ${(result.metrics.recallAt5 * 100).toFixed(1)}%`);\n    console.log(`MRR ${result.metrics.meanReciprocalRank.toFixed(3)}`);\n  }\n  return result.ok ? 0 : 1;\n}\n\nasync function runDoctor(root, json) {\n  const result = await doctorProject(root);\n  if (json) console.log(JSON.stringify(result, null, 2));\n  else {\n    for (const check of result.checks) console.log(`${check.ok ? ",
         ")}`);\n    }\n  }\n  return 0;\n}\n\nasync function runShow(root, args, json) {\n  const id = getPositionals(args)[0];\n  if (!id) {\n    console.error(",
-        ")}`);\n  }\n  return 0;\n}\n\nfunction printDiagnostics(diagnostics, format) {\n  for (const item of diagnostics) {\n    if (format === ",
+        ")}`);\n  }\n  return 0;\n}\n\nfunction runTools(json) {\n  const definitions = getAgentToolDefinitions();\n  if (json) console.log(JSON.stringify({ schemaVersion: 1, tools: definitions }, null, 2));\n  else {\n    for (const definition of definitions) console.log(`${definition.name}\\t${definition.description}`);\n  }\n  return 0;\n}\n\nfunction printDiagnostics(diagnostics, format) {\n  for (const item of diagnostics) {\n    if (format === ",
         ",",
         ", ",
         ", 1),\n    budget: parseCliIntegerOption(args, ",
@@ -1490,6 +1635,7 @@
         "--version",
         "-h",
         "-v",
+        "./agent-protocol.js",
         "./doctor.js",
         "./evaluation.js",
         "./files.js",
@@ -1533,6 +1679,7 @@
         "spec",
         "stale",
         "text",
+        "tools",
         "version",
         "would format",
         "} ${check.name}: ${check.message}`);\n  }\n  return result.ok ? 0 : 1;\n}\n\nfunction runSpec(json) {\n  const spec = {\n    specVersion: SPEC_VERSION,\n    keyOrder: KEY_ORDER,\n    stabilities: STABILITIES,\n    effects: EFFECT_KINDS,\n    risks: RISK_KINDS,\n    relations: RELATION_KINDS,\n  };\n  if (json) console.log(JSON.stringify(spec, null, 2));\n  else {\n    console.log(`LLMNav/${SPEC_VERSION}`);\n    console.log(`keys ${KEY_ORDER.join(",
@@ -1540,7 +1687,7 @@
       ],
       "path": "src/cli.js",
       "semanticBytes": 473,
-      "sourceBytes": 14788
+      "sourceBytes": 15254
     },
     {
       "blocks": [],
@@ -2612,15 +2759,18 @@
     },
     {
       "blocks": [],
-      "contentHash": "160e43e519880114edbfb7d5884d88e113187e7e7a13b9baeb27be1e0340400d",
+      "contentHash": "537d535645508a9bc3c3085762219df2e0e29746cbad609d22a5f172daf2bf3b",
       "declarations": [],
       "imports": [
         " | ",
-        " | string;\n  to?: string;\n  by?: string[];\n}\n\nexport interface Registry {\n  records: RegistryRecord[];\n  byId: Map<string, RegistryRecord>;\n}\n\nexport interface LlmnavConfig {\n  $schema?: string;\n  version: 1;\n  repositoryId: string;\n  sourceRoots: string[];\n  includeExtensions: string[];\n  excludeDirectories: string[];\n  excludeFiles: string[];\n  coverageRules: Array<Record<string, unknown>>;\n  graph: {\n    indexFiles: string[];\n  };\n  lint: {\n    maxRoleLength: number;\n    maxSearchTerms: number;\n    minSearchTerms: number;\n    maxInvariants: number;\n    maxEffects: number;\n    maxRelations: number;\n    maxBlockBytes: Record<LlmnavScope, number>;\n    maxSemanticRatio: number;\n    minimumSourceBytesForRatio: number;\n    searchTermSaturation: number;\n    minimumCardsForSaturation: number;\n    genericSearchTerms: string[];\n    vagueRoleWords: string[];\n    strictRisks: string[];\n    additionalEffects: string[];\n    additionalRisks: string[];\n    additionalRelations: string[];\n    requireCanonicalOrder: boolean;\n    requireCanonicalFormatting: boolean;\n  };\n  generation: {\n    cacheDirectory: string;\n    moduleDepth: number;\n    searchShardSize: number;\n    repositoryCatalogStabilities: LlmnavStability[];\n    moduleCatalogStabilities: LlmnavStability[];\n  };\n  evaluation: {\n    queryFile: string;\n    minimumRecallAt1: number;\n    minimumRecallAt5: number;\n  };\n}\n\nexport interface ProjectFileRecord {\n  absolutePath: string;\n  relativePath: string;\n  source: string | null;\n  contentHash: string;\n  bodyHash: string;\n  sourceBytes: number;\n  semanticBytes: number;\n  blocks: LlmnavBlock[];\n  imports: string[];\n}\n\nexport interface ProjectRecord {\n  root: string;\n  absolutePath: string;\n  relativePath: string;\n  source: string | null;\n  bodyHash: string;\n  imports: string[];\n  block: LlmnavBlock;\n  card: LlmnavCard;\n  declaration: Declaration | null;\n}\n\nexport interface ScannedProject {\n  root: string;\n  config: LlmnavConfig;\n  configPath: string;\n  files: string[];\n  fileRecords: ProjectFileRecord[];\n  records: ProjectRecord[];\n  registry: Registry;\n  sourceBytes: number;\n  semanticBytes: number;\n  graphInputs?: GraphInputIndex[];\n}\n\nexport interface GraphDefinition {\n  id: string;\n  symbol: string;\n  path: string;\n  line: number | null;\n  kind: string | null;\n}\n\nexport interface GraphReference {\n  from: string;\n  to: string;\n  kind: string;\n  path: string | null;\n  line: number | null;\n  confidence: number;\n}\n\nexport interface GraphInputIndex {\n  file: string;\n  contentHash: string | null;\n  schemaVersion: 1;\n  repositoryId: string;\n  generator: string | null;\n  definitions: GraphDefinition[];\n  references: GraphReference[];\n}\n\nexport interface GraphProvenance {\n  type: ",
+        " | string;\n  to?: string;\n  by?: string[];\n}\n\nexport interface Registry {\n  records: RegistryRecord[];\n  byId: Map<string, RegistryRecord>;\n}\n\nexport interface LlmnavConfig {\n  $schema?: string;\n  version: 1;\n  repositoryId: string;\n  sourceRoots: string[];\n  includeExtensions: string[];\n  excludeDirectories: string[];\n  excludeFiles: string[];\n  coverageRules: Array<Record<string, unknown>>;\n  graph: {\n    indexFiles: string[];\n  };\n  lint: {\n    maxRoleLength: number;\n    maxSearchTerms: number;\n    minSearchTerms: number;\n    maxInvariants: number;\n    maxEffects: number;\n    maxRelations: number;\n    maxBlockBytes: Record<LlmnavScope, number>;\n    maxSemanticRatio: number;\n    minimumSourceBytesForRatio: number;\n    searchTermSaturation: number;\n    minimumCardsForSaturation: number;\n    genericSearchTerms: string[];\n    vagueRoleWords: string[];\n    strictRisks: string[];\n    additionalEffects: string[];\n    additionalRisks: string[];\n    additionalRelations: string[];\n    requireCanonicalOrder: boolean;\n    requireCanonicalFormatting: boolean;\n  };\n  generation: {\n    cacheDirectory: string;\n    moduleDepth: number;\n    searchShardSize: number;\n    repositoryCatalogStabilities: LlmnavStability[];\n    moduleCatalogStabilities: LlmnavStability[];\n  };\n  evaluation: {\n    queryFile: string;\n    minimumRecallAt1: number;\n    minimumRecallAt5: number;\n  };\n}\n\nexport interface AgentToolDefinition {\n  schemaVersion: 1;\n  name: ",
         "./spec.js",
+        ";\n    additionalProperties: false;\n    properties: Record<string, unknown>;\n    required: string[];\n  };\n}\n\nexport interface AgentOperationResult<T = unknown> {\n  schemaVersion: 1;\n  operation: ",
         ";\n  confidence: ",
+        ";\n  description: string;\n  inputSchema: {\n    type: ",
         ";\n  evidence: string[];\n}\n\nexport interface Diagnostic {\n  severity: DiagnosticSeverity;\n  code: string;\n  message: string;\n  file: string;\n  line: number;\n  column: number;\n}\n\nexport interface IndexedLocation {\n  path: string;\n  startLine: number;\n  endLine: number;\n  symbol: string | null;\n  kind: string | null;\n  declarationLine: number | null;\n  signature: string | null;\n  language: Declaration[",
         ";\n  exported: boolean;\n  visibility: ",
+        ";\n  ok: boolean;\n  data: T | null;\n  error: { code: string; message: string } | null;\n}\n\nexport interface ProjectFileRecord {\n  absolutePath: string;\n  relativePath: string;\n  source: string | null;\n  contentHash: string;\n  bodyHash: string;\n  sourceBytes: number;\n  semanticBytes: number;\n  blocks: LlmnavBlock[];\n  imports: string[];\n}\n\nexport interface ProjectRecord {\n  root: string;\n  absolutePath: string;\n  relativePath: string;\n  source: string | null;\n  bodyHash: string;\n  imports: string[];\n  block: LlmnavBlock;\n  card: LlmnavCard;\n  declaration: Declaration | null;\n}\n\nexport interface ScannedProject {\n  root: string;\n  config: LlmnavConfig;\n  configPath: string;\n  files: string[];\n  fileRecords: ProjectFileRecord[];\n  records: ProjectRecord[];\n  registry: Registry;\n  sourceBytes: number;\n  semanticBytes: number;\n  graphInputs?: GraphInputIndex[];\n}\n\nexport interface GraphDefinition {\n  id: string;\n  symbol: string;\n  path: string;\n  line: number | null;\n  kind: string | null;\n}\n\nexport interface GraphReference {\n  from: string;\n  to: string;\n  kind: string;\n  path: string | null;\n  line: number | null;\n  confidence: number;\n}\n\nexport interface GraphInputIndex {\n  file: string;\n  contentHash: string | null;\n  schemaVersion: 1;\n  repositoryId: string;\n  generator: string | null;\n  definitions: GraphDefinition[];\n  references: GraphReference[];\n}\n\nexport interface GraphProvenance {\n  type: ",
         ";\n  prefix: string | null;\n  indent: string;\n  raw: string;\n  start: number;\n  end: number;\n  startLine: number;\n  endLine: number;\n  newline: string;\n}\n\nexport interface Declaration {\n  kind: string;\n  symbol: string;\n  signature: string;\n  language: ",
         ";\n  previous: string | null;\n  current: string | null;\n}\n\nexport interface SearchDocument {\n  hash: string;\n  phrases: string[];\n  terms: Array<[token: string, sparseFieldCounts: number[]]>;\n  tokens: string[];\n}\n\nexport type CompactSearchDocument = [hash: string, phrases: string[]];\nexport type CompactSearchPosting = [cardIndex: number, sparseFieldCounts: number[]];\n\nexport interface LlmnavSearchIndex {\n  schemaVersion: 2;\n  encoding: ",
         ";\n  receiver: string | null;\n  line: number;\n  offset: number;\n  endOffset: number;\n  bodyHash: string;\n}\n\nexport interface DetectedBoundary {\n  kind: ",
@@ -2641,13 +2791,14 @@
       ],
       "path": "src/index.d.ts",
       "semanticBytes": 0,
-      "sourceBytes": 20991
+      "sourceBytes": 21805
     },
     {
       "blocks": [],
-      "contentHash": "167a7a31083c715f2fc424154a18ad967dd3a70f3e48adee4217ec395813bb7a",
+      "contentHash": "adfb7eec1b7890cbbdc1bfe2a7f3155b1ae7b3ff206f62267d4e97dd61f53d0e",
       "declarations": [],
       "imports": [
+        "./agent-protocol.js",
         "./agents.js",
         "./boundaries.js",
         "./changes.js",
@@ -2677,7 +2828,7 @@
       ],
       "path": "src/index.js",
       "semanticBytes": 0,
-      "sourceBytes": 2753
+      "sourceBytes": 2907
     },
     {
       "blocks": [
@@ -4261,6 +4412,51 @@
     },
     {
       "blocks": [],
+      "contentHash": "a4b48da68cbab6fe36188d0624162c9c9cbc40367e14398f17e4c5e79a69ae06",
+      "declarations": [],
+      "imports": [
+        "../src/agent-protocol.js",
+        "../src/initializer.js",
+        ":",
+        "LNVAP001",
+        "LNVAP002",
+        "LNVAP404",
+        "auth.session.rotate",
+        "elsewhere",
+        "executes bounded operations through one deterministic envelope",
+        "llmnav-agent-errors-",
+        "llmnav-agent-protocol-",
+        "llmnav_check",
+        "llmnav_context",
+        "llmnav_query",
+        "llmnav_show",
+        "missing.capability",
+        "mutated consumer copy",
+        "node:assert/strict",
+        "node:fs/promises",
+        "node:os",
+        "node:path",
+        "node:test",
+        "none",
+        "package.json",
+        "provider_specific_tool",
+        "publishes stable provider-neutral tool definitions",
+        "query",
+        "replayed refresh token",
+        "returns stable protocol failures for invalid input and missing IDs",
+        "root",
+        "rotate.ts",
+        "src",
+        "token",
+        "{",
+        "}\\n"
+      ],
+      "path": "tests/agent-protocol.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 3795
+    },
+    {
+      "blocks": [],
       "contentHash": "2b5c591fa2342c4d2a06900224ea02b7bf14f4f551137c178ebb71daa36201d6",
       "declarations": [],
       "imports": [
@@ -4304,24 +4500,33 @@
     },
     {
       "blocks": [],
-      "contentHash": "0b8ad210c3cc2dd084058dbe00c4488ee7e1af0c0cd2d4ac5b6ffb255e922af0",
+      "contentHash": "ab5d61781005e30dc5ffdbf1b90a694201a5dd569e3b1bc7e1152d3409a4482e",
       "declarations": [],
       "imports": [
         "--check=true",
         "--format",
+        "--json",
         "--top",
         "--tp",
         "..",
+        "../bin/llmnav.js",
         "../src/cli.js",
         "5",
         "CLI process uses exit status 2 for usage errors",
         "bin/llmnav.js",
         "check",
         "generate",
+        "llmnav_check",
+        "llmnav_context",
+        "llmnav_query",
+        "llmnav_show",
         "many",
         "node:assert/strict",
         "node:child_process",
+        "node:os",
         "node:test",
+        "node:url",
+        "prints provider-neutral tool schemas outside a repository",
         "query",
         "refresh token",
         "rejects invalid integer and diagnostic format values",
@@ -4329,12 +4534,13 @@
         "rejects unknown command options",
         "rejects values attached to boolean flags",
         "task",
+        "tools",
         "utf8",
         "yaml"
       ],
       "path": "tests/cli.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 1317
+      "sourceBytes": 1902
     },
     {
       "blocks": [],

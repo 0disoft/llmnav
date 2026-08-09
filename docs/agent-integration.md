@@ -47,6 +47,8 @@ The generated instruction tells an agent to:
 8. Run format, check, and generation after semantic changes.
 9. Fall back to broad search when no credible card is returned.
 
+When a host supports structured tool calls, `llmnav tools --json` returns four stable provider-neutral definitions in fixed order: `llmnav_query`, `llmnav_show`, `llmnav_context`, and `llmnav_check`. The schemas reject unknown fields and omit the repository root so the trusted host binds scope outside model-generated input.
+
 The protocol does not order an agent to trust a card over source code. It uses the card to choose what source to inspect.
 
 ## Package runners
@@ -86,18 +88,18 @@ LLMNav emits catalogs but deliberately leaves provider-specific caching to the a
 
 ## Tool wrappers
 
-LLMNav v0.4 does not ship an MCP server. A separate wrapper may expose a small stable tool surface instead of one tool per operation.
+LLMNav v0.5 does not ship an MCP server. A wrapper can pass `getAgentToolDefinitions()` to its provider SDK and route calls through `executeAgentOperation(root, name, input)`.
 
 Suggested contract:
 
 ```json
 {
-  "name": "llmnav",
-  "operations": ["query", "show", "context", "check"]
+  "schemaVersion": 1,
+  "operations": ["llmnav_query", "llmnav_show", "llmnav_context", "llmnav_check"]
 }
 ```
 
-Keep the tool definition and operation order stable across sessions. Return JSON output from the existing CLI or import the library API directly.
+Every execution returns the same schemaVersion 1 envelope with `operation`, `ok`, `data`, and `error`. Expected validation and not-found failures use stable `LNVAP` codes. Keep the definition and operation order stable across sessions so provider prompt caches can reuse the tool prefix.
 
 ## Failure behavior
 

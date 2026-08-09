@@ -354,7 +354,7 @@
         "agent execution"
       ],
       "hashes": {
-        "body": "20fdbc37f99cfdf43691322cf9de803b00d7931ae89d047195dadd76b98d7017",
+        "body": "c44de92d139b93e3fb0a0aa63677d70d28a2c22e4a28d1ecfaccd3db28b3dc25",
         "semantic": "7258d93062db7c24d1bdf4076e99802a3fcc413f4012e0aca49148a9fe1dedaa",
         "structure": "09099700573e0105c12f704c034b183bb1468802f07f7dd2659b129be1e294d0"
       },
@@ -438,9 +438,9 @@
         "index persistence format"
       ],
       "hashes": {
-        "body": "daf2904c6b40c9bc3b7114e93dbd2fe82bcc857d36ea6383c949963c7ac60aec",
+        "body": "70810ac7ce08a8d120a05ce847845c5dfd9faf8f81464562ffd259107164c960",
         "semantic": "ce9c7cd107639f96de4f26b913a7e6bdd206af278fbd30acf02ff833ac9d3498",
-        "structure": "4e39aa98174653065d79a4f71b92546bc1d9814c6829d97c61a87c42c35cbcf4"
+        "structure": "29914c82913a788d89fc91a3fb10f09d523638073cdb98d74c06a7395200fad1"
       },
       "id": "llmnav.cli.dispatch",
       "imports": [
@@ -473,7 +473,7 @@
         ")}`);\n    console.log(`stability ${STABILITIES.join(",
         ")}`);\n    }\n    console.log(`cases ${result.metrics.total}`);\n    console.log(`recall@1 ${(result.metrics.recallAt1 * 100).toFixed(1)}%`);\n    console.log(`recall@5 ${(result.metrics.recallAt5 * 100).toFixed(1)}%`);\n    console.log(`MRR ${result.metrics.meanReciprocalRank.toFixed(3)}`);\n  }\n  return result.ok ? 0 : 1;\n}\n\nasync function runDoctor(root, json) {\n  const result = await doctorProject(root);\n  if (json) console.log(JSON.stringify(result, null, 2));\n  else {\n    for (const check of result.checks) console.log(`${check.ok ? ",
         ")}`);\n    }\n  }\n  return 0;\n}\n\nasync function runShow(root, args, json) {\n  const id = getPositionals(args)[0];\n  if (!id) {\n    console.error(",
-        ")}`);\n  }\n  return 0;\n}\n\nfunction printDiagnostics(diagnostics, format) {\n  for (const item of diagnostics) {\n    if (format === ",
+        ")}`);\n  }\n  return 0;\n}\n\nfunction runTools(json) {\n  const definitions = getAgentToolDefinitions();\n  if (json) console.log(JSON.stringify({ schemaVersion: 1, tools: definitions }, null, 2));\n  else {\n    for (const definition of definitions) console.log(`${definition.name}\\t${definition.description}`);\n  }\n  return 0;\n}\n\nfunction printDiagnostics(diagnostics, format) {\n  for (const item of diagnostics) {\n    if (format === ",
         ",",
         ", ",
         ", 1),\n    budget: parseCliIntegerOption(args, ",
@@ -498,6 +498,7 @@
         "--version",
         "-h",
         "-v",
+        "./agent-protocol.js",
         "./doctor.js",
         "./evaluation.js",
         "./files.js",
@@ -541,6 +542,7 @@
         "spec",
         "stale",
         "text",
+        "tools",
         "version",
         "would format",
         "} ${check.name}: ${check.message}`);\n  }\n  return result.ok ? 0 : 1;\n}\n\nfunction runSpec(json) {\n  const spec = {\n    specVersion: SPEC_VERSION,\n    keyOrder: KEY_ORDER,\n    stabilities: STABILITIES,\n    effects: EFFECT_KINDS,\n    risks: RISK_KINDS,\n    relations: RELATION_KINDS,\n  };\n  if (json) console.log(JSON.stringify(spec, null, 2));\n  else {\n    console.log(`LLMNav/${SPEC_VERSION}`);\n    console.log(`keys ${KEY_ORDER.join(",
@@ -1899,6 +1901,90 @@
         "incremental graph cache"
       ],
       "stability": "architecture"
+    },
+    {
+      "boundaries": [],
+      "excludes": [
+        "provider SDK transport",
+        "repository discovery",
+        "source mutation"
+      ],
+      "hashes": {
+        "body": "04d7677c89cf12e5158a7c68b9e33064f38a97949d1c88f5548d4f417734525c",
+        "semantic": "c390439488e52c1240b38a31236c61cb63b4cbdf0c39c110a06fa69255401946",
+        "structure": "42e86bc9715ad0ab651015f2b9897257bfa1795d6a6e9fc125b98fcb5397eba2"
+      },
+      "id": "llmnav.agent.protocol",
+      "imports": [
+        ", ",
+        "./graph-input.js",
+        "./project.js",
+        "./search.js",
+        "./validator.js",
+        "Approximate token budget.",
+        "Build bounded semantic and graph context around one ID.",
+        "Find the most relevant semantic cards for a coding task.",
+        "LNVAP001",
+        "LNVAP002",
+        "LNVAP404",
+        "LNVAP500",
+        "Maximum graph edges to inspect and pack.",
+        "Maximum graph traversal depth.",
+        "Maximum results.",
+        "Operation input must be an object.",
+        "Optional repository-relative paths to validate.",
+        "Resolve one local or qualified workspace semantic ID.",
+        "Semantic ID or repository-qualified semantic ID.",
+        "Task language to search for.",
+        "Validate semantic cards and configured graph inputs without mutation.",
+        "array",
+        "check",
+        "context",
+        "en",
+        "id",
+        "integer",
+        "llmnav_check",
+        "llmnav_context",
+        "llmnav_query",
+        "llmnav_show",
+        "object",
+        "query",
+        "show",
+        "string",
+        "task",
+        "unknown"
+      ],
+      "location": {
+        "declarationLine": null,
+        "endLine": 10,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/agent-protocol.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "owns": [
+        "agent tool schemas",
+        "operation validation",
+        "provider-neutral result envelope"
+      ],
+      "rel": [
+        "workflow>llmnav.search.query",
+        "workflow>llmnav.rules.validate"
+      ],
+      "role": "Expose stable provider-neutral tool schemas and execute bounded repository navigation operations.",
+      "scope": "module",
+      "search": [
+        "agent tool schema",
+        "provider neutral tools",
+        "tool dispatcher",
+        "agent operation protocol"
+      ],
+      "stability": "contract"
     }
   ],
   "contractFingerprints": {
@@ -1914,6 +2000,6 @@
   "generatedBy": "llmnav@0.4.0",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "dea3ef63168058a0bf55b75bad0ed4d3b634bb1b1162b7a60ac1fa38da3e3e16",
+  "sourceHash": "30058d8d6d19acea4b607bd35f7689baec1d25373e0f526f8b6805464fd82ac6",
   "specVersion": "1"
 }

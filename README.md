@@ -175,6 +175,7 @@ Line-comment cards require an explicit terminator and work with `//`, `#`, and `
 | `llmnav eval` | Run repository-specific search regression queries |
 | `llmnav doctor` | Verify installation, cache integrity, transaction recovery, and drift |
 | `llmnav spec` | Print source-spec vocabularies and key order |
+| `llmnav tools` | Print stable provider-neutral agent tool schemas |
 
 See [docs/cli.md](docs/cli.md) for every option and exit code.
 

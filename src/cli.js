@@ -34,6 +34,7 @@ import { parseInteger } from "./util.js";
 import { diagnosticsToSarif } from "./sarif.js";
 import { loadGraphInputs } from "./graph-input.js";
 import { renderGraphNode } from "./graph.js";
+import { getAgentToolDefinitions } from "./agent-protocol.js";
 
 const VALUE_OPTIONS = new Set(["--root", "--format", "--top", "--depth", "--budget", "--max-edges", "--agents", "--file"]);
 
@@ -49,6 +50,7 @@ const COMMAND_OPTIONS = Object.freeze({
   eval: new Set(["--file", "--top", "--root", "--json"]),
   doctor: new Set(["--root", "--json"]),
   spec: new Set(["--root", "--json"]),
+  tools: new Set(["--json"]),
   help: new Set(["--root", "--json"]),
 });
 
@@ -65,9 +67,10 @@ export async function runCli(argv) {
   const command = argv[0];
   const args = argv.slice(1);
   validateOptions(command, args);
+  const json = hasFlag(args, "--json");
+  if (command === "tools") return runTools(json);
   const rootOption = getOption(args, "--root");
   const root = rootOption ? path.resolve(rootOption) : await findProjectRoot(process.cwd());
-  const json = hasFlag(args, "--json");
 
   switch (command) {
     case "init":
@@ -299,6 +302,15 @@ function runSpec(json) {
   return 0;
 }
 
+function runTools(json) {
+  const definitions = getAgentToolDefinitions();
+  if (json) console.log(JSON.stringify({ schemaVersion: 1, tools: definitions }, null, 2));
+  else {
+    for (const definition of definitions) console.log(`${definition.name}\t${definition.description}`);
+  }
+  return 0;
+}
+
 function printDiagnostics(diagnostics, format) {
   for (const item of diagnostics) {
     if (format === "github") {
@@ -407,6 +419,7 @@ Usage
   llmnav eval [--file path] [--top 5]
   llmnav doctor
   llmnav spec
+  llmnav tools [--json]
 
 Global options
   --root <path>    Project root

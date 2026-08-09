@@ -25,3 +25,4 @@
 {"id":"llmnav.index.search-shards","state":"active"}
 {"id":"llmnav.graph.import","state":"active"}
 {"id":"llmnav.graph.generate","state":"active"}
+{"id":"llmnav.agent.protocol","state":"active"}

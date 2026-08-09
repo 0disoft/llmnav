@@ -6,3 +6,9 @@ role Install one managed navigation protocol into instruction files used by majo
 owns agent instruction adapters, managed instruction blocks
 excludes postinstall mutation, agent execution
 rel workflow>llmnav.search.query
+
+@llmnav.agent.protocol
+role Expose stable provider-neutral tool schemas and execute bounded repository navigation operations.
+owns agent tool schemas, operation validation, provider-neutral result envelope
+excludes provider SDK transport, repository discovery, source mutation
+rel workflow>llmnav.search.query, workflow>llmnav.rules.validate

@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
+import os from "node:os";
 import test from "node:test";
+import { fileURLToPath } from "node:url";
 import { runCli } from "../src/cli.js";
 
 test("rejects unknown command options", async () => {
@@ -29,4 +31,20 @@ test("CLI process uses exit status 2 for usage errors", () => {
 test("rejects invalid integer and diagnostic format values", async () => {
   await assert.rejects(() => runCli(["query", "task", "--top", "many"]), /requires an integer/u);
   await assert.rejects(() => runCli(["check", "--format", "yaml"]), /Unknown diagnostic format/u);
+});
+
+test("prints provider-neutral tool schemas outside a repository", () => {
+  const cli = fileURLToPath(new URL("../bin/llmnav.js", import.meta.url));
+  const result = spawnSync(process.execPath, [cli, "tools", "--json"], {
+    cwd: os.tmpdir(),
+    encoding: "utf8",
+  });
+  assert.equal(result.status, 0, result.stderr);
+  const output = JSON.parse(result.stdout);
+  assert.deepEqual(output.tools.map((item) => item.name), [
+    "llmnav_query",
+    "llmnav_show",
+    "llmnav_context",
+    "llmnav_check",
+  ]);
 });

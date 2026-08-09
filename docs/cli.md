@@ -2,7 +2,7 @@
 
 ## Global behavior
 
-All commands accept `--root <path>`. Without it, the CLI searches ancestors for `.llmnav`; when none exists, it falls back to the nearest `package.json` or `.git` boundary.
+Repository commands accept `--root <path>`. Without it, the CLI searches ancestors for `.llmnav`; when none exists, it falls back to the nearest `package.json` or `.git` boundary. The repository-independent `tools` command does not accept a root.
 
 Commands with structured results accept `--json`.
 
@@ -203,3 +203,11 @@ llmnav spec [--json]
 ```
 
 Prints the active source specification version, canonical key order, stability values, effect vocabulary, risk vocabulary, and semantic relation types. The package version is separate from the `llmnav/1` source grammar version.
+
+## `llmnav tools`
+
+```sh
+llmnav tools [--json]
+```
+
+Prints the fixed provider-neutral tool definitions for `query`, `show`, `context`, and `check`. JSON output wraps the ordered definitions in a schemaVersion 1 object. Tool inputs reject unknown fields and never accept a repository root; a trusted host binds repository scope when it calls the library dispatcher.

@@ -25,3 +25,4 @@ llmnav.diagnostics.sarif
 llmnav.index.search-shards
 llmnav.graph.import
 llmnav.graph.generate
+llmnav.agent.protocol

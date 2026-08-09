@@ -235,6 +235,26 @@ export interface LlmnavConfig {
   };
 }
 
+export interface AgentToolDefinition {
+  schemaVersion: 1;
+  name: "llmnav_query" | "llmnav_show" | "llmnav_context" | "llmnav_check";
+  description: string;
+  inputSchema: {
+    type: "object";
+    additionalProperties: false;
+    properties: Record<string, unknown>;
+    required: string[];
+  };
+}
+
+export interface AgentOperationResult<T = unknown> {
+  schemaVersion: 1;
+  operation: "query" | "show" | "context" | "check" | "unknown";
+  ok: boolean;
+  data: T | null;
+  error: { code: string; message: string } | null;
+}
+
 export interface ProjectFileRecord {
   absolutePath: string;
   relativePath: string;
@@ -470,6 +490,8 @@ export interface EvaluationResult {
 }
 
 export const AGENT_PROTOCOL: string;
+export const AGENT_OPERATION_SCHEMA_VERSION: 1;
+export const AGENT_TOOL_SCHEMA_VERSION: 1;
 export const BOUNDARY_KINDS: readonly DetectedBoundary["kind"][];
 export const GRAPH_INPUT_SCHEMA_VERSION: 1;
 export const GRAPH_SCHEMA_VERSION: 1;
@@ -490,6 +512,8 @@ export const TRANSACTION_SCHEMA_VERSION: number;
 export const TRANSACTION_ABORT_EXIT_CODE: number;
 
 export function installAgentInstructions(root: string, adapters?: string[]): Promise<string[]>;
+export function getAgentToolDefinitions(): AgentToolDefinition[];
+export function executeAgentOperation(root: string, name: string, input?: Record<string, unknown>): Promise<AgentOperationResult>;
 export function detectBoundaries(record: ProjectRecord): DetectedBoundary[];
 export function normalizeGraphInput(value: unknown, file?: string, contentHash?: string | null): GraphInputIndex;
 export function loadGraphInputs(root: string, config: LlmnavConfig): Promise<{ indexes: GraphInputIndex[]; diagnostics: Diagnostic[] }>;
