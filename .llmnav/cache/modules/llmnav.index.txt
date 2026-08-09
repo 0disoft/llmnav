@@ -8,8 +8,8 @@ excludes source semantics, agent search decisions
 rel workflow>llmnav.rules.validate, workflow>llmnav.index.incremental, workflow>llmnav.index.inverted, workflow>llmnav.index.transaction
 
 @llmnav.index.changes
-role Describe changed semantic cards and generated catalogs as stable machine-readable records.
-owns card diff, catalog impact report, change ordering
+role Describe changed cards, affected boundaries, and generated catalogs as stable machine-readable records.
+owns card diff, boundary impact report, catalog impact report, change ordering
 excludes source mutation, cache commit
 rel workflow>llmnav.index.generate
 

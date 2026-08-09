@@ -1,5 +1,5 @@
 export { AGENT_PROTOCOL, installAgentInstructions } from "./agents.js";
-export { compareCardIndexes, describeAffectedCatalogs } from "./changes.js";
+export { compareCardIndexes, describeAffectedBoundaries, describeAffectedCatalogs } from "./changes.js";
 export { loadConfig, validateConfig } from "./config.js";
 export { BOUNDARY_KINDS, detectBoundaries } from "./boundaries.js";
 export {

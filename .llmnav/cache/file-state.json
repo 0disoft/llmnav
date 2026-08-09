@@ -1214,6 +1214,7 @@
             "invariant": [],
             "owns": [
               "card diff",
+              "boundary impact report",
               "catalog impact report",
               "change ordering"
             ],
@@ -1221,17 +1222,18 @@
               "workflow>llmnav.index.generate"
             ],
             "risk": [],
-            "role": "Describe changed semantic cards and generated catalogs as stable machine-readable records.",
+            "role": "Describe changed cards, affected boundaries, and generated catalogs as stable machine-readable records.",
             "scope": "module",
             "search": [
               "changed cards",
+              "affected boundary",
               "affected catalog",
               "generation report"
             ],
             "stability": "architecture",
             "unknown": []
           },
-          "end": 346,
+          "end": 400,
           "endLine": 9,
           "entries": [
             {
@@ -1244,13 +1246,13 @@
               "key": "role",
               "line": 3,
               "order": 1,
-              "value": "Describe changed semantic cards and generated catalogs as stable machine-readable records."
+              "value": "Describe changed cards, affected boundaries, and generated catalogs as stable machine-readable records."
             },
             {
               "key": "owns",
               "line": 4,
               "order": 2,
-              "value": "card diff|catalog impact report|change ordering"
+              "value": "card diff|boundary impact report|catalog impact report|change ordering"
             },
             {
               "key": "excludes",
@@ -1262,7 +1264,7 @@
               "key": "search",
               "line": 6,
               "order": 4,
-              "value": "changed cards|affected catalog|generation report"
+              "value": "changed cards|affected boundary|affected catalog|generation report"
             },
             {
               "key": "rel",
@@ -1281,7 +1283,7 @@
           "indent": "",
           "newline": "\n",
           "prefix": null,
-          "raw": "/* llmnav/1 module\nid=llmnav.index.changes\nrole=Describe changed semantic cards and generated catalogs as stable machine-readable records.\nowns=card diff|catalog impact report|change ordering\nexcludes=source mutation|cache commit\nsearch=changed cards|affected catalog|generation report\nrel=workflow>llmnav.index.generate\nstability=architecture\n*/",
+          "raw": "/* llmnav/1 module\nid=llmnav.index.changes\nrole=Describe changed cards, affected boundaries, and generated catalogs as stable machine-readable records.\nowns=card diff|boundary impact report|catalog impact report|change ordering\nexcludes=source mutation|cache commit\nsearch=changed cards|affected boundary|affected catalog|generation report\nrel=workflow>llmnav.index.generate\nstability=architecture\n*/",
           "scope": "module",
           "specVersion": "1",
           "start": 0,
@@ -1290,21 +1292,23 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "756ca3d92131807c7825c568c1dff0bb5bf9b16b249372bf7fd8522753deebaf",
+      "contentHash": "faf5471011801f16eaf86d1cf6089c48030ab79e9cc7ca8c47bf07cfc9b1f8d1",
       "declarations": [
         null
       ],
       "imports": [
         " }],\n    [`${cacheRoot}/agent-context.md`, { kind: ",
         " }],\n  ]);\n  for (const index of [previousIndex, currentIndex]) {\n    for (const module of buildModuleCatalogMetadata(index?.cards ?? [], config)) {\n      known.set(module.file, { kind: ",
+        ") : null,\n    location: card?.location\n      ? {\n          path: card.location.path,\n          symbol: card.location.symbol ?? null,\n          declarationLine: card.location.declarationLine ?? null,\n        }\n      : null,\n    hashes: card?.hashes\n      ? {\n          semantic: card.hashes.semantic,\n          structure: card.hashes.structure,\n          body: card.hashes.body,\n        }\n      : null,\n  };\n}\n\nfunction relationTargets(...cards) {\n  return [...new Set(\n    cards.flatMap((card) => (card?.rel ?? []).map(relationTarget).filter(Boolean)),\n  )].sort(compareText);\n}\n\nfunction relationTarget(relation) {\n  const separator = String(relation).indexOf(",
         ").slice(0, 2).join(",
         ");\n  const known = new Map([\n    [`${cacheRoot}/repo-core.txt`, { kind: ",
         ");\n  return [...groups.entries()]\n    .sort(([left], [right]) => compareText(left, right))\n    .map(([id, cardsCount]) => ({\n      id,\n      file: `${cacheRoot}/modules/${safeModuleName(id)}.txt`,\n      cards: cardsCount,\n    }));\n}\n\nexport function moduleIdForCard(id, depth) {\n  const segments = String(id).split(",
         ");\n  return segments.slice(0, Math.min(Math.max(depth, 1), segments.length)).join(",
         ");\n}\n\nexport function safeModuleName(id) {\n  return String(id).replace(/[^a-z0-9.-]/gu, ",
         ");\n}\n\nfunction cardSnapshot(card) {\n  return {\n    stability: card?.stability ?? null,\n    module: card?.id ? card.id.split(",
+        ")}`;\n        boundaryRecords.set(key, boundary);\n      }\n    }\n    const relatedIds = relationTargets(before, after);\n    const dependentIds = [...new Set(\n      allCards\n        .filter((card) => (card.rel ?? []).some((relation) => relationTarget(relation) === change.id))\n        .map((card) => card.id),\n    )].sort(compareText);\n\n    return {\n      id: change.id,\n      change: change.change,\n      dimensions: [...change.dimensions],\n      modules: selected?.id ? [moduleIdForCard(selected.id, config.generation.moduleDepth)] : [],\n      boundaries: [...boundaryRecords.values()].sort((left, right) => compareText(left.kind, right.kind)),\n      relatedIds,\n      dependentIds,\n    };\n  });\n}\n\nexport function buildModuleCatalogMetadata(cards, config) {\n  const groups = new Map();\n  for (const card of cards) {\n    if (!config.generation.moduleCatalogStabilities.includes(card.stability)) continue;\n    const id = moduleIdForCard(card.id, config.generation.moduleDepth);\n    const count = groups.get(id) ?? 0;\n    groups.set(id, count + 1);\n  }\n  const cacheRoot = toPosix(config.generation.cacheDirectory).replace(/\\/+$/u, ",
         ", id: ",
-        ", id: module.id });\n    }\n  }\n\n  return [...new Set(changedFiles.map(toPosix))]\n    .filter((file) => known.has(file))\n    .sort(compareText)\n    .map((file) => ({ file, ...known.get(file) }));\n}\n\nexport function buildModuleCatalogMetadata(cards, config) {\n  const groups = new Map();\n  for (const card of cards) {\n    if (!config.generation.moduleCatalogStabilities.includes(card.stability)) continue;\n    const id = moduleIdForCard(card.id, config.generation.moduleDepth);\n    const count = groups.get(id) ?? 0;\n    groups.set(id, count + 1);\n  }\n  const cacheRoot = toPosix(config.generation.cacheDirectory).replace(/\\/+$/u, ",
+        ", id: module.id });\n    }\n  }\n\n  return [...new Set(changedFiles.map(toPosix))]\n    .filter((file) => known.has(file))\n    .sort(compareText)\n    .map((file) => ({ file, ...known.get(file) }));\n}\n\nexport function describeAffectedBoundaries(changedCards, config, previousIndex, currentIndex) {\n  const previous = new Map((previousIndex?.cards ?? []).map((card) => [card.id, card]));\n  const current = new Map((currentIndex?.cards ?? []).map((card) => [card.id, card]));\n  const allCards = [...previous.values(), ...current.values()];\n\n  return changedCards.map((change) => {\n    const before = previous.get(change.id);\n    const after = current.get(change.id);\n    const selected = after ?? before;\n    const boundaryRecords = new Map();\n    for (const card of [before, after]) {\n      for (const boundary of card?.boundaries ?? []) {\n        const key = `${boundary.kind}:${boundary.confidence}:${(boundary.evidence ?? []).join(",
         "./util.js",
         "added",
         "body",
@@ -1314,8 +1318,8 @@
         "structure"
       ],
       "path": "src/changes.js",
-      "semanticBytes": 346,
-      "sourceBytes": 3933
+      "semanticBytes": 400,
+      "sourceBytes": 5751
     },
     {
       "blocks": [
@@ -1427,7 +1431,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "bb22b51c94d545b030f3075e49525452a3624f3dc06f0a0eea4548055bce1ab2",
+      "contentHash": "ec2210b1408ccef7e73c91fb6e66d82aafeb4ec58d64c009f64d5465b334909b",
       "declarations": [
         null
       ],
@@ -1527,7 +1531,7 @@
       ],
       "path": "src/cli.js",
       "semanticBytes": 473,
-      "sourceBytes": 13848
+      "sourceBytes": 13905
     },
     {
       "blocks": [],
@@ -2118,7 +2122,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "9e9dca32b852668d86081a56ac1cdfbc9314e3aa480982a4e673ffd0c478dcae",
+      "contentHash": "b25f6b8249294c5ac536a57a25ba7be7167683fb58b13c4b775616aa3e7dd21c",
       "declarations": [
         null
       ],
@@ -2138,7 +2142,7 @@
         ");\n  return `${lines.join(",
         ");\n}\n\nexport function renderCompactCard(card) {\n  const lines = renderSemanticCard(card).split(",
         ");\n}\n\nfunction renderAgentContext(repositoryId, modules) {\n  const lines = [\n    ",
-        ")}/`;\n    const cacheChanges = uniqueChangedFiles.filter((file) => file.startsWith(cachePrefix));\n    if (cacheChanges.length > 0) {\n      transaction = await commitGeneratedCache(\n        root,\n        project.config.generation.cacheDirectory,\n        artifacts,\n        {\n          failpoint: options.failpoint,\n          onPhase: options.onTransactionPhase,\n          renameOptions: options.renameOptions,\n        },\n      );\n    }\n\n    if (statHints && hintsPath) {\n      try {\n        await persistStatHints(hintsPath, statHints);\n        statHintsPersisted = true;\n      } catch (error) {\n        statHintsError = error instanceof Error ? error.message : String(error);\n      }\n    }\n  }\n\n  return {\n    ok: options.check ? uniqueChangedFiles.length === 0 : true,\n    diagnostics,\n    changedFiles: uniqueChangedFiles,\n    changedCards,\n    affectedCatalogs,\n    project,\n    counts,\n    artifacts,\n    index: built.index,\n    searchIndex: built.searchIndex,\n    incremental: {\n      enabled: options.incremental !== false,\n      files: scanStats,\n      cards: built.searchStats,\n      statHintsPersisted,\n      statHintsError,\n    },\n    transaction,\n  };\n}\n\nexport function buildArtifacts(project, order, options = {}) {\n  return buildArtifactSet(project, order, options).artifacts;\n}\n\nexport function buildArtifactSet(project, order, options = {}) {\n  const orderMap = new Map(order.map((id, index) => [id, index]));\n  const cards = project.records\n    .filter((record) => record.card.id)\n    .map((record) => indexedCard(record))\n    .sort((left, right) => {\n      const orderDifference = (orderMap.get(left.id) ?? Number.MAX_SAFE_INTEGER) -\n        (orderMap.get(right.id) ?? Number.MAX_SAFE_INTEGER);\n      return orderDifference || compareText(left.id, right.id);\n    });\n\n  const index = {\n    schemaVersion: 1,\n    specVersion: SPEC_VERSION,\n    generatedBy: `llmnav@${PACKAGE_VERSION}`,\n    repositoryId: project.config.repositoryId,\n    contractFingerprints: buildContractFingerprints(project, cards),\n    sourceHash: sha256(cards.map((card) => `${card.hashes.semantic}:${card.hashes.structure}:${card.hashes.body}`).join(",
+        ")}/`;\n    const cacheChanges = uniqueChangedFiles.filter((file) => file.startsWith(cachePrefix));\n    if (cacheChanges.length > 0) {\n      transaction = await commitGeneratedCache(\n        root,\n        project.config.generation.cacheDirectory,\n        artifacts,\n        {\n          failpoint: options.failpoint,\n          onPhase: options.onTransactionPhase,\n          renameOptions: options.renameOptions,\n        },\n      );\n    }\n\n    if (statHints && hintsPath) {\n      try {\n        await persistStatHints(hintsPath, statHints);\n        statHintsPersisted = true;\n      } catch (error) {\n        statHintsError = error instanceof Error ? error.message : String(error);\n      }\n    }\n  }\n\n  return {\n    ok: options.check ? uniqueChangedFiles.length === 0 : true,\n    diagnostics,\n    changedFiles: uniqueChangedFiles,\n    changedCards,\n    affectedBoundaries,\n    affectedCatalogs,\n    project,\n    counts,\n    artifacts,\n    index: built.index,\n    searchIndex: built.searchIndex,\n    incremental: {\n      enabled: options.incremental !== false,\n      files: scanStats,\n      cards: built.searchStats,\n      statHintsPersisted,\n      statHintsError,\n    },\n    transaction,\n  };\n}\n\nexport function buildArtifacts(project, order, options = {}) {\n  return buildArtifactSet(project, order, options).artifacts;\n}\n\nexport function buildArtifactSet(project, order, options = {}) {\n  const orderMap = new Map(order.map((id, index) => [id, index]));\n  const cards = project.records\n    .filter((record) => record.card.id)\n    .map((record) => indexedCard(record))\n    .sort((left, right) => {\n      const orderDifference = (orderMap.get(left.id) ?? Number.MAX_SAFE_INTEGER) -\n        (orderMap.get(right.id) ?? Number.MAX_SAFE_INTEGER);\n      return orderDifference || compareText(left.id, right.id);\n    });\n\n  const index = {\n    schemaVersion: 1,\n    specVersion: SPEC_VERSION,\n    generatedBy: `llmnav@${PACKAGE_VERSION}`,\n    repositoryId: project.config.repositoryId,\n    contractFingerprints: buildContractFingerprints(project, cards),\n    sourceHash: sha256(cards.map((card) => `${card.hashes.semantic}:${card.hashes.structure}:${card.hashes.body}`).join(",
         ")}\\n` : ",
         ")}\\n`;\n}\n\nasync function buildStableOrder(root, ids) {\n  const existing = (await readText(path.join(root, ",
         ")}`);\n  if (card.effect?.length) lines.push(`effect ${card.effect.join(",
@@ -2185,7 +2189,7 @@
       ],
       "path": "src/generator.js",
       "semanticBytes": 476,
-      "sourceBytes": 16894
+      "sourceBytes": 17114
     },
     {
       "blocks": [
@@ -2303,7 +2307,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "679679021c1a06cc29787958de1a67ea81a97296e1f1df51ffb8bb8227a0aabf",
+      "contentHash": "75fd026eb79a91671497315202cf4fc3a8c54e8a081ff65b21b89a9c05aea17f",
       "declarations": [],
       "imports": [
         " | ",
@@ -2312,17 +2316,19 @@
         ";\n  dimensions: Array<",
         ";\n  evidence: string[];\n}\n\nexport interface Diagnostic {\n  severity: DiagnosticSeverity;\n  code: string;\n  message: string;\n  file: string;\n  line: number;\n  column: number;\n}\n\nexport interface IndexedLocation {\n  path: string;\n  startLine: number;\n  endLine: number;\n  symbol: string | null;\n  kind: string | null;\n  declarationLine: number | null;\n  signature: string | null;\n  language: Declaration[",
         ";\n  exported: boolean;\n  visibility: ",
-        ";\n  id: string;\n}\n\nexport interface TransactionResult {\n  committed: boolean;\n  skipped: boolean;\n  recovered: boolean;\n  recoveryAction: string;\n  transactionId?: string;\n  replacedExisting?: boolean;\n}\n\nexport interface GenerationResult {\n  ok: boolean;\n  diagnostics: Diagnostic[];\n  changedFiles: string[];\n  changedCards: ChangedCardRecord[];\n  affectedCatalogs: AffectedCatalogRecord[];\n  project: ScannedProject;\n  counts: { error: number; warning: number; info: number };\n  artifacts?: Map<string, string>;\n  index?: LlmnavIndex;\n  searchIndex?: LlmnavSearchIndex;\n  incremental: {\n    enabled: boolean;\n    files: IncrementalFileStats;\n    cards: SearchIndexStats | null;\n    statHintsPersisted?: boolean;\n    statHintsError?: string | null;\n  };\n  transaction: TransactionResult;\n}\n\nexport interface EvaluationResult {\n  ok: boolean;\n  errors: string[];\n  cases: Array<{\n    query: string;\n    expected: string[];\n    actual: string[];\n    rank: number | null;\n    passAt1: boolean;\n    passAt5: boolean;\n  }>;\n  metrics: {\n    total: number;\n    recallAt1: number;\n    recallAt5: number;\n    meanReciprocalRank: number;\n  };\n  thresholds?: LlmnavConfig[",
+        ";\n  id: string;\n}\n\nexport interface AffectedBoundaryRecord {\n  id: string;\n  change: ChangedCardRecord[",
         ";\n  prefix: string | null;\n  indent: string;\n  raw: string;\n  start: number;\n  end: number;\n  startLine: number;\n  endLine: number;\n  newline: string;\n}\n\nexport interface Declaration {\n  kind: string;\n  symbol: string;\n  signature: string;\n  language: ",
         ";\n  previous: string | null;\n  current: string | null;\n}\n\nexport interface SearchDocument {\n  hash: string;\n  phrases: string[];\n  terms: Array<[token: string, sparseFieldCounts: number[]]>;\n  tokens: string[];\n}\n\nexport type CompactSearchDocument = [hash: string, phrases: string[]];\nexport type CompactSearchPosting = [cardIndex: number, sparseFieldCounts: number[]];\n\nexport interface LlmnavSearchIndex {\n  schemaVersion: 2;\n  encoding: ",
         ";\n  receiver: string | null;\n  line: number;\n  offset: number;\n  endOffset: number;\n  bodyHash: string;\n}\n\nexport interface DetectedBoundary {\n  kind: ",
         ";\n  tokenizerVersion: number;\n  repositoryId: string;\n  cardSetHash: string;\n  documentCount: number;\n  fieldOrder: string[];\n  cardIds: string[];\n  tokens: string[];\n  documents: CompactSearchDocument[];\n  postings: CompactSearchPosting[][];\n}\n\nexport interface SearchIndexStats {\n  previousUsable: boolean;\n  totalCards: number;\n  reusedCards: number;\n  indexedCards: number;\n  removedCards: number;\n  changedIds: string[];\n  removedIds: string[];\n  tokenCount: number;\n}\n\nexport interface SearchMetrics {\n  queryTokens?: number;\n  documentTokenizations?: number;\n  postingVisits?: number;\n  phraseDocumentsScanned?: number;\n  idDocumentsScanned?: number;\n}\n\nexport interface SearchResult {\n  id: string;\n  score: number;\n  reasons: string[];\n  role: string;\n  location: IndexedLocation;\n  card: IndexedCard;\n}\n\nexport interface RegistryRecord {\n  id: string;\n  state: ",
         ";\n  unknown?: Array<{ key: string; value: string; line: number }>;\n}\n\nexport interface LlmnavEntry {\n  key: string;\n  value: string;\n  line: number;\n  order: number;\n}\n\nexport interface LlmnavBlock {\n  specVersion: string;\n  filePath: string;\n  scope: LlmnavScope;\n  card: LlmnavCard;\n  entries: LlmnavEntry[];\n  syntaxErrors: Array<{ line: number; message: string }>;\n  style: ",
-        ";\nexport const SEARCH_INDEX_SCHEMA_VERSION: 2;\nexport const SEARCH_FIELD_ORDER: readonly string[];\nexport const SEARCH_FIELD_WEIGHTS: Readonly<Record<string, number>>;\nexport const TOKENIZER_VERSION: number;\nexport const TRANSACTION_SCHEMA_VERSION: number;\nexport const TRANSACTION_ABORT_EXIT_CODE: number;\n\nexport function installAgentInstructions(root: string, adapters?: string[]): Promise<string[]>;\nexport function detectBoundaries(record: ProjectRecord): DetectedBoundary[];\nexport function buildContractFingerprints(project: ScannedProject, cards: IndexedCard[]): ContractFingerprints;\nexport function compareContractFingerprints(previous: ContractFingerprints | null | undefined, current: ContractFingerprints | null | undefined): ContractFingerprintChange[];\nexport function compareCardIndexes(previousIndex: LlmnavIndex | null, currentIndex: LlmnavIndex): ChangedCardRecord[];\nexport function describeAffectedCatalogs(changedFiles: string[], cacheDirectory: string, config: LlmnavConfig, previousIndex: LlmnavIndex | null, currentIndex: LlmnavIndex): AffectedCatalogRecord[];\nexport function loadConfig(root: string): Promise<{ config: LlmnavConfig; configPath: string }>;\nexport function validateConfig(config: LlmnavConfig, configPath?: string): void;\nexport function findAttachedDeclaration(source: string, block: LlmnavBlock, filePath: string): Declaration | null;\nexport function extractImports(source: string, filePath: string): string[];\nexport function doctorProject(root: string): Promise<{ ok: boolean; checks: Array<{ name: string; ok: boolean; message: string }> }>;\nexport function evaluateProject(root: string, options?: { top?: number; file?: string }): Promise<EvaluationResult>;\nexport function collectSourceFiles(root: string, config: LlmnavConfig, requestedPaths?: string[]): Promise<string[]>;\nexport function findProjectRoot(start?: string): Promise<string>;\nexport function formatProject(root: string, options?: { check?: boolean; paths?: string[] }): Promise<{ ok: boolean; changedFiles: string[]; errors: Array<{ file: string; line: number; message: string }> }>;\nexport function buildArtifacts(project: ScannedProject, order: string[], options?: { previousSearchIndex?: LlmnavSearchIndex | null; fileState?: LlmnavFileState }): Map<string, string>;\nexport function buildArtifactSet(project: ScannedProject, order: string[], options?: { previousSearchIndex?: LlmnavSearchIndex | null; fileState?: LlmnavFileState }): { artifacts: Map<string, string>; index: LlmnavIndex; searchIndex: LlmnavSearchIndex; searchStats: SearchIndexStats; fileState: LlmnavFileState };\nexport function generateProject(root: string, options?: { check?: boolean; incremental?: boolean; useStatHints?: boolean; failpoint?: string }): Promise<GenerationResult>;\nexport function renderCompactCard(card: IndexedCard): string;\nexport function renderSemanticCard(card: IndexedCard): string;\nexport function scanProjectIncremental(root: string, options?: { paths?: string[]; useStatHints?: boolean; previousState?: LlmnavFileState }): Promise<{ project: ScannedProject; fileState: LlmnavFileState; stats: IncrementalFileStats; statHints: unknown; hintsPath: string }>;\nexport function buildFileStateFromProject(project: ScannedProject): LlmnavFileState;\nexport function renderFileState(fileState: LlmnavFileState): string;\nexport function usableFileState(value: unknown): value is LlmnavFileState;\nexport function initializeProject(root: string, options?: { force?: boolean; packageScripts?: boolean; agents?: string[] }): Promise<{ ok: boolean; changed: string[]; generated: GenerationResult }>;\nexport function buildInvertedIndex(index: LlmnavIndex, previous?: LlmnavSearchIndex | null): { searchIndex: LlmnavSearchIndex; stats: SearchIndexStats };\nexport function buildSearchDocument(card: IndexedCard, hash?: string): SearchDocument;\nexport function isCompatibleSearchIndex(searchIndex: unknown, repositoryId?: string): searchIndex is LlmnavSearchIndex;\nexport function renderSearchIndex(searchIndex: LlmnavSearchIndex): string;\nexport function searchCardSetHash(cards: IndexedCard[]): string;\nexport function searchDocumentHash(card: IndexedCard): string;\nexport function verifySearchIndex(index: LlmnavIndex, searchIndex: LlmnavSearchIndex): boolean;\nexport function canonicalizeSource(source: string, filePath?: string): { source: string; changed: boolean; blocks: LlmnavBlock[]; errors: Array<{ line: number; message: string }> };\nexport function cardToCanonicalObject(card: LlmnavCard): Record<string, string | string[]>;\nexport function formatLlmnavBlock(block: LlmnavBlock): string;\nexport function parseLlmnavBlocks(source: string, filePath?: string): LlmnavBlock[];\nexport function scanProject(root: string, options?: { paths?: string[] }): Promise<ScannedProject>;\nexport function ensureActiveIds(root: string, registry: Registry, ids: string[]): Promise<void>;\nexport function loadRegistry(root: string): Promise<Registry>;\nexport function resolveRegistryId(registry: Registry, id: string): { id: string; state: string; [key: string]: unknown };\nexport function buildContext(root: string, id: string, options?: { depth?: number; budget?: number }): Promise<{ id: string; depth: number; budget: number; included: string[]; text: string }>;\nexport function loadSearchData(root: string): Promise<{ index: LlmnavIndex; searchIndex: LlmnavSearchIndex; lexicon: { version?: number; aliases: Record<string, string | string[]> } }>;\nexport function queryIndex(index: LlmnavIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> }; invertedIndex?: LlmnavSearchIndex; metrics?: SearchMetrics }): SearchResult[];\nexport function queryPreparedIndex(index: LlmnavIndex, searchIndex: LlmnavSearchIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> }; metrics?: SearchMetrics }): SearchResult[];\nexport function queryIndexLegacy(index: LlmnavIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> } }): SearchResult[];\nexport function queryProject(root: string, query: string, options?: { top?: number }): Promise<SearchResult[]>;\nexport function showProjectCard(root: string, id: string): Promise<{ card: IndexedCard | null; resolvedFrom: unknown }>;\nexport function tokenize(value: string): string[];\nexport function normalizeSearchText(value: string): string;\nexport function commitGeneratedCache(root: string, cacheDirectory: string, artifacts: Map<string, string>, options?: Record<string, unknown>): Promise<TransactionResult>;\nexport function recoverGenerationTransaction(root: string, options?: { cacheDirectory?: string; renameOptions?: Record<string, unknown> }): Promise<{ recovered: boolean; action: string }>;\nexport function renameWithRetry(source: string, destination: string, options?: Record<string, unknown>): Promise<void>;\nexport function removeWithRetry(target: string, options?: Record<string, unknown>): Promise<void>;\nexport function countDiagnostics(diagnostics: Diagnostic[]): { error: number; warning: number; info: number };\nexport function diagnostic(severity: DiagnosticSeverity, code: string, message: string, file: string, line?: number, column?: number): Diagnostic;\nexport function validateProject(project: ScannedProject): Diagnostic[];\n\nexport * from ",
+        ";\nexport const SEARCH_INDEX_SCHEMA_VERSION: 2;\nexport const SEARCH_FIELD_ORDER: readonly string[];\nexport const SEARCH_FIELD_WEIGHTS: Readonly<Record<string, number>>;\nexport const TOKENIZER_VERSION: number;\nexport const TRANSACTION_SCHEMA_VERSION: number;\nexport const TRANSACTION_ABORT_EXIT_CODE: number;\n\nexport function installAgentInstructions(root: string, adapters?: string[]): Promise<string[]>;\nexport function detectBoundaries(record: ProjectRecord): DetectedBoundary[];\nexport function buildContractFingerprints(project: ScannedProject, cards: IndexedCard[]): ContractFingerprints;\nexport function compareContractFingerprints(previous: ContractFingerprints | null | undefined, current: ContractFingerprints | null | undefined): ContractFingerprintChange[];\nexport function compareCardIndexes(previousIndex: LlmnavIndex | null, currentIndex: LlmnavIndex): ChangedCardRecord[];\nexport function describeAffectedBoundaries(changedCards: ChangedCardRecord[], config: LlmnavConfig, previousIndex: LlmnavIndex | null, currentIndex: LlmnavIndex): AffectedBoundaryRecord[];\nexport function describeAffectedCatalogs(changedFiles: string[], cacheDirectory: string, config: LlmnavConfig, previousIndex: LlmnavIndex | null, currentIndex: LlmnavIndex): AffectedCatalogRecord[];\nexport function loadConfig(root: string): Promise<{ config: LlmnavConfig; configPath: string }>;\nexport function validateConfig(config: LlmnavConfig, configPath?: string): void;\nexport function findAttachedDeclaration(source: string, block: LlmnavBlock, filePath: string): Declaration | null;\nexport function extractImports(source: string, filePath: string): string[];\nexport function doctorProject(root: string): Promise<{ ok: boolean; checks: Array<{ name: string; ok: boolean; message: string }> }>;\nexport function evaluateProject(root: string, options?: { top?: number; file?: string }): Promise<EvaluationResult>;\nexport function collectSourceFiles(root: string, config: LlmnavConfig, requestedPaths?: string[]): Promise<string[]>;\nexport function findProjectRoot(start?: string): Promise<string>;\nexport function formatProject(root: string, options?: { check?: boolean; paths?: string[] }): Promise<{ ok: boolean; changedFiles: string[]; errors: Array<{ file: string; line: number; message: string }> }>;\nexport function buildArtifacts(project: ScannedProject, order: string[], options?: { previousSearchIndex?: LlmnavSearchIndex | null; fileState?: LlmnavFileState }): Map<string, string>;\nexport function buildArtifactSet(project: ScannedProject, order: string[], options?: { previousSearchIndex?: LlmnavSearchIndex | null; fileState?: LlmnavFileState }): { artifacts: Map<string, string>; index: LlmnavIndex; searchIndex: LlmnavSearchIndex; searchStats: SearchIndexStats; fileState: LlmnavFileState };\nexport function generateProject(root: string, options?: { check?: boolean; incremental?: boolean; useStatHints?: boolean; failpoint?: string }): Promise<GenerationResult>;\nexport function renderCompactCard(card: IndexedCard): string;\nexport function renderSemanticCard(card: IndexedCard): string;\nexport function scanProjectIncremental(root: string, options?: { paths?: string[]; useStatHints?: boolean; previousState?: LlmnavFileState }): Promise<{ project: ScannedProject; fileState: LlmnavFileState; stats: IncrementalFileStats; statHints: unknown; hintsPath: string }>;\nexport function buildFileStateFromProject(project: ScannedProject): LlmnavFileState;\nexport function renderFileState(fileState: LlmnavFileState): string;\nexport function usableFileState(value: unknown): value is LlmnavFileState;\nexport function initializeProject(root: string, options?: { force?: boolean; packageScripts?: boolean; agents?: string[] }): Promise<{ ok: boolean; changed: string[]; generated: GenerationResult }>;\nexport function buildInvertedIndex(index: LlmnavIndex, previous?: LlmnavSearchIndex | null): { searchIndex: LlmnavSearchIndex; stats: SearchIndexStats };\nexport function buildSearchDocument(card: IndexedCard, hash?: string): SearchDocument;\nexport function isCompatibleSearchIndex(searchIndex: unknown, repositoryId?: string): searchIndex is LlmnavSearchIndex;\nexport function renderSearchIndex(searchIndex: LlmnavSearchIndex): string;\nexport function searchCardSetHash(cards: IndexedCard[]): string;\nexport function searchDocumentHash(card: IndexedCard): string;\nexport function verifySearchIndex(index: LlmnavIndex, searchIndex: LlmnavSearchIndex): boolean;\nexport function canonicalizeSource(source: string, filePath?: string): { source: string; changed: boolean; blocks: LlmnavBlock[]; errors: Array<{ line: number; message: string }> };\nexport function cardToCanonicalObject(card: LlmnavCard): Record<string, string | string[]>;\nexport function formatLlmnavBlock(block: LlmnavBlock): string;\nexport function parseLlmnavBlocks(source: string, filePath?: string): LlmnavBlock[];\nexport function scanProject(root: string, options?: { paths?: string[] }): Promise<ScannedProject>;\nexport function ensureActiveIds(root: string, registry: Registry, ids: string[]): Promise<void>;\nexport function loadRegistry(root: string): Promise<Registry>;\nexport function resolveRegistryId(registry: Registry, id: string): { id: string; state: string; [key: string]: unknown };\nexport function buildContext(root: string, id: string, options?: { depth?: number; budget?: number }): Promise<{ id: string; depth: number; budget: number; included: string[]; text: string }>;\nexport function loadSearchData(root: string): Promise<{ index: LlmnavIndex; searchIndex: LlmnavSearchIndex; lexicon: { version?: number; aliases: Record<string, string | string[]> } }>;\nexport function queryIndex(index: LlmnavIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> }; invertedIndex?: LlmnavSearchIndex; metrics?: SearchMetrics }): SearchResult[];\nexport function queryPreparedIndex(index: LlmnavIndex, searchIndex: LlmnavSearchIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> }; metrics?: SearchMetrics }): SearchResult[];\nexport function queryIndexLegacy(index: LlmnavIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> } }): SearchResult[];\nexport function queryProject(root: string, query: string, options?: { top?: number }): Promise<SearchResult[]>;\nexport function showProjectCard(root: string, id: string): Promise<{ card: IndexedCard | null; resolvedFrom: unknown }>;\nexport function tokenize(value: string): string[];\nexport function normalizeSearchText(value: string): string;\nexport function commitGeneratedCache(root: string, cacheDirectory: string, artifacts: Map<string, string>, options?: Record<string, unknown>): Promise<TransactionResult>;\nexport function recoverGenerationTransaction(root: string, options?: { cacheDirectory?: string; renameOptions?: Record<string, unknown> }): Promise<{ recovered: boolean; action: string }>;\nexport function renameWithRetry(source: string, destination: string, options?: Record<string, unknown>): Promise<void>;\nexport function removeWithRetry(target: string, options?: Record<string, unknown>): Promise<void>;\nexport function countDiagnostics(diagnostics: Diagnostic[]): { error: number; warning: number; info: number };\nexport function diagnostic(severity: DiagnosticSeverity, code: string, message: string, file: string, line?: number, column?: number): Diagnostic;\nexport function validateProject(project: ScannedProject): Diagnostic[];\n\nexport * from ",
         "> {\n  location: IndexedLocation;\n  imports: string[];\n  boundaries: DetectedBoundary[];\n  hashes: {\n    semantic: string;\n    structure: string;\n    body: string;\n  };\n}\n\nexport interface LlmnavIndex {\n  schemaVersion: 1;\n  specVersion: string;\n  generatedBy: string;\n  repositoryId: string;\n  contractFingerprints?: ContractFingerprints;\n  sourceHash: string;\n  cards: IndexedCard[];\n}\n\nexport interface ContractFingerprint {\n  sha256: string;\n  count?: number;\n}\n\nexport interface ContractFingerprints {\n  schemaVersion: 1;\n  exportedApi: ContractFingerprint;\n  configuration: ContractFingerprint;\n}\n\nexport interface ContractFingerprintChange {\n  kind: ",
         ">;\n  previous: Record<string, unknown> | null;\n  current: Record<string, unknown> | null;\n}\n\nexport interface AffectedCatalogRecord {\n  file: string;\n  kind: ",
         "] | null;\n  exported: boolean | null;\n  visibility: Declaration[",
         "] | null;\n  receiver: string | null;\n}\n\nexport interface IndexedCard extends Omit<LlmnavCard, ",
+        "];\n  dimensions: ChangedCardRecord[",
+        "];\n  modules: string[];\n  boundaries: DetectedBoundary[];\n  relatedIds: string[];\n  dependentIds: string[];\n}\n\nexport interface TransactionResult {\n  committed: boolean;\n  skipped: boolean;\n  recovered: boolean;\n  recoveryAction: string;\n  transactionId?: string;\n  replacedExisting?: boolean;\n}\n\nexport interface GenerationResult {\n  ok: boolean;\n  diagnostics: Diagnostic[];\n  changedFiles: string[];\n  changedCards: ChangedCardRecord[];\n  affectedBoundaries: AffectedBoundaryRecord[];\n  affectedCatalogs: AffectedCatalogRecord[];\n  project: ScannedProject;\n  counts: { error: number; warning: number; info: number };\n  artifacts?: Map<string, string>;\n  index?: LlmnavIndex;\n  searchIndex?: LlmnavSearchIndex;\n  incremental: {\n    enabled: boolean;\n    files: IncrementalFileStats;\n    cards: SearchIndexStats | null;\n    statHintsPersisted?: boolean;\n    statHintsError?: string | null;\n  };\n  transaction: TransactionResult;\n}\n\nexport interface EvaluationResult {\n  ok: boolean;\n  errors: string[];\n  cases: Array<{\n    query: string;\n    expected: string[];\n    actual: string[];\n    rank: number | null;\n    passAt1: boolean;\n    passAt5: boolean;\n  }>;\n  metrics: {\n    total: number;\n    recallAt1: number;\n    recallAt5: number;\n    meanReciprocalRank: number;\n  };\n  thresholds?: LlmnavConfig[",
         "];\n}\n\nexport const AGENT_PROTOCOL: string;\nexport const BOUNDARY_KINDS: readonly DetectedBoundary[",
         "][];\nexport const CONTRACT_FINGERPRINT_SCHEMA_VERSION: 1;\nexport const FILE_STATE_SCHEMA_VERSION: number;\nexport const SOURCE_INDEXER_VERSION: number;\nexport const SEARCH_INDEX_ENCODING: ",
         "architecture",
@@ -2337,11 +2343,11 @@
       ],
       "path": "src/index.d.ts",
       "semanticBytes": 0,
-      "sourceBytes": 15969
+      "sourceBytes": 16456
     },
     {
       "blocks": [],
-      "contentHash": "5eda8b85a6df8be1da2fc0e043054f153fe28297aafc857d1495d11ccf9bd377",
+      "contentHash": "6655be48c8f684dfba7ffb9de5beaeddce7be3adc42aeaf7f9fe39e3f8210f47",
       "declarations": [],
       "imports": [
         "./agents.js",
@@ -2369,7 +2375,7 @@
       ],
       "path": "src/index.js",
       "semanticBytes": 0,
-      "sourceBytes": 2149
+      "sourceBytes": 2177
     },
     {
       "blocks": [
@@ -3712,7 +3718,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "87115f9437b15b0069dcf11bb4cf340dd53d44bd180ec603e11c2aed0206561b",
+      "contentHash": "2b5c591fa2342c4d2a06900224ea02b7bf14f4f551137c178ebb71daa36201d6",
       "declarations": [],
       "imports": [
         "--json",
@@ -3725,8 +3731,10 @@
         "billing.credit",
         "billing.credit.reserve",
         "generate",
-        "generate --json reports changed cards and affected catalogs",
+        "generate --json reports changed cards, boundaries, and affected catalogs",
+        "high",
         "llmnav-change-output-",
+        "modified",
         "module",
         "node:assert/strict",
         "node:child_process",
@@ -3737,7 +3745,10 @@
         "node:url",
         "none",
         "package.json",
+        "path",
         "reserve.ts",
+        "route",
+        "routes",
         "semantic",
         "src",
         "utf8",
@@ -3746,7 +3757,7 @@
       ],
       "path": "tests/change-output.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 2061
+      "sourceBytes": 2432
     },
     {
       "blocks": [],

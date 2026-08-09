@@ -308,6 +308,16 @@ export interface AffectedCatalogRecord {
   id: string;
 }
 
+export interface AffectedBoundaryRecord {
+  id: string;
+  change: ChangedCardRecord["change"];
+  dimensions: ChangedCardRecord["dimensions"];
+  modules: string[];
+  boundaries: DetectedBoundary[];
+  relatedIds: string[];
+  dependentIds: string[];
+}
+
 export interface TransactionResult {
   committed: boolean;
   skipped: boolean;
@@ -322,6 +332,7 @@ export interface GenerationResult {
   diagnostics: Diagnostic[];
   changedFiles: string[];
   changedCards: ChangedCardRecord[];
+  affectedBoundaries: AffectedBoundaryRecord[];
   affectedCatalogs: AffectedCatalogRecord[];
   project: ScannedProject;
   counts: { error: number; warning: number; info: number };
@@ -376,6 +387,7 @@ export function detectBoundaries(record: ProjectRecord): DetectedBoundary[];
 export function buildContractFingerprints(project: ScannedProject, cards: IndexedCard[]): ContractFingerprints;
 export function compareContractFingerprints(previous: ContractFingerprints | null | undefined, current: ContractFingerprints | null | undefined): ContractFingerprintChange[];
 export function compareCardIndexes(previousIndex: LlmnavIndex | null, currentIndex: LlmnavIndex): ChangedCardRecord[];
+export function describeAffectedBoundaries(changedCards: ChangedCardRecord[], config: LlmnavConfig, previousIndex: LlmnavIndex | null, currentIndex: LlmnavIndex): AffectedBoundaryRecord[];
 export function describeAffectedCatalogs(changedFiles: string[], cacheDirectory: string, config: LlmnavConfig, previousIndex: LlmnavIndex | null, currentIndex: LlmnavIndex): AffectedCatalogRecord[];
 export function loadConfig(root: string): Promise<{ config: LlmnavConfig; configPath: string }>;
 export function validateConfig(config: LlmnavConfig, configPath?: string): void;

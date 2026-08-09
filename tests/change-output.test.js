@@ -9,12 +9,12 @@ import { initializeProject } from "../src/initializer.js";
 
 const cli = fileURLToPath(new URL("../bin/llmnav.js", import.meta.url));
 
-test("generate --json reports changed cards and affected catalogs", async (context) => {
+test("generate --json reports changed cards, boundaries, and affected catalogs", async (context) => {
   const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-change-output-"));
   context.after(() => rm(root, { recursive: true, force: true }));
   await writeFile(path.join(root, "package.json"), '{"name":"change-output-fixture"}\n');
-  await mkdir(path.join(root, "src"));
-  const sourcePath = path.join(root, "src", "reserve.ts");
+  await mkdir(path.join(root, "src", "routes"), { recursive: true });
+  const sourcePath = path.join(root, "src", "routes", "reserve.ts");
   await writeFile(
     sourcePath,
     `/* llmnav/1 symbol\nid=billing.credit.reserve\nrole=Reserve credits before a generation job starts.\nsearch=credit hold|reserve credits\nstability=contract\n*/\nexport function reserveCredits(): number { return 1; }\n`,
@@ -32,6 +32,15 @@ test("generate --json reports changed cards and affected catalogs", async (conte
   assert.equal(output.ok, true);
   assert.deepEqual(output.changedCards.map((item) => item.id), ["billing.credit.reserve"]);
   assert.ok(output.changedCards[0].dimensions.includes("semantic"));
+  assert.deepEqual(output.affectedBoundaries, [{
+    id: "billing.credit.reserve",
+    change: "modified",
+    dimensions: output.changedCards[0].dimensions,
+    modules: ["billing.credit"],
+    boundaries: [{ kind: "route", confidence: "high", evidence: ["path"] }],
+    relatedIds: [],
+    dependentIds: [],
+  }]);
   assert.ok(output.affectedCatalogs.some((item) => item.kind === "module" && item.id === "billing.credit"));
   assert.equal(output.incremental.files.parsedFiles, 1);
   assert.equal(output.incremental.cards.indexedCards, 1);

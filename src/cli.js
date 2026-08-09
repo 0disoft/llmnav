@@ -160,6 +160,7 @@ async function runGenerate(root, args, json) {
           ok: result.ok,
           changedFiles: result.changedFiles,
           changedCards: result.changedCards,
+          affectedBoundaries: result.affectedBoundaries,
           affectedCatalogs: result.affectedCatalogs,
           incremental: result.incremental,
           transaction: result.transaction,

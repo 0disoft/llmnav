@@ -40,6 +40,7 @@ import { buildInvertedIndex, renderSearchIndex } from "./inverted-index.js";
 import {
   buildModuleCatalogMetadata,
   compareCardIndexes,
+  describeAffectedBoundaries,
   describeAffectedCatalogs,
   moduleIdForCard,
   safeModuleName,
@@ -94,6 +95,7 @@ export async function generateProject(root, options = {}) {
       diagnostics,
       changedFiles: [],
       changedCards: [],
+      affectedBoundaries: [],
       affectedCatalogs: [],
       project,
       counts,
@@ -130,6 +132,12 @@ export async function generateProject(root, options = {}) {
 
   const uniqueChangedFiles = [...new Set(changedFiles.map(toPosix))].sort(compareText);
   const changedCards = compareCardIndexes(previousIndex, built.index);
+  const affectedBoundaries = describeAffectedBoundaries(
+    changedCards,
+    project.config,
+    previousIndex,
+    built.index,
+  );
   const affectedCatalogs = describeAffectedCatalogs(
     uniqueChangedFiles,
     project.config.generation.cacheDirectory,
@@ -187,6 +195,7 @@ export async function generateProject(root, options = {}) {
     diagnostics,
     changedFiles: uniqueChangedFiles,
     changedCards,
+    affectedBoundaries,
     affectedCatalogs,
     project,
     counts,

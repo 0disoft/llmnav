@@ -74,6 +74,7 @@ if (!result.ok) {
 }
 
 console.log(result.changedCards);
+console.log(result.affectedBoundaries);
 console.log(result.affectedCatalogs);
 console.log(result.incremental.files);
 console.log(result.incremental.cards);
@@ -81,6 +82,8 @@ console.log(result.transaction);
 ```
 
 `result.index.contractFingerprints` contains deterministic `exportedApi` and `configuration` SHA-256 values. A changed fingerprint produces a non-failing `LNV009` diagnostic so callers can require explicit contract review without treating every body edit as an API change.
+
+Each `affectedBoundaries` record identifies the changed semantic ID, changed hash dimensions, module, generated structural boundaries, outbound semantic relation targets, and cards that depend on the changed ID. Records and nested IDs use deterministic ordering.
 
 Default generation reuses file and card state and commits cache changes through a recoverable directory transaction.
 

@@ -1,9 +1,9 @@
 /* llmnav/1 module
 id=llmnav.index.changes
-role=Describe changed semantic cards and generated catalogs as stable machine-readable records.
-owns=card diff|catalog impact report|change ordering
+role=Describe changed cards, affected boundaries, and generated catalogs as stable machine-readable records.
+owns=card diff|boundary impact report|catalog impact report|change ordering
 excludes=source mutation|cache commit
-search=changed cards|affected catalog|generation report
+search=changed cards|affected boundary|affected catalog|generation report
 rel=workflow>llmnav.index.generate
 stability=architecture
 */
@@ -72,6 +72,41 @@ export function describeAffectedCatalogs(changedFiles, cacheDirectory, config, p
     .map((file) => ({ file, ...known.get(file) }));
 }
 
+export function describeAffectedBoundaries(changedCards, config, previousIndex, currentIndex) {
+  const previous = new Map((previousIndex?.cards ?? []).map((card) => [card.id, card]));
+  const current = new Map((currentIndex?.cards ?? []).map((card) => [card.id, card]));
+  const allCards = [...previous.values(), ...current.values()];
+
+  return changedCards.map((change) => {
+    const before = previous.get(change.id);
+    const after = current.get(change.id);
+    const selected = after ?? before;
+    const boundaryRecords = new Map();
+    for (const card of [before, after]) {
+      for (const boundary of card?.boundaries ?? []) {
+        const key = `${boundary.kind}:${boundary.confidence}:${(boundary.evidence ?? []).join(",")}`;
+        boundaryRecords.set(key, boundary);
+      }
+    }
+    const relatedIds = relationTargets(before, after);
+    const dependentIds = [...new Set(
+      allCards
+        .filter((card) => (card.rel ?? []).some((relation) => relationTarget(relation) === change.id))
+        .map((card) => card.id),
+    )].sort(compareText);
+
+    return {
+      id: change.id,
+      change: change.change,
+      dimensions: [...change.dimensions],
+      modules: selected?.id ? [moduleIdForCard(selected.id, config.generation.moduleDepth)] : [],
+      boundaries: [...boundaryRecords.values()].sort((left, right) => compareText(left.kind, right.kind)),
+      relatedIds,
+      dependentIds,
+    };
+  });
+}
+
 export function buildModuleCatalogMetadata(cards, config) {
   const groups = new Map();
   for (const card of cards) {
@@ -118,4 +153,15 @@ function cardSnapshot(card) {
         }
       : null,
   };
+}
+
+function relationTargets(...cards) {
+  return [...new Set(
+    cards.flatMap((card) => (card?.rel ?? []).map(relationTarget).filter(Boolean)),
+  )].sort(compareText);
+}
+
+function relationTarget(relation) {
+  const separator = String(relation).indexOf(">");
+  return separator >= 0 ? String(relation).slice(separator + 1) : null;
 }

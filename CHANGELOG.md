@@ -10,6 +10,7 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 
 * Added deterministic exported API and effective configuration fingerprints with `LNV009` drift diagnostics.
 * Added TypeScript and Go declaration enrichment, declaration-level body hashes, and generated route, event, schema, migration, and command boundaries.
+* Added deterministic affected-boundary reports with modules, relations, and reverse semantic dependents.
 
 ### Changed
 

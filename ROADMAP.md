@@ -39,10 +39,10 @@ Implemented during 0.3 development:
 * route, event, schema, migration, and command-boundary detection
 * language-aware TypeScript and Go declaration enrichers
 * selective body hashes at declaration granularity
+* richer affected-boundary reports
 
 Planned:
 
-* richer affected-boundary reports
 * SARIF diagnostic output
 * sharded generated search artifacts for very large monorepos
 

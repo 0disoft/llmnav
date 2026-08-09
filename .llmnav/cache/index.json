@@ -438,7 +438,7 @@
         "index persistence format"
       ],
       "hashes": {
-        "body": "bb22b51c94d545b030f3075e49525452a3624f3dc06f0a0eea4548055bce1ab2",
+        "body": "ec2210b1408ccef7e73c91fb6e66d82aafeb4ec58d64c009f64d5465b334909b",
         "semantic": "ce9c7cd107639f96de4f26b913a7e6bdd206af278fbd30acf02ff833ac9d3498",
         "structure": "9f2409c82035f2d0c9ca0d0ebf3185efa8d8cdd63bfb386fc1062fb9f3a1ee04"
       },
@@ -627,9 +627,9 @@
         "agent search decisions"
       ],
       "hashes": {
-        "body": "9e9dca32b852668d86081a56ac1cdfbc9314e3aa480982a4e673ffd0c478dcae",
+        "body": "b25f6b8249294c5ac536a57a25ba7be7167683fb58b13c4b775616aa3e7dd21c",
         "semantic": "7052622c9732ab29e37c3ab87f848188e931f601684e811e7bb8adef31fbfe85",
-        "structure": "39fd7363ce540d94af70abd2d1bdaf1965ced1b29aa360e3bc79d2ce4f972a80"
+        "structure": "9945931c87c0670b09512119525374f2ed8c9727f9ccba14ce17b4ae332dd15a"
       },
       "id": "llmnav.index.generate",
       "imports": [
@@ -648,7 +648,7 @@
         ");\n  return `${lines.join(",
         ");\n}\n\nexport function renderCompactCard(card) {\n  const lines = renderSemanticCard(card).split(",
         ");\n}\n\nfunction renderAgentContext(repositoryId, modules) {\n  const lines = [\n    ",
-        ")}/`;\n    const cacheChanges = uniqueChangedFiles.filter((file) => file.startsWith(cachePrefix));\n    if (cacheChanges.length > 0) {\n      transaction = await commitGeneratedCache(\n        root,\n        project.config.generation.cacheDirectory,\n        artifacts,\n        {\n          failpoint: options.failpoint,\n          onPhase: options.onTransactionPhase,\n          renameOptions: options.renameOptions,\n        },\n      );\n    }\n\n    if (statHints && hintsPath) {\n      try {\n        await persistStatHints(hintsPath, statHints);\n        statHintsPersisted = true;\n      } catch (error) {\n        statHintsError = error instanceof Error ? error.message : String(error);\n      }\n    }\n  }\n\n  return {\n    ok: options.check ? uniqueChangedFiles.length === 0 : true,\n    diagnostics,\n    changedFiles: uniqueChangedFiles,\n    changedCards,\n    affectedCatalogs,\n    project,\n    counts,\n    artifacts,\n    index: built.index,\n    searchIndex: built.searchIndex,\n    incremental: {\n      enabled: options.incremental !== false,\n      files: scanStats,\n      cards: built.searchStats,\n      statHintsPersisted,\n      statHintsError,\n    },\n    transaction,\n  };\n}\n\nexport function buildArtifacts(project, order, options = {}) {\n  return buildArtifactSet(project, order, options).artifacts;\n}\n\nexport function buildArtifactSet(project, order, options = {}) {\n  const orderMap = new Map(order.map((id, index) => [id, index]));\n  const cards = project.records\n    .filter((record) => record.card.id)\n    .map((record) => indexedCard(record))\n    .sort((left, right) => {\n      const orderDifference = (orderMap.get(left.id) ?? Number.MAX_SAFE_INTEGER) -\n        (orderMap.get(right.id) ?? Number.MAX_SAFE_INTEGER);\n      return orderDifference || compareText(left.id, right.id);\n    });\n\n  const index = {\n    schemaVersion: 1,\n    specVersion: SPEC_VERSION,\n    generatedBy: `llmnav@${PACKAGE_VERSION}`,\n    repositoryId: project.config.repositoryId,\n    contractFingerprints: buildContractFingerprints(project, cards),\n    sourceHash: sha256(cards.map((card) => `${card.hashes.semantic}:${card.hashes.structure}:${card.hashes.body}`).join(",
+        ")}/`;\n    const cacheChanges = uniqueChangedFiles.filter((file) => file.startsWith(cachePrefix));\n    if (cacheChanges.length > 0) {\n      transaction = await commitGeneratedCache(\n        root,\n        project.config.generation.cacheDirectory,\n        artifacts,\n        {\n          failpoint: options.failpoint,\n          onPhase: options.onTransactionPhase,\n          renameOptions: options.renameOptions,\n        },\n      );\n    }\n\n    if (statHints && hintsPath) {\n      try {\n        await persistStatHints(hintsPath, statHints);\n        statHintsPersisted = true;\n      } catch (error) {\n        statHintsError = error instanceof Error ? error.message : String(error);\n      }\n    }\n  }\n\n  return {\n    ok: options.check ? uniqueChangedFiles.length === 0 : true,\n    diagnostics,\n    changedFiles: uniqueChangedFiles,\n    changedCards,\n    affectedBoundaries,\n    affectedCatalogs,\n    project,\n    counts,\n    artifacts,\n    index: built.index,\n    searchIndex: built.searchIndex,\n    incremental: {\n      enabled: options.incremental !== false,\n      files: scanStats,\n      cards: built.searchStats,\n      statHintsPersisted,\n      statHintsError,\n    },\n    transaction,\n  };\n}\n\nexport function buildArtifacts(project, order, options = {}) {\n  return buildArtifactSet(project, order, options).artifacts;\n}\n\nexport function buildArtifactSet(project, order, options = {}) {\n  const orderMap = new Map(order.map((id, index) => [id, index]));\n  const cards = project.records\n    .filter((record) => record.card.id)\n    .map((record) => indexedCard(record))\n    .sort((left, right) => {\n      const orderDifference = (orderMap.get(left.id) ?? Number.MAX_SAFE_INTEGER) -\n        (orderMap.get(right.id) ?? Number.MAX_SAFE_INTEGER);\n      return orderDifference || compareText(left.id, right.id);\n    });\n\n  const index = {\n    schemaVersion: 1,\n    specVersion: SPEC_VERSION,\n    generatedBy: `llmnav@${PACKAGE_VERSION}`,\n    repositoryId: project.config.repositoryId,\n    contractFingerprints: buildContractFingerprints(project, cards),\n    sourceHash: sha256(cards.map((card) => `${card.hashes.semantic}:${card.hashes.structure}:${card.hashes.body}`).join(",
         ")}\\n` : ",
         ")}\\n`;\n}\n\nasync function buildStableOrder(root, ids) {\n  const existing = (await readText(path.join(root, ",
         ")}`);\n  if (card.effect?.length) lines.push(`effect ${card.effect.join(",
@@ -1113,22 +1113,24 @@
         "cache commit"
       ],
       "hashes": {
-        "body": "756ca3d92131807c7825c568c1dff0bb5bf9b16b249372bf7fd8522753deebaf",
-        "semantic": "ace68184441ce1dfcb8a6bfd96429982b3db69bc2e3d3fd0308f07290b3414f3",
-        "structure": "58a9f2a7f4fce92d28ebd2c772556f09bd02bd774f5807acaf46d05263c557fc"
+        "body": "faf5471011801f16eaf86d1cf6089c48030ab79e9cc7ca8c47bf07cfc9b1f8d1",
+        "semantic": "d64b2b48010b9dc8024ce08bcd50339eaa89af8bb6b940d7ae55daac5502e6da",
+        "structure": "ac5ca96f9e3d74af7dd56240dc48f6e47c884b77824a0f7e941be650dceac574"
       },
       "id": "llmnav.index.changes",
       "imports": [
         " }],\n    [`${cacheRoot}/agent-context.md`, { kind: ",
         " }],\n  ]);\n  for (const index of [previousIndex, currentIndex]) {\n    for (const module of buildModuleCatalogMetadata(index?.cards ?? [], config)) {\n      known.set(module.file, { kind: ",
+        ") : null,\n    location: card?.location\n      ? {\n          path: card.location.path,\n          symbol: card.location.symbol ?? null,\n          declarationLine: card.location.declarationLine ?? null,\n        }\n      : null,\n    hashes: card?.hashes\n      ? {\n          semantic: card.hashes.semantic,\n          structure: card.hashes.structure,\n          body: card.hashes.body,\n        }\n      : null,\n  };\n}\n\nfunction relationTargets(...cards) {\n  return [...new Set(\n    cards.flatMap((card) => (card?.rel ?? []).map(relationTarget).filter(Boolean)),\n  )].sort(compareText);\n}\n\nfunction relationTarget(relation) {\n  const separator = String(relation).indexOf(",
         ").slice(0, 2).join(",
         ");\n  const known = new Map([\n    [`${cacheRoot}/repo-core.txt`, { kind: ",
         ");\n  return [...groups.entries()]\n    .sort(([left], [right]) => compareText(left, right))\n    .map(([id, cardsCount]) => ({\n      id,\n      file: `${cacheRoot}/modules/${safeModuleName(id)}.txt`,\n      cards: cardsCount,\n    }));\n}\n\nexport function moduleIdForCard(id, depth) {\n  const segments = String(id).split(",
         ");\n  return segments.slice(0, Math.min(Math.max(depth, 1), segments.length)).join(",
         ");\n}\n\nexport function safeModuleName(id) {\n  return String(id).replace(/[^a-z0-9.-]/gu, ",
         ");\n}\n\nfunction cardSnapshot(card) {\n  return {\n    stability: card?.stability ?? null,\n    module: card?.id ? card.id.split(",
+        ")}`;\n        boundaryRecords.set(key, boundary);\n      }\n    }\n    const relatedIds = relationTargets(before, after);\n    const dependentIds = [...new Set(\n      allCards\n        .filter((card) => (card.rel ?? []).some((relation) => relationTarget(relation) === change.id))\n        .map((card) => card.id),\n    )].sort(compareText);\n\n    return {\n      id: change.id,\n      change: change.change,\n      dimensions: [...change.dimensions],\n      modules: selected?.id ? [moduleIdForCard(selected.id, config.generation.moduleDepth)] : [],\n      boundaries: [...boundaryRecords.values()].sort((left, right) => compareText(left.kind, right.kind)),\n      relatedIds,\n      dependentIds,\n    };\n  });\n}\n\nexport function buildModuleCatalogMetadata(cards, config) {\n  const groups = new Map();\n  for (const card of cards) {\n    if (!config.generation.moduleCatalogStabilities.includes(card.stability)) continue;\n    const id = moduleIdForCard(card.id, config.generation.moduleDepth);\n    const count = groups.get(id) ?? 0;\n    groups.set(id, count + 1);\n  }\n  const cacheRoot = toPosix(config.generation.cacheDirectory).replace(/\\/+$/u, ",
         ", id: ",
-        ", id: module.id });\n    }\n  }\n\n  return [...new Set(changedFiles.map(toPosix))]\n    .filter((file) => known.has(file))\n    .sort(compareText)\n    .map((file) => ({ file, ...known.get(file) }));\n}\n\nexport function buildModuleCatalogMetadata(cards, config) {\n  const groups = new Map();\n  for (const card of cards) {\n    if (!config.generation.moduleCatalogStabilities.includes(card.stability)) continue;\n    const id = moduleIdForCard(card.id, config.generation.moduleDepth);\n    const count = groups.get(id) ?? 0;\n    groups.set(id, count + 1);\n  }\n  const cacheRoot = toPosix(config.generation.cacheDirectory).replace(/\\/+$/u, ",
+        ", id: module.id });\n    }\n  }\n\n  return [...new Set(changedFiles.map(toPosix))]\n    .filter((file) => known.has(file))\n    .sort(compareText)\n    .map((file) => ({ file, ...known.get(file) }));\n}\n\nexport function describeAffectedBoundaries(changedCards, config, previousIndex, currentIndex) {\n  const previous = new Map((previousIndex?.cards ?? []).map((card) => [card.id, card]));\n  const current = new Map((currentIndex?.cards ?? []).map((card) => [card.id, card]));\n  const allCards = [...previous.values(), ...current.values()];\n\n  return changedCards.map((change) => {\n    const before = previous.get(change.id);\n    const after = current.get(change.id);\n    const selected = after ?? before;\n    const boundaryRecords = new Map();\n    for (const card of [before, after]) {\n      for (const boundary of card?.boundaries ?? []) {\n        const key = `${boundary.kind}:${boundary.confidence}:${(boundary.evidence ?? []).join(",
         "./util.js",
         "added",
         "body",
@@ -1152,16 +1154,18 @@
       },
       "owns": [
         "card diff",
+        "boundary impact report",
         "catalog impact report",
         "change ordering"
       ],
       "rel": [
         "workflow>llmnav.index.generate"
       ],
-      "role": "Describe changed semantic cards and generated catalogs as stable machine-readable records.",
+      "role": "Describe changed cards, affected boundaries, and generated catalogs as stable machine-readable records.",
       "scope": "module",
       "search": [
         "changed cards",
+        "affected boundary",
         "affected catalog",
         "generation report"
       ],
@@ -1608,6 +1612,6 @@
   "generatedBy": "llmnav@0.2.0",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "63d2b83ce5c5241a38d2412d9c60325b3686395634a358076a197d4a3713021d",
+  "sourceHash": "ee83b7de5981dff4d79297d9566a7e9de88bbb0c7733068e5a3790ffd3503b00",
   "specVersion": "1"
 }

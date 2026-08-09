@@ -24,7 +24,7 @@
     "llmnav.structure.boundaries",
     "llmnav.syntax.parse"
   ],
-  "cardSetHash": "91768bf1737ff40341013c672086b63b97a113ddfbdd1bf465eecf4dc0db70f3",
+  "cardSetHash": "92ecf55a0bc24c630b8bd08704a360d19b331e1f17f266b6398e21190155f4d8",
   "documentCount": 23,
   "documents": [
     [
@@ -161,13 +161,15 @@
       ]
     ],
     [
-      "a68efecf8d09e037fb20cffb34807fd5d2544a4559d2989be19f75df277535cf",
+      "79453d76bd35c9ecfd4379323948505f25433f593a866e60c0c124841c2bce73",
       [
-        "describe changed semantic cards and generated catalogs as stable machine-readable records.",
+        "describe changed cards, affected boundaries, and generated catalogs as stable machine-readable records.",
         "changed cards",
+        "affected boundary",
         "affected catalog",
         "generation report",
         "card diff",
+        "boundary impact report",
         "catalog impact report",
         "change ordering"
       ]
@@ -412,8 +414,10 @@
       [
         12,
         [
+          1,
+          1,
           2,
-          1
+          2
         ]
       ]
     ],
@@ -971,6 +975,13 @@
         ]
       ],
       [
+        12,
+        [
+          1,
+          1
+        ]
+      ],
+      [
         21,
         [
           0,
@@ -983,6 +994,15 @@
       ]
     ],
     [
+      [
+        12,
+        [
+          2,
+          1,
+          3,
+          1
+        ]
+      ],
       [
         21,
         [
@@ -2765,7 +2785,7 @@
         12,
         [
           3,
-          1
+          2
         ]
       ]
     ],
@@ -4631,7 +4651,7 @@
           2,
           1,
           3,
-          1
+          2
         ]
       ]
     ],
@@ -5155,13 +5175,6 @@
       ],
       [
         11,
-        [
-          1,
-          1
-        ]
-      ],
-      [
-        12,
         [
           1,
           1

@@ -66,6 +66,8 @@ Symbol attachment records the detected language, public/exported status, visibil
 
 Generated cards may contain a sorted `boundaries` array. LLMNav detects `route`, `event`, `schema`, `migration`, and `command` boundaries from repository-relative paths and controlled semantic effects or risks. Each record includes `confidence` and explicit evidence such as `path`, `effect`, or `risk`. These hints are generated navigation data and are never copied into source comments.
 
+Generation compares the previous and current primary indexes to emit `affectedBoundaries`. The report preserves the card change and hash dimensions while adding module IDs, structural boundary records, outbound relation targets, and reverse semantic dependents. It is returned through the API and `generate --json`; it is not stored in source cards.
+
 ## Deterministic inverted index
 
 `.llmnav/cache/search-index.json` schemaVersion 2 with `compact-v1` encoding stores a sorted card-ID table, normalized phrase documents, a sorted token dictionary, and posting lists.
