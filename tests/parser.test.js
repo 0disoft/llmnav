@@ -87,3 +87,16 @@ test("formatter refuses duplicate scalar fields", () => {
   assert.equal(result.changed, false);
   assert.match(result.errors[0].message, /Duplicate scalar field id/u);
 });
+
+test("Rust lifetimes before a card are not treated as unterminated strings", () => {
+  const source = `pub fn borrow<'a>(value: &'a str) -> &'a str { value }\n\n/* llmnav/1 symbol\nid=rust.borrow.copy\nrole=Copy one borrowed value into owned storage.\nsearch=borrowed value|owned storage\nstability=contract\n*/\npub fn copy_value<'a>(value: &'a str) -> String { value.to_owned() }\n`;
+  const blocks = parseLlmnavBlocks(source, "borrow.rs");
+  assert.equal(blocks.length, 1);
+  assert.equal(blocks[0].card.id, "rust.borrow.copy");
+  assert.equal(findAttachedDeclaration(source, blocks[0], "borrow.rs")?.symbol, "copy_value");
+});
+
+test("Rust character literals still hide LLMNav-looking text", () => {
+  const source = `const MARKER: char = '/';\nconst TEXT: &str = "/* llmnav/1 symbol\\nid=fake.rust.card\\n*/";\n`;
+  assert.deepEqual(parseLlmnavBlocks(source, "borrow.rs"), []);
+});

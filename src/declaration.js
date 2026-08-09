@@ -50,7 +50,7 @@ export function findAttachedDeclaration(source, block, filePath) {
     const declarationOffset = block.end + skipped;
     const signature = extractSignature(collapsed);
     const exported = isExportedDeclaration(language, match[1], signature);
-    const endOffset = findDeclarationEnd(source, declarationOffset);
+    const endOffset = findDeclarationEnd(source, declarationOffset, family);
     return {
       symbol: match[1],
       kind: definition.kind,
@@ -144,9 +144,11 @@ function extractGoReceiver(candidate) {
   return (parts.at(-1) ?? "").replace(/^\*+/u, "") || null;
 }
 
-function findDeclarationEnd(source, start) {
+function findDeclarationEnd(source, start, family) {
+  if (family === "python") return findPythonDeclarationEnd(source, start);
   let state = "normal";
   let escaped = false;
+  let regexCharacterClass = false;
   let braces = 0;
   let parentheses = 0;
   let brackets = 0;
@@ -167,6 +169,14 @@ function findDeclarationEnd(source, start) {
       continue;
     }
     if (state !== "normal") {
+      if (state === "regex") {
+        if (escaped) escaped = false;
+        else if (character === "\\") escaped = true;
+        else if (character === "[") regexCharacterClass = true;
+        else if (character === "]") regexCharacterClass = false;
+        else if (character === "/" && !regexCharacterClass) state = "normal";
+        continue;
+      }
       if (escaped) {
         escaped = false;
       } else if (character === "\\") {
@@ -186,7 +196,13 @@ function findDeclarationEnd(source, start) {
       index += 1;
       continue;
     }
+    if (family === "javascript" && character === "/" && canStartJavaScriptRegex(source, start, index)) {
+      state = "regex";
+      regexCharacterClass = false;
+      continue;
+    }
     if (character === '"' || character === "'" || character === "`") {
+      if (family === "rust" && character === "'" && !looksLikeRustCharacterLiteral(source, index)) continue;
       state = character;
       continue;
     }
@@ -211,13 +227,61 @@ function findDeclarationEnd(source, start) {
   return source.length;
 }
 
+function findPythonDeclarationEnd(source, start) {
+  const declarationLineStart = source.lastIndexOf("\n", start - 1) + 1;
+  const baseIndent = indentationWidth(source.slice(declarationLineStart, start));
+  let cursor = source.indexOf("\n", start);
+  if (cursor < 0) return source.length;
+  cursor += 1;
+  let bodyStarted = false;
+  while (cursor < source.length) {
+    const lineEnd = source.indexOf("\n", cursor);
+    const end = lineEnd < 0 ? source.length : lineEnd + 1;
+    const line = source.slice(cursor, lineEnd < 0 ? source.length : lineEnd);
+    if (/^\s*(?:#.*)?$/u.test(line)) {
+      cursor = end;
+      continue;
+    }
+    const indent = indentationWidth(line.match(/^[ \t]*/u)?.[0] ?? "");
+    if (indent > baseIndent) bodyStarted = true;
+    else if (bodyStarted) return cursor;
+    cursor = end;
+  }
+  return source.length;
+}
+
+function indentationWidth(value) {
+  let width = 0;
+  for (const character of value) width += character === "\t" ? 8 - (width % 8) : 1;
+  return width;
+}
+
+function canStartJavaScriptRegex(source, start, offset) {
+  const prefix = source.slice(start, offset).trimEnd();
+  if (!prefix) return true;
+  const previous = prefix.at(-1);
+  if (/[=(:,!&|?{};\[]/u.test(previous)) return true;
+  return /(?:^|\W)(?:case|delete|do|else|in|instanceof|new|return|throw|typeof|void|yield)\s*$/u.test(prefix);
+}
+
+function looksLikeRustCharacterLiteral(source, offset) {
+  return /^'(?:\\.|[^'\\\r\n])'/u.test(source.slice(offset));
+}
+
 export function extractImports(source, filePath) {
   const extension = path.extname(filePath).toLowerCase();
   const results = new Set();
   const normalized = normalizeNewlines(source);
   if ([".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".svelte", ".astro", ".vue"].includes(extension)) {
-    for (const match of normalized.matchAll(/(?:import[\s\S]*?from\s*|import\s*|require\s*\()?["']([^"']+)["']/gu)) {
-      if (match[1]) results.add(match[1]);
+    const patterns = [
+      /^[ \t]*import\s+(?:[^;"']*?\s+from\s+)?["']([^"']+)["']/gmu,
+      /^[ \t]*export\s+[^;"']*?\s+from\s+["']([^"']+)["']/gmu,
+      /\b(?:require|import)\s*\(\s*["']([^"']+)["']\s*\)/gu,
+    ];
+    for (const pattern of patterns) {
+      for (const match of normalized.matchAll(pattern)) {
+        if (match[1] && isJavaScriptCodeOffset(normalized, match.index ?? 0)) results.add(match[1]);
+      }
     }
   } else if (extension === ".go") {
     for (const match of normalized.matchAll(/^[ \t]*(?:import\s+)?(?:[A-Za-z_][\w]*\s+)?"([^"]+)"/gmu)) {
@@ -231,4 +295,40 @@ export function extractImports(source, filePath) {
     }
   }
   return [...results].sort();
+}
+
+function isJavaScriptCodeOffset(source, targetOffset) {
+  let state = "normal";
+  let escaped = false;
+  for (let index = 0; index < targetOffset; index += 1) {
+    const character = source[index];
+    const next = source[index + 1];
+    if (state === "line-comment") {
+      if (character === "\n") state = "normal";
+      continue;
+    }
+    if (state === "block-comment") {
+      if (character === "*" && next === "/") {
+        state = "normal";
+        index += 1;
+      }
+      continue;
+    }
+    if (state !== "normal") {
+      if (escaped) escaped = false;
+      else if (character === "\\") escaped = true;
+      else if (character === state) state = "normal";
+      continue;
+    }
+    if (character === "/" && next === "/") {
+      state = "line-comment";
+      index += 1;
+    } else if (character === "/" && next === "*") {
+      state = "block-comment";
+      index += 1;
+    } else if (character === '"' || character === "'" || character === "`") {
+      state = character;
+    }
+  }
+  return state === "normal";
 }

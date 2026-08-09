@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { detectBoundaries } from "../src/boundaries.js";
-import { findAttachedDeclaration } from "../src/declaration.js";
+import { extractImports, findAttachedDeclaration } from "../src/declaration.js";
 import { generateProject } from "../src/generator.js";
 import { initializeProject } from "../src/initializer.js";
 import { parseLlmnavBlocks } from "../src/parser.js";
@@ -59,6 +59,39 @@ test("isolates symbol body hashes and detects local structural boundaries", asyn
     }).map((item) => item.kind),
     ["event", "migration"],
   );
+});
+
+test("JavaScript regex literals do not truncate declaration body hashes", () => {
+  const first = `${card("parser.regex.body")}export function parseValue(value) {\n  const closing = /}/u;\n  return value + 1;\n}\n`;
+  const second = first.replace("value + 1", "value + 2");
+  const [firstBlock] = parseLlmnavBlocks(first, "parser.js");
+  const [secondBlock] = parseLlmnavBlocks(second, "parser.js");
+  const firstDeclaration = findAttachedDeclaration(first, firstBlock, "parser.js");
+  const secondDeclaration = findAttachedDeclaration(second, secondBlock, "parser.js");
+  assert.equal(firstDeclaration.endOffset, first.lastIndexOf("}") + 1);
+  assert.notEqual(firstDeclaration.bodyHash, secondDeclaration.bodyHash);
+});
+
+test("Python declaration hashes include the complete indented body", () => {
+  const first = `${card("python.export.prepare").replaceAll("/*", "#").replaceAll("*/", "# /llmnav").replaceAll(/^([^#\n].*)$/gmu, "# $1")}def prepare_export():\n    archive = build_archive()\n    return archive\n`;
+  const second = first.replace("return archive", "return encrypt(archive)");
+  const [firstBlock] = parseLlmnavBlocks(first, "export.py");
+  const [secondBlock] = parseLlmnavBlocks(second, "export.py");
+  const firstDeclaration = findAttachedDeclaration(first, firstBlock, "export.py");
+  const secondDeclaration = findAttachedDeclaration(second, secondBlock, "export.py");
+  assert.equal(firstDeclaration.endOffset, first.length);
+  assert.notEqual(firstDeclaration.bodyHash, secondDeclaration.bodyHash);
+});
+
+test("JavaScript import extraction ignores unrelated string literals and comments", () => {
+  const source = `import value from "./value.js";\nimport {\n  multiline,\n} from "./multiline.js";\nexport { other } from "./other.js";\nconst lazy = import("./lazy.js");\nconst required = require("./required.cjs");\nconst label = "LLMNav";\n// require("./comment.js")\nconst url = "https://example.test";\n`;
+  assert.deepEqual(extractImports(source, "source.js"), [
+    "./lazy.js",
+    "./multiline.js",
+    "./other.js",
+    "./required.cjs",
+    "./value.js",
+  ]);
 });
 
 function card(id) {

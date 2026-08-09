@@ -272,7 +272,7 @@ function isInsideStringLiteral(source, targetOffset, filePath) {
     } else if (tripleQuotes && nextTwo === '"""') {
       state = "triple-double";
       index += 2;
-    } else if (character === "'") {
+    } else if (character === "'" && (extension !== ".rs" || looksLikeRustCharacterLiteral(source, index))) {
       state = "single";
       escaped = false;
     } else if (character === '"') {
@@ -285,6 +285,10 @@ function isInsideStringLiteral(source, targetOffset, filePath) {
   }
 
   return state !== "normal";
+}
+
+function looksLikeRustCharacterLiteral(source, offset) {
+  return /^'(?:\\.|[^'\\\r\n])'/u.test(source.slice(offset));
 }
 
 function createBlock({ source, filePath, raw, body, scope, style, start, end, indent, prefix }) {
