@@ -342,6 +342,28 @@ export interface RepositoryGraph {
   stats: { nodeCount: number; edgeCount: number; unresolvedNodeCount: number; importedIndexCount: number };
 }
 
+export interface GraphStatePartition {
+  key: string;
+  inputHash: string;
+  outputHash: string;
+  nodes: Array<Omit<GraphNode, "unresolved">>;
+  edges: GraphEdge[];
+}
+
+export interface RepositoryGraphState {
+  schemaVersion: 1;
+  repositoryId: string;
+  resolutionHash: string;
+  partitions: GraphStatePartition[];
+}
+
+export interface IncrementalGraphStats {
+  totalPartitions: number;
+  reusedPartitions: number;
+  rebuiltPartitions: number;
+  removedPartitions: number;
+}
+
 export interface SerializedFileStateRecord {
   path: string;
   contentHash: string;
@@ -420,6 +442,7 @@ export interface GenerationResult {
     enabled: boolean;
     files: IncrementalFileStats;
     cards: SearchIndexStats | null;
+    graph: IncrementalGraphStats | null;
     statHintsPersisted?: boolean;
     statHintsError?: string | null;
   };
@@ -450,6 +473,7 @@ export const AGENT_PROTOCOL: string;
 export const BOUNDARY_KINDS: readonly DetectedBoundary["kind"][];
 export const GRAPH_INPUT_SCHEMA_VERSION: 1;
 export const GRAPH_SCHEMA_VERSION: 1;
+export const GRAPH_STATE_SCHEMA_VERSION: 1;
 export const SARIF_SCHEMA: string;
 export const SARIF_VERSION: "2.1.0";
 export const SEARCH_SHARD_ENCODING: "card-range-v1";
@@ -470,8 +494,15 @@ export function detectBoundaries(record: ProjectRecord): DetectedBoundary[];
 export function normalizeGraphInput(value: unknown, file?: string, contentHash?: string | null): GraphInputIndex;
 export function loadGraphInputs(root: string, config: LlmnavConfig): Promise<{ indexes: GraphInputIndex[]; diagnostics: Diagnostic[] }>;
 export function buildRepositoryGraph(project: ScannedProject, index: LlmnavIndex): RepositoryGraph;
+export function buildRepositoryGraphIncremental(project: ScannedProject, index: LlmnavIndex, previousState?: RepositoryGraphState | null): {
+  graph: RepositoryGraph;
+  state: RepositoryGraphState;
+  stats: IncrementalGraphStats;
+};
+export function compatibleGraphState(state: unknown, repositoryId?: string): state is RepositoryGraphState;
 export function isCompatibleRepositoryGraph(graph: unknown, repositoryId?: string): graph is RepositoryGraph;
 export function renderRepositoryGraph(graph: RepositoryGraph): string;
+export function renderGraphState(state: RepositoryGraphState): string;
 export function renderGraphNode(node: GraphNode): string;
 export function resolveGraphNode(graph: RepositoryGraph | null | undefined, id: string, localRepositoryId?: string): {
   state: "resolved" | "ambiguous" | "missing";
@@ -506,8 +537,8 @@ export function evaluateProject(root: string, options?: { top?: number; file?: s
 export function collectSourceFiles(root: string, config: LlmnavConfig, requestedPaths?: string[]): Promise<string[]>;
 export function findProjectRoot(start?: string): Promise<string>;
 export function formatProject(root: string, options?: { check?: boolean; paths?: string[] }): Promise<{ ok: boolean; changedFiles: string[]; errors: Array<{ file: string; line: number; message: string }> }>;
-export function buildArtifacts(project: ScannedProject, order: string[], options?: { previousSearchIndex?: LlmnavSearchIndex | null; fileState?: LlmnavFileState }): Map<string, string>;
-export function buildArtifactSet(project: ScannedProject, order: string[], options?: { previousSearchIndex?: LlmnavSearchIndex | null; fileState?: LlmnavFileState }): { artifacts: Map<string, string>; index: LlmnavIndex; searchIndex: LlmnavSearchIndex; searchStats: SearchIndexStats; fileState: LlmnavFileState; graph: RepositoryGraph };
+export function buildArtifacts(project: ScannedProject, order: string[], options?: { previousSearchIndex?: LlmnavSearchIndex | null; previousGraphState?: RepositoryGraphState | null; fileState?: LlmnavFileState }): Map<string, string>;
+export function buildArtifactSet(project: ScannedProject, order: string[], options?: { previousSearchIndex?: LlmnavSearchIndex | null; previousGraphState?: RepositoryGraphState | null; fileState?: LlmnavFileState }): { artifacts: Map<string, string>; index: LlmnavIndex; searchIndex: LlmnavSearchIndex; searchStats: SearchIndexStats; fileState: LlmnavFileState; graph: RepositoryGraph; graphState: RepositoryGraphState; graphStats: IncrementalGraphStats };
 export function generateProject(root: string, options?: { check?: boolean; incremental?: boolean; useStatHints?: boolean; failpoint?: string }): Promise<GenerationResult>;
 export function renderCompactCard(card: IndexedCard): string;
 export function renderSemanticCard(card: IndexedCard): string;

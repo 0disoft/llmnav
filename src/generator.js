@@ -51,7 +51,13 @@ import { buildContractFingerprints, compareContractFingerprints } from "./contra
 import { detectBoundaries } from "./boundaries.js";
 import { buildSearchShards, SEARCH_SHARD_SCHEMA_VERSION } from "./search-shards.js";
 import { loadGraphInputs } from "./graph-input.js";
-import { buildRepositoryGraph, GRAPH_SCHEMA_VERSION, renderRepositoryGraph } from "./graph.js";
+import {
+  buildRepositoryGraphIncremental,
+  GRAPH_SCHEMA_VERSION,
+  GRAPH_STATE_SCHEMA_VERSION,
+  renderGraphState,
+  renderRepositoryGraph,
+} from "./graph.js";
 
 export async function generateProject(root, options = {}) {
   const { config: recoveryConfig } = await loadConfig(root);
@@ -62,6 +68,7 @@ export async function generateProject(root, options = {}) {
   const cacheDirectory = path.join(root, recoveryConfig.generation.cacheDirectory);
   const previousIndex = await readJsonSafe(path.join(cacheDirectory, "index.json"), null);
   const previousSearchIndex = await readJsonSafe(path.join(cacheDirectory, "search-index.json"), null);
+  const previousGraphState = await readJsonSafe(path.join(cacheDirectory, "graph-state.json"), null);
 
   let project;
   let fileState;
@@ -104,7 +111,7 @@ export async function generateProject(root, options = {}) {
       affectedCatalogs: [],
       project,
       counts,
-      incremental: { enabled: options.incremental !== false, files: scanStats, cards: null },
+      incremental: { enabled: options.incremental !== false, files: scanStats, cards: null, graph: null },
       transaction: { committed: false, skipped: true, recovered: recovery.recovered, recoveryAction: recovery.action },
     };
   }
@@ -113,6 +120,7 @@ export async function generateProject(root, options = {}) {
   const order = await buildStableOrder(root, ids);
   const built = buildArtifactSet(project, order, {
     previousSearchIndex: options.incremental === false ? null : previousSearchIndex,
+    previousGraphState: options.incremental === false ? null : previousGraphState,
     fileState,
   });
   const contractChanges = compareContractFingerprints(
@@ -212,6 +220,7 @@ export async function generateProject(root, options = {}) {
       enabled: options.incremental !== false,
       files: scanStats,
       cards: built.searchStats,
+      graph: built.graphStats,
       statHintsPersisted,
       statHintsError,
     },
@@ -245,7 +254,8 @@ export function buildArtifactSet(project, order, options = {}) {
   };
   const { searchIndex, stats: searchStats } = buildInvertedIndex(index, options.previousSearchIndex);
   const fileState = options.fileState ?? buildFileStateFromProject(project);
-  const graph = buildRepositoryGraph(project, index);
+  const graphBuild = buildRepositoryGraphIncremental(project, index, options.previousGraphState);
+  const { graph, state: graphState, stats: graphStats } = graphBuild;
 
   const artifacts = new Map();
   const cacheRoot = toPosix(project.config.generation.cacheDirectory).replace(/\/+$/u, "");
@@ -257,6 +267,7 @@ export function buildArtifactSet(project, order, options = {}) {
   artifacts.set(`${cacheRoot}/search-index.json`, renderSearchIndex(searchIndex));
   artifacts.set(`${cacheRoot}/file-state.json`, renderFileState(fileState));
   artifacts.set(`${cacheRoot}/graph.json`, renderRepositoryGraph(graph));
+  artifacts.set(`${cacheRoot}/graph-state.json`, renderGraphState(graphState));
   const searchShards = buildSearchShards(index, searchIndex, project.config.generation.searchShardSize);
   if (searchShards.manifest) {
     artifacts.set(`${cacheRoot}/search-shards.json`, stableStringify(searchShards.manifest));
@@ -300,11 +311,12 @@ export function buildArtifactSet(project, order, options = {}) {
     searchIndexSchemaVersion: searchIndex.schemaVersion,
     fileStateSchemaVersion: fileState.schemaVersion,
     graphSchemaVersion: GRAPH_SCHEMA_VERSION,
+    graphStateSchemaVersion: GRAPH_STATE_SCHEMA_VERSION,
     searchShardSchemaVersion: searchShards.manifest ? SEARCH_SHARD_SCHEMA_VERSION : null,
     files: contentHashes,
   };
   artifacts.set(`${cacheRoot}/manifest.json`, stableStringify(manifest));
-  return { artifacts, index, searchIndex, searchStats, fileState, graph, moduleManifest };
+  return { artifacts, index, searchIndex, searchStats, fileState, graph, graphState, graphStats, moduleManifest };
 }
 
 function diagnosticForContractChange(change) {

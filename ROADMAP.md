@@ -51,9 +51,6 @@ Implemented during 0.4 development:
 * edge provenance and confidence
 * graph-aware ranking and bounded context packing
 * workspace and cross-repository semantic ID resolution
-
-Planned:
-
 * incremental graph invalidation
 
 ## 0.5 — agent protocol integrations

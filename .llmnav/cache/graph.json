@@ -1234,7 +1234,7 @@
         "visibility": null
       },
       "repositoryId": "llmnav",
-      "role": "Build deterministic repository graphs and resolve qualified IDs across imported workspace nodes.",
+      "role": "Build deterministic repository graphs with content-addressed partitions and resolve qualified IDs across workspace nodes.",
       "semanticId": "llmnav.graph.generate",
       "unresolved": false
     },
@@ -1527,7 +1527,7 @@
   ],
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "1df1a4996850ca7630334611f13ec0890f39339930ffe2ccc16a6f6db55ba158",
+  "sourceHash": "becc6b168efe25fece149c73c215ec39470beff1b6780f6ee987d408cc789a18",
   "stats": {
     "edgeCount": 62,
     "importedIndexCount": 0,

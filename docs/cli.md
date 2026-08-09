@@ -105,6 +105,12 @@ Generation stops before cache mutation when semantic validation contains errors.
       "removedCards": 0,
       "changedIds": ["billing.credit.reserve"],
       "removedIds": []
+    },
+    "graph": {
+      "totalPartitions": 420,
+      "reusedPartitions": 419,
+      "rebuiltPartitions": 1,
+      "removedPartitions": 0
     }
   },
   "transaction": {

@@ -2135,7 +2135,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "911c78e9df8e47a67595e3dbb56943e0cc95d98b28a1e05887f46611591f47f5",
+      "contentHash": "b41b9de57ec7e00dcf2f481a0242b4a2e730b21c20a0faa732768d5b8e0d9d8a",
       "declarations": [
         null
       ],
@@ -2144,7 +2144,7 @@
         " : ",
         " ? ",
         "))\n    .split(/\\r?\\n/u)\n    .map((line) => line.trim())\n    .filter((line) => line && !line.startsWith(",
-        ")),\n    cards,\n  };\n  const { searchIndex, stats: searchStats } = buildInvertedIndex(index, options.previousSearchIndex);\n  const fileState = options.fileState ?? buildFileStateFromProject(project);\n  const graph = buildRepositoryGraph(project, index);\n\n  const artifacts = new Map();\n  const cacheRoot = toPosix(project.config.generation.cacheDirectory).replace(/\\/+$/u, ",
+        ")),\n    cards,\n  };\n  const { searchIndex, stats: searchStats } = buildInvertedIndex(index, options.previousSearchIndex);\n  const fileState = options.fileState ?? buildFileStateFromProject(project);\n  const graphBuild = buildRepositoryGraphIncremental(project, index, options.previousGraphState);\n  const { graph, state: graphState, stats: graphStats } = graphBuild;\n\n  const artifacts = new Map();\n  const cacheRoot = toPosix(project.config.generation.cacheDirectory).replace(/\\/+$/u, ",
         "));\n  const seen = new Set(existing);\n  const additions = [...new Set(ids)].filter((id) => !seen.has(id)).sort(compareText);\n  return [...existing, ...additions];\n}\n\nfunction renderOrder(order) {\n  return order.length > 0 ? `${order.join(",
         "),\n    },\n  };\n}\n\nfunction groupByModule(cards, depth) {\n  const groups = new Map();\n  for (const card of cards) {\n    const moduleId = moduleIdForCard(card.id, depth);\n    const existing = groups.get(moduleId) ?? [];\n    existing.push(card);\n    groups.set(moduleId, existing);\n  }\n  return [...groups.entries()].sort(([left], [right]) => compareText(left, right));\n}\n\nfunction renderCatalog(repositoryId, catalogId, cards) {\n  const lines = [\n    `llmnav-catalog/1 repository=${repositoryId} catalog=${catalogId}`,\n    ",
         "), ",
@@ -2155,7 +2155,7 @@
         ");\n  return `${lines.join(",
         ");\n}\n\nexport function renderCompactCard(card) {\n  const lines = renderSemanticCard(card).split(",
         ");\n}\n\nfunction renderAgentContext(repositoryId, modules) {\n  const lines = [\n    ",
-        ")}/`;\n    const cacheChanges = uniqueChangedFiles.filter((file) => file.startsWith(cachePrefix));\n    if (cacheChanges.length > 0) {\n      transaction = await commitGeneratedCache(\n        root,\n        project.config.generation.cacheDirectory,\n        artifacts,\n        {\n          failpoint: options.failpoint,\n          onPhase: options.onTransactionPhase,\n          renameOptions: options.renameOptions,\n        },\n      );\n    }\n\n    if (statHints && hintsPath) {\n      try {\n        await persistStatHints(hintsPath, statHints);\n        statHintsPersisted = true;\n      } catch (error) {\n        statHintsError = error instanceof Error ? error.message : String(error);\n      }\n    }\n  }\n\n  return {\n    ok: options.check ? uniqueChangedFiles.length === 0 : true,\n    diagnostics,\n    changedFiles: uniqueChangedFiles,\n    changedCards,\n    affectedBoundaries,\n    affectedCatalogs,\n    project,\n    counts,\n    artifacts,\n    index: built.index,\n    searchIndex: built.searchIndex,\n    graph: built.graph,\n    incremental: {\n      enabled: options.incremental !== false,\n      files: scanStats,\n      cards: built.searchStats,\n      statHintsPersisted,\n      statHintsError,\n    },\n    transaction,\n  };\n}\n\nexport function buildArtifacts(project, order, options = {}) {\n  return buildArtifactSet(project, order, options).artifacts;\n}\n\nexport function buildArtifactSet(project, order, options = {}) {\n  const orderMap = new Map(order.map((id, index) => [id, index]));\n  const cards = project.records\n    .filter((record) => record.card.id)\n    .map((record) => indexedCard(record))\n    .sort((left, right) => {\n      const orderDifference = (orderMap.get(left.id) ?? Number.MAX_SAFE_INTEGER) -\n        (orderMap.get(right.id) ?? Number.MAX_SAFE_INTEGER);\n      return orderDifference || compareText(left.id, right.id);\n    });\n\n  const index = {\n    schemaVersion: 1,\n    specVersion: SPEC_VERSION,\n    generatedBy: `llmnav@${PACKAGE_VERSION}`,\n    repositoryId: project.config.repositoryId,\n    contractFingerprints: buildContractFingerprints(project, cards),\n    sourceHash: sha256(cards.map((card) => `${card.hashes.semantic}:${card.hashes.structure}:${card.hashes.body}`).join(",
+        ")}/`;\n    const cacheChanges = uniqueChangedFiles.filter((file) => file.startsWith(cachePrefix));\n    if (cacheChanges.length > 0) {\n      transaction = await commitGeneratedCache(\n        root,\n        project.config.generation.cacheDirectory,\n        artifacts,\n        {\n          failpoint: options.failpoint,\n          onPhase: options.onTransactionPhase,\n          renameOptions: options.renameOptions,\n        },\n      );\n    }\n\n    if (statHints && hintsPath) {\n      try {\n        await persistStatHints(hintsPath, statHints);\n        statHintsPersisted = true;\n      } catch (error) {\n        statHintsError = error instanceof Error ? error.message : String(error);\n      }\n    }\n  }\n\n  return {\n    ok: options.check ? uniqueChangedFiles.length === 0 : true,\n    diagnostics,\n    changedFiles: uniqueChangedFiles,\n    changedCards,\n    affectedBoundaries,\n    affectedCatalogs,\n    project,\n    counts,\n    artifacts,\n    index: built.index,\n    searchIndex: built.searchIndex,\n    graph: built.graph,\n    incremental: {\n      enabled: options.incremental !== false,\n      files: scanStats,\n      cards: built.searchStats,\n      graph: built.graphStats,\n      statHintsPersisted,\n      statHintsError,\n    },\n    transaction,\n  };\n}\n\nexport function buildArtifacts(project, order, options = {}) {\n  return buildArtifactSet(project, order, options).artifacts;\n}\n\nexport function buildArtifactSet(project, order, options = {}) {\n  const orderMap = new Map(order.map((id, index) => [id, index]));\n  const cards = project.records\n    .filter((record) => record.card.id)\n    .map((record) => indexedCard(record))\n    .sort((left, right) => {\n      const orderDifference = (orderMap.get(left.id) ?? Number.MAX_SAFE_INTEGER) -\n        (orderMap.get(right.id) ?? Number.MAX_SAFE_INTEGER);\n      return orderDifference || compareText(left.id, right.id);\n    });\n\n  const index = {\n    schemaVersion: 1,\n    specVersion: SPEC_VERSION,\n    generatedBy: `llmnav@${PACKAGE_VERSION}`,\n    repositoryId: project.config.repositoryId,\n    contractFingerprints: buildContractFingerprints(project, cards),\n    sourceHash: sha256(cards.map((card) => `${card.hashes.semantic}:${card.hashes.structure}:${card.hashes.body}`).join(",
         ")}\\n` : ",
         ")}\\n`;\n}\n\nasync function buildStableOrder(root, ids) {\n  const existing = (await readText(path.join(root, ",
         ")}`);\n  if (card.effect?.length) lines.push(`effect ${card.effect.join(",
@@ -2168,11 +2168,11 @@
         ",\n    `Repository: ${repositoryId}`,\n    ",
         ",\n    code: ",
         ",\n    message: `${label} contract fingerprint changed; review the affected contract before committing generated artifacts.`,\n    file,\n    line: 1,\n    column: 1,\n  };\n}\n\nfunction compareGeneratedDiagnostics(left, right) {\n  return compareText(left.file, right.file) ||\n    left.line - right.line ||\n    left.column - right.column ||\n    compareText(left.code, right.code) ||\n    compareText(left.message, right.message);\n}\n\nfunction indexedCard(record) {\n  const canonical = cardToCanonicalObject(record.card);\n  const boundaries = detectBoundaries(record);\n  const semanticPayload = stableJson(canonical);\n  const structurePayload = stableJson({\n    path: record.relativePath,\n    scope: record.block.scope,\n    symbol: record.declaration?.symbol ?? null,\n    kind: record.declaration?.kind ?? null,\n    signature: record.declaration?.signature ?? null,\n    language: record.declaration?.language ?? null,\n    exported: record.declaration?.exported ?? null,\n    visibility: record.declaration?.visibility ?? null,\n    receiver: record.declaration?.receiver ?? null,\n    imports: record.imports,\n    boundaries,\n  });\n  return {\n    ...canonical,\n    location: {\n      path: record.relativePath,\n      startLine: record.block.startLine,\n      endLine: record.block.endLine,\n      symbol: record.declaration?.symbol ?? null,\n      kind: record.declaration?.kind ?? null,\n      declarationLine: record.declaration?.line ?? null,\n      signature: record.declaration?.signature ?? null,\n      language: record.declaration?.language ?? null,\n      exported: record.declaration?.exported ?? null,\n      visibility: record.declaration?.visibility ?? null,\n      receiver: record.declaration?.receiver ?? null,\n    },\n    imports: record.imports,\n    boundaries,\n    hashes: {\n      semantic: sha256(semanticPayload),\n      structure: sha256(structurePayload),\n      body: record.bodyHash ?? sha256(record.source ?? ",
-        ",\n  );\n  artifacts.set(`${cacheRoot}/search-index.json`, renderSearchIndex(searchIndex));\n  artifacts.set(`${cacheRoot}/file-state.json`, renderFileState(fileState));\n  artifacts.set(`${cacheRoot}/graph.json`, renderRepositoryGraph(graph));\n  const searchShards = buildSearchShards(index, searchIndex, project.config.generation.searchShardSize);\n  if (searchShards.manifest) {\n    artifacts.set(`${cacheRoot}/search-shards.json`, stableStringify(searchShards.manifest));\n    for (const [relativePath, content] of searchShards.shards) {\n      artifacts.set(`${cacheRoot}/${relativePath}`, content);\n    }\n  }\n\n  const repositoryCards = cards.filter((card) =>\n    project.config.generation.repositoryCatalogStabilities.includes(card.stability),\n  );\n  artifacts.set(`${cacheRoot}/repo-core.txt`, renderCatalog(project.config.repositoryId, ",
+        ",\n  );\n  artifacts.set(`${cacheRoot}/search-index.json`, renderSearchIndex(searchIndex));\n  artifacts.set(`${cacheRoot}/file-state.json`, renderFileState(fileState));\n  artifacts.set(`${cacheRoot}/graph.json`, renderRepositoryGraph(graph));\n  artifacts.set(`${cacheRoot}/graph-state.json`, renderGraphState(graphState));\n  const searchShards = buildSearchShards(index, searchIndex, project.config.generation.searchShardSize);\n  if (searchShards.manifest) {\n    artifacts.set(`${cacheRoot}/search-shards.json`, stableStringify(searchShards.manifest));\n    for (const [relativePath, content] of searchShards.shards) {\n      artifacts.set(`${cacheRoot}/${relativePath}`, content);\n    }\n  }\n\n  const repositoryCards = cards.filter((card) =>\n    project.config.generation.repositoryCatalogStabilities.includes(card.stability),\n  );\n  artifacts.set(`${cacheRoot}/repo-core.txt`, renderCatalog(project.config.repositoryId, ",
         ",\n  ];\n  for (const card of cards) lines.push(renderSemanticCard(card), ",
         ",\n  ];\n  if (modules.length === 0) lines.push(",
         ", ",
-        ", repositoryCards));\n\n  const modules = groupByModule(cards, project.config.generation.moduleDepth);\n  const moduleManifest = [];\n  for (const [moduleId, moduleCards] of modules) {\n    const filtered = moduleCards.filter((card) =>\n      project.config.generation.moduleCatalogStabilities.includes(card.stability),\n    );\n    if (filtered.length === 0) continue;\n    const relativePath = `${cacheRoot}/modules/${safeModuleName(moduleId)}.txt`;\n    artifacts.set(relativePath, renderCatalog(project.config.repositoryId, moduleId, filtered));\n    moduleManifest.push({ id: moduleId, file: relativePath, cards: filtered.length });\n  }\n\n  artifacts.set(`${cacheRoot}/agent-context.md`, renderAgentContext(project.config.repositoryId, moduleManifest));\n\n  const contentHashes = Object.fromEntries(\n    [...artifacts.entries()]\n      .sort(([left], [right]) => compareText(left, right))\n      .map(([relativePath, content]) => [relativePath, sha256(content)]),\n  );\n  const manifest = {\n    schemaVersion: 1,\n    specVersion: SPEC_VERSION,\n    repositoryId: project.config.repositoryId,\n    cardCount: cards.length,\n    moduleCount: moduleManifest.length,\n    sourceHash: index.sourceHash,\n    searchCardSetHash: searchIndex.cardSetHash,\n    searchIndexSchemaVersion: searchIndex.schemaVersion,\n    fileStateSchemaVersion: fileState.schemaVersion,\n    graphSchemaVersion: GRAPH_SCHEMA_VERSION,\n    searchShardSchemaVersion: searchShards.manifest ? SEARCH_SHARD_SCHEMA_VERSION : null,\n    files: contentHashes,\n  };\n  artifacts.set(`${cacheRoot}/manifest.json`, stableStringify(manifest));\n  return { artifacts, index, searchIndex, searchStats, fileState, graph, moduleManifest };\n}\n\nfunction diagnosticForContractChange(change) {\n  const file = change.kind === ",
+        ", repositoryCards));\n\n  const modules = groupByModule(cards, project.config.generation.moduleDepth);\n  const moduleManifest = [];\n  for (const [moduleId, moduleCards] of modules) {\n    const filtered = moduleCards.filter((card) =>\n      project.config.generation.moduleCatalogStabilities.includes(card.stability),\n    );\n    if (filtered.length === 0) continue;\n    const relativePath = `${cacheRoot}/modules/${safeModuleName(moduleId)}.txt`;\n    artifacts.set(relativePath, renderCatalog(project.config.repositoryId, moduleId, filtered));\n    moduleManifest.push({ id: moduleId, file: relativePath, cards: filtered.length });\n  }\n\n  artifacts.set(`${cacheRoot}/agent-context.md`, renderAgentContext(project.config.repositoryId, moduleManifest));\n\n  const contentHashes = Object.fromEntries(\n    [...artifacts.entries()]\n      .sort(([left], [right]) => compareText(left, right))\n      .map(([relativePath, content]) => [relativePath, sha256(content)]),\n  );\n  const manifest = {\n    schemaVersion: 1,\n    specVersion: SPEC_VERSION,\n    repositoryId: project.config.repositoryId,\n    cardCount: cards.length,\n    moduleCount: moduleManifest.length,\n    sourceHash: index.sourceHash,\n    searchCardSetHash: searchIndex.cardSetHash,\n    searchIndexSchemaVersion: searchIndex.schemaVersion,\n    fileStateSchemaVersion: fileState.schemaVersion,\n    graphSchemaVersion: GRAPH_SCHEMA_VERSION,\n    graphStateSchemaVersion: GRAPH_STATE_SCHEMA_VERSION,\n    searchShardSchemaVersion: searchShards.manifest ? SEARCH_SHARD_SCHEMA_VERSION : null,\n    files: contentHashes,\n  };\n  artifacts.set(`${cacheRoot}/manifest.json`, stableStringify(manifest));\n  return { artifacts, index, searchIndex, searchStats, fileState, graph, graphState, graphStats, moduleManifest };\n}\n\nfunction diagnosticForContractChange(change) {\n  const file = change.kind === ",
         "./boundaries.js",
         "./changes.js",
         "./config.js",
@@ -2197,6 +2197,7 @@
         ";\n  return {\n    severity: ",
         ";\n}\n\nasync function compareArtifacts(root, cacheDirectory, artifacts) {\n  const changed = [];\n  for (const [relativePath, content] of artifacts) {\n    if (await compareOne(path.join(root, relativePath), content)) changed.push(toPosix(relativePath));\n  }\n  const actualFiles = await listFiles(path.join(root, cacheDirectory));\n  const expected = new Set([...artifacts.keys()].map((item) => toPosix(item)));\n  for (const absolutePath of actualFiles) {\n    const relativePath = relativePosix(root, absolutePath);\n    if (!expected.has(relativePath)) changed.push(relativePath);\n  }\n  return changed.sort(compareText);\n}\n\nasync function compareOne(filePath, expected) {\n  const actual = await readText(filePath, null);\n  return actual !== expected;\n}\n\nasync function listFiles(directory) {\n  try {\n    const entries = await readdir(directory, { withFileTypes: true });\n    entries.sort((left, right) => compareText(left.name, right.name));\n    const files = [];\n    for (const entry of entries) {\n      const absolute = path.join(directory, entry.name);\n      if (entry.isDirectory()) files.push(...(await listFiles(absolute)));\n      else if (entry.isFile()) files.push(absolute);\n    }\n    return files;\n  } catch (error) {\n    if (error && typeof error === ",
         "<task>\\",
+        "graph-state.json",
         "index.json",
         "node:fs/promises",
         "node:path",
@@ -2205,7 +2206,7 @@
       ],
       "path": "src/generator.js",
       "semanticBytes": 476,
-      "sourceBytes": 18188
+      "sourceBytes": 18760
     },
     {
       "blocks": [
@@ -2356,26 +2357,28 @@
               "graph schema",
               "edge normalization",
               "local import resolution",
-              "workspace ID resolution"
+              "workspace ID resolution",
+              "graph partition invalidation"
             ],
             "rel": [
               "workflow>llmnav.graph.import",
               "workflow>llmnav.index.generate"
             ],
             "risk": [],
-            "role": "Build deterministic repository graphs and resolve qualified IDs across imported workspace nodes.",
+            "role": "Build deterministic repository graphs with content-addressed partitions and resolve qualified IDs across workspace nodes.",
             "scope": "module",
             "search": [
               "repository graph",
               "cross repository ID",
               "workspace resolution",
               "edge provenance",
-              "graph confidence"
+              "graph confidence",
+              "incremental graph cache"
             ],
             "stability": "architecture",
             "unknown": []
           },
-          "end": 470,
+          "end": 548,
           "endLine": 10,
           "entries": [
             {
@@ -2388,13 +2391,13 @@
               "key": "role",
               "line": 3,
               "order": 1,
-              "value": "Build deterministic repository graphs and resolve qualified IDs across imported workspace nodes."
+              "value": "Build deterministic repository graphs with content-addressed partitions and resolve qualified IDs across workspace nodes."
             },
             {
               "key": "owns",
               "line": 4,
               "order": 2,
-              "value": "graph schema|edge normalization|local import resolution|workspace ID resolution"
+              "value": "graph schema|edge normalization|local import resolution|workspace ID resolution|graph partition invalidation"
             },
             {
               "key": "excludes",
@@ -2406,7 +2409,7 @@
               "key": "search",
               "line": 6,
               "order": 4,
-              "value": "repository graph|cross repository ID|workspace resolution|edge provenance|graph confidence"
+              "value": "repository graph|cross repository ID|workspace resolution|edge provenance|graph confidence|incremental graph cache"
             },
             {
               "key": "rel",
@@ -2431,7 +2434,7 @@
           "indent": "",
           "newline": "\n",
           "prefix": null,
-          "raw": "/* llmnav/1 module\nid=llmnav.graph.generate\nrole=Build deterministic repository graphs and resolve qualified IDs across imported workspace nodes.\nowns=graph schema|edge normalization|local import resolution|workspace ID resolution\nexcludes=query scoring|workspace file discovery\nsearch=repository graph|cross repository ID|workspace resolution|edge provenance|graph confidence\nrel=workflow>llmnav.graph.import\nrel=workflow>llmnav.index.generate\nstability=architecture\n*/",
+          "raw": "/* llmnav/1 module\nid=llmnav.graph.generate\nrole=Build deterministic repository graphs with content-addressed partitions and resolve qualified IDs across workspace nodes.\nowns=graph schema|edge normalization|local import resolution|workspace ID resolution|graph partition invalidation\nexcludes=query scoring|workspace file discovery\nsearch=repository graph|cross repository ID|workspace resolution|edge provenance|graph confidence|incremental graph cache\nrel=workflow>llmnav.graph.import\nrel=workflow>llmnav.index.generate\nstability=architecture\n*/",
           "scope": "module",
           "specVersion": "1",
           "start": 0,
@@ -2440,51 +2443,58 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "69462b6f0a9aac6cff6afa50a896229125d9ab75bba463c1f32138b81c0a949d",
+      "contentHash": "d31b5c6af0a4e070e0f2dd5d7c3a201dd1be0ce67d6838d1c138ba7ae6547660",
       "declarations": [
         null
       ],
       "imports": [
+        " &&\n      edge.confidence >= 0 &&\n      edge.confidence <= 1 &&\n      edge.provenance &&\n      typeof edge.provenance.type === ",
+        " &&\n      typeof edge.confidence === ",
+        " &&\n      typeof edge.kind === ",
+        " &&\n      typeof edge.provenance.source === ",
+        " &&\n      typeof edge.to === ",
         ") ? String(id) : `${repositoryId}/${id}`;\n}\n\nfunction groupCardsByPath(cards) {\n  const output = new Map();\n  for (const card of cards) {\n    const file = toPosix(card.location.path);\n    const records = output.get(file) ?? [];\n    records.push(card);\n    output.set(file, records);\n  }\n  return output;\n}\n\nfunction resolveLocalImport(sourcePath, specifier, cardsByPath) {\n  if (!specifier.startsWith(",
         ")) return [];\n  const base = path.posix.normalize(path.posix.join(path.posix.dirname(toPosix(sourcePath)), specifier));\n  if (base.startsWith(",
         ")) return [];\n  const candidates = new Set([base]);\n  const extension = path.posix.extname(base);\n  if (!extension) {\n    for (const item of IMPORT_EXTENSIONS) {\n      candidates.add(`${base}${item}`);\n      candidates.add(`${base}/index${item}`);\n    }\n  } else if ([",
+        ");\n    if (separator <= 0) continue;\n    addEdge(edges, nodes, {\n      from: key,\n      to: qualifyId(relation.slice(separator + 1), repositoryId),\n      kind: relation.slice(0, separator),\n      confidence: 1,\n      provenance: {\n        type: ",
         ");\n  const repositoryId = separator >= 0 ? key.slice(0, separator) : localRepositoryId;\n  const semanticId = separator >= 0 ? key.slice(separator + 1) : key;\n  const current = nodes.get(key) ?? {\n    key,\n    repositoryId,\n    semanticId,\n    role: null,\n    location: null,\n    definitions: [],\n    external: repositoryId !== localRepositoryId,\n  };\n  if (input.role) current.role = input.role;\n  if (input.location) current.location = input.location;\n  current.definitions.push(...(input.definitions ?? []));\n  nodes.set(key, current);\n}\n\nfunction finalizeNode(node) {\n  const definitions = [...new Map(node.definitions.map((definition) => [stableJson(definition), definition])).values()]\n    .sort((left, right) => compareText(left.path, right.path) || (left.line ?? 0) - (right.line ?? 0) || compareText(left.symbol, right.symbol));\n  return {\n    ...node,\n    unresolved: !node.role && definitions.length === 0,\n    definitions,\n  };\n}\n\nfunction qualifyId(id, repositoryId) {\n  return String(id).includes(",
-        ");\n}\n\nfunction addEdge(edges, nodes, edge, localRepositoryId) {\n  mergeNode(nodes, edge.from, {}, localRepositoryId);\n  mergeNode(nodes, edge.to, {}, localRepositoryId);\n  const normalized = {\n    from: edge.from,\n    to: edge.to,\n    kind: edge.kind,\n    confidence: Number(edge.confidence),\n    provenance: {\n      type: edge.provenance.type,\n      source: toPosix(edge.provenance.source),\n      path: edge.provenance.path ? toPosix(edge.provenance.path) : null,\n      line: edge.provenance.line ?? null,\n      generator: edge.provenance.generator ?? null,\n    },\n  };\n  const identity = stableJson(normalized);\n  if (edges.has(identity)) return;\n  edges.set(identity, { id: sha256(identity), ...normalized });\n}\n\nfunction mergeNode(nodes, key, input, localRepositoryId) {\n  const separator = key.indexOf(",
+        ");\n}\n\nfunction buildCardPartition(partitionKey, inputHash, card, repositoryId, cardsByPath) {\n  const nodes = new Map();\n  const edges = new Map();\n  const key = qualifyId(card.id, repositoryId);\n  mergeNode(nodes, key, {\n    role: card.role,\n    location: card.location,\n    definitions: card.location?.symbol ? [{\n      symbol: card.location.symbol,\n      path: card.location.path,\n      line: card.location.declarationLine,\n      kind: card.location.kind,\n      provenance: { type: ",
+        ",\n          source: card.location.path,\n          path: card.location.path,\n          line: card.location.declarationLine,\n          generator: ",
+        ",\n          source: imported.file,\n          generator: imported.generator,\n        },\n      }],\n    }, repositoryId);\n  }\n  for (const reference of imported.references) {\n    addEdge(edges, nodes, {\n      from: reference.from,\n      to: reference.to,\n      kind: reference.kind,\n      confidence: reference.confidence,\n      provenance: {\n        type: ",
+        ",\n        confidence: 0.85,\n        provenance: {\n          type: ",
+        ",\n        source: card.location.path,\n        path: card.location.path,\n        line: card.location.startLine,\n        generator: null,\n      },\n    }, repositoryId);\n  }\n\n  for (const specifier of card.imports ?? []) {\n    for (const target of resolveLocalImport(card.location.path, specifier, cardsByPath)) {\n      addEdge(edges, nodes, {\n        from: key,\n        to: qualifyId(target.id, repositoryId),\n        kind: ",
+        ",\n        source: imported.file,\n        path: reference.path,\n        line: reference.line,\n        generator: imported.generator,\n      },\n    }, repositoryId);\n  }\n  return serializePartition(partitionKey, inputHash, nodes, edges);\n}\n\nfunction serializePartition(key, inputHash, nodes, edges) {\n  const serializedNodes = [...nodes.values()].sort((left, right) => compareText(left.key, right.key));\n  const serializedEdges = [...edges.values()].sort(compareEdges);\n  return {\n    key,\n    inputHash,\n    outputHash: sha256(stableJson({ nodes: serializedNodes, edges: serializedEdges })),\n    nodes: serializedNodes,\n    edges: serializedEdges,\n  };\n}\n\nfunction isReusableEdge(edge) {\n  return Boolean(\n    edge &&\n      typeof edge.from === ",
+        ",\n        },\n      }, repositoryId);\n    }\n  }\n  return serializePartition(partitionKey, inputHash, nodes, edges);\n}\n\nfunction buildImportedPartition(partitionKey, inputHash, imported, repositoryId) {\n  const nodes = new Map();\n  const edges = new Map();\n  for (const definition of imported.definitions) {\n    mergeNode(nodes, definition.id, {\n      definitions: [{\n        symbol: definition.symbol,\n        path: definition.path,\n        line: definition.line,\n        kind: definition.kind,\n        provenance: {\n          type: ",
+        ",\n  );\n}\n\nfunction addEdge(edges, nodes, edge, localRepositoryId) {\n  mergeNode(nodes, edge.from, {}, localRepositoryId);\n  mergeNode(nodes, edge.to, {}, localRepositoryId);\n  const normalized = {\n    from: edge.from,\n    to: edge.to,\n    kind: edge.kind,\n    confidence: Number(edge.confidence),\n    provenance: {\n      type: edge.provenance.type,\n      source: toPosix(edge.provenance.source),\n      path: edge.provenance.path ? toPosix(edge.provenance.path) : null,\n      line: edge.provenance.line ?? null,\n      generator: edge.provenance.generator ?? null,\n    },\n  };\n  const identity = stableJson(normalized);\n  if (edges.has(identity)) return;\n  edges.set(identity, { id: sha256(identity), ...normalized });\n}\n\nfunction mergeNode(nodes, key, input, localRepositoryId) {\n  const separator = key.indexOf(",
         ", ",
+        ", generator: null },\n    }] : [],\n  }, repositoryId);\n\n  for (const relation of card.rel ?? []) {\n    const separator = relation.indexOf(",
+        ", source: ",
         "./util.js",
         ".cjs",
         ".go",
         ".js",
         ".jsx",
-        ".llmnav/cache/index.json",
         ".mjs",
         ".py",
         ".rs",
         ".ts",
         ".tsx",
         "/",
-        ">",
         "].includes(extension)) {\n    const stem = base.slice(0, -extension.length);\n    for (const item of [",
         "ambiguous",
         "external true",
-        "generated-index",
-        "imports",
-        "llmnav",
-        "llmnav-index",
-        "local-import",
         "missing",
         "node:path",
         "number",
         "resolved",
-        "source-card",
         "string",
         "unresolved true",
         "}`);\n  }\n  return lines.join(",
         "}`;\n    lines.push(`def ${definition.symbol} ${location}${definition.kind ? ` kind=${definition.kind}` : "
       ],
       "path": "src/graph.js",
-      "semanticBytes": 470,
-      "sourceBytes": 10001
+      "semanticBytes": 548,
+      "sourceBytes": 14751
     },
     {
       "blocks": [
@@ -2602,7 +2612,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "a1a5d3243d73f54497870c3b74ff2cb8bf61b9dc76cff2f2fd0bf11a47a94fed",
+      "contentHash": "160e43e519880114edbfb7d5884d88e113187e7e7a13b9baeb27be1e0340400d",
       "declarations": [],
       "imports": [
         " | ",
@@ -2631,11 +2641,11 @@
       ],
       "path": "src/index.d.ts",
       "semanticBytes": 0,
-      "sourceBytes": 19849
+      "sourceBytes": 20991
     },
     {
       "blocks": [],
-      "contentHash": "d205187eb98c3daedcbe2ac656b53f94db3fce98bc6c0582b740547142314a47",
+      "contentHash": "167a7a31083c715f2fc424154a18ad967dd3a70f3e48adee4217ec395813bb7a",
       "declarations": [],
       "imports": [
         "./agents.js",
@@ -2667,7 +2677,7 @@
       ],
       "path": "src/index.js",
       "semanticBytes": 0,
-      "sourceBytes": 2644
+      "sourceBytes": 2753
     },
     {
       "blocks": [
@@ -4201,7 +4211,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "168912d2da170cc1c6a79b14bad139b9e393ff0678fa6aa796c7c65862543965",
+      "contentHash": "defc8a6f627c60258531d9e4be457c0baaa17179e20d983c3ecb9f6708987c40",
       "declarations": [],
       "imports": [
         "../src/doctor.js",
@@ -4210,6 +4220,7 @@
         "../src/search.js",
         ".llmnav",
         ".llmnav/cache/file-state.json",
+        ".llmnav/cache/graph-state.json",
         ".llmnav/cache/search-index.json",
         ":",
         "[broken\\n",
@@ -4219,6 +4230,7 @@
         "file-state-integrity",
         "file-state.json",
         "generation repairs malformed incremental accelerators from source",
+        "graph-state.json",
         "llmnav-generation-recovery-",
         "llmnav-posting-recovery-",
         "llmnav-search-recovery-",
@@ -4245,7 +4257,7 @@
       ],
       "path": "tests/accelerator-recovery.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 3719
+      "sourceBytes": 3959
     },
     {
       "blocks": [],
@@ -4438,6 +4450,49 @@
       "path": "tests/determinism.test.js",
       "semanticBytes": 0,
       "sourceBytes": 2030
+    },
+    {
+      "blocks": [],
+      "contentHash": "544ca58d485040ff0458ac34f3adabe0db42c92f60ee84810f831374b0efd09b",
+      "declarations": [],
+      "imports": [
+        ".",
+        "../src/graph.js",
+        "./contract.js",
+        ".llmnav/imports/payments.json",
+        "auth.session.rotate",
+        "auth.session.rotate-contract",
+        "bad",
+        "body-a",
+        "body-b",
+        "calls",
+        "card:bad",
+        "export function fixture()",
+        "function",
+        "input-a",
+        "input-b",
+        "llmnav-fixture",
+        "llmnav-fixture/auth.session.new-contract",
+        "llmnav-fixture/auth.session.rotate",
+        "node:assert/strict",
+        "node:test",
+        "payments",
+        "payments/billing.capture.run",
+        "public",
+        "rejects malformed graph state instead of reusing it",
+        "reuses content-addressed graph partitions and matches a full rebuild",
+        "runCapture",
+        "scip-adapter@1",
+        "src/auth/contract.ts",
+        "src/auth/rotate.ts",
+        "src/capture.ts",
+        "test>auth.session.new-contract",
+        "test>auth.session.rotate-contract",
+        "typescript"
+      ],
+      "path": "tests/graph-incremental.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 4183
     },
     {
       "blocks": [],
@@ -4665,16 +4720,20 @@
     },
     {
       "blocks": [],
-      "contentHash": "36ddfb9bfd88e9ac5c28f3fc1a2599169f314c3d917c11de07afe092e1187088",
+      "contentHash": "734844792909e7817912a75bc8993c04bf9e9df465114c6ce721782651461335",
       "declarations": [],
       "imports": [
         ", ",
         "../src/generator.js",
         "./helpers/synthetic.js",
         ".llmnav",
+        ".llmnav/cache/graph-state.json",
+        ".llmnav/cache/graph.json",
         "cache",
         "file and card indexes update incrementally without changing deterministic output",
         "fixture-000017.ts",
+        "graph-state.json",
+        "graph.json",
         "index.json",
         "llmnav-incremental-",
         "module",
@@ -4690,7 +4749,7 @@
       ],
       "path": "tests/incremental.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 3084
+      "sourceBytes": 3780
     },
     {
       "blocks": [],

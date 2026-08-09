@@ -63,6 +63,14 @@ Edges contain a stable SHA-256 ID, qualified `from` and `to` keys, kind, confide
 
 Provenance records the owning input or source file, optional referenced path and line, and generator identity. Missing targets remain unresolved placeholder nodes rather than disappearing. The graph is part of the transactional cache and its bytes are covered by `manifest.json`.
 
+## Incremental invalidation
+
+Generation also writes `.llmnav/cache/graph-state.json` schemaVersion 1. It is a disposable, content-addressed acceleration artifact split into one partition per local card and configured graph input.
+
+Local partition hashes cover graph-relevant card fields plus a repository path-to-ID resolution hash. A body-only edit therefore reuses the graph partition, while a role, relation, import, declaration location, or import-resolution change rebuilds it. Imported partitions use the validated input content hash. Removed cards and inputs remove their partitions and edges.
+
+Malformed, incompatible, or wrong-repository state is ignored and rebuilt from current source and configured inputs. Incremental and forced-full generation must serialize byte-identical `graph.json` and `graph-state.json` files. Both files are published in the same recoverable cache transaction and covered by `manifest.json`.
+
 ## Ranking and context
 
 Lexical retrieval remains the seed authority. LLMNav takes at most the first three lexical seeds and applies a bounded one-hop graph bonus:

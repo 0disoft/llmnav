@@ -38,6 +38,7 @@ test("generation repairs malformed incremental accelerators from source", async 
   const cacheRoot = path.join(root, ".llmnav", "cache");
   await writeFile(path.join(cacheRoot, "search-index.json"), "[broken\n");
   await writeFile(path.join(cacheRoot, "file-state.json"), "{broken\n");
+  await writeFile(path.join(cacheRoot, "graph-state.json"), "{broken\n");
   const sourcePath = path.join(root, "src", "rotate.ts");
   const source = await readFile(sourcePath, "utf8");
   await writeFile(sourcePath, source.replace("one refresh-token", "a refresh-token"));
@@ -46,8 +47,10 @@ test("generation repairs malformed incremental accelerators from source", async 
   assert.equal(generated.ok, true);
   assert.equal(generated.incremental.files.parsedFiles, 1);
   assert.equal(generated.incremental.cards.indexedCards, 1);
+  assert.equal(generated.incremental.graph.rebuiltPartitions, 1);
   assert.doesNotThrow(() => JSON.parse(generated.artifacts.get(".llmnav/cache/search-index.json")));
   assert.doesNotThrow(() => JSON.parse(generated.artifacts.get(".llmnav/cache/file-state.json")));
+  assert.doesNotThrow(() => JSON.parse(generated.artifacts.get(".llmnav/cache/graph-state.json")));
 
   const doctor = await doctorProject(root);
   assert.ok(doctor.checks.some((check) => check.name === "search-index-integrity" && check.ok));

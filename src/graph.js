@@ -1,9 +1,9 @@
 /* llmnav/1 module
 id=llmnav.graph.generate
-role=Build deterministic repository graphs and resolve qualified IDs across imported workspace nodes.
-owns=graph schema|edge normalization|local import resolution|workspace ID resolution
+role=Build deterministic repository graphs with content-addressed partitions and resolve qualified IDs across workspace nodes.
+owns=graph schema|edge normalization|local import resolution|workspace ID resolution|graph partition invalidation
 excludes=query scoring|workspace file discovery
-search=repository graph|cross repository ID|workspace resolution|edge provenance|graph confidence
+search=repository graph|cross repository ID|workspace resolution|edge provenance|graph confidence|incremental graph cache
 rel=workflow>llmnav.graph.import
 rel=workflow>llmnav.index.generate
 stability=architecture
@@ -13,102 +13,73 @@ import path from "node:path";
 import { compareText, sha256, stableJson, stableStringify, toPosix } from "./util.js";
 
 export const GRAPH_SCHEMA_VERSION = 1;
+export const GRAPH_STATE_SCHEMA_VERSION = 1;
 const IMPORT_EXTENSIONS = Object.freeze([".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".go", ".rs", ".py"]);
 
 export function buildRepositoryGraph(project, index) {
+  return buildRepositoryGraphIncremental(project, index).graph;
+}
+
+export function buildRepositoryGraphIncremental(project, index, previousState = null) {
   const repositoryId = index.repositoryId;
-  const nodes = new Map();
-  const edges = new Map();
   const cardsByPath = groupCardsByPath(index.cards);
+  const resolutionHash = sha256(stableJson(
+    [...cardsByPath.entries()]
+      .sort(([left], [right]) => compareText(left, right))
+      .map(([file, cards]) => [file, cards.map((card) => card.id).sort(compareText)]),
+  ));
+  const previousPartitions = compatibleGraphState(previousState, repositoryId)
+    ? new Map(previousState.partitions.map((partition) => [partition.key, partition]))
+    : new Map();
+  const partitions = [];
+  let reusedPartitions = 0;
+  let rebuiltPartitions = 0;
 
   for (const card of index.cards) {
-    const key = qualifyId(card.id, repositoryId);
-    mergeNode(nodes, key, {
+    const key = `card:${qualifyId(card.id, repositoryId)}`;
+    const inputHash = sha256(stableJson({
+      resolutionHash,
+      id: card.id,
       role: card.role,
+      rel: card.rel ?? [],
+      imports: card.imports ?? [],
       location: card.location,
-      definitions: card.location?.symbol ? [{
-        symbol: card.location.symbol,
-        path: card.location.path,
-        line: card.location.declarationLine,
-        kind: card.location.kind,
-        provenance: { type: "llmnav-index", source: ".llmnav/cache/index.json", generator: null },
-      }] : [],
-    }, repositoryId);
-
-    for (const relation of card.rel ?? []) {
-      const separator = relation.indexOf(">");
-      if (separator <= 0) continue;
-      addEdge(edges, nodes, {
-        from: key,
-        to: qualifyId(relation.slice(separator + 1), repositoryId),
-        kind: relation.slice(0, separator),
-        confidence: 1,
-        provenance: {
-          type: "source-card",
-          source: card.location.path,
-          path: card.location.path,
-          line: card.location.startLine,
-          generator: null,
-        },
-      }, repositoryId);
-    }
-
-    for (const specifier of card.imports ?? []) {
-      for (const target of resolveLocalImport(card.location.path, specifier, cardsByPath)) {
-        addEdge(edges, nodes, {
-          from: key,
-          to: qualifyId(target.id, repositoryId),
-          kind: "imports",
-          confidence: 0.85,
-          provenance: {
-            type: "local-import",
-            source: card.location.path,
-            path: card.location.path,
-            line: card.location.declarationLine,
-            generator: "llmnav",
-          },
-        }, repositoryId);
-      }
+    }));
+    const previous = previousPartitions.get(key);
+    if (previous?.inputHash === inputHash) {
+      partitions.push(previous);
+      reusedPartitions += 1;
+    } else {
+      partitions.push(buildCardPartition(key, inputHash, card, repositoryId, cardsByPath));
+      rebuiltPartitions += 1;
     }
   }
 
   for (const imported of project.graphInputs ?? []) {
-    for (const definition of imported.definitions) {
-      mergeNode(nodes, definition.id, {
-        definitions: [{
-          symbol: definition.symbol,
-          path: definition.path,
-          line: definition.line,
-          kind: definition.kind,
-          provenance: {
-            type: "generated-index",
-            source: imported.file,
-            generator: imported.generator,
-          },
-        }],
-      }, repositoryId);
+    const key = `input:${toPosix(imported.file)}`;
+    const inputHash = imported.contentHash || sha256(stableJson(imported));
+    const previous = previousPartitions.get(key);
+    if (previous?.inputHash === inputHash) {
+      partitions.push(previous);
+      reusedPartitions += 1;
+    } else {
+      partitions.push(buildImportedPartition(key, inputHash, imported, repositoryId));
+      rebuiltPartitions += 1;
     }
-    for (const reference of imported.references) {
-      addEdge(edges, nodes, {
-        from: reference.from,
-        to: reference.to,
-        kind: reference.kind,
-        confidence: reference.confidence,
-        provenance: {
-          type: "generated-index",
-          source: imported.file,
-          path: reference.path,
-          line: reference.line,
-          generator: imported.generator,
-        },
-      }, repositoryId);
-    }
+  }
+
+  partitions.sort((left, right) => compareText(left.key, right.key));
+  const nodes = new Map();
+  const edges = new Map();
+  for (const partition of partitions) {
+    for (const node of partition.nodes) mergeNode(nodes, node.key, node, repositoryId);
+    for (const edge of partition.edges) addEdge(edges, nodes, edge, repositoryId);
   }
 
   const serializedNodes = [...nodes.values()].map(finalizeNode).sort((left, right) => compareText(left.key, right.key));
   const serializedEdges = [...edges.values()].sort(compareEdges);
   const sourceHash = sha256(stableJson({ nodes: serializedNodes, edges: serializedEdges }));
-  return {
+  const graph = {
     schemaVersion: GRAPH_SCHEMA_VERSION,
     repositoryId,
     sourceHash,
@@ -121,10 +92,54 @@ export function buildRepositoryGraph(project, index) {
       importedIndexCount: project.graphInputs?.length ?? 0,
     },
   };
+  const state = {
+    schemaVersion: GRAPH_STATE_SCHEMA_VERSION,
+    repositoryId,
+    resolutionHash,
+    partitions,
+  };
+  return {
+    graph,
+    state,
+    stats: {
+      totalPartitions: partitions.length,
+      reusedPartitions,
+      rebuiltPartitions,
+      removedPartitions: [...previousPartitions.keys()].filter((key) => !partitions.some((item) => item.key === key)).length,
+    },
+  };
 }
 
 export function renderRepositoryGraph(graph) {
   return stableStringify(graph);
+}
+
+export function renderGraphState(state) {
+  return stableStringify(state);
+}
+
+export function compatibleGraphState(state, repositoryId = undefined) {
+  const structurallyValid = Boolean(
+    state &&
+      state.schemaVersion === GRAPH_STATE_SCHEMA_VERSION &&
+      typeof state.repositoryId === "string" &&
+      typeof state.resolutionHash === "string" &&
+      Array.isArray(state.partitions) &&
+      state.partitions.every((partition) =>
+        partition &&
+        typeof partition.key === "string" &&
+        typeof partition.inputHash === "string" &&
+        typeof partition.outputHash === "string" &&
+        Array.isArray(partition.nodes) &&
+        Array.isArray(partition.edges) &&
+        partition.nodes.every((node) => node && typeof node.key === "string" && Array.isArray(node.definitions)) &&
+        partition.edges.every(isReusableEdge) &&
+        partition.outputHash === sha256(stableJson({ nodes: partition.nodes, edges: partition.edges }))
+      ) &&
+      (repositoryId === undefined || state.repositoryId === repositoryId),
+  );
+  if (!structurallyValid) return false;
+  return new Set(state.partitions.map((partition) => partition.key)).size === state.partitions.length;
 }
 
 export function isCompatibleRepositoryGraph(graph, repositoryId = undefined) {
@@ -179,6 +194,123 @@ export function renderGraphNode(node) {
     lines.push(`def ${definition.symbol} ${location}${definition.kind ? ` kind=${definition.kind}` : ""}`);
   }
   return lines.join("\n");
+}
+
+function buildCardPartition(partitionKey, inputHash, card, repositoryId, cardsByPath) {
+  const nodes = new Map();
+  const edges = new Map();
+  const key = qualifyId(card.id, repositoryId);
+  mergeNode(nodes, key, {
+    role: card.role,
+    location: card.location,
+    definitions: card.location?.symbol ? [{
+      symbol: card.location.symbol,
+      path: card.location.path,
+      line: card.location.declarationLine,
+      kind: card.location.kind,
+      provenance: { type: "llmnav-index", source: ".llmnav/cache/index.json", generator: null },
+    }] : [],
+  }, repositoryId);
+
+  for (const relation of card.rel ?? []) {
+    const separator = relation.indexOf(">");
+    if (separator <= 0) continue;
+    addEdge(edges, nodes, {
+      from: key,
+      to: qualifyId(relation.slice(separator + 1), repositoryId),
+      kind: relation.slice(0, separator),
+      confidence: 1,
+      provenance: {
+        type: "source-card",
+        source: card.location.path,
+        path: card.location.path,
+        line: card.location.startLine,
+        generator: null,
+      },
+    }, repositoryId);
+  }
+
+  for (const specifier of card.imports ?? []) {
+    for (const target of resolveLocalImport(card.location.path, specifier, cardsByPath)) {
+      addEdge(edges, nodes, {
+        from: key,
+        to: qualifyId(target.id, repositoryId),
+        kind: "imports",
+        confidence: 0.85,
+        provenance: {
+          type: "local-import",
+          source: card.location.path,
+          path: card.location.path,
+          line: card.location.declarationLine,
+          generator: "llmnav",
+        },
+      }, repositoryId);
+    }
+  }
+  return serializePartition(partitionKey, inputHash, nodes, edges);
+}
+
+function buildImportedPartition(partitionKey, inputHash, imported, repositoryId) {
+  const nodes = new Map();
+  const edges = new Map();
+  for (const definition of imported.definitions) {
+    mergeNode(nodes, definition.id, {
+      definitions: [{
+        symbol: definition.symbol,
+        path: definition.path,
+        line: definition.line,
+        kind: definition.kind,
+        provenance: {
+          type: "generated-index",
+          source: imported.file,
+          generator: imported.generator,
+        },
+      }],
+    }, repositoryId);
+  }
+  for (const reference of imported.references) {
+    addEdge(edges, nodes, {
+      from: reference.from,
+      to: reference.to,
+      kind: reference.kind,
+      confidence: reference.confidence,
+      provenance: {
+        type: "generated-index",
+        source: imported.file,
+        path: reference.path,
+        line: reference.line,
+        generator: imported.generator,
+      },
+    }, repositoryId);
+  }
+  return serializePartition(partitionKey, inputHash, nodes, edges);
+}
+
+function serializePartition(key, inputHash, nodes, edges) {
+  const serializedNodes = [...nodes.values()].sort((left, right) => compareText(left.key, right.key));
+  const serializedEdges = [...edges.values()].sort(compareEdges);
+  return {
+    key,
+    inputHash,
+    outputHash: sha256(stableJson({ nodes: serializedNodes, edges: serializedEdges })),
+    nodes: serializedNodes,
+    edges: serializedEdges,
+  };
+}
+
+function isReusableEdge(edge) {
+  return Boolean(
+    edge &&
+      typeof edge.from === "string" &&
+      typeof edge.to === "string" &&
+      typeof edge.kind === "string" &&
+      typeof edge.confidence === "number" &&
+      edge.confidence >= 0 &&
+      edge.confidence <= 1 &&
+      edge.provenance &&
+      typeof edge.provenance.type === "string" &&
+      typeof edge.provenance.source === "string",
+  );
 }
 
 function addEdge(edges, nodes, edge, localRepositoryId) {

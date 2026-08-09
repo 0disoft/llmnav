@@ -40,6 +40,7 @@ affectedCatalogs[].kind
 affectedCatalogs[].id
 incremental.files.parsedFiles
 incremental.cards.indexedCards
+incremental.graph.rebuiltPartitions
 transaction.recovered
 transaction.recoveryAction
 ```
@@ -119,6 +120,7 @@ The test requires:
 * a one-file edit to parse exactly one file
 * one-card semantic change to retokenize exactly one card
 * full and incremental output to be byte-identical
+* graph and graph-state output to be byte-identical after partition reuse
 
 The standalone `npm run benchmark:v0.2` command records timings but is not a hard CI gate because shared runner variance is too high. Its raw JSON and generated Markdown report preserve the exact environment and fixture.
 

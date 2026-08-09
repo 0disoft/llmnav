@@ -6,8 +6,12 @@ export { diagnosticsToSarif, SARIF_SCHEMA, SARIF_VERSION } from "./sarif.js";
 export { GRAPH_INPUT_SCHEMA_VERSION, loadGraphInputs, normalizeGraphInput } from "./graph-input.js";
 export {
   buildRepositoryGraph,
+  buildRepositoryGraphIncremental,
   GRAPH_SCHEMA_VERSION,
+  GRAPH_STATE_SCHEMA_VERSION,
+  compatibleGraphState,
   isCompatibleRepositoryGraph,
+  renderGraphState,
   renderGraphNode,
   renderRepositoryGraph,
   resolveGraphNode,

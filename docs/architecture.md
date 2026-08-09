@@ -88,6 +88,10 @@ Search treats lexical results as seeds and applies only a confidence-scaled one-
 
 The graph is also the explicit workspace resolution surface. Qualified IDs resolve by exact node key. Unqualified IDs prefer the local repository and resolve externally only when the semantic ID is unique across imported repositories. No directory discovery or network lookup occurs during resolution.
 
+`.llmnav/cache/graph-state.json` is a disposable schemaVersion 1 acceleration artifact. Content-addressed partitions isolate local cards and imported indexes. Partition keys and hashes include every graph-relevant dimension, and local path resolution changes invalidate all affected local-import decisions. Incompatible or malformed state is never partially trusted: generation rebuilds it from the current primary index and validated graph inputs.
+
+Graph state contains no timestamps, absolute paths, or filesystem identity. Incremental and forced-full builds must produce byte-identical graph and state bytes, and the transaction publishes both with the manifest.
+
 Each card entry stores a hash of its searchable fields and its normalized phrase fields. The global token dictionary is sorted once. Every dictionary entry points to a posting list encoded as sorted card ordinals and sparse field-frequency vectors. The ordinals resolve through the sorted `cardIds` table.
 
 Field order and field weights are versioned constants. Tokens, card IDs, object keys, and posting entries use locale-independent UTF-16 lexical comparison.

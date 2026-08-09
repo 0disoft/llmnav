@@ -16,6 +16,7 @@ test("file and card indexes update incrementally without changing deterministic 
   assert.equal(first.ok, true);
   assert.equal(first.incremental.files.parsedFiles, fixture.fileCount);
   assert.equal(first.incremental.cards.indexedCards, fixture.cardCount);
+  assert.equal(first.incremental.graph.rebuiltPartitions, fixture.cardCount);
 
   const noop = await generateProject(root);
   assert.equal(noop.ok, true);
@@ -23,6 +24,8 @@ test("file and card indexes update incrementally without changing deterministic 
   assert.equal(noop.incremental.files.parsedFiles, 0);
   assert.equal(noop.incremental.files.reusedFilesByStat, fixture.fileCount);
   assert.equal(noop.incremental.cards.indexedCards, 0);
+  assert.equal(noop.incremental.graph.reusedPartitions, fixture.cardCount);
+  assert.equal(noop.incremental.graph.rebuiltPartitions, 0);
   assert.equal(noop.transaction.skipped, true);
 
   const touchedPath = path.join(root, "src", "fixture-000017.ts");
@@ -34,6 +37,7 @@ test("file and card indexes update incrementally without changing deterministic 
   assert.equal(hashReuse.incremental.files.reusedFilesByHash, 1);
   assert.equal(hashReuse.incremental.files.reusedFilesByStat, fixture.fileCount - 1);
   assert.equal(hashReuse.incremental.cards.indexedCards, 0);
+  assert.equal(hashReuse.incremental.graph.reusedPartitions, fixture.cardCount);
   assert.equal(hashReuse.transaction.skipped, true);
 
   const changed = await changeSyntheticCard(root, 17, 2);
@@ -48,8 +52,12 @@ test("file and card indexes update incrementally without changing deterministic 
 
   const incrementalIndex = await readFile(path.join(root, ".llmnav", "cache", "index.json"), "utf8");
   const incrementalSearch = await readFile(path.join(root, ".llmnav", "cache", "search-index.json"), "utf8");
+  const incrementalGraph = await readFile(path.join(root, ".llmnav", "cache", "graph.json"), "utf8");
+  const incrementalGraphState = await readFile(path.join(root, ".llmnav", "cache", "graph-state.json"), "utf8");
   const fullCheck = await generateProject(root, { incremental: false, check: true });
   assert.equal(fullCheck.ok, true, fullCheck.changedFiles.join(", "));
   assert.equal(await readFile(path.join(root, ".llmnav", "cache", "index.json"), "utf8"), incrementalIndex);
   assert.equal(await readFile(path.join(root, ".llmnav", "cache", "search-index.json"), "utf8"), incrementalSearch);
+  assert.equal(fullCheck.artifacts.get(".llmnav/cache/graph.json"), incrementalGraph);
+  assert.equal(fullCheck.artifacts.get(".llmnav/cache/graph-state.json"), incrementalGraphState);
 });

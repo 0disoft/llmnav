@@ -78,6 +78,7 @@ console.log(result.affectedBoundaries);
 console.log(result.affectedCatalogs);
 console.log(result.incremental.files);
 console.log(result.incremental.cards);
+console.log(result.incremental.graph);
 console.log(result.transaction);
 ```
 
@@ -232,6 +233,8 @@ import {
 
 `buildRepositoryGraph(project, index)` returns the schemaVersion 1 qualified node and edge graph. `renderRepositoryGraph(graph)` serializes it deterministically. Successful generation also exposes the graph as `result.graph` and writes it to `.llmnav/cache/graph.json`.
 
+`buildRepositoryGraphIncremental(project, index, previousState)` returns `{ graph, state, stats }`. Compatible content-addressed partitions are reused; incompatible state is ignored. `compatibleGraphState` validates the disposable state boundary, and `renderGraphState` serializes `.llmnav/cache/graph-state.json`. `result.incremental.graph` reports total, reused, rebuilt, and removed partition counts.
+
 `queryPreparedIndex` accepts an optional `graph`. Graph bonuses preserve lexical seeds and scale by edge confidence and direction. `buildContext` accepts `maxEdges` in addition to `depth` and `budget`, and returns the stable IDs of packed edges as `includedEdges`.
 
 `resolveGraphNode(graph, id, localRepositoryId)` returns `resolved`, `ambiguous`, or `missing`. `renderGraphNode(node)` emits compact external definition context. `showProjectCard` returns either a local `card` or an external graph `node`.
@@ -244,4 +247,4 @@ import { KEY_ORDER, EFFECT_KINDS, RISK_KINDS } from "llmnav/spec";
 
 ## Compatibility boundary
 
-The public API follows package semantic versioning. `index.json` schemaVersion 1 and `llmnav/1` source syntax remain compatible. Contract fingerprints are optional additive index fields. `search-index.json`, `file-state.json`, transaction journals, and performance metrics retain their own schema or implementation versions.
+The public API follows package semantic versioning. `index.json` schemaVersion 1 and `llmnav/1` source syntax remain compatible. Contract fingerprints are optional additive index fields. `search-index.json`, `file-state.json`, `graph-state.json`, transaction journals, and performance metrics retain their own schema or implementation versions.

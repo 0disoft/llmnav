@@ -121,7 +121,7 @@ excludes graph ranking, source mutation
 rel workflow>llmnav.index.generate
 
 @llmnav.graph.generate
-role Build deterministic repository graphs and resolve qualified IDs across imported workspace nodes.
-owns graph schema, edge normalization, local import resolution, workspace ID resolution
+role Build deterministic repository graphs with content-addressed partitions and resolve qualified IDs across workspace nodes.
+owns graph schema, edge normalization, local import resolution, workspace ID resolution, graph partition invalidation
 excludes query scoring, workspace file discovery
 rel workflow>llmnav.graph.import, workflow>llmnav.index.generate
