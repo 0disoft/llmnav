@@ -36,6 +36,7 @@ The supplied release workflow uses npm provenance and GitHub's OIDC token. In np
 The workflow references a GitHub environment named `npm`. Create that environment for release protection, or remove the `environment` line when no environment gate is desired.
 
 A classic or granular access token can be used for a manual first publication. Do not commit `.npmrc` credentials or an npm token.
+Because the package enables provenance by default, a first publication from a developer machine must explicitly disable provenance. npm may still require browser-backed two-factor authentication.
 
 ## 4. Validate the exact package payload
 
@@ -55,17 +56,17 @@ Manual publication:
 
 ```sh
 npm login
-npm publish --provenance --access public
+npm publish --provenance=false --access public
 ```
 
 Automated publication:
 
 ```sh
-git tag v0.5.1
-git push origin v0.5.1
+git tag v0.5.2
+git push origin v0.5.2
 ```
 
-The release workflow rejects a tag that does not match `package.json`.
+The release workflow rejects a tag that does not match `package.json`. If the exact version is already present in npm, the workflow succeeds only when the registry tarball integrity matches the tagged package; a mismatched package fails closed.
 
 ## 6. Verify from a clean directory
 

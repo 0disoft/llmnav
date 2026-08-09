@@ -34,7 +34,7 @@ try {
       "--input-type=module",
       "--eval",
       `import { PACKAGE_VERSION, SEARCH_INDEX_ENCODING, SEARCH_INDEX_SCHEMA_VERSION } from "llmnav";
-if (PACKAGE_VERSION !== "0.5.1" || SEARCH_INDEX_SCHEMA_VERSION !== 2 || SEARCH_INDEX_ENCODING !== "compact-v1") process.exit(1);`,
+if (PACKAGE_VERSION !== "0.5.2" || SEARCH_INDEX_SCHEMA_VERSION !== 2 || SEARCH_INDEX_ENCODING !== "compact-v1") process.exit(1);`,
     ],
     project,
   );
