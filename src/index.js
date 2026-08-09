@@ -100,12 +100,15 @@ export {
 } from "./search.js";
 export { normalizeSearchText, TOKENIZER_VERSION } from "./tokenizer.js";
 export {
+  acquireGenerationLock,
   commitGeneratedCache,
   recoverGenerationTransaction,
+  releaseGenerationLock,
   removeWithRetry,
   renameWithRetry,
   TRANSACTION_ABORT_EXIT_CODE,
   TRANSACTION_SCHEMA_VERSION,
+  withGenerationLock,
 } from "./transaction.js";
 export * from "./spec.js";
 export { countDiagnostics, diagnostic, validateProject } from "./validator.js";

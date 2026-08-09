@@ -67,7 +67,7 @@ export async function initializeProject(root, options = {}) {
   );
   await writeIfMissingOrForced(
     path.join(root, ".llmnav", ".gitignore"),
-    "tmp/\nstate/\n.transactions/\ngeneration-transaction.json\n*.tmp-*\n",
+    "tmp/\nstate/\n.transactions/\ngeneration-transaction.json\ngeneration.lock\ngeneration.lock.release-*\n*.tmp-*\n",
     options.force,
     changed,
     ".llmnav/.gitignore",

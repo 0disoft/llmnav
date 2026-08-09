@@ -145,7 +145,7 @@ Only query text is tokenized per invocation. Card fields are read from `search-i
 
 The ranker uses no network calls, embeddings, model API, MCP server, or hosted service. `--top` is bounded from 1 to 100.
 
-Before reading the cache, `query` recovers an interrupted generation transaction. It never observes an uncommitted cache as authoritative.
+Before reading the cache, `query` waits for an active generation lock and then recovers an abandoned transaction if necessary. It never rolls back a live writer or observes an uncommitted cache as authoritative.
 
 ## `llmnav show`
 

@@ -45,7 +45,7 @@ import {
   moduleIdForCard,
   safeModuleName,
 } from "./changes.js";
-import { commitGeneratedCache, recoverGenerationTransaction } from "./transaction.js";
+import { commitGeneratedCache, recoverGenerationTransaction, withGenerationLock } from "./transaction.js";
 import { loadConfig } from "./config.js";
 import { buildContractFingerprints, compareContractFingerprints } from "./contracts.js";
 import { detectBoundaries } from "./boundaries.js";
@@ -67,10 +67,19 @@ import {
 } from "./prompt-bundle.js";
 
 export async function generateProject(root, options = {}) {
+  return withGenerationLock(
+    root,
+    (lock) => generateProjectLocked(root, { ...options, lockOwnerId: lock.ownerId }),
+    options.lockOptions,
+  );
+}
+
+async function generateProjectLocked(root, options) {
   const { config: recoveryConfig } = await loadConfig(root);
   const recovery = await recoverGenerationTransaction(root, {
     cacheDirectory: recoveryConfig.generation.cacheDirectory,
     renameOptions: options.renameOptions,
+    lockOwnerId: options.lockOwnerId,
   });
   const cacheDirectory = path.join(root, recoveryConfig.generation.cacheDirectory);
   const previousIndex = await readJsonSafe(path.join(cacheDirectory, "index.json"), null);
@@ -196,6 +205,7 @@ export async function generateProject(root, options = {}) {
           failpoint: options.failpoint,
           onPhase: options.onTransactionPhase,
           renameOptions: options.renameOptions,
+          lockOwnerId: options.lockOwnerId,
         },
       );
     }

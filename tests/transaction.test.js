@@ -225,3 +225,78 @@ test("staging rejects artifact paths that normalize outside the cache", async (c
   );
   await assert.rejects(() => readFile(path.join(root, ".llmnav", "outside.txt"), "utf8"), /ENOENT/u);
 });
+
+test("a query waits for the active generator instead of recovering its journal", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-transaction-reader-lock-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await createProject(root);
+  const sourcePath = path.join(root, "src", "reserve.ts");
+  const source = await readFile(sourcePath, "utf8");
+  await writeFile(sourcePath, source.replace("generation job", "locked generation job"));
+
+  let releaseWriter;
+  const writerPaused = new Promise((resolve) => {
+    releaseWriter = resolve;
+  });
+  let reachedMoved;
+  const moved = new Promise((resolve) => {
+    reachedMoved = resolve;
+  });
+  const generation = generateProject(root, {
+    onTransactionPhase: async (phase) => {
+      if (phase === "after-cache-moved") {
+        reachedMoved();
+        await writerPaused;
+      }
+    },
+  });
+  await moved;
+  let querySettled = false;
+  const query = queryProject(root, "reserve credits").finally(() => {
+    querySettled = true;
+  });
+  await new Promise((resolve) => setTimeout(resolve, 40));
+  assert.equal(querySettled, false);
+  releaseWriter();
+  await generation;
+  const [result] = await query;
+  assert.equal(result.id, "billing.credit.reserve");
+});
+
+test("concurrent generators serialize complete source-to-cache transactions", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-transaction-writer-lock-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await createProject(root);
+  const sourcePath = path.join(root, "src", "reserve.ts");
+  const source = await readFile(sourcePath, "utf8");
+  await writeFile(sourcePath, source.replace("generation job", "serialized generation job"));
+
+  let unblock;
+  const blocked = new Promise((resolve) => {
+    unblock = resolve;
+  });
+  let firstReachedStage;
+  const staged = new Promise((resolve) => {
+    firstReachedStage = resolve;
+  });
+  const first = generateProject(root, {
+    onTransactionPhase: async (phase) => {
+      if (phase === "after-stage") {
+        firstReachedStage();
+        await blocked;
+      }
+    },
+  });
+  await staged;
+  let secondSettled = false;
+  const second = generateProject(root).finally(() => {
+    secondSettled = true;
+  });
+  await new Promise((resolve) => setTimeout(resolve, 40));
+  assert.equal(secondSettled, false);
+  unblock();
+  const [firstResult, secondResult] = await Promise.all([first, second]);
+  assert.equal(firstResult.ok, true);
+  assert.equal(secondResult.ok, true);
+  assert.equal(secondResult.transaction.skipped, true);
+});

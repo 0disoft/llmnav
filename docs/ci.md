@@ -98,7 +98,7 @@ after moving the previous cache to backup
 after installing a new cache, before commit
 ```
 
-The assertions compare the restored `index.json` with the previous bytes and run a query after recovery. Transient Windows error codes `EACCES`, `EBUSY`, `EEXIST`, `ENOTEMPTY`, and `EPERM` are injected into rename operations to verify bounded retries.
+The assertions compare the restored `index.json` with the previous bytes, prove concurrent writers serialize, and prove a query waits instead of rolling back an active writer. Transient Windows error codes `EACCES`, `EBUSY`, `EEXIST`, `ENOTEMPTY`, and `EPERM` are injected into rename operations to verify bounded retries.
 
 These tests are not a substitute for the Windows CI runner. They make exact phases reproducible on every platform, while the matrix executes the same filesystem workflow on Windows.
 
@@ -191,6 +191,6 @@ Body-only changes should not force semantic text edits. Conversely, a changed in
 
 Commit `.llmnav/cache`. It is consumed by agents, diffable during review, and verified deterministically.
 
-Do not commit `.llmnav/state`, `.llmnav/.transactions`, or `.llmnav/generation-transaction.json`. They contain volatile acceleration or interrupted-operation state.
+Do not commit `.llmnav/state`, `.llmnav/.transactions`, `.llmnav/generation.lock`, or `.llmnav/generation-transaction.json`. They contain volatile acceleration, ownership, or interrupted-operation state.
 
 Do not manually edit generated cache files. Manual edits fail manifest or generation verification and are replaced on the next successful transaction.

@@ -185,6 +185,8 @@ Repository and module catalogs contain semantic fields only. Current paths, line
 
 Generation never mutates the live cache file by file. It builds a complete replacement under `.llmnav/.transactions/<id>/stage`.
 
+The complete source scan and cache commit are serialized by `.llmnav/generation.lock`. The lock records a process and opaque owner ID. A reader waits for a live owner to finish and only then evaluates recovery, while an abandoned lock from a dead process can be removed without granting another process authority over an active journal.
+
 ```text
 write every staged artifact
 verify exact staged bytes
@@ -199,7 +201,7 @@ write journal: committed
 remove backup, transaction directory, and journal
 ```
 
-The journal is `.llmnav/generation-transaction.json`. Transaction paths are repository-relative and validated to remain below `.llmnav/.transactions`.
+The journal is `.llmnav/generation-transaction.json`. It records the writer owner ID, and transaction paths are repository-relative and validated to remain below `.llmnav/.transactions`.
 
 If generation throws before commit, rollback restores the backup. If the process is killed, the next `query`, `generate`, or `doctor` recovers from the journal before reading cache data.
 

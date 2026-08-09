@@ -9,7 +9,7 @@ stability=architecture
 */
 
 import { randomBytes } from "node:crypto";
-import { lstat, mkdir, readFile, readdir, rename, rm, stat, writeFile } from "node:fs/promises";
+import { lstat, mkdir, open, readFile, readdir, rename, rm, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
 import {
@@ -17,6 +17,7 @@ import {
   atomicWrite,
   compareText,
   readJson,
+  readJsonSafe,
   projectRelativePath,
   relativePosix,
   sha256,
@@ -29,8 +30,64 @@ export const TRANSACTION_ABORT_EXIT_CODE = 86;
 const RETRYABLE_RENAME_CODES = new Set(["EACCES", "EBUSY", "EEXIST", "ENOTEMPTY", "EPERM"]);
 const DEFAULT_RETRY_DELAYS = Object.freeze([0, 8, 16, 32, 64, 128, 256, 512]);
 const JOURNAL_PHASES = new Set(["prepared", "old-moved", "new-installed", "committed"]);
+const DEFAULT_LOCK_TIMEOUT_MS = 30_000;
+const DEFAULT_LOCK_POLL_MS = 50;
+
+export async function withGenerationLock(root, callback, options = {}) {
+  const lock = await acquireGenerationLock(root, options);
+  try {
+    return await callback(lock);
+  } finally {
+    await releaseGenerationLock(lock);
+  }
+}
+
+export async function acquireGenerationLock(root, options = {}) {
+  const controlDirectory = path.join(root, ".llmnav");
+  const lockPath = path.join(controlDirectory, "generation.lock");
+  await assertNoSymlinkTraversal(root, controlDirectory, ".llmnav");
+  await mkdir(controlDirectory, { recursive: true });
+  const ownerId = options.ownerId ?? createTransactionId();
+  const timeoutMs = options.timeoutMs ?? DEFAULT_LOCK_TIMEOUT_MS;
+  const pollMs = options.pollMs ?? DEFAULT_LOCK_POLL_MS;
+  const delays = options.delays ?? [0, ...Array.from({ length: Math.ceil(timeoutMs / pollMs) }, () => pollMs)];
+  const openImpl = options.openImpl ?? open;
+  const sleepImpl = options.sleepImpl ?? sleep;
+
+  for (const delay of delays) {
+    if (delay > 0) await sleepImpl(delay);
+    try {
+      const handle = await openImpl(lockPath, "wx");
+      try {
+        await handle.writeFile(stableStringify({ schemaVersion: 1, ownerId, pid: process.pid }));
+        await handle.sync();
+      } finally {
+        await handle.close();
+      }
+      return { root, lockPath, ownerId };
+    } catch (error) {
+      if (!error || typeof error !== "object" || error.code !== "EEXIST") throw error;
+      const existing = await readJsonSafe(lockPath, null);
+      if (existing && Number.isInteger(existing.pid) && !isProcessAlive(existing.pid)) {
+        await removeOwnedLock(lockPath, existing.ownerId);
+      }
+    }
+  }
+  throw new Error("Timed out waiting for the LLMNav generation lock.");
+}
+
+export async function releaseGenerationLock(lock) {
+  await removeOwnedLock(lock.lockPath, lock.ownerId);
+}
 
 export async function commitGeneratedCache(root, cacheDirectory, artifacts, options = {}) {
+  if (!options.lockOwnerId) {
+    return withGenerationLock(
+      root,
+      (lock) => commitGeneratedCache(root, cacheDirectory, artifacts, { ...options, lockOwnerId: lock.ownerId }),
+      options.lockOptions,
+    );
+  }
   const cacheRelative = projectRelativePath(cacheDirectory, "cacheDirectory");
   const cachePath = path.join(root, cacheRelative);
   const controlDirectory = path.join(root, ".llmnav");
@@ -41,6 +98,7 @@ export async function commitGeneratedCache(root, cacheDirectory, artifacts, opti
   const recovery = await recoverGenerationTransaction(root, {
     cacheDirectory: cacheRelative,
     renameOptions: options.renameOptions,
+    lockOwnerId: options.lockOwnerId,
   });
 
   const transactionId = options.transactionId ?? createTransactionId();
@@ -83,6 +141,7 @@ export async function commitGeneratedCache(root, cacheDirectory, artifacts, opti
       stageDirectory: relativePosix(root, stagePath),
       backupDirectory: relativePosix(root, backupPath),
       hadExistingCache,
+      ownerId: options.lockOwnerId,
       phase: "prepared",
     };
     await atomicWrite(journalPath, stableStringify(journal));
@@ -118,15 +177,17 @@ export async function commitGeneratedCache(root, cacheDirectory, artifacts, opti
     };
   } catch (error) {
     const journal = await readJson(journalPath, null);
-    if (journal?.phase !== "committed") {
+    const ownedJournal = journal?.ownerId === options.lockOwnerId ? journal : null;
+    if (ownedJournal?.phase !== "committed") {
       try {
-        await rollbackTransaction(root, journal ?? {
+        await rollbackTransaction(root, ownedJournal ?? {
           schemaVersion: TRANSACTION_SCHEMA_VERSION,
           cacheDirectory: cacheRelative,
           transactionDirectory: relativePosix(root, transactionPath),
           stageDirectory: relativePosix(root, stagePath),
           backupDirectory: relativePosix(root, backupPath),
           hadExistingCache: hadExistingCacheAtStart,
+          ownerId: options.lockOwnerId,
           phase: "prepared",
         }, cacheRelative, options.renameOptions);
       } catch (rollbackError) {
@@ -139,6 +200,13 @@ export async function commitGeneratedCache(root, cacheDirectory, artifacts, opti
 }
 
 export async function recoverGenerationTransaction(root, options = {}) {
+  if (!options.lockOwnerId) {
+    return withGenerationLock(
+      root,
+      (lock) => recoverGenerationTransaction(root, { ...options, lockOwnerId: lock.ownerId }),
+      options.lockOptions,
+    );
+  }
   const controlDirectory = path.join(root, ".llmnav");
   await assertNoSymlinkTraversal(root, controlDirectory, ".llmnav");
   const journalPath = path.join(controlDirectory, "generation-transaction.json");
@@ -303,8 +371,42 @@ function validateJournal(root, journal, expectedCacheDirectory) {
   if (typeof journal.hadExistingCache !== "boolean") {
     throw new Error("Generation transaction journal has invalid hadExistingCache.");
   }
+  if (journal.ownerId !== undefined && (typeof journal.ownerId !== "string" || !journal.ownerId)) {
+    throw new Error("Generation transaction journal has invalid ownerId.");
+  }
   if (!JOURNAL_PHASES.has(journal.phase)) {
     throw new Error("Generation transaction journal has invalid phase.");
+  }
+}
+
+async function removeOwnedLock(lockPath, ownerId) {
+  const quarantinePath = `${lockPath}.release-${ownerId}-${randomBytes(4).toString("hex")}`;
+  try {
+    await rename(lockPath, quarantinePath);
+  } catch (error) {
+    if (error && typeof error === "object" && error.code === "ENOENT") return false;
+    throw error;
+  }
+  const current = await readJsonSafe(quarantinePath, null);
+  if (current?.ownerId === ownerId) {
+    await rm(quarantinePath, { force: true });
+    return true;
+  }
+  try {
+    await rename(quarantinePath, lockPath);
+  } catch (error) {
+    if (!error || typeof error !== "object" || error.code !== "EEXIST") throw error;
+    await rm(quarantinePath, { force: true });
+  }
+  return false;
+}
+
+function isProcessAlive(pid) {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch (error) {
+    return Boolean(error && typeof error === "object" && error.code === "EPERM");
   }
 }
 

@@ -219,6 +219,7 @@ function validateGeneration(generation, problems) {
       ".llmnav/.transactions",
       ".llmnav/config.json",
       ".llmnav/generation-transaction.json",
+      ".llmnav/generation.lock",
       ".llmnav/ids.jsonl",
       ".llmnav/order.lock",
     ];

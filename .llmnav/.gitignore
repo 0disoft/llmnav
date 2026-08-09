@@ -2,4 +2,6 @@ tmp/
 state/
 .transactions/
 generation-transaction.json
+generation.lock
+generation.lock.release-*
 *.tmp-*

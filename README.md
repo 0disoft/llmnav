@@ -14,7 +14,7 @@ LLMNav is not a documentation generator, an embedding database, or a reason to a
 * A schemaVersion 1 `index.json` compatible with v0.1 consumers
 * A deterministic persistent inverted index that reuses unchanged card tokenization
 * File and card-level incremental indexing
-* Transactional cache generation with rollback and interrupted-run recovery
+* Repository-locked transactional cache generation with rollback and interrupted-run recovery
 * Machine-readable changed-card, affected-boundary, and affected-catalog output
 * Exported API and effective configuration contract fingerprints
 * TypeScript and Go declaration enrichment with declaration-level body hashes
@@ -95,7 +95,7 @@ deleted file                → remove its cards and postings
 
 All generated cache artifacts are completed and verified in a staging directory before the live cache is replaced. If writing, verification, rename, or the process itself fails, the previous cache remains available or is restored before the next query or generation.
 
-Windows transient rename failures such as `EPERM`, `EBUSY`, `EACCES`, `EEXIST`, and `ENOTEMPTY` are retried. CI executes the transaction and interruption suite on `windows-latest` as well as Linux.
+One repository-scoped generation lock serializes the complete source-to-cache operation. Readers wait for an active writer and recover only abandoned journals, so they cannot roll back a live generation. Windows transient rename failures such as `EPERM`, `EBUSY`, `EACCES`, `EEXIST`, and `ENOTEMPTY` are retried. CI executes the transaction and interruption suite on `windows-latest` as well as Linux.
 
 ## Machine-readable change output
 
@@ -213,7 +213,7 @@ See [docs/cli.md](docs/cli.md) for every option and exit code.
       billing.credit.txt
 ```
 
-`.llmnav/.transactions/` and `.llmnav/generation-transaction.json` may exist only while a cache transaction is incomplete. They are ignored and recovered automatically. Generated structure is never written back into source comments.
+`.llmnav/.transactions/`, `.llmnav/generation-transaction.json`, and `.llmnav/generation.lock` may exist only while a cache transaction is active or incomplete. They are ignored; abandoned state is recovered automatically after lock ownership is checked. Generated structure is never written back into source comments.
 
 `order.lock` is append-only under normal development. New IDs are appended rather than inserted into a globally re-sorted catalog, preserving larger prompt prefixes as the repository grows.
 
