@@ -6,6 +6,23 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 
 ## [Unreleased]
 
+## [0.5.1] — 2026-08-09
+
+### Added
+
+* Added canonical-source `generate --full` verification for CI, release, and doctor gates.
+* Added repository-scoped generation locking, transaction owner checks, and atomic cache, registry, and stable-order recovery.
+* Added reusable project navigation snapshots with explicit refresh for long-lived provider-neutral hosts.
+* Added runtime-to-declaration export parity coverage.
+
+### Fixed
+
+* Normalized foreign path separators, encoded SARIF artifact URIs, and blocked cache and staging path escapes.
+* Corrected JavaScript import extraction and regex-body scanning, Python declaration body hashing, and Rust lifetime parsing.
+* Invalidated pre-fix file-state accelerators so corrected declaration and import data is rebuilt from source.
+* Preserved multi-target replacement ambiguity and detected cycles hidden in replacement branches.
+* Synchronized public TypeScript declarations with runtime return values and graph-aware options.
+
 ## [0.5.0] — 2026-08-09
 
 ### Added
