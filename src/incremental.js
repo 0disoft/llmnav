@@ -25,7 +25,7 @@ import {
 } from "./util.js";
 
 export const FILE_STATE_SCHEMA_VERSION = 1;
-export const SOURCE_INDEXER_VERSION = 2;
+export const SOURCE_INDEXER_VERSION = 3;
 const STAT_HINTS_SCHEMA_VERSION = 1;
 
 export async function scanProjectIncremental(root, options = {}) {
@@ -215,17 +215,20 @@ function hydrateFileRecord(root, absolutePath, stateFile) {
 }
 
 function hydrateRecords(root, absolutePath, stateFile) {
-  return stateFile.blocks.map((block, index) => ({
-    root,
-    absolutePath,
-    relativePath: stateFile.path,
-    source: null,
-    bodyHash: stateFile.contentHash,
-    imports: stateFile.imports,
-    block,
-    card: block.card,
-    declaration: stateFile.declarations[index] ?? null,
-  }));
+  return stateFile.blocks.map((block, index) => {
+    const declaration = stateFile.declarations[index] ?? null;
+    return {
+      root,
+      absolutePath,
+      relativePath: stateFile.path,
+      source: null,
+      bodyHash: declaration?.bodyHash ?? stateFile.contentHash,
+      imports: stateFile.imports,
+      block,
+      card: block.card,
+      declaration,
+    };
+  });
 }
 
 function mapStateFiles(files) {

@@ -23,7 +23,7 @@ query → show → bounded context → selected source bodies
 | Layer | Contents | Persistence |
 | --- | --- | --- |
 | Stable meaning | ID, role, search phrases, ownership, invariants, effects, risks, semantic relations, stability | source comments |
-| Generated structure | path, declaration, signature, imports, semantic/structure/body hashes | `.llmnav/cache` |
+| Generated structure | path, declaration, language, visibility, boundaries, imports, semantic/structure/body hashes | `.llmnav/cache` |
 | Volatile execution hints | file size, mtime, ctime used only to avoid reads | `.llmnav/state`, ignored |
 
 Generated paths, signatures, callers, references, timestamps, and hashes are never written into source comments. The generated layer may be discarded and rebuilt without changing source semantics.
@@ -58,7 +58,13 @@ Each card carries three independent hashes.
 | --- | --- | --- |
 | `semantic` | canonical stable card fields | role, invariant, effect, risk, semantic relation change |
 | `structure` | path, scope, declaration, signature, imports | move, rename, signature or import change |
-| `body` | containing source file bytes | any source-file content change |
+| `body` | attached declaration bytes for symbol cards; containing file bytes otherwise | body change inside the selected declaration or containing file |
+
+## Local structure enrichment
+
+Symbol attachment records the detected language, public/exported status, visibility, Go receiver when present, declaration span, and a declaration-level body hash. TypeScript and Go use dedicated deterministic declaration patterns; JavaScript, Rust, Python, and generic C-like declarations retain the compatible fallback patterns.
+
+Generated cards may contain a sorted `boundaries` array. LLMNav detects `route`, `event`, `schema`, `migration`, and `command` boundaries from repository-relative paths and controlled semantic effects or risks. Each record includes `confidence` and explicit evidence such as `path`, `effect`, or `risk`. These hints are generated navigation data and are never copied into source comments.
 
 ## Deterministic inverted index
 

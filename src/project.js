@@ -41,7 +41,7 @@ export async function scanProject(root, options = {}) {
         absolutePath,
         relativePath,
         source,
-        bodyHash: contentHash,
+        bodyHash: declaration?.bodyHash ?? contentHash,
         imports,
         block,
         card: block.card,

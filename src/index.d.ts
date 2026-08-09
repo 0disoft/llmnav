@@ -46,8 +46,20 @@ export interface Declaration {
   kind: string;
   symbol: string;
   signature: string;
+  language: "typescript" | "javascript" | "go" | "rust" | "python" | "generic";
+  exported: boolean;
+  visibility: "public" | "module" | "private";
+  receiver: string | null;
   line: number;
   offset: number;
+  endOffset: number;
+  bodyHash: string;
+}
+
+export interface DetectedBoundary {
+  kind: "command" | "event" | "migration" | "route" | "schema";
+  confidence: "high" | "medium";
+  evidence: string[];
 }
 
 export interface Diagnostic {
@@ -67,11 +79,16 @@ export interface IndexedLocation {
   kind: string | null;
   declarationLine: number | null;
   signature: string | null;
+  language: Declaration["language"] | null;
+  exported: boolean | null;
+  visibility: Declaration["visibility"] | null;
+  receiver: string | null;
 }
 
 export interface IndexedCard extends Omit<LlmnavCard, "unknown"> {
   location: IndexedLocation;
   imports: string[];
+  boundaries: DetectedBoundary[];
   hashes: {
     semantic: string;
     structure: string;
@@ -342,6 +359,7 @@ export interface EvaluationResult {
 }
 
 export const AGENT_PROTOCOL: string;
+export const BOUNDARY_KINDS: readonly DetectedBoundary["kind"][];
 export const CONTRACT_FINGERPRINT_SCHEMA_VERSION: 1;
 export const FILE_STATE_SCHEMA_VERSION: number;
 export const SOURCE_INDEXER_VERSION: number;
@@ -354,6 +372,7 @@ export const TRANSACTION_SCHEMA_VERSION: number;
 export const TRANSACTION_ABORT_EXIT_CODE: number;
 
 export function installAgentInstructions(root: string, adapters?: string[]): Promise<string[]>;
+export function detectBoundaries(record: ProjectRecord): DetectedBoundary[];
 export function buildContractFingerprints(project: ScannedProject, cards: IndexedCard[]): ContractFingerprints;
 export function compareContractFingerprints(previous: ContractFingerprints | null | undefined, current: ContractFingerprints | null | undefined): ContractFingerprintChange[];
 export function compareCardIndexes(previousIndex: LlmnavIndex | null, currentIndex: LlmnavIndex): ChangedCardRecord[];

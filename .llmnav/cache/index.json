@@ -1,6 +1,7 @@
 {
   "cards": [
     {
+      "boundaries": [],
       "excludes": [
         "access-token signing",
         "user profile storage"
@@ -8,7 +9,7 @@
       "hashes": {
         "body": "5120d6b711e4179a586eaec5a01e84d219d648c9ff8599426badfaea46928e94",
         "semantic": "4d806e88c451b5674b9aac8a56bcb2dca884d039dac9cba7045160d3129c91bf",
-        "structure": "5a6a936937543366fc438a78766572860d4c42acae3246f5cab25231741019d7"
+        "structure": "ed14961b2c0332165f6508041b028cf225e0fb2cd655eb0c8bd1e32e2928a87b"
       },
       "id": "example.auth.session",
       "imports": [
@@ -20,11 +21,15 @@
       "location": {
         "declarationLine": null,
         "endLine": 9,
+        "exported": null,
         "kind": null,
+        "language": null,
         "path": "examples/typescript/src/session.ts",
+        "receiver": null,
         "signature": null,
         "startLine": 1,
-        "symbol": null
+        "symbol": null,
+        "visibility": null
       },
       "owns": [
         "refresh-token family",
@@ -40,14 +45,23 @@
       "stability": "architecture"
     },
     {
+      "boundaries": [
+        {
+          "confidence": "high",
+          "evidence": [
+            "effect"
+          ],
+          "kind": "event"
+        }
+      ],
       "effect": [
         "db.write(session_tokens)",
         "event.emit(auth.session.revoked)"
       ],
       "hashes": {
-        "body": "5120d6b711e4179a586eaec5a01e84d219d648c9ff8599426badfaea46928e94",
+        "body": "eb7d9275b5230b6d479ce043c5bc32070243df8fa4f03acde7d16651022de1d4",
         "semantic": "ea85cad8750ef442ffbec6f501668277c3c03fe235228a5f70067d37dc074a21",
-        "structure": "f471754231ace96c4052806517180491f1b3b3e906165f97818c30dafda9da35"
+        "structure": "f0471b01e5ce4b9c48afdc0c9c0bf32c8730618138253ae86fc447cffd628e68"
       },
       "id": "example.auth.session.rotate",
       "imports": [
@@ -60,11 +74,15 @@
       "location": {
         "declarationLine": 33,
         "endLine": 31,
+        "exported": true,
         "kind": "function",
+        "language": "typescript",
         "path": "examples/typescript/src/session.ts",
+        "receiver": null,
         "signature": "export async function rotateSession( input: RotateSessionInput, ): Promise<RotateSessionResult>",
         "startLine": 21,
-        "symbol": "rotateSession"
+        "symbol": "rotateSession",
+        "visibility": "public"
       },
       "rel": [
         "test>example.auth.session.rotate-contract"
@@ -84,10 +102,11 @@
       "stability": "contract"
     },
     {
+      "boundaries": [],
       "hashes": {
-        "body": "5120d6b711e4179a586eaec5a01e84d219d648c9ff8599426badfaea46928e94",
+        "body": "33ab03e1cc071070bc94f3af10746e106629487bd2a1e18d79ff08adfd1ec126",
         "semantic": "1c4d1f970c2758d05a59c2c5d6be3e9cafffb21cb1a4f0a92e947b4ec8ef23f0",
-        "structure": "d93ced15b346d8ab9344eaaac5a110ec38024194f3e41fa169312d435a607197"
+        "structure": "45a02e61ad4ace5a88936cd7428ad3fd0161404fb2edf05bf4bb68a859362acf"
       },
       "id": "example.auth.session.rotate-contract",
       "imports": [
@@ -96,11 +115,15 @@
       "location": {
         "declarationLine": 47,
         "endLine": 45,
+        "exported": true,
         "kind": "function",
+        "language": "typescript",
         "path": "examples/typescript/src/session.ts",
+        "receiver": null,
         "signature": "export function assertRotateSessionContract(): void",
         "startLine": 40,
-        "symbol": "assertRotateSessionContract"
+        "symbol": "assertRotateSessionContract",
+        "visibility": "public"
       },
       "role": "Verify rotation preserves single-token and replay-revocation guarantees.",
       "scope": "symbol",
@@ -112,6 +135,7 @@
       "stability": "contract"
     },
     {
+      "boundaries": [],
       "excludes": [
         "provider invoice settlement",
         "subscription entitlement"
@@ -119,7 +143,7 @@
       "hashes": {
         "body": "472ab94549b0b17821a8351c1e7f0cc938a97b14bb81364835aa8c5c177323e7",
         "semantic": "27ae475c55b7919989f9d6d626bc4ee9f894660b94028e30e44e72cf28da32ff",
-        "structure": "7ab67529a565572e018e573efa24c85e12a11889d382b031e26a32b344b6999f"
+        "structure": "64c0afc6ac1f3a4be3ec59b6075e478b6e2b890c9c99d34f9197740926abfff7"
       },
       "id": "example.billing.credit",
       "imports": [],
@@ -129,11 +153,15 @@
       "location": {
         "declarationLine": null,
         "endLine": 11,
+        "exported": null,
         "kind": null,
+        "language": null,
         "path": "examples/go/session/reserve.go",
+        "receiver": null,
         "signature": null,
         "startLine": 3,
-        "symbol": null
+        "symbol": null,
+        "visibility": null
       },
       "owns": [
         "credit reservation",
@@ -149,13 +177,14 @@
       "stability": "architecture"
     },
     {
+      "boundaries": [],
       "effect": [
         "db.write(credit_reservations)"
       ],
       "hashes": {
-        "body": "472ab94549b0b17821a8351c1e7f0cc938a97b14bb81364835aa8c5c177323e7",
+        "body": "e06dbef7345aecf6261d50ba5728819f5c641967c4bdf0c7bff5dbe2ac916bdb",
         "semantic": "4fdbdcb343ddb5da5a38f4327f9dc03a54cdb5f32bd58566974c397bd00c778c",
-        "structure": "196444767fdb12b748056f11a6eda91a55e9bb3b3cd666813b2e152a5a21f011"
+        "structure": "b7c54f282b0b974e5bcfef021617700d53d39d03292b8bda0485a5f4bd5dae6f"
       },
       "id": "example.billing.credit.reserve",
       "imports": [],
@@ -165,11 +194,15 @@
       "location": {
         "declarationLine": 28,
         "endLine": 26,
+        "exported": true,
         "kind": "function",
+        "language": "go",
         "path": "examples/go/session/reserve.go",
+        "receiver": null,
         "signature": "func ReserveCredits(accountID string, amount int64, idempotencyKey string) Reservation",
         "startLine": 18,
-        "symbol": "ReserveCredits"
+        "symbol": "ReserveCredits",
+        "visibility": "public"
       },
       "risk": [
         "concurrency"
@@ -184,6 +217,7 @@
       "stability": "contract"
     },
     {
+      "boundaries": [],
       "excludes": [
         "account deletion",
         "long-term archive storage"
@@ -191,7 +225,7 @@
       "hashes": {
         "body": "034485c2570a9cc6cf3782eaf3765ac199eaf3c105969d4c5276764f64b8cc7b",
         "semantic": "8a4339037abb5c808e505eb35993ca9bac451ff6edc771d4cbf91edd4eb02a1a",
-        "structure": "8cd3e66a6710c14a868b8969f37a0ba9c87175223c4f4477803f58bcc3e6ed4d"
+        "structure": "574e1aa8020e65f85b31915b4edc8c3169a18dd5855ee0a8cb4fe03c3b9cb2ef"
       },
       "id": "example.privacy.export",
       "imports": [
@@ -203,11 +237,15 @@
       "location": {
         "declarationLine": null,
         "endLine": 9,
+        "exported": null,
         "kind": null,
+        "language": null,
         "path": "examples/python/export_job.py",
+        "receiver": null,
         "signature": null,
         "startLine": 1,
-        "symbol": null
+        "symbol": null,
+        "visibility": null
       },
       "owns": [
         "export manifest",
@@ -223,14 +261,23 @@
       "stability": "architecture"
     },
     {
+      "boundaries": [
+        {
+          "confidence": "high",
+          "evidence": [
+            "effect"
+          ],
+          "kind": "event"
+        }
+      ],
       "effect": [
         "db.write(export_jobs)",
         "event.emit(privacy.export.requested)"
       ],
       "hashes": {
-        "body": "034485c2570a9cc6cf3782eaf3765ac199eaf3c105969d4c5276764f64b8cc7b",
+        "body": "4760120b051e7ad5a7f82e770e7fa53882db793a25ff0c59bcc8cb6c0f4095b9",
         "semantic": "c01b2ebbd877ed11aba267fbfa7a7a5d6b25e98512d8b07d607516159e7acefc",
-        "structure": "ff1bbe6f2e11501fbc6b8d58cd089a8de9045f010c8dfdc9fb1829745ce7524c"
+        "structure": "1ba034e6d6e99cd12ba0f1df1beaa78a172a44e6f322e3cc696977802a604d06"
       },
       "id": "example.privacy.export.prepare",
       "imports": [
@@ -242,11 +289,15 @@
       "location": {
         "declarationLine": 31,
         "endLine": 29,
+        "exported": true,
         "kind": "function",
+        "language": "python",
         "path": "examples/python/export_job.py",
+        "receiver": null,
         "signature": "def prepare_export(account_id: str) -> ExportJob: return ExportJob(job_id=f\"job",
         "startLine": 20,
-        "symbol": "prepare_export"
+        "symbol": "prepare_export",
+        "visibility": "public"
       },
       "rel": [
         "test>example.privacy.export.prepare-contract"
@@ -264,10 +315,11 @@
       "stability": "contract"
     },
     {
+      "boundaries": [],
       "hashes": {
-        "body": "034485c2570a9cc6cf3782eaf3765ac199eaf3c105969d4c5276764f64b8cc7b",
+        "body": "ffa5b2112d9f07da1a6121dabb9a897c41faba8b05b8c56ce90a79283dc7dd6a",
         "semantic": "3d3d742230ed78e848032539d73960dffe14fd5e6366a2c6eda3d00abe73c62e",
-        "structure": "bc3342873b1d28194cec70e05a6491b54eec5753e1e31c3f77cbf25296aa0fc6"
+        "structure": "4b4d283c88fd662b7b2b4585f3bfeae840d5710c49f84efc4c5a8b8c156e6e51"
       },
       "id": "example.privacy.export.prepare-contract",
       "imports": [
@@ -276,11 +328,15 @@
       "location": {
         "declarationLine": 42,
         "endLine": 40,
+        "exported": true,
         "kind": "function",
+        "language": "python",
         "path": "examples/python/export_job.py",
+        "receiver": null,
         "signature": "def assert_prepare_export_contract() -> None: \"\"\"Replace with repository-specific tests.\"\"\"",
         "startLine": 35,
-        "symbol": "assert_prepare_export_contract"
+        "symbol": "assert_prepare_export_contract",
+        "visibility": "public"
       },
       "role": "Verify export preparation keeps object keys private and jobs auditable.",
       "scope": "symbol",
@@ -292,6 +348,7 @@
       "stability": "contract"
     },
     {
+      "boundaries": [],
       "excludes": [
         "postinstall mutation",
         "agent execution"
@@ -299,7 +356,7 @@
       "hashes": {
         "body": "20fdbc37f99cfdf43691322cf9de803b00d7931ae89d047195dadd76b98d7017",
         "semantic": "7258d93062db7c24d1bdf4076e99802a3fcc413f4012e0aca49148a9fe1dedaa",
-        "structure": "ce92604cd4fe29c2ac1adc10a39e9928f44a6538962e42818c60299ce506e679"
+        "structure": "09099700573e0105c12f704c034b183bb1468802f07f7dd2659b129be1e294d0"
       },
       "id": "llmnav.agent.install",
       "imports": [
@@ -348,11 +405,15 @@
       "location": {
         "declarationLine": null,
         "endLine": 9,
+        "exported": null,
         "kind": null,
+        "language": null,
         "path": "src/agents.js",
+        "receiver": null,
         "signature": null,
         "startLine": 1,
-        "symbol": null
+        "symbol": null,
+        "visibility": null
       },
       "owns": [
         "agent instruction adapters",
@@ -371,6 +432,7 @@
       "stability": "architecture"
     },
     {
+      "boundaries": [],
       "excludes": [
         "semantic rule definitions",
         "index persistence format"
@@ -378,7 +440,7 @@
       "hashes": {
         "body": "bb22b51c94d545b030f3075e49525452a3624f3dc06f0a0eea4548055bce1ab2",
         "semantic": "ce9c7cd107639f96de4f26b913a7e6bdd206af278fbd30acf02ff833ac9d3498",
-        "structure": "519d4f6f21e537f89188be02057a99e174c9ec89e4a600bc00b666439ce38089"
+        "structure": "9f2409c82035f2d0c9ca0d0ebf3185efa8d8cdd63bfb386fc1062fb9f3a1ee04"
       },
       "id": "llmnav.cli.dispatch",
       "imports": [
@@ -478,11 +540,15 @@
       "location": {
         "declarationLine": null,
         "endLine": 12,
+        "exported": null,
         "kind": null,
+        "language": null,
         "path": "src/cli.js",
+        "receiver": null,
         "signature": null,
         "startLine": 1,
-        "symbol": null
+        "symbol": null,
+        "visibility": null
       },
       "owns": [
         "command dispatch",
@@ -505,6 +571,7 @@
       "stability": "architecture"
     },
     {
+      "boundaries": [],
       "excludes": [
         "benchmark task execution",
         "model quality scoring"
@@ -512,7 +579,7 @@
       "hashes": {
         "body": "dcc8d70c727f84a17cc119cff300da3774b0bd5cabe7b4e0d8e72fd040215f8f",
         "semantic": "1a58f139a77d418513f77d2e2719dc37ac1e68c35c263bdce98b35386615c4bb",
-        "structure": "be3394115d8dd47966f983cdc89d94b89ae6d034a1ef32a8bcb065382cebc812"
+        "structure": "5f6731b63720511b9204f01a8932b41df390a323d157ac960355a946c573bd9f"
       },
       "id": "llmnav.eval.measure",
       "imports": [
@@ -526,11 +593,15 @@
       "location": {
         "declarationLine": null,
         "endLine": 9,
+        "exported": null,
         "kind": null,
+        "language": null,
         "path": "src/evaluation.js",
+        "receiver": null,
         "signature": null,
         "startLine": 1,
-        "symbol": null
+        "symbol": null,
+        "visibility": null
       },
       "owns": [
         "search regression tests",
@@ -550,14 +621,15 @@
       "stability": "architecture"
     },
     {
+      "boundaries": [],
       "excludes": [
         "source semantics",
         "agent search decisions"
       ],
       "hashes": {
-        "body": "9a451b404cfff829f8c921d9edf7a03f584ab52e6b6255a6194298264195122b",
+        "body": "9e9dca32b852668d86081a56ac1cdfbc9314e3aa480982a4e673ffd0c478dcae",
         "semantic": "7052622c9732ab29e37c3ab87f848188e931f601684e811e7bb8adef31fbfe85",
-        "structure": "6d5f281088d6dbf4f0560f750fd41c2988b337602306f4426512109b216d3115"
+        "structure": "39fd7363ce540d94af70abd2d1bdaf1965ced1b29aa360e3bc79d2ce4f972a80"
       },
       "id": "llmnav.index.generate",
       "imports": [
@@ -588,12 +660,13 @@
         ",\n    ",
         ",\n    `Repository: ${repositoryId}`,\n    ",
         ",\n    code: ",
-        ",\n    message: `${label} contract fingerprint changed; review the affected contract before committing generated artifacts.`,\n    file,\n    line: 1,\n    column: 1,\n  };\n}\n\nfunction compareGeneratedDiagnostics(left, right) {\n  return compareText(left.file, right.file) ||\n    left.line - right.line ||\n    left.column - right.column ||\n    compareText(left.code, right.code) ||\n    compareText(left.message, right.message);\n}\n\nfunction indexedCard(record) {\n  const canonical = cardToCanonicalObject(record.card);\n  const semanticPayload = stableJson(canonical);\n  const structurePayload = stableJson({\n    path: record.relativePath,\n    scope: record.block.scope,\n    symbol: record.declaration?.symbol ?? null,\n    kind: record.declaration?.kind ?? null,\n    signature: record.declaration?.signature ?? null,\n    imports: record.imports,\n  });\n  return {\n    ...canonical,\n    location: {\n      path: record.relativePath,\n      startLine: record.block.startLine,\n      endLine: record.block.endLine,\n      symbol: record.declaration?.symbol ?? null,\n      kind: record.declaration?.kind ?? null,\n      declarationLine: record.declaration?.line ?? null,\n      signature: record.declaration?.signature ?? null,\n    },\n    imports: record.imports,\n    hashes: {\n      semantic: sha256(semanticPayload),\n      structure: sha256(structurePayload),\n      body: record.bodyHash ?? sha256(record.source ?? ",
+        ",\n    message: `${label} contract fingerprint changed; review the affected contract before committing generated artifacts.`,\n    file,\n    line: 1,\n    column: 1,\n  };\n}\n\nfunction compareGeneratedDiagnostics(left, right) {\n  return compareText(left.file, right.file) ||\n    left.line - right.line ||\n    left.column - right.column ||\n    compareText(left.code, right.code) ||\n    compareText(left.message, right.message);\n}\n\nfunction indexedCard(record) {\n  const canonical = cardToCanonicalObject(record.card);\n  const boundaries = detectBoundaries(record);\n  const semanticPayload = stableJson(canonical);\n  const structurePayload = stableJson({\n    path: record.relativePath,\n    scope: record.block.scope,\n    symbol: record.declaration?.symbol ?? null,\n    kind: record.declaration?.kind ?? null,\n    signature: record.declaration?.signature ?? null,\n    language: record.declaration?.language ?? null,\n    exported: record.declaration?.exported ?? null,\n    visibility: record.declaration?.visibility ?? null,\n    receiver: record.declaration?.receiver ?? null,\n    imports: record.imports,\n    boundaries,\n  });\n  return {\n    ...canonical,\n    location: {\n      path: record.relativePath,\n      startLine: record.block.startLine,\n      endLine: record.block.endLine,\n      symbol: record.declaration?.symbol ?? null,\n      kind: record.declaration?.kind ?? null,\n      declarationLine: record.declaration?.line ?? null,\n      signature: record.declaration?.signature ?? null,\n      language: record.declaration?.language ?? null,\n      exported: record.declaration?.exported ?? null,\n      visibility: record.declaration?.visibility ?? null,\n      receiver: record.declaration?.receiver ?? null,\n    },\n    imports: record.imports,\n    boundaries,\n    hashes: {\n      semantic: sha256(semanticPayload),\n      structure: sha256(structurePayload),\n      body: record.bodyHash ?? sha256(record.source ?? ",
         ",\n  );\n  artifacts.set(`${cacheRoot}/search-index.json`, renderSearchIndex(searchIndex));\n  artifacts.set(`${cacheRoot}/file-state.json`, renderFileState(fileState));\n\n  const repositoryCards = cards.filter((card) =>\n    project.config.generation.repositoryCatalogStabilities.includes(card.stability),\n  );\n  artifacts.set(`${cacheRoot}/repo-core.txt`, renderCatalog(project.config.repositoryId, ",
         ",\n  ];\n  for (const card of cards) lines.push(renderSemanticCard(card), ",
         ",\n  ];\n  if (modules.length === 0) lines.push(",
         ", ",
         ", repositoryCards));\n\n  const modules = groupByModule(cards, project.config.generation.moduleDepth);\n  const moduleManifest = [];\n  for (const [moduleId, moduleCards] of modules) {\n    const filtered = moduleCards.filter((card) =>\n      project.config.generation.moduleCatalogStabilities.includes(card.stability),\n    );\n    if (filtered.length === 0) continue;\n    const relativePath = `${cacheRoot}/modules/${safeModuleName(moduleId)}.txt`;\n    artifacts.set(relativePath, renderCatalog(project.config.repositoryId, moduleId, filtered));\n    moduleManifest.push({ id: moduleId, file: relativePath, cards: filtered.length });\n  }\n\n  artifacts.set(`${cacheRoot}/agent-context.md`, renderAgentContext(project.config.repositoryId, moduleManifest));\n\n  const contentHashes = Object.fromEntries(\n    [...artifacts.entries()]\n      .sort(([left], [right]) => compareText(left, right))\n      .map(([relativePath, content]) => [relativePath, sha256(content)]),\n  );\n  const manifest = {\n    schemaVersion: 1,\n    specVersion: SPEC_VERSION,\n    repositoryId: project.config.repositoryId,\n    cardCount: cards.length,\n    moduleCount: moduleManifest.length,\n    sourceHash: index.sourceHash,\n    searchCardSetHash: searchIndex.cardSetHash,\n    searchIndexSchemaVersion: searchIndex.schemaVersion,\n    fileStateSchemaVersion: fileState.schemaVersion,\n    files: contentHashes,\n  };\n  artifacts.set(`${cacheRoot}/manifest.json`, stableStringify(manifest));\n  return { artifacts, index, searchIndex, searchStats, fileState, moduleManifest };\n}\n\nfunction diagnosticForContractChange(change) {\n  const file = change.kind === ",
+        "./boundaries.js",
         "./changes.js",
         "./config.js",
         "./contracts.js",
@@ -623,11 +696,15 @@
       "location": {
         "declarationLine": null,
         "endLine": 12,
+        "exported": null,
         "kind": null,
+        "language": null,
         "path": "src/generator.js",
+        "receiver": null,
         "signature": null,
         "startLine": 1,
-        "symbol": null
+        "symbol": null,
+        "visibility": null
       },
       "owns": [
         "stable card order",
@@ -650,6 +727,7 @@
       "stability": "architecture"
     },
     {
+      "boundaries": [],
       "excludes": [
         "package installation",
         "automatic annotation"
@@ -657,7 +735,7 @@
       "hashes": {
         "body": "421814c5201ffb634892634d0f3615620a6a3c5cd591238304e4b68b86365ca5",
         "semantic": "32b959f42c7911d86ba137ce781e1b28f71b1d6f089e5ad0533bfe7e6a7e5956",
-        "structure": "c559622d1d4ecba2d6423313a5691d734132ca85d5e5f81530ea4c6650898403"
+        "structure": "4af35b63477c121978354bd24292e405b8b66ee4f8dfc8e0f534ad6018e47bed"
       },
       "id": "llmnav.project.initialize",
       "imports": [
@@ -706,11 +784,15 @@
       "location": {
         "declarationLine": null,
         "endLine": 10,
+        "exported": null,
         "kind": null,
+        "language": null,
         "path": "src/initializer.js",
+        "receiver": null,
         "signature": null,
         "startLine": 1,
-        "symbol": null
+        "symbol": null,
+        "visibility": null
       },
       "owns": [
         "project bootstrap",
@@ -731,6 +813,7 @@
       "stability": "architecture"
     },
     {
+      "boundaries": [],
       "excludes": [
         "source rewriting",
         "search ranking"
@@ -738,7 +821,7 @@
       "hashes": {
         "body": "b2869988488aea2a6c8345ff34e3b2570c4fe16d50bcbdf6ecae592b6293a15b",
         "semantic": "c5dc78b5539ae1579e7ce201a75625d8a2c88ab8d3b9dfd147ff61ffdd112f3b",
-        "structure": "33c582a765a3631b27ee0c63692dc51c70be7a62107233667c32967824d657ec"
+        "structure": "74c8994142e7db02e9e1d08e80bcce62c686c18c2a0c00e6c15e61680bd0ce8e"
       },
       "id": "llmnav.rules.validate",
       "imports": [
@@ -801,11 +884,15 @@
       "location": {
         "declarationLine": null,
         "endLine": 9,
+        "exported": null,
         "kind": null,
+        "language": null,
         "path": "src/validator.js",
+        "receiver": null,
         "signature": null,
         "startLine": 1,
-        "symbol": null
+        "symbol": null,
+        "visibility": null
       },
       "owns": [
         "semantic lint rules",
@@ -825,6 +912,7 @@
       "stability": "architecture"
     },
     {
+      "boundaries": [],
       "excludes": [
         "embedding generation",
         "source mutation"
@@ -832,7 +920,7 @@
       "hashes": {
         "body": "c38ec84d77f7bbda0736801fc6f3f04590b894dc10147019ef78b9dfb23fa032",
         "semantic": "1a0922e478fefb4618555b65a2a2d09e6ef017f10fe9a096a5a8097d25b9305e",
-        "structure": "d08f8867061f45449132aac881695dff5445a0f3240ca45e129273dd6a053e33"
+        "structure": "65f5e9567db38a872d396be2e01fc5d7bf63f84260ac95751f79e4feb9c1e721"
       },
       "id": "llmnav.search.query",
       "imports": [
@@ -880,11 +968,15 @@
       "location": {
         "declarationLine": null,
         "endLine": 10,
+        "exported": null,
         "kind": null,
+        "language": null,
         "path": "src/search.js",
+        "receiver": null,
         "signature": null,
         "startLine": 1,
-        "symbol": null
+        "symbol": null,
+        "visibility": null
       },
       "owns": [
         "query ranking",
@@ -905,6 +997,7 @@
       "stability": "architecture"
     },
     {
+      "boundaries": [],
       "excludes": [
         "semantic validation",
         "repository search"
@@ -912,7 +1005,7 @@
       "hashes": {
         "body": "b844e690afe199372272a426c11cc1f1aefc72ffb110c101f6bbc49f3a172c62",
         "semantic": "6fe19b8340b0f5a5ba89cf953692dfd02bb937b04718dfc19ea14b936de5fb80",
-        "structure": "efb99747375312a6efee8513595afadb4b903d0da7aca0babf651deb3ac9a5c9"
+        "structure": "3bd5866d15b259a6bbc8a1ce6f29a8b487fa84e9d71f71ce8eb4a89b9cf2adf9"
       },
       "id": "llmnav.syntax.parse",
       "imports": [
@@ -989,11 +1082,15 @@
       "location": {
         "declarationLine": null,
         "endLine": 8,
+        "exported": null,
         "kind": null,
+        "language": null,
         "path": "src/parser.js",
+        "receiver": null,
         "signature": null,
         "startLine": 1,
-        "symbol": null
+        "symbol": null,
+        "visibility": null
       },
       "owns": [
         "comment grammar",
@@ -1010,6 +1107,7 @@
       "stability": "architecture"
     },
     {
+      "boundaries": [],
       "excludes": [
         "source mutation",
         "cache commit"
@@ -1017,7 +1115,7 @@
       "hashes": {
         "body": "756ca3d92131807c7825c568c1dff0bb5bf9b16b249372bf7fd8522753deebaf",
         "semantic": "ace68184441ce1dfcb8a6bfd96429982b3db69bc2e3d3fd0308f07290b3414f3",
-        "structure": "c5fe9c0861cf8f7d879db8a69d082d8d1479cfb25bb6686ee814d3a61310be13"
+        "structure": "58a9f2a7f4fce92d28ebd2c772556f09bd02bd774f5807acaf46d05263c557fc"
       },
       "id": "llmnav.index.changes",
       "imports": [
@@ -1042,11 +1140,15 @@
       "location": {
         "declarationLine": null,
         "endLine": 9,
+        "exported": null,
         "kind": null,
+        "language": null,
         "path": "src/changes.js",
+        "receiver": null,
         "signature": null,
         "startLine": 1,
-        "symbol": null
+        "symbol": null,
+        "visibility": null
       },
       "owns": [
         "card diff",
@@ -1066,14 +1168,15 @@
       "stability": "architecture"
     },
     {
+      "boundaries": [],
       "excludes": [
         "source comment mutation",
         "cache directory commit"
       ],
       "hashes": {
-        "body": "331c89ffb602a05188a0dd56d59ba32467a2de81bab3d4f36924800dba768e81",
+        "body": "3a5dc1ff9c6742f414af57e01d571a0a08dc6e4bc8b5e4c02cf1c92d632379ca",
         "semantic": "26e0abf92c39ff07a7eb622d795d5ecbc83c7704b7c1ed09cd3ad339e3c04865",
-        "structure": "41df1f7ee74f94c612d20cec76e8c0ba50d5c5a6415b941da5d2426315f4a732"
+        "structure": "30563b3479fd3f97ee2cc9ece723acc05b5fc004c53bbbc459c991b2039ee679"
       },
       "id": "llmnav.index.incremental",
       "imports": [
@@ -1085,7 +1188,7 @@
         "./registry.js",
         "./util.js",
         ".llmnav",
-        ";\n    const declarations = fileRecord.blocks.map((block) =>\n      findAttachedDeclaration(source, block, fileRecord.relativePath),\n    );\n    return normalizeStateFile(\n      {\n        path: fileRecord.relativePath,\n        contentHash: fileRecord.contentHash ?? sha256(source),\n        sourceBytes: Buffer.byteLength(source),\n        semanticBytes: fileRecord.blocks.reduce((sum, block) => sum + Buffer.byteLength(block.raw), 0),\n        imports: fileRecord.imports,\n        blocks: fileRecord.blocks,\n        declarations,\n      },\n      fileRecord.relativePath,\n    );\n  });\n  files.sort((left, right) => compareText(left.path, right.path));\n  return {\n    schemaVersion: FILE_STATE_SCHEMA_VERSION,\n    indexerVersion: SOURCE_INDEXER_VERSION,\n    files,\n  };\n}\n\nexport async function persistStatHints(hintsPath, statHints) {\n  await atomicWrite(hintsPath, stableStringify(statHints));\n}\n\nexport function renderFileState(fileState) {\n  return stableStringify(fileState);\n}\n\nexport function usableFileState(value) {\n  return Boolean(\n    value &&\n      value.schemaVersion === FILE_STATE_SCHEMA_VERSION &&\n      value.indexerVersion === SOURCE_INDEXER_VERSION &&\n      Array.isArray(value.files),\n  );\n}\n\nfunction analyzeFile(relativePath, source) {\n  const blocks = parseLlmnavBlocks(source, relativePath);\n  return {\n    path: relativePath,\n    contentHash: sha256(source),\n    sourceBytes: Buffer.byteLength(source),\n    semanticBytes: blocks.reduce((sum, block) => sum + Buffer.byteLength(block.raw), 0),\n    imports: extractImports(source, relativePath),\n    blocks,\n    declarations: blocks.map((block) => findAttachedDeclaration(source, block, relativePath)),\n  };\n}\n\nfunction normalizeStateFile(file, relativePath) {\n  return {\n    path: relativePath,\n    contentHash: String(file.contentHash),\n    sourceBytes: Number(file.sourceBytes),\n    semanticBytes: Number(file.semanticBytes),\n    imports: [...(file.imports ?? [])],\n    blocks: structuredClone(file.blocks ?? []),\n    declarations: structuredClone(file.declarations ?? []),\n  };\n}\n\nfunction hydrateFileRecord(root, absolutePath, stateFile) {\n  return {\n    absolutePath,\n    relativePath: stateFile.path,\n    source: null,\n    contentHash: stateFile.contentHash,\n    bodyHash: stateFile.contentHash,\n    sourceBytes: stateFile.sourceBytes,\n    semanticBytes: stateFile.semanticBytes,\n    blocks: stateFile.blocks,\n    imports: stateFile.imports,\n    root,\n  };\n}\n\nfunction hydrateRecords(root, absolutePath, stateFile) {\n  return stateFile.blocks.map((block, index) => ({\n    root,\n    absolutePath,\n    relativePath: stateFile.path,\n    source: null,\n    bodyHash: stateFile.contentHash,\n    imports: stateFile.imports,\n    block,\n    card: block.card,\n    declaration: stateFile.declarations[index] ?? null,\n  }));\n}\n\nfunction mapStateFiles(files) {\n  const output = new Map();\n  for (const file of files ?? []) {\n    if (!file || typeof file.path !== ",
+        ";\n    const declarations = fileRecord.blocks.map((block) =>\n      findAttachedDeclaration(source, block, fileRecord.relativePath),\n    );\n    return normalizeStateFile(\n      {\n        path: fileRecord.relativePath,\n        contentHash: fileRecord.contentHash ?? sha256(source),\n        sourceBytes: Buffer.byteLength(source),\n        semanticBytes: fileRecord.blocks.reduce((sum, block) => sum + Buffer.byteLength(block.raw), 0),\n        imports: fileRecord.imports,\n        blocks: fileRecord.blocks,\n        declarations,\n      },\n      fileRecord.relativePath,\n    );\n  });\n  files.sort((left, right) => compareText(left.path, right.path));\n  return {\n    schemaVersion: FILE_STATE_SCHEMA_VERSION,\n    indexerVersion: SOURCE_INDEXER_VERSION,\n    files,\n  };\n}\n\nexport async function persistStatHints(hintsPath, statHints) {\n  await atomicWrite(hintsPath, stableStringify(statHints));\n}\n\nexport function renderFileState(fileState) {\n  return stableStringify(fileState);\n}\n\nexport function usableFileState(value) {\n  return Boolean(\n    value &&\n      value.schemaVersion === FILE_STATE_SCHEMA_VERSION &&\n      value.indexerVersion === SOURCE_INDEXER_VERSION &&\n      Array.isArray(value.files),\n  );\n}\n\nfunction analyzeFile(relativePath, source) {\n  const blocks = parseLlmnavBlocks(source, relativePath);\n  return {\n    path: relativePath,\n    contentHash: sha256(source),\n    sourceBytes: Buffer.byteLength(source),\n    semanticBytes: blocks.reduce((sum, block) => sum + Buffer.byteLength(block.raw), 0),\n    imports: extractImports(source, relativePath),\n    blocks,\n    declarations: blocks.map((block) => findAttachedDeclaration(source, block, relativePath)),\n  };\n}\n\nfunction normalizeStateFile(file, relativePath) {\n  return {\n    path: relativePath,\n    contentHash: String(file.contentHash),\n    sourceBytes: Number(file.sourceBytes),\n    semanticBytes: Number(file.semanticBytes),\n    imports: [...(file.imports ?? [])],\n    blocks: structuredClone(file.blocks ?? []),\n    declarations: structuredClone(file.declarations ?? []),\n  };\n}\n\nfunction hydrateFileRecord(root, absolutePath, stateFile) {\n  return {\n    absolutePath,\n    relativePath: stateFile.path,\n    source: null,\n    contentHash: stateFile.contentHash,\n    bodyHash: stateFile.contentHash,\n    sourceBytes: stateFile.sourceBytes,\n    semanticBytes: stateFile.semanticBytes,\n    blocks: stateFile.blocks,\n    imports: stateFile.imports,\n    root,\n  };\n}\n\nfunction hydrateRecords(root, absolutePath, stateFile) {\n  return stateFile.blocks.map((block, index) => {\n    const declaration = stateFile.declarations[index] ?? null;\n    return {\n      root,\n      absolutePath,\n      relativePath: stateFile.path,\n      source: null,\n      bodyHash: declaration?.bodyHash ?? stateFile.contentHash,\n      imports: stateFile.imports,\n      block,\n      card: block.card,\n      declaration,\n    };\n  });\n}\n\nfunction mapStateFiles(files) {\n  const output = new Map();\n  for (const file of files ?? []) {\n    if (!file || typeof file.path !== ",
         "file-state.json",
         "node:fs/promises",
         "node:path",
@@ -1096,11 +1199,15 @@
       "location": {
         "declarationLine": null,
         "endLine": 9,
+        "exported": null,
         "kind": null,
+        "language": null,
         "path": "src/incremental.js",
+        "receiver": null,
         "signature": null,
         "startLine": 1,
-        "symbol": null
+        "symbol": null,
+        "visibility": null
       },
       "owns": [
         "file fingerprints",
@@ -1120,6 +1227,7 @@
       "stability": "architecture"
     },
     {
+      "boundaries": [],
       "excludes": [
         "semantic source syntax",
         "query presentation"
@@ -1127,7 +1235,7 @@
       "hashes": {
         "body": "3312de9254a43912944e3065e8e4a9acd65d8e4d0713c0286b20429177d6cfdb",
         "semantic": "5137a9570f530cec8a032925b5c560348a26a0b3ebe62046409093d1a1094e1b",
-        "structure": "f72bfbc59b4ba5cc6e9deeb192a6f0052e099b32c8bd9e6ca01741ce8ea9fd6c"
+        "structure": "5cdab4b0e568de4ef8dfc9569b15a646642f2385ddd8afabe4ba5dbcbb6535e3"
       },
       "id": "llmnav.index.inverted",
       "imports": [
@@ -1174,11 +1282,15 @@
       "location": {
         "declarationLine": null,
         "endLine": 10,
+        "exported": null,
         "kind": null,
+        "language": null,
         "path": "src/inverted-index.js",
+        "receiver": null,
         "signature": null,
         "startLine": 1,
-        "symbol": null
+        "symbol": null,
+        "visibility": null
       },
       "owns": [
         "posting lists",
@@ -1199,6 +1311,7 @@
       "stability": "architecture"
     },
     {
+      "boundaries": [],
       "excludes": [
         "artifact semantics",
         "source indexing"
@@ -1206,7 +1319,7 @@
       "hashes": {
         "body": "760d8d0532989a0e58402260525f8cb9ec141b8dcd286ed8820f40e627b26e6f",
         "semantic": "ce2cf8943f71d053f8cba914886bae20316e5b6106857f52abc4d8a59afb1ef1",
-        "structure": "dab7c6e8aa6dfed5fe72d0fb7c73c25aff41980c847fc7769ba8bcc8dbe9f321"
+        "structure": "8f2a96edb2d7326f9305ee4c18ba4f1f2404905c13bc7cdeeedf284b53bf06a4"
       },
       "id": "llmnav.index.transaction",
       "imports": [
@@ -1289,11 +1402,15 @@
       "location": {
         "declarationLine": null,
         "endLine": 9,
+        "exported": null,
         "kind": null,
+        "language": null,
         "path": "src/transaction.js",
+        "receiver": null,
         "signature": null,
         "startLine": 1,
-        "symbol": null
+        "symbol": null,
+        "visibility": null
       },
       "owns": [
         "cache staging",
@@ -1313,6 +1430,7 @@
       "stability": "architecture"
     },
     {
+      "boundaries": [],
       "excludes": [
         "card ranking",
         "inverted-index persistence"
@@ -1320,7 +1438,7 @@
       "hashes": {
         "body": "0c6b16cd13369e1efc38b067d594d89025d78451a3b03c35bfec7a089b20583b",
         "semantic": "ae001446555aa3d2739a6aaa61aa630fc797a7e5b3b2f10019e93ddb504131da",
-        "structure": "5a4ae25a6853f86ab995f4e321b62ab71ff480490a5290d920ea59d2b764034e"
+        "structure": "4001d99b9bc5597aae34ed181d21b9a303b515ed386031926ce5c52e34d9143d"
       },
       "id": "llmnav.search.tokenize",
       "imports": [
@@ -1332,11 +1450,15 @@
       "location": {
         "declarationLine": null,
         "endLine": 9,
+        "exported": null,
         "kind": null,
+        "language": null,
         "path": "src/tokenizer.js",
+        "receiver": null,
         "signature": null,
         "startLine": 1,
-        "symbol": null
+        "symbol": null,
+        "visibility": null
       },
       "owns": [
         "query normalization",
@@ -1356,14 +1478,15 @@
       "stability": "architecture"
     },
     {
+      "boundaries": [],
       "excludes": [
         "semantic version decisions",
         "source mutation"
       ],
       "hashes": {
-        "body": "0dab90ddea30dc3356515a854bc14287d092a5aef1294e920c6c47985960ef2e",
+        "body": "2d8d0a8cd59947cfd13fb9b6e86e4d650782579b48848a36855fcab9d0298906",
         "semantic": "cf7349f17b62eaf61f2ce0d01a36045ecb27c8601f708617a4f5ea9fdd3fd54a",
-        "structure": "58c38c7dc4878bf011d4d503e9976167e8a2b965add4f874ad77f1e3798b82a8"
+        "structure": "707ae1bdaf18da72a27454b4a9209521fe68ea38aebec358e7df9cb41b8948d2"
       },
       "id": "llmnav.contract.fingerprint",
       "imports": [
@@ -1380,6 +1503,7 @@
         ".ts",
         ".tsx",
         "_",
+        "boolean",
         "configuration",
         "exportedApi",
         "node:path"
@@ -1387,11 +1511,15 @@
       "location": {
         "declarationLine": null,
         "endLine": 9,
+        "exported": null,
         "kind": null,
+        "language": null,
         "path": "src/contracts.js",
+        "receiver": null,
         "signature": null,
         "startLine": 1,
-        "symbol": null
+        "symbol": null,
+        "visibility": null
       },
       "owns": [
         "contract fingerprint schema",
@@ -1409,6 +1537,62 @@
         "contract drift"
       ],
       "stability": "architecture"
+    },
+    {
+      "boundaries": [],
+      "excludes": [
+        "framework execution",
+        "source annotations"
+      ],
+      "hashes": {
+        "body": "540849fed97aa347114ef516e974e3827e8228f3ae3a8f1104f914abb5c3894c",
+        "semantic": "edcf0e0f968695b53ccea93a68340028178fbaf8ff25ade7612e288c28eb438b",
+        "structure": "9b05b6632f37cc4493212fcd6d7b81931de4c59860198435d5bb401e3faa24d2"
+      },
+      "id": "llmnav.structure.boundaries",
+      "imports": [
+        "./util.js",
+        "command",
+        "effect",
+        "event",
+        "high",
+        "medium",
+        "migration",
+        "node:path",
+        "path",
+        "risk",
+        "route",
+        "schema"
+      ],
+      "location": {
+        "declarationLine": null,
+        "endLine": 9,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/boundaries.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "owns": [
+        "boundary kinds",
+        "confidence assignment",
+        "boundary evidence"
+      ],
+      "rel": [
+        "workflow>llmnav.index.generate"
+      ],
+      "role": "Detect route, event, schema, migration, and command boundaries from generated local evidence.",
+      "scope": "module",
+      "search": [
+        "boundary detection",
+        "route schema migration",
+        "command event"
+      ],
+      "stability": "architecture"
     }
   ],
   "contractFingerprints": {
@@ -1424,6 +1608,6 @@
   "generatedBy": "llmnav@0.2.0",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "b54d223af013f9dc90f878b87dce90667dcdefa5f8851cf3bcb8d8d7ce544d58",
+  "sourceHash": "63d2b83ce5c5241a38d2412d9c60325b3686395634a358076a197d4a3713021d",
   "specVersion": "1"
 }

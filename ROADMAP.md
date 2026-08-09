@@ -36,12 +36,12 @@ Implemented:
 Implemented during 0.3 development:
 
 * exported API and configuration contract fingerprints
-
-Planned:
-
 * route, event, schema, migration, and command-boundary detection
 * language-aware TypeScript and Go declaration enrichers
 * selective body hashes at declaration granularity
+
+Planned:
+
 * richer affected-boundary reports
 * SARIF diagnostic output
 * sharded generated search artifacts for very large monorepos

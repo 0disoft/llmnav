@@ -47,6 +47,7 @@ import {
 import { commitGeneratedCache, recoverGenerationTransaction } from "./transaction.js";
 import { loadConfig } from "./config.js";
 import { buildContractFingerprints, compareContractFingerprints } from "./contracts.js";
+import { detectBoundaries } from "./boundaries.js";
 
 export async function generateProject(root, options = {}) {
   const { config: recoveryConfig } = await loadConfig(root);
@@ -303,6 +304,7 @@ function compareGeneratedDiagnostics(left, right) {
 
 function indexedCard(record) {
   const canonical = cardToCanonicalObject(record.card);
+  const boundaries = detectBoundaries(record);
   const semanticPayload = stableJson(canonical);
   const structurePayload = stableJson({
     path: record.relativePath,
@@ -310,7 +312,12 @@ function indexedCard(record) {
     symbol: record.declaration?.symbol ?? null,
     kind: record.declaration?.kind ?? null,
     signature: record.declaration?.signature ?? null,
+    language: record.declaration?.language ?? null,
+    exported: record.declaration?.exported ?? null,
+    visibility: record.declaration?.visibility ?? null,
+    receiver: record.declaration?.receiver ?? null,
     imports: record.imports,
+    boundaries,
   });
   return {
     ...canonical,
@@ -322,8 +329,13 @@ function indexedCard(record) {
       kind: record.declaration?.kind ?? null,
       declarationLine: record.declaration?.line ?? null,
       signature: record.declaration?.signature ?? null,
+      language: record.declaration?.language ?? null,
+      exported: record.declaration?.exported ?? null,
+      visibility: record.declaration?.visibility ?? null,
+      receiver: record.declaration?.receiver ?? null,
     },
     imports: record.imports,
+    boundaries,
     hashes: {
       semantic: sha256(semanticPayload),
       structure: sha256(structurePayload),

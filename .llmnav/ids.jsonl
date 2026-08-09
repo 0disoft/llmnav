@@ -20,3 +20,4 @@
 {"id":"llmnav.search.tokenize","state":"active"}
 {"id":"llmnav.index.transaction","state":"active"}
 {"id":"llmnav.contract.fingerprint","state":"active"}
+{"id":"llmnav.structure.boundaries","state":"active"}

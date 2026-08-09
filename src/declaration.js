@@ -1,5 +1,5 @@
 import path from "node:path";
-import { lineAtOffset, normalizeNewlines } from "./util.js";
+import { lineAtOffset, normalizeNewlines, sha256 } from "./util.js";
 
 const DECLARATION_PATTERNS = {
   javascript: [
@@ -37,7 +37,9 @@ export function findAttachedDeclaration(source, block, filePath) {
   const window = source.slice(block.end, block.end + 3000);
   const skipped = skipTrivia(window);
   const candidate = window.slice(skipped);
-  const family = languageFamily(path.extname(filePath).toLowerCase());
+  const extension = path.extname(filePath).toLowerCase();
+  const family = languageFamily(extension);
+  const language = languageName(extension);
   const patterns = DECLARATION_PATTERNS[family] ?? DECLARATION_PATTERNS.generic;
   const firstLines = normalizeNewlines(candidate).split("\n").slice(0, 12).join("\n");
   const collapsed = firstLines.replace(/\s+/gu, " ").trim();
@@ -46,12 +48,21 @@ export function findAttachedDeclaration(source, block, filePath) {
     const match = candidate.match(definition.pattern);
     if (!match) continue;
     const declarationOffset = block.end + skipped;
+    const signature = extractSignature(collapsed);
+    const exported = isExportedDeclaration(language, match[1], signature);
+    const endOffset = findDeclarationEnd(source, declarationOffset);
     return {
       symbol: match[1],
       kind: definition.kind,
       line: lineAtOffset(source, declarationOffset),
-      signature: extractSignature(collapsed),
+      signature,
+      language,
+      exported,
+      visibility: exported ? "public" : language === "typescript" || language === "javascript" ? "module" : "private",
+      receiver: language === "go" ? extractGoReceiver(candidate) : null,
       offset: declarationOffset,
+      endOffset,
+      bodyHash: sha256(normalizeNewlines(source.slice(declarationOffset, endOffset)).trimEnd()),
     };
   }
   return null;
@@ -107,6 +118,97 @@ function languageFamily(extension) {
   if (extension === ".rs") return "rust";
   if (extension === ".py") return "python";
   return "generic";
+}
+
+function languageName(extension) {
+  if ([".ts", ".tsx", ".mts", ".cts"].includes(extension)) return "typescript";
+  if ([".js", ".jsx", ".mjs", ".cjs", ".svelte", ".astro", ".vue"].includes(extension)) return "javascript";
+  if (extension === ".go") return "go";
+  if (extension === ".rs") return "rust";
+  if (extension === ".py") return "python";
+  return "generic";
+}
+
+function isExportedDeclaration(language, symbol, signature) {
+  if (language === "typescript" || language === "javascript") return /^export\s+/u.test(signature);
+  if (language === "go") return /^[A-Z]/u.test(symbol);
+  if (language === "rust") return /^pub(?:\([^)]*\))?\s+/u.test(signature);
+  if (language === "python") return !symbol.startsWith("_");
+  return /^(?:public|export)\s+/u.test(signature);
+}
+
+function extractGoReceiver(candidate) {
+  const match = candidate.match(/^func\s+\(([^)]*)\)\s*/u);
+  if (!match) return null;
+  const parts = match[1].trim().split(/\s+/u);
+  return (parts.at(-1) ?? "").replace(/^\*+/u, "") || null;
+}
+
+function findDeclarationEnd(source, start) {
+  let state = "normal";
+  let escaped = false;
+  let braces = 0;
+  let parentheses = 0;
+  let brackets = 0;
+  let openedBody = false;
+
+  for (let index = start; index < source.length; index += 1) {
+    const character = source[index];
+    const next = source[index + 1];
+    if (state === "line-comment") {
+      if (character === "\n") state = "normal";
+      continue;
+    }
+    if (state === "block-comment") {
+      if (character === "*" && next === "/") {
+        state = "normal";
+        index += 1;
+      }
+      continue;
+    }
+    if (state !== "normal") {
+      if (escaped) {
+        escaped = false;
+      } else if (character === "\\") {
+        escaped = true;
+      } else if (character === state) {
+        state = "normal";
+      }
+      continue;
+    }
+    if (character === "/" && next === "/") {
+      state = "line-comment";
+      index += 1;
+      continue;
+    }
+    if (character === "/" && next === "*") {
+      state = "block-comment";
+      index += 1;
+      continue;
+    }
+    if (character === '"' || character === "'" || character === "`") {
+      state = character;
+      continue;
+    }
+    if (character === "(") parentheses += 1;
+    if (character === ")") parentheses = Math.max(0, parentheses - 1);
+    if (character === "[") brackets += 1;
+    if (character === "]") brackets = Math.max(0, brackets - 1);
+    if (character === "{") {
+      braces += 1;
+      openedBody = true;
+    } else if (character === "}" && openedBody) {
+      braces -= 1;
+      if (braces === 0) return index + 1;
+    } else if (character === ";" && !openedBody && parentheses === 0 && brackets === 0) {
+      return index + 1;
+    } else if (character === "\n" && !openedBody && parentheses === 0 && brackets === 0) {
+      const current = source.slice(start, index).trimEnd();
+      const nextCharacter = source.slice(index + 1).match(/^\s*(.)/u)?.[1] ?? "";
+      if (nextCharacter !== "{" && !/(?:=>|[=|&,([{])$/u.test(current)) return index;
+    }
+  }
+  return source.length;
 }
 
 export function extractImports(source, filePath) {

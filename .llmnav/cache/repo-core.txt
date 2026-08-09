@@ -101,3 +101,9 @@ role Fingerprint repository API and configuration contracts without coupling the
 owns contract fingerprint schema, export selection, contract drift comparison
 excludes semantic version decisions, source mutation
 rel workflow>llmnav.index.generate
+
+@llmnav.structure.boundaries
+role Detect route, event, schema, migration, and command boundaries from generated local evidence.
+owns boundary kinds, confidence assignment, boundary evidence
+excludes framework execution, source annotations
+rel workflow>llmnav.index.generate

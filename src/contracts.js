@@ -56,6 +56,7 @@ export function compareContractFingerprints(previous, current) {
 function isExportedApiCard(card) {
   const location = card.location;
   if (!location?.symbol || !location.signature) return false;
+  if (typeof location.exported === "boolean") return location.exported;
   const extension = path.extname(location.path).toLowerCase();
   const signature = location.signature.trim();
 
