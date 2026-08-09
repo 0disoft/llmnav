@@ -6,3 +6,9 @@ role Serialize deterministic LLMNav diagnostics as a SARIF 2.1.0 result log.
 owns SARIF schema mapping, diagnostic rule table, artifact locations
 excludes diagnostic discovery, file writes
 rel workflow>llmnav.rules.validate
+
+@llmnav.diagnostics.editor
+role Serialize deterministic editor ranges and publish bounded editor task integrations.
+owns editor diagnostic schema, zero-based ranges, VS Code task configuration
+excludes editor extension runtime, absolute workspace URIs, source mutation
+rel workflow>llmnav.rules.validate

@@ -32,7 +32,7 @@ Creates project configuration, schema, registry, lexicon, evaluation file, agent
 ## `llmnav check`
 
 ```sh
-llmnav check [paths...] [--format text|json|github|sarif]
+llmnav check [paths...] [--format text|json|github|sarif|editor]
 ```
 
 Validates syntax, canonical key order, required fields, IDs, role quality, search phrase limits, controlled effects and risks, relation targets, registry consistency, configured coverage, block size, comment ratio, and symbol attachment.
@@ -42,6 +42,8 @@ Passing paths restricts source parsing, but project-level relation and registry 
 `--format github` emits workflow commands suitable for GitHub Actions annotations.
 
 `--format sarif` emits a deterministic SARIF 2.1.0 log with one rule per LLMNav diagnostic code and repository-relative artifact locations. The command exit status still depends on LLMNav errors, not on the selected serialization.
+
+`--format editor` emits schemaVersion 1 documents with repository-relative paths, zero-based ranges, numeric and textual severity, code, source, and message. Editors bind paths to workspace URIs themselves.
 
 ## `llmnav format`
 
@@ -219,3 +221,11 @@ llmnav bundle [--json]
 ```
 
 Loads `.llmnav/cache/prompt-prefix.json`, rejects incompatible or manifest-mismatched content, and prints its package, repository, and module cache partitions. Text output is a compact ID, scope, estimated-token, and hash summary. JSON output returns the complete deterministic bundle including partition content.
+
+## `llmnav editor`
+
+```sh
+llmnav editor vscode
+```
+
+Prints a schemaVersion 1 editor integration envelope containing a VS Code `tasks.json` configuration. The command is repository-independent and does not write `.vscode` files. Merge the returned task into an existing configuration when necessary.

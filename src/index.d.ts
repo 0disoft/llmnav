@@ -277,6 +277,26 @@ export interface PromptPrefixBundle {
   partitions: PromptPrefixPartition[];
 }
 
+export interface EditorDiagnosticDocument {
+  path: string;
+  diagnostics: Array<{
+    range: { start: { line: number; character: number }; end: { line: number; character: number } };
+    severity: 1 | 2 | 3;
+    level: DiagnosticSeverity;
+    code: string;
+    source: "llmnav";
+    message: string;
+  }>;
+}
+
+export interface EditorDiagnosticReport {
+  schemaVersion: 1;
+  source: "llmnav";
+  coordinateBase: 0;
+  counts: { error: number; warning: number; info: number };
+  documents: EditorDiagnosticDocument[];
+}
+
 export interface ProjectFileRecord {
   absolutePath: string;
   relativePath: string;
@@ -516,6 +536,8 @@ export const AGENT_OPERATION_SCHEMA_VERSION: 1;
 export const AGENT_TOOL_SCHEMA_VERSION: 1;
 export const BOUNDARY_KINDS: readonly DetectedBoundary["kind"][];
 export const GRAPH_INPUT_SCHEMA_VERSION: 1;
+export const EDITOR_DIAGNOSTIC_SCHEMA_VERSION: 1;
+export const EDITOR_INTEGRATION_SCHEMA_VERSION: 1;
 export const GRAPH_SCHEMA_VERSION: 1;
 export const GRAPH_STATE_SCHEMA_VERSION: 1;
 export const PROMPT_BUNDLE_SCHEMA_VERSION: 1;
@@ -535,6 +557,9 @@ export const TRANSACTION_SCHEMA_VERSION: number;
 export const TRANSACTION_ABORT_EXIT_CODE: number;
 
 export function installAgentInstructions(root: string, adapters?: string[]): Promise<string[]>;
+export function diagnosticsToEditor(diagnostics: Diagnostic[]): EditorDiagnosticReport;
+export function renderEditorDiagnostics(diagnostics: Diagnostic[]): string;
+export function getEditorIntegration(name: "vscode"): { schemaVersion: 1; editor: "vscode"; target: ".vscode/tasks.json"; config: Record<string, unknown> };
 export function getAgentToolDefinitions(): AgentToolDefinition[];
 export function executeAgentOperation(root: string, name: string, input?: Record<string, unknown>): Promise<AgentOperationResult>;
 export function buildPromptPrefixBundle(input: { repositoryId: string; toolDefinitions: AgentToolDefinition[]; agentProtocol: string; repositoryCore: string; modules?: Array<{ id: string; content: string }> }): PromptPrefixBundle;

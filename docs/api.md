@@ -227,6 +227,8 @@ import {
 
 `diagnosticsToSarif(diagnostics)` maps existing diagnostics to a deterministic SARIF 2.1.0 object without discovering or mutating diagnostics.
 
+`diagnosticsToEditor(diagnostics)` groups repository-relative diagnostics into schemaVersion 1 documents with zero-based ranges and stable severity mappings. `renderEditorDiagnostics` serializes the report deterministically. `getEditorIntegration("vscode")` returns a VS Code task and custom problem matcher without modifying editor files.
+
 `buildSearchShards(index, searchIndex, shardSize)` returns a deterministic manifest and map of card-range shard contents. A size of zero or a card count at or below the limit returns no shard artifacts. The function slices compact postings and documents rather than rebuilding search documents.
 
 `normalizeGraphInput(value, file, contentHash)` validates and normalizes one schemaVersion 1 definition/reference index. `loadGraphInputs(root, config)` reads configured repository-local inputs and returns normalized indexes plus deterministic `LNV014` diagnostics without executing project code.

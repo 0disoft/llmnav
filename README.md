@@ -177,6 +177,7 @@ Line-comment cards require an explicit terminator and work with `//`, `#`, and `
 | `llmnav spec` | Print source-spec vocabularies and key order |
 | `llmnav tools` | Print stable provider-neutral agent tool schemas |
 | `llmnav bundle` | Inspect the generated prompt-prefix cache partitions |
+| `llmnav editor` | Print a deterministic editor task integration |
 
 See [docs/cli.md](docs/cli.md) for every option and exit code.
 
@@ -258,6 +259,7 @@ LLMNav does not discover sibling repositories automatically and does not ship an
 * [Architecture and cache design](docs/architecture.md)
 * [Repository graph](docs/graph.md)
 * [Agent integration](docs/agent-integration.md)
+* [Editor integration](docs/editor-integration.md)
 * [CI and enforcement](docs/ci.md)
 * [Gradual migration](docs/migration.md)
 * [Language examples](docs/language-examples.md)

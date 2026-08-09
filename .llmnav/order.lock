@@ -28,3 +28,4 @@ llmnav.graph.generate
 llmnav.agent.protocol
 llmnav.agent.prompt-bundle
 llmnav.agent.tool-schema
+llmnav.diagnostics.editor

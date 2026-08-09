@@ -15,6 +15,13 @@ export {
 export { compareCardIndexes, describeAffectedBoundaries, describeAffectedCatalogs } from "./changes.js";
 export { loadConfig, validateConfig } from "./config.js";
 export { BOUNDARY_KINDS, detectBoundaries } from "./boundaries.js";
+export {
+  diagnosticsToEditor,
+  EDITOR_DIAGNOSTIC_SCHEMA_VERSION,
+  EDITOR_INTEGRATION_SCHEMA_VERSION,
+  getEditorIntegration,
+  renderEditorDiagnostics,
+} from "./editor.js";
 export { diagnosticsToSarif, SARIF_SCHEMA, SARIF_VERSION } from "./sarif.js";
 export { GRAPH_INPUT_SCHEMA_VERSION, loadGraphInputs, normalizeGraphInput } from "./graph-input.js";
 export {

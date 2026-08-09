@@ -438,9 +438,9 @@
         "index persistence format"
       ],
       "hashes": {
-        "body": "d4651912513689bca0e55efc94e723f1df8b44f579ec9ea249cdabc171e07112",
+        "body": "b53642a194cb2efb209410534fe78b9b890d139c81fc5bf8216de02fd66fa23a",
         "semantic": "ce9c7cd107639f96de4f26b913a7e6bdd206af278fbd30acf02ff833ac9d3498",
-        "structure": "3d869fece88494bc77de2c7eea1e78ab83e4522bf5067eec07df0b3b05a444e5"
+        "structure": "a67bb09285cdb1f0e5dd996b2273a989c01fbfd21091a097ce9c88038e8b3d53"
       },
       "id": "llmnav.cli.dispatch",
       "imports": [
@@ -464,8 +464,9 @@
         ");\n    const name = separator >= 0 ? argument.slice(0, separator) : argument;\n    if (!allowed.has(name)) throw usageError(`Unknown option ${name} for command ${command}.`);\n    if (VALUE_OPTIONS.has(name)) {\n      const inlineValue = separator >= 0 ? argument.slice(separator + 1) : null;\n      if (inlineValue !== null) {\n        if (!inlineValue) throw usageError(`Option ${name} requires a value.`);\n      } else {\n        const next = args[index + 1];\n        if (next === undefined || next.startsWith(",
         ");\n    return 2;\n  }\n  const result = await buildContext(root, id, {\n    depth: parseCliIntegerOption(args, ",
         ");\n    return 2;\n  }\n  const result = await showProjectCard(root, id);\n  if (!result.card && !result.node) {\n    if (json) console.log(JSON.stringify(result, null, 2));\n    else console.error(`Unknown or inactive semantic ID ${id}.`);\n    return 1;\n  }\n  if (json) console.log(JSON.stringify(result, null, 2));\n  else {\n    const resolvedId = result.card?.id ?? result.node?.key;\n    if (result.resolvedFrom) console.log(`resolved ${id} -> ${resolvedId}\\n`);\n    console.log(result.card ? renderCompactCard(result.card) : renderGraphNode(result.node));\n  }\n  return 0;\n}\n\nasync function runContext(root, args, json) {\n  const id = getPositionals(args)[0];\n  if (!id) {\n    console.error(",
+        ");\n  console.log(JSON.stringify(getEditorIntegration(name), null, 2));\n  return 0;\n}\n\nfunction printDiagnostics(diagnostics, format) {\n  for (const item of diagnostics) {\n    if (format === ",
         ");\n}\n\n\n\nfunction parseCliIntegerOption(args, name, fallback) {\n  const value = getOption(args, name);\n  if (value === undefined) return fallback;\n  if (!/^-?\\d+$/u.test(value)) throw usageError(`Option ${name} requires an integer.`);\n  return parseInteger(value, fallback);\n}\n\nfunction usageError(message) {\n  const error = new Error(message);\n  error.exitCode = 2;\n  return error;\n}\n\nfunction validateOptions(command, args) {\n  const allowed = COMMAND_OPTIONS[command];\n  if (!allowed) return;\n  for (let index = 0; index < args.length; index += 1) {\n    const argument = args[index];\n    if (argument === ",
-        ");\n}\n\nfunction printHelp() {\n  console.log(`llmnav ${PACKAGE_VERSION}\n\nDeterministic semantic navigation for LLM coding agents.\n\nUsage\n  llmnav init [--agents all|agents,claude,copilot,cursor] [--package-scripts]\n  llmnav check [paths...] [--format text|json|github|sarif]\n  llmnav format [paths...] [--check]\n  llmnav generate [--check]\n  llmnav query ",
+        ");\n}\n\nfunction printHelp() {\n  console.log(`llmnav ${PACKAGE_VERSION}\n\nDeterministic semantic navigation for LLM coding agents.\n\nUsage\n  llmnav init [--agents all|agents,claude,copilot,cursor] [--package-scripts]\n  llmnav check [paths...] [--format text|json|github|sarif|editor]\n  llmnav format [paths...] [--check]\n  llmnav generate [--check]\n  llmnav query ",
         ")} actual=${item.actual.join(",
         ")}`);\n    console.log(`effects ${EFFECT_KINDS.join(",
         ")}`);\n    console.log(`relations ${RELATION_KINDS.join(",
@@ -473,7 +474,7 @@
         ")}`);\n    console.log(`stability ${STABILITIES.join(",
         ")}`);\n    }\n    console.log(`cases ${result.metrics.total}`);\n    console.log(`recall@1 ${(result.metrics.recallAt1 * 100).toFixed(1)}%`);\n    console.log(`recall@5 ${(result.metrics.recallAt5 * 100).toFixed(1)}%`);\n    console.log(`MRR ${result.metrics.meanReciprocalRank.toFixed(3)}`);\n  }\n  return result.ok ? 0 : 1;\n}\n\nasync function runDoctor(root, json) {\n  const result = await doctorProject(root);\n  if (json) console.log(JSON.stringify(result, null, 2));\n  else {\n    for (const check of result.checks) console.log(`${check.ok ? ",
         ")}`);\n    }\n  }\n  return 0;\n}\n\nasync function runShow(root, args, json) {\n  const id = getPositionals(args)[0];\n  if (!id) {\n    console.error(",
-        ")}`);\n  }\n  return 0;\n}\n\nfunction runTools(json) {\n  const definitions = getAgentToolDefinitions();\n  if (json) console.log(JSON.stringify({ schemaVersion: 1, tools: definitions }, null, 2));\n  else {\n    for (const definition of definitions) console.log(`${definition.name}\\t${definition.description}`);\n  }\n  return 0;\n}\n\nasync function runBundle(root, json) {\n  const bundle = await loadPromptPrefixBundle(root);\n  if (json) console.log(JSON.stringify(bundle, null, 2));\n  else {\n    console.log(`llmnav-prompt-bundle/${bundle.schemaVersion} repository=${bundle.repositoryId} hash=${bundle.bundleHash}`);\n    for (const partition of bundle.partitions) {\n      console.log(`${partition.id}\\tscope=${partition.cacheScope}\\ttokens~${partition.estimatedTokens}\\tsha256=${partition.contentHash}`);\n    }\n  }\n  return 0;\n}\n\nfunction printDiagnostics(diagnostics, format) {\n  for (const item of diagnostics) {\n    if (format === ",
+        ")}`);\n  }\n  return 0;\n}\n\nfunction runTools(json) {\n  const definitions = getAgentToolDefinitions();\n  if (json) console.log(JSON.stringify({ schemaVersion: 1, tools: definitions }, null, 2));\n  else {\n    for (const definition of definitions) console.log(`${definition.name}\\t${definition.description}`);\n  }\n  return 0;\n}\n\nasync function runBundle(root, json) {\n  const bundle = await loadPromptPrefixBundle(root);\n  if (json) console.log(JSON.stringify(bundle, null, 2));\n  else {\n    console.log(`llmnav-prompt-bundle/${bundle.schemaVersion} repository=${bundle.repositoryId} hash=${bundle.bundleHash}`);\n    for (const partition of bundle.partitions) {\n      console.log(`${partition.id}\\tscope=${partition.cacheScope}\\ttokens~${partition.estimatedTokens}\\tsha256=${partition.contentHash}`);\n    }\n  }\n  return 0;\n}\n\nfunction runEditor(args) {\n  const name = getPositionals(args)[0];\n  if (!name) throw usageError(",
         ",",
         ", ",
         ", 1),\n    budget: parseCliIntegerOption(args, ",
@@ -500,6 +501,7 @@
         "-v",
         "./agent-protocol.js",
         "./doctor.js",
+        "./editor.js",
         "./evaluation.js",
         "./files.js",
         "./formatter.js",
@@ -526,6 +528,7 @@
         "check",
         "context",
         "doctor",
+        "editor",
         "eval",
         "format",
         "formatted",
@@ -2119,6 +2122,71 @@
         "provider neutral schema"
       ],
       "stability": "contract"
+    },
+    {
+      "boundaries": [],
+      "excludes": [
+        "editor extension runtime",
+        "absolute workspace URIs",
+        "source mutation"
+      ],
+      "hashes": {
+        "body": "7a5cfedb0afe6270f08422ff270ee27474ab237c97498243d424c2cd7b0ce223",
+        "semantic": "1a02f1f385e9292fd74cd88f3cfac910edefd96e448593de3758e906d1c0bca1",
+        "structure": "4146e4f13bd4d6810220e7355780356be7c2219e13d7bddca143569edd7f6d5c"
+      },
+      "id": "llmnav.diagnostics.editor",
+      "imports": [
+        "${workspaceFolder}",
+        "--",
+        "./util.js",
+        ".vscode/tasks.json",
+        "2.0.0",
+        "LLMNav: check",
+        "^(.+):(\\\\d+):(\\\\d+) (error|warning|info) (LNV\\\\d+) (.+)$",
+        "check",
+        "dedicated",
+        "error",
+        "exec",
+        "llmnav",
+        "npm",
+        "relative",
+        "shell",
+        "silent",
+        "test",
+        "vscode",
+        "warning"
+      ],
+      "location": {
+        "declarationLine": null,
+        "endLine": 9,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/editor.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "owns": [
+        "editor diagnostic schema",
+        "zero-based ranges",
+        "VS Code task configuration"
+      ],
+      "rel": [
+        "workflow>llmnav.rules.validate"
+      ],
+      "role": "Serialize deterministic editor ranges and publish bounded editor task integrations.",
+      "scope": "module",
+      "search": [
+        "editor diagnostics",
+        "VS Code problem matcher",
+        "problems panel",
+        "diagnostic range"
+      ],
+      "stability": "contract"
     }
   ],
   "contractFingerprints": {
@@ -2134,6 +2202,6 @@
   "generatedBy": "llmnav@0.4.0",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "cefc3ecad1b8e6c33609c45a67bb3146b51d03f07b78cbc6747e6c8396942092",
+  "sourceHash": "fe244847e86eca6f6c967e93a8bfd03359f309f32f8a06b9bc6c2e3d573cd784",
   "specVersion": "1"
 }

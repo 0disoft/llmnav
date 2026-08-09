@@ -59,10 +59,10 @@ Implemented during 0.5 development:
 
 * stable tool-schema adapters over existing query, show, context, and check operations
 * prompt-prefix bundle generation with explicit cache partitions
+* editor integrations and diagnostics
 
 Planned:
 
-* editor integrations and diagnostics
 * provider-neutral integration examples
 
 ## 1.0 criteria

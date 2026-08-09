@@ -36,6 +36,7 @@ import { loadGraphInputs } from "./graph-input.js";
 import { renderGraphNode } from "./graph.js";
 import { getAgentToolDefinitions } from "./agent-protocol.js";
 import { loadPromptPrefixBundle } from "./prompt-bundle.js";
+import { diagnosticsToEditor, getEditorIntegration } from "./editor.js";
 
 const VALUE_OPTIONS = new Set(["--root", "--format", "--top", "--depth", "--budget", "--max-edges", "--agents", "--file"]);
 
@@ -53,6 +54,7 @@ const COMMAND_OPTIONS = Object.freeze({
   spec: new Set(["--root", "--json"]),
   tools: new Set(["--json"]),
   bundle: new Set(["--root", "--json"]),
+  editor: new Set(["--json"]),
   help: new Set(["--root", "--json"]),
 });
 
@@ -71,6 +73,7 @@ export async function runCli(argv) {
   validateOptions(command, args);
   const json = hasFlag(args, "--json");
   if (command === "tools") return runTools(json);
+  if (command === "editor") return runEditor(args);
   const rootOption = getOption(args, "--root");
   const root = rootOption ? path.resolve(rootOption) : await findProjectRoot(process.cwd());
 
@@ -127,7 +130,7 @@ async function runInit(root, args, json) {
 
 async function runCheck(root, args, json) {
   const format = json ? "json" : getOption(args, "--format") ?? "text";
-  if (!["text", "json", "github", "sarif"].includes(format)) throw usageError(`Unknown diagnostic format ${JSON.stringify(format)}.`);
+  if (!["text", "json", "github", "sarif", "editor"].includes(format)) throw usageError(`Unknown diagnostic format ${JSON.stringify(format)}.`);
   const paths = getPositionals(args);
   const project = await scanProject(root, { paths });
   const graphInputs = await loadGraphInputs(root, project.config);
@@ -138,6 +141,8 @@ async function runCheck(root, args, json) {
     console.log(JSON.stringify({ ok, counts, diagnostics }, null, 2));
   } else if (format === "sarif") {
     console.log(JSON.stringify(diagnosticsToSarif(diagnostics), null, 2));
+  } else if (format === "editor") {
+    console.log(JSON.stringify(diagnosticsToEditor(diagnostics), null, 2));
   } else {
     printDiagnostics(diagnostics, format);
     if (format === "text") {
@@ -327,6 +332,13 @@ async function runBundle(root, json) {
   return 0;
 }
 
+function runEditor(args) {
+  const name = getPositionals(args)[0];
+  if (!name) throw usageError("editor requires an integration name.");
+  console.log(JSON.stringify(getEditorIntegration(name), null, 2));
+  return 0;
+}
+
 function printDiagnostics(diagnostics, format) {
   for (const item of diagnostics) {
     if (format === "github") {
@@ -426,7 +438,7 @@ Deterministic semantic navigation for LLM coding agents.
 
 Usage
   llmnav init [--agents all|agents,claude,copilot,cursor] [--package-scripts]
-  llmnav check [paths...] [--format text|json|github|sarif]
+  llmnav check [paths...] [--format text|json|github|sarif|editor]
   llmnav format [paths...] [--check]
   llmnav generate [--check]
   llmnav query "<task>" [--top 5]
@@ -437,6 +449,7 @@ Usage
   llmnav spec
   llmnav tools [--json]
   llmnav bundle [--json]
+  llmnav editor vscode
 
 Global options
   --root <path>    Project root

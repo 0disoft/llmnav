@@ -213,6 +213,20 @@
     {
       "confidence": 0.85,
       "from": "llmnav/llmnav.cli.dispatch",
+      "id": "584b3ef4407e42d955bfbd018d95e92b1a9bde7a51eafdf58586613161c24f70",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/cli.js",
+        "source": "src/cli.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.diagnostics.editor"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.cli.dispatch",
       "id": "eff41cd7c9d17709b02482666214d640574b399b164c1b28125a654ba91f1c0f",
       "kind": "imports",
       "provenance": {
@@ -391,6 +405,20 @@
         "type": "source-card"
       },
       "to": "llmnav/llmnav.index.generate"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.diagnostics.editor",
+      "id": "d32b5942ddbe9f761a9f0d30dbed38bf48058983d5bc810104812b8647379d98",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/editor.js",
+        "source": "src/editor.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.rules.validate"
     },
     {
       "confidence": 1,
@@ -1451,6 +1479,28 @@
     {
       "definitions": [],
       "external": false,
+      "key": "llmnav/llmnav.diagnostics.editor",
+      "location": {
+        "declarationLine": null,
+        "endLine": 9,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/editor.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Serialize deterministic editor ranges and publish bounded editor task integrations.",
+      "semanticId": "llmnav.diagnostics.editor",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
       "key": "llmnav/llmnav.diagnostics.sarif",
       "location": {
         "declarationLine": null,
@@ -1803,11 +1853,11 @@
   ],
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "8862fed1ef1f19bfb58cdd65698cf6e164c493fb94e1ad59c80c9773385b12f0",
+  "sourceHash": "6f500c9d0dc3cfb224e7be71f01ec619957903fd46e41ff4d652dc3d182932e9",
   "stats": {
-    "edgeCount": 77,
+    "edgeCount": 79,
     "importedIndexCount": 0,
-    "nodeCount": 30,
+    "nodeCount": 31,
     "unresolvedNodeCount": 0
   }
 }

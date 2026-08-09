@@ -28,3 +28,4 @@
 {"id":"llmnav.agent.protocol","state":"active"}
 {"id":"llmnav.agent.tool-schema","state":"active"}
 {"id":"llmnav.agent.prompt-bundle","state":"active"}
+{"id":"llmnav.diagnostics.editor","state":"active"}
