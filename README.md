@@ -6,7 +6,7 @@ It adds compact, stable metadata to a small number of architectural and behavior
 
 LLMNav is not a documentation generator, an embedding database, or a reason to annotate every function. It is a zero-runtime-dependency Node.js CLI and ESM library for reducing broad repository scans, irrelevant context, stale hand-written links, repeated card tokenization, and avoidable cache invalidation.
 
-## What v0.3 provides
+## What v0.4 provides
 
 * The backward-compatible `llmnav/1` source comment specification
 * A parser and data-loss-resistant canonical formatter
@@ -21,6 +21,11 @@ LLMNav is not a documentation generator, an embedding database, or a reason to a
 * Generated route, event, schema, migration, and command boundaries
 * SARIF 2.1.0 diagnostic output
 * Optional deterministic card-range search shards for very large repositories
+* Strict repository-local imports for generated definition and reference indexes
+* Deterministic qualified repository graphs with edge provenance and confidence
+* Confidence-aware graph ranking and context packing bounded by depth, tokens, and edges
+* Exact qualified and ambiguity-safe workspace semantic ID resolution
+* Content-addressed incremental graph partitions with safe invalidation
 * Repository and module catalogs designed for prompt-prefix reuse
 * Multilingual alias routing and CJK n-gram retrieval
 * Search regression tests with Recall@1, Recall@5, and MRR
@@ -193,6 +198,8 @@ See [docs/cli.md](docs/cli.md) for every option and exit code.
     cards.jsonl
     search-index.json       # compact token dictionary, phrases, and postings
     file-state.json         # deterministic parsed-file state
+    graph.json              # qualified nodes and provenance-aware edges
+    graph-state.json        # disposable content-addressed graph partitions
     repo-core.txt
     agent-context.md
     manifest.json
@@ -234,9 +241,9 @@ Do not annotate trivial getters, generated files, obvious wrappers, every test f
 
 ## Current implementation boundary
 
-Version 0.3 provides the stable semantic layer, compatible deterministic index, persistent lexical inverted index, incremental and transactional generation, contract fingerprints, language-aware local declaration data, generated structural boundaries, affected-boundary reports, SARIF output, optional search shards, relation traversal, and local search evaluation.
+Version 0.4 adds validated generated definition/reference inputs, deterministic qualified repository graphs, confidence-aware ranking, bounded graph context, explicit cross-repository ID resolution, and content-addressed graph invalidation to the stable semantic and incremental local-navigation layers.
 
-MCP, embeddings, SCIP, a hosted service, cross-repository resolution, and a full language-aware call graph remain outside v0.3. Generated structure never writes derived edges into source cards.
+LLMNav does not discover sibling repositories automatically and does not ship an MCP server, embedding database, hosted service, SCIP generator, or complete language-aware call graph. External tools may export the documented compact graph-input schema. Generated structure never writes derived edges into source cards.
 
 ## Documentation
 
@@ -246,6 +253,7 @@ MCP, embeddings, SCIP, a hosted service, cross-repository resolution, and a full
 * [Configuration reference](docs/configuration.md)
 * [Programmatic API](docs/api.md)
 * [Architecture and cache design](docs/architecture.md)
+* [Repository graph](docs/graph.md)
 * [Agent integration](docs/agent-integration.md)
 * [CI and enforcement](docs/ci.md)
 * [Gradual migration](docs/migration.md)
@@ -272,7 +280,7 @@ The project uses the Node.js standard library and built-in test runner. There is
 
 ## Status
 
-LLMNav is an experimental protocol and a usable v0.3 CLI. The source format remains `llmnav/1`; npm package changes and source-grammar changes are versioned independently.
+LLMNav is an experimental protocol and a usable v0.4 CLI. The source format remains `llmnav/1`; npm package changes and source-grammar changes are versioned independently.
 
 ## License
 

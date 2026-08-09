@@ -1,23 +1,23 @@
 # Gradual migration
 
-## Upgrade from 0.1 to 0.2
+## Upgrade to 0.4
 
 No source-card migration is required. Keep every `llmnav/1` comment and the existing `.llmnav/cache/index.json` consumer contract.
 
 Upgrade and regenerate:
 
 ```sh
-npm install --save-dev llmnav@^0.3.0
+npm install --save-dev llmnav@^0.4.0
 npx llmnav init --agents all
 npx llmnav generate
 npx llmnav doctor
 ```
 
-The regeneration adds deterministic `search-index.json` and `file-state.json`. Initialization refreshes `.llmnav/.gitignore` so volatile `state/`, `.transactions/`, and `generation-transaction.json` are not committed.
+The regeneration preserves the schemaVersion 1 primary index and adds deterministic `graph.json` and `graph-state.json` beside the existing search and file-state artifacts. Initialization refreshes managed schemas and instructions. Volatile `state/`, `.transactions/`, and `generation-transaction.json` remain ignored.
 
-Review `generate --json` during the first upgrade. Every existing card will be reported as added only when no previous compatible primary index exists. After the first successful generation, later output is card-granular. A first v0.3 generation adds contract fingerprints and may report `LNV009` only after a previously recorded fingerprint changes.
+Review `generate --json` during the first upgrade. Existing cards are reported as added only when no previous compatible primary index exists. The new `incremental.graph` record reports rebuilt graph partitions on the first run and reused partitions later. `LNV009` remains a non-failing contract-fingerprint review signal.
 
-Do not delete `index.json`, rewrite semantic IDs, or copy generated paths into comments. v0.3 fingerprints, boundary fields, affected-boundary reports, SARIF output, and optional shards are additive.
+Do not delete `index.json`, rewrite semantic IDs, or copy generated paths or graph edges into comments. v0.4 graph inputs, graph artifacts, graph ranking, external ID resolution, and incremental graph metrics are additive; no source-card migration is required.
 
 ## Do not annotate the whole repository
 

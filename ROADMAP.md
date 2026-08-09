@@ -45,7 +45,7 @@ Implemented:
 
 ## 0.4 — repository graphs
 
-Implemented during 0.4 development:
+Implemented:
 
 * optional import of generated definition and reference indexes
 * edge provenance and confidence

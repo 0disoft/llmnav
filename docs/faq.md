@@ -8,9 +8,9 @@ No. That makes retrieval noisier and creates a second copy of the program in pro
 
 JSDoc and docstrings target generated human documentation and language tooling. They do not define durable semantic IDs, controlled effects and risks, append-only catalog order, relation validation, deterministic search artifacts, or search regression gates. They can coexist with LLMNav cards.
 
-## Does v0.2 change the `llmnav/1` syntax?
+## Does v0.4 change the `llmnav/1` syntax?
 
-No. The source grammar remains `llmnav/1`. v0.2 adds generated acceleration and recovery files beside the existing schemaVersion 1 `index.json`.
+No. The source grammar remains `llmnav/1`. v0.4 adds optional generated graph inputs and independently versioned graph cache files beside the existing schemaVersion 1 `index.json`.
 
 ## Does every query still tokenize every card?
 
@@ -40,7 +40,7 @@ The files are deterministic agent context. Committing them makes drift reviewabl
 
 ## Does LLMNav execute project code?
 
-No. Version 0.3 reads text files and writes its generated artifacts or explicitly requested card formatting. It has no plugin loader, install hook, or network request.
+No. Version 0.4 reads text and configured repository-local JSON files, then writes generated artifacts or explicitly requested card formatting. It has no plugin loader, install hook, or network request.
 
 ## Can cards be written in Korean?
 
@@ -56,4 +56,4 @@ No. The repository records exact measured values, environment, fixture size, and
 
 ## Can multiple repositories share IDs?
 
-Each repository has a `repositoryId`. Local relations use semantic IDs; `cross-repo>` uses `repository-id/semantic.id`. Cross-repository resolution remains future work.
+Each repository has a `repositoryId`. Configured graph inputs can add qualified `repository-id/semantic.id` nodes to one explicit workspace. Qualified IDs resolve exactly; unqualified external IDs resolve only when unique. LLMNav does not scan sibling directories or fetch remote repositories automatically.

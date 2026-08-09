@@ -61,8 +61,8 @@ npm publish --provenance --access public
 Automated publication:
 
 ```sh
-git tag v0.3.0
-git push origin v0.3.0
+git tag v0.4.0
+git push origin v0.4.0
 ```
 
 The release workflow rejects a tag that does not match `package.json`.
