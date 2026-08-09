@@ -78,16 +78,23 @@ export async function ensureActiveIds(root, registry, ids) {
 }
 
 export function resolveRegistryId(registry, id) {
-  const visited = new Set();
-  let current = id;
-  for (;;) {
-    if (visited.has(current)) return { id: current, state: "cycle", chain: [...visited, current] };
-    visited.add(current);
-    const record = registry.byId.get(current);
-    if (!record) return { id: current, state: "unknown", chain: [...visited] };
-    if (record.state === "active") return { id: current, state: "active", chain: [...visited] };
-    const target = record.to ?? (Array.isArray(record.by) ? record.by[0] : undefined);
-    if (!target) return { id: current, state: record.state ?? "unknown", chain: [...visited] };
-    current = target;
+  return resolveRegistryPath(registry, id, []);
+}
+
+function resolveRegistryPath(registry, current, path) {
+  const cycleIndex = path.indexOf(current);
+  if (cycleIndex >= 0) return { id: current, state: "cycle", chain: [...path.slice(cycleIndex), current] };
+  const chain = [...path, current];
+  const record = registry.byId.get(current);
+  if (!record) return { id: current, state: "unknown", chain };
+  if (record.state === "active") return { id: current, state: "active", chain };
+  if (record.state === "redirect" && record.to) return resolveRegistryPath(registry, record.to, chain);
+  if (record.state === "replaced" && Array.isArray(record.by)) {
+    if (record.by.length === 1) return resolveRegistryPath(registry, record.by[0], chain);
+    const outcomes = record.by.map((target) => resolveRegistryPath(registry, target, chain));
+    const cycle = outcomes.find((outcome) => outcome.state === "cycle");
+    if (cycle) return cycle;
+    return { id: current, state: "ambiguous", chain, candidates: [...record.by] };
   }
+  return { id: current, state: record.state ?? "unknown", chain };
 }

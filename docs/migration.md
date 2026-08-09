@@ -119,6 +119,8 @@ When one capability splits, mark the old registry record as replaced.
 {"id":"billing.credit.charge","state":"replaced","by":["billing.credit.reserve","billing.credit.capture"]}
 ```
 
+A multi-target replacement is intentionally ambiguous. `show` reports every candidate and `context` requires the caller to choose one; LLMNav never treats array order as semantic priority. Use `redirect` when exactly one successor should resolve automatically.
+
 When an old name redirects to one capability:
 
 ```json

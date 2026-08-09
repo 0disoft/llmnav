@@ -324,6 +324,9 @@ export async function showProjectCard(root, id) {
       const card = index.cards.find((item) => item.id === resolved.id) ?? null;
       if (card) return { card, node: null, resolvedFrom: resolved };
     }
+    if (resolved.state === "ambiguous" || resolved.state === "cycle") {
+      return { card: null, node: null, resolvedFrom: resolved };
+    }
   }
   const graphResolution = resolveGraphNode(graph, id, index.repositoryId);
   if (graphResolution.state !== "resolved") return { card: null, node: null, resolvedFrom: graphResolution };
@@ -343,6 +346,10 @@ export async function buildContext(root, id, options = {}) {
   if (!rootId && !String(id).includes("/")) {
     const resolved = resolveRegistryId(registry, id);
     if (resolved.state === "active" && index.cards.some((card) => card.id === resolved.id)) rootId = resolved.id;
+    if (resolved.state === "ambiguous") {
+      throw new Error(`Ambiguous replaced semantic ID ${id}; choose one of ${resolved.candidates.join(", ")}.`);
+    }
+    if (resolved.state === "cycle") throw new Error(`Registry cycle prevents resolving semantic ID ${id}.`);
   }
   if (isCompatibleRepositoryGraph(graph, index.repositoryId)) {
     const resolution = rootId
