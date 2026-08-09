@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "aliases": {
+    "localized task phrase": "domain.capability.action",
+    "historical product name": "domain.capability.action"
+  }
+}

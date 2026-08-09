@@ -1,0 +1,8 @@
+llmnav-catalog/1 repository=llmnav catalog=llmnav.index
+Read semantic cards before opening source. Resolve current paths and signatures with llmnav query or show.
+
+@llmnav.index.generate
+role Compile validated semantic cards into deterministic repository and module catalogs for coding agents.
+owns stable card order, generated index, cache catalogs
+excludes source semantics, agent search decisions
+rel workflow>llmnav.rules.validate

@@ -1,0 +1,14 @@
+llmnav-catalog/1 repository=llmnav catalog=example.billing
+Read semantic cards before opening source. Resolve current paths and signatures with llmnav query or show.
+
+@example.billing.credit
+role Own credit reservation and capture boundaries for generation jobs.
+owns credit reservation, reservation capture
+excludes provider invoice settlement, subscription entitlement
+invariant Captured credits never exceed the active reservation.
+
+@example.billing.credit.reserve
+role Reserve credits before an external generation job starts.
+invariant One idempotency key creates at most one active reservation.
+effect db.write(credit_reservations)
+risk concurrency

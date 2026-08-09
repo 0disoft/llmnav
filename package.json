@@ -1,0 +1,71 @@
+{
+  "name": "llmnav",
+  "version": "0.1.0",
+  "description": "A deterministic semantic navigation layer for LLM coding agents.",
+  "type": "module",
+  "bin": {
+    "llmnav": "./bin/llmnav.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "import": "./src/index.js"
+    },
+    "./spec": {
+      "types": "./src/spec.d.ts",
+      "import": "./src/spec.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "bin",
+    "src",
+    "templates",
+    "schema",
+    "docs",
+    "README.md",
+    "README.ko.md",
+    "CHANGELOG.md",
+    "ROADMAP.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "test": "node --test",
+    "test:coverage": "node --test --experimental-test-coverage",
+    "lint": "node ./scripts/lint-repo.js",
+    "check": "npm run lint && npm test && node ./bin/llmnav.js check --root . && node ./bin/llmnav.js generate --root . --check",
+    "pack:check": "npm pack --dry-run",
+    "release:check": "node ./scripts/release-check.js",
+    "prepublishOnly": "npm run check && npm run release:check && npm run pack:check",
+    "release:tag": "node ./scripts/verify-tag.js"
+  },
+  "keywords": [
+    "llm",
+    "coding-agent",
+    "code-navigation",
+    "semantic-search",
+    "repository-map",
+    "ai",
+    "cli",
+    "lint"
+  ],
+  "author": "제로디",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/0disoft/llmnav.git"
+  },
+  "bugs": {
+    "url": "https://github.com/0disoft/llmnav/issues"
+  },
+  "homepage": "https://github.com/0disoft/llmnav#readme",
+  "sideEffects": false,
+  "types": "./src/index.d.ts",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}

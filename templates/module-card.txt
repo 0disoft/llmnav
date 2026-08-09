@@ -1,0 +1,9 @@
+/* llmnav/1 module
+id=domain.capability
+role=Own one durable domain capability and its policy boundary.
+owns=owned responsibility|owned state
+excludes=adjacent responsibility|external state
+search=user task phrase|domain term|historical name
+invariant=State the condition that must remain true.
+stability=architecture
+*/

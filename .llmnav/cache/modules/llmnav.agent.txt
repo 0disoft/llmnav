@@ -1,0 +1,8 @@
+llmnav-catalog/1 repository=llmnav catalog=llmnav.agent
+Read semantic cards before opening source. Resolve current paths and signatures with llmnav query or show.
+
+@llmnav.agent.install
+role Install one managed navigation protocol into instruction files used by major coding agents.
+owns agent instruction adapters, managed instruction blocks
+excludes postinstall mutation, agent execution
+rel workflow>llmnav.search.query

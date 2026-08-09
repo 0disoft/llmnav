@@ -1,0 +1,8 @@
+/* llmnav/1 file
+id=domain.capability.adapter
+role=Translate one external protocol into the domain capability.
+search=endpoint phrase|external protocol|adapter name
+effect=net.call(provider)
+rel=workflow>domain.capability.action
+stability=contract
+*/

@@ -1,0 +1,67 @@
+llmnav-catalog/1 repository=llmnav catalog=repository
+Read semantic cards before opening source. Resolve current paths and signatures with llmnav query or show.
+
+@example.auth.session
+role Own refresh-token rotation, replay detection, and family revocation for the example service.
+owns refresh-token family, session revocation
+excludes access-token signing, user profile storage
+invariant One token family has at most one live refresh token.
+
+@example.billing.credit
+role Own credit reservation and capture boundaries for generation jobs.
+owns credit reservation, reservation capture
+excludes provider invoice settlement, subscription entitlement
+invariant Captured credits never exceed the active reservation.
+
+@example.privacy.export
+role Own preparation and expiry of user data export jobs.
+owns export manifest, temporary export object
+excludes account deletion, long-term archive storage
+invariant Every export object expires after the configured retention window.
+
+@llmnav.agent.install
+role Install one managed navigation protocol into instruction files used by major coding agents.
+owns agent instruction adapters, managed instruction blocks
+excludes postinstall mutation, agent execution
+rel workflow>llmnav.search.query
+
+@llmnav.cli.dispatch
+role Expose initialization, validation, generation, search, evaluation, and diagnostics through one CLI.
+owns command dispatch, terminal output, exit codes
+excludes semantic rule definitions, index persistence format
+rel workflow>llmnav.project.initialize, workflow>llmnav.rules.validate, workflow>llmnav.search.query, workflow>llmnav.eval.measure
+
+@llmnav.eval.measure
+role Measure whether repository task queries retrieve expected semantic IDs within configured rank gates.
+owns search regression tests, recall metrics, evaluation gates
+excludes benchmark task execution, model quality scoring
+rel workflow>llmnav.search.query
+
+@llmnav.index.generate
+role Compile validated semantic cards into deterministic repository and module catalogs for coding agents.
+owns stable card order, generated index, cache catalogs
+excludes source semantics, agent search decisions
+rel workflow>llmnav.rules.validate
+
+@llmnav.project.initialize
+role Create a repository's LLMNav configuration, registry, schemas, agent instructions, and initial index.
+owns project bootstrap, configuration templates, initial generation
+excludes package installation, automatic annotation
+rel workflow>llmnav.agent.install, workflow>llmnav.index.generate
+
+@llmnav.rules.validate
+role Reject unstable, ambiguous, oversized, or structurally invalid LLMNav metadata before indexing.
+owns semantic lint rules, coverage rules, registry consistency
+excludes source rewriting, search ranking
+rel workflow>llmnav.syntax.parse
+
+@llmnav.search.query
+role Rank semantic cards from task language, aliases, metadata fields, and one-hop semantic relations.
+owns query ranking, multilingual aliases, context expansion
+excludes embedding generation, source mutation
+rel workflow>llmnav.index.generate
+
+@llmnav.syntax.parse
+role Parse LLMNav source comments into deterministic semantic cards and rewrite them canonically.
+owns comment grammar, card materialization, canonical serialization
+excludes semantic validation, repository search

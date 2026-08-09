@@ -1,0 +1,21 @@
+{
+  "aliases": {
+    "개인정보 내보내기": "example.privacy.export.prepare",
+    "검색 회귀 평가": "llmnav.eval.measure",
+    "규칙 검사": "llmnav.rules.validate",
+    "다국어 검색": "llmnav.search.query",
+    "메타데이터 검증": "llmnav.rules.validate",
+    "문자열 내부 주석 오탐": "llmnav.syntax.parse",
+    "세션 갱신": "example.auth.session.rotate",
+    "에이전트 지침 설치": "llmnav.agent.install",
+    "인덱스 생성": "llmnav.index.generate",
+    "주석 파서": "llmnav.syntax.parse",
+    "초기 설정": "llmnav.project.initialize",
+    "캐시 카탈로그": "llmnav.index.generate",
+    "코드 검색": "llmnav.search.query",
+    "크레딧 선점": "example.billing.credit.reserve",
+    "크레딧을 선점": "example.billing.credit.reserve",
+    "토큰 재사용 공격": "example.auth.session.rotate"
+  },
+  "version": 1
+}

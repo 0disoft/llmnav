@@ -1,0 +1,18 @@
+llmnav-catalog/1 repository=llmnav catalog=example.auth
+Read semantic cards before opening source. Resolve current paths and signatures with llmnav query or show.
+
+@example.auth.session
+role Own refresh-token rotation, replay detection, and family revocation for the example service.
+owns refresh-token family, session revocation
+excludes access-token signing, user profile storage
+invariant One token family has at most one live refresh token.
+
+@example.auth.session.rotate
+role Rotate one refresh-token family atomically and reject a replayed token.
+invariant At most one live refresh token exists per family. Replay revokes the entire token family.
+effect db.write(session_tokens), event.emit(auth.session.revoked)
+risk auth, concurrency
+rel test>example.auth.session.rotate-contract
+
+@example.auth.session.rotate-contract
+role Verify rotation preserves single-token and replay-revocation guarantees.

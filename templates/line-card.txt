@@ -1,0 +1,9 @@
+# llmnav/1 symbol
+# id=domain.capability.action
+# role=Describe the observable result produced by this declaration.
+# search=user task phrase|domain term|failure symptom
+# invariant=State the condition whose violation is a bug.
+# effect=db.write(resource)
+# risk=concurrency
+# stability=contract
+# /llmnav

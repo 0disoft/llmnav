@@ -1,0 +1,16 @@
+{"id":"example.billing.credit","state":"active"}
+{"id":"example.billing.credit.reserve","state":"active"}
+{"id":"example.privacy.export","state":"active"}
+{"id":"example.privacy.export.prepare","state":"active"}
+{"id":"example.privacy.export.prepare-contract","state":"active"}
+{"id":"example.auth.session","state":"active"}
+{"id":"example.auth.session.rotate","state":"active"}
+{"id":"example.auth.session.rotate-contract","state":"active"}
+{"id":"llmnav.agent.install","state":"active"}
+{"id":"llmnav.cli.dispatch","state":"active"}
+{"id":"llmnav.eval.measure","state":"active"}
+{"id":"llmnav.index.generate","state":"active"}
+{"id":"llmnav.project.initialize","state":"active"}
+{"id":"llmnav.syntax.parse","state":"active"}
+{"id":"llmnav.search.query","state":"active"}
+{"id":"llmnav.rules.validate","state":"active"}

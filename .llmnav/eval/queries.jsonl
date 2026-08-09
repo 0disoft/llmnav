@@ -1,0 +1,12 @@
+{"query":"parse and canonicalize llmnav comment blocks","expected":["llmnav.syntax.parse"]}
+{"query":"문자열 내부 주석 오탐을 고쳐라","expected":["llmnav.syntax.parse"]}
+{"query":"reject unknown effects and stale semantic metadata","expected":["llmnav.rules.validate"]}
+{"query":"규칙 검사 진단 코드를 추가한다","expected":["llmnav.rules.validate"]}
+{"query":"build the deterministic repository cache catalog","expected":["llmnav.index.generate"]}
+{"query":"rank cards from multilingual task language","expected":["llmnav.search.query"]}
+{"query":"install navigation instructions for coding assistants","expected":["llmnav.agent.install"]}
+{"query":"bootstrap a repository with config registry and schema","expected":["llmnav.project.initialize"]}
+{"query":"measure recall at five for navigation queries","expected":["llmnav.eval.measure"]}
+{"query":"토큰 재사용 공격이 발생하면 세션 패밀리를 폐기","expected":["example.auth.session.rotate"]}
+{"query":"외부 생성 작업 전에 크레딧을 선점","expected":["example.billing.credit.reserve"]}
+{"query":"개인정보 내보내기 작업에서 object key를 비공개로 유지","expected":["example.privacy.export.prepare"]}

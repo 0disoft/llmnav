@@ -1,0 +1,8 @@
+llmnav-catalog/1 repository=llmnav catalog=llmnav.rules
+Read semantic cards before opening source. Resolve current paths and signatures with llmnav query or show.
+
+@llmnav.rules.validate
+role Reject unstable, ambiguous, oversized, or structurally invalid LLMNav metadata before indexing.
+owns semantic lint rules, coverage rules, registry consistency
+excludes source rewriting, search ranking
+rel workflow>llmnav.syntax.parse

@@ -1,0 +1,25 @@
+# Repository instructions
+
+Keep the npm runtime dependency count at zero unless a measured requirement justifies a dependency and documents its installation, security, and determinism cost.
+
+Preserve deterministic output across operating systems. Normalize paths and newlines at serialization boundaries and add Windows coverage for filesystem behavior.
+
+Treat `llmnav/1` and the generated index schema as public contracts. Parser changes require accepted and rejected fixtures. Search changes require regression queries. Never write generated paths, signatures, imports, callers, or call edges back into source cards.
+
+Run `npm run check` and `npm pack --dry-run` before completing a change.
+
+## LLMNav code navigation
+
+<!-- llmnav:start -->
+Before broad grep, directory scans, or opening many source files, run `npm exec -- llmnav query "<task>" --top 5`.
+
+Resolve the selected semantic ID with `npm exec -- llmnav show <id>`. Use `npm exec -- llmnav context <id> --depth 1 --budget 2500` when related policy, workflow, fallback, migration, or test cards are needed.
+
+Read generated cards and signatures before opening full symbol bodies. Treat paths, line numbers, signatures, imports, and hashes as generated data rather than source-of-truth annotations.
+
+Keep an existing LLMNav ID when a symbol or file is renamed or moved. Change `role`, `invariant`, `effect`, `risk`, and semantic `rel` values only when behavior or contracts change.
+
+Do not add hand-maintained `calls`, `imports`, `references`, `implements`, `exports`, or `overrides` relations. Do not put paths, line numbers, commit hashes, timestamps, callers, or current signatures in LLMNav source comments.
+
+After semantic changes, run `npm exec -- llmnav format`, `npm exec -- llmnav check`, and `npm exec -- llmnav generate`. Use broad text search only when LLMNav returns no credible candidate.
+<!-- llmnav:end -->

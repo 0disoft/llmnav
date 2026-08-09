@@ -1,0 +1,40 @@
+name: Design proposal
+description: Propose a protocol, retrieval, integration, or tooling change
+title: "proposal: "
+labels: [proposal]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Measured problem
+      description: Explain what fails today and how it was observed.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed contract
+      description: Define behavior, syntax, generated data, and failure handling.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Rejected alternatives
+      description: Include the simpler option and why it is insufficient.
+    validations:
+      required: true
+  - type: textarea
+    id: compatibility
+    attributes:
+      label: Compatibility and migration
+      description: State whether llmnav/1, the npm API, or generated schema changes.
+    validations:
+      required: true
+  - type: textarea
+    id: measurement
+    attributes:
+      label: Evaluation plan
+      description: Define fixtures, regression queries, or performance measurements.
+    validations:
+      required: true

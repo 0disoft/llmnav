@@ -1,0 +1,27 @@
+import type { LlmnavConfig, LlmnavScope, LlmnavStability } from "./index.js";
+
+export const PACKAGE_VERSION: string;
+export const SPEC_VERSION: string;
+export const SCOPES: readonly LlmnavScope[];
+export const STABILITIES: readonly LlmnavStability[];
+export const KEY_ORDER: readonly string[];
+export const REQUIRED_KEYS: readonly string[];
+export const REPEATABLE_KEYS: readonly string[];
+export const LIST_KEYS: readonly string[];
+export const SCALAR_KEYS: readonly string[];
+export const ALLOWED_KEYS: readonly string[];
+export const EFFECT_KINDS_WITH_ARGUMENT: readonly string[];
+export const EFFECT_KINDS_WITHOUT_ARGUMENT: readonly string[];
+export const EFFECT_KINDS: readonly string[];
+export const RISK_KINDS: readonly string[];
+export const STRICT_RISKS: readonly string[];
+export const RELATION_KINDS: readonly string[];
+export const FORBIDDEN_STRUCTURE_RELATIONS: readonly string[];
+export const FORBIDDEN_VOLATILE_KEYS: readonly string[];
+export const DEFAULT_INCLUDE_EXTENSIONS: readonly string[];
+export const DEFAULT_EXCLUDED_DIRECTORIES: readonly string[];
+export const DEFAULT_GENERIC_SEARCH_TERMS: readonly string[];
+export const DEFAULT_VAGUE_ROLE_WORDS: readonly string[];
+export const ID_PATTERN: RegExp;
+export const CROSS_REPO_ID_PATTERN: RegExp;
+export const DEFAULT_CONFIG: Readonly<LlmnavConfig>;

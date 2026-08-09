@@ -1,0 +1,16 @@
+example.auth.session
+example.auth.session.rotate
+example.auth.session.rotate-contract
+example.billing.credit
+example.billing.credit.reserve
+example.privacy.export
+example.privacy.export.prepare
+example.privacy.export.prepare-contract
+llmnav.agent.install
+llmnav.cli.dispatch
+llmnav.eval.measure
+llmnav.index.generate
+llmnav.project.initialize
+llmnav.rules.validate
+llmnav.search.query
+llmnav.syntax.parse
