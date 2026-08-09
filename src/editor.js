@@ -8,7 +8,7 @@ rel=workflow>llmnav.rules.validate
 stability=contract
 */
 
-import { compareText, stableStringify } from "./util.js";
+import { compareText, stableStringify, toPosix } from "./util.js";
 
 export const EDITOR_DIAGNOSTIC_SCHEMA_VERSION = 1;
 export const EDITOR_INTEGRATION_SCHEMA_VERSION = 1;
@@ -17,7 +17,8 @@ export function diagnosticsToEditor(diagnostics) {
   const byPath = new Map();
   const sorted = [...diagnostics].sort(compareDiagnostics);
   for (const diagnostic of sorted) {
-    const items = byPath.get(diagnostic.file) ?? [];
+    const documentPath = toPosix(diagnostic.file);
+    const items = byPath.get(documentPath) ?? [];
     const line = Math.max(0, Number(diagnostic.line ?? 1) - 1);
     const character = Math.max(0, Number(diagnostic.column ?? 1) - 1);
     items.push({
@@ -31,7 +32,7 @@ export function diagnosticsToEditor(diagnostics) {
       source: "llmnav",
       message: diagnostic.message,
     });
-    byPath.set(diagnostic.file, items);
+    byPath.set(documentPath, items);
   }
   return {
     schemaVersion: EDITOR_DIAGNOSTIC_SCHEMA_VERSION,

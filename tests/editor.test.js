@@ -41,6 +41,16 @@ test("publishes a VS Code task whose matcher accepts LLMNav text diagnostics", (
   ]);
 });
 
+test("groups editor diagnostics by normalized project path", () => {
+  const report = diagnosticsToEditor([
+    diagnostic("src\\api.ts", 2, 1, "warning", "LNV002", "Windows path"),
+    diagnostic("src/api.ts", 1, 1, "error", "LNV001", "POSIX path"),
+  ]);
+  assert.equal(report.documents.length, 1);
+  assert.equal(report.documents[0].path, "src/api.ts");
+  assert.equal(report.documents[0].diagnostics.length, 2);
+});
+
 test("prints the VS Code integration outside a repository", () => {
   const cli = fileURLToPath(new URL("../bin/llmnav.js", import.meta.url));
   const result = spawnSync(process.execPath, [cli, "editor", "vscode"], {

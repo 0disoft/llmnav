@@ -17,3 +17,13 @@ test("serializes deterministic SARIF 2.1.0 diagnostics", () => {
   assert.equal(first.runs[0].results[1].locations[0].physicalLocation.artifactLocation.uri, "src/api.ts");
   assert.equal(first.runs[0].results[0].level, "error");
 });
+
+test("normalizes foreign separators and URI-encodes SARIF artifact paths", () => {
+  const report = diagnosticsToSarif([
+    { severity: "error", code: "LNV001", message: "Invalid.", file: "src\\space #name.ts", line: 1, column: 1 },
+  ]);
+  assert.equal(
+    report.runs[0].results[0].locations[0].physicalLocation.artifactLocation.uri,
+    "src/space%20%23name.ts",
+  );
+});

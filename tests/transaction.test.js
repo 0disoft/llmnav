@@ -9,6 +9,7 @@ import { generateProject } from "../src/generator.js";
 import { initializeProject } from "../src/initializer.js";
 import { queryProject } from "../src/search.js";
 import {
+  commitGeneratedCache,
   recoverGenerationTransaction,
   removeWithRetry,
   renameWithRetry,
@@ -208,4 +209,19 @@ test("recovery rejects journal paths outside the owning transaction directory", 
     /backup directory does not belong/u,
   );
   assert.equal(await readFile(sentinelPath, "utf8"), "must-stay\n");
+});
+
+test("staging rejects artifact paths that normalize outside the cache", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-transaction-artifact-traversal-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await mkdir(path.join(root, ".llmnav"), { recursive: true });
+  const artifacts = new Map([
+    [".llmnav/cache/manifest.json", '{"files":{}}\n'],
+    [".llmnav/cache/nested/../../outside.txt", "escape\n"],
+  ]);
+  await assert.rejects(
+    () => commitGeneratedCache(root, ".llmnav/cache", artifacts),
+    /parent-directory traversal/u,
+  );
+  await assert.rejects(() => readFile(path.join(root, ".llmnav", "outside.txt"), "utf8"), /ENOENT/u);
 });

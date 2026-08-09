@@ -213,6 +213,19 @@ function validateGeneration(generation, problems) {
     requiredPrefix: ".llmnav/",
   });
   if (cacheProblem) problems.push(`generation.cacheDirectory ${cacheProblem}`);
+  if (typeof generation.cacheDirectory === "string") {
+    const normalized = generation.cacheDirectory.replace(/\/+$/u, "");
+    const reserved = [
+      ".llmnav/.transactions",
+      ".llmnav/config.json",
+      ".llmnav/generation-transaction.json",
+      ".llmnav/ids.jsonl",
+      ".llmnav/order.lock",
+    ];
+    if (reserved.some((entry) => normalized === entry || normalized.startsWith(`${entry}/`) || entry.startsWith(`${normalized}/`))) {
+      problems.push("generation.cacheDirectory must not overlap LLMNav control state");
+    }
+  }
   if (!Number.isInteger(generation.moduleDepth) || generation.moduleDepth < 1 || generation.moduleDepth > 6) {
     problems.push("generation.moduleDepth must be an integer from 1 to 6");
   }

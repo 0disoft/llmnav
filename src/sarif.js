@@ -43,7 +43,7 @@ export function diagnosticsToSarif(diagnostics) {
         message: { text: item.message },
         locations: [{
           physicalLocation: {
-            artifactLocation: { uri: toPosix(item.file) },
+            artifactLocation: { uri: toPosix(item.file).split("/").map(encodeURIComponent).join("/") },
             region: {
               startLine: Math.max(1, item.line),
               startColumn: Math.max(1, item.column),

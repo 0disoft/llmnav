@@ -56,7 +56,20 @@ export function sha256(value) {
 }
 
 export function toPosix(value) {
-  return value.split(path.sep).join("/");
+  return String(value).replace(/\\/gu, "/");
+}
+
+export function projectRelativePath(value, label = value) {
+  const normalized = toPosix(value);
+  if (!normalized || normalized.startsWith("/") || /^[A-Za-z]:\//u.test(normalized)) {
+    throw new Error(`${label} must be a non-empty project-relative path.`);
+  }
+  if (normalized.split("/").includes("..")) {
+    throw new Error(`${label} contains parent-directory traversal.`);
+  }
+  const canonical = path.posix.normalize(normalized).replace(/^\.\//u, "");
+  if (!canonical || canonical === ".") throw new Error(`${label} must name a path below the project root.`);
+  return canonical;
 }
 
 export function relativePosix(root, absolutePath) {

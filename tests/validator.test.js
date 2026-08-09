@@ -116,6 +116,18 @@ test("rejects unknown configuration and coverage properties", async (context) =>
   );
 });
 
+test("rejects cache directories that overlap LLMNav control state", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-cache-control-overlap-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await writeFile(path.join(root, "package.json"), '{"name":"fixture"}\n');
+  await initializeProject(root, { agents: ["none"] });
+  const configPath = path.join(root, ".llmnav", "config.json");
+  const config = JSON.parse(await (await import("node:fs/promises")).readFile(configPath, "utf8"));
+  config.generation.cacheDirectory = ".llmnav/.transactions/cache";
+  await writeFile(configPath, `${JSON.stringify(config, null, 2)}\n`);
+  await assert.rejects(() => scanProject(root), /must not overlap LLMNav control state/u);
+});
+
 test("rejects malformed registry records and redirect cycles", async (context) => {
   const root = await fixture(`/* llmnav/1 symbol\nid=core.feature.active\nrole=Expose one active feature contract.\nsearch=active feature|feature contract\nstability=contract\n*/\nexport function activeFeature() {}\n`);
   context.after(() => rm(root, { recursive: true, force: true }));
