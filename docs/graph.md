@@ -62,3 +62,15 @@ Edges contain a stable SHA-256 ID, qualified `from` and `to` keys, kind, confide
 | `generated-index` | supplied value, default `0.8` | configured definition/reference index |
 
 Provenance records the owning input or source file, optional referenced path and line, and generator identity. Missing targets remain unresolved placeholder nodes rather than disappearing. The graph is part of the transactional cache and its bytes are covered by `manifest.json`.
+
+## Ranking and context
+
+Lexical retrieval remains the seed authority. LLMNav takes at most the first three lexical seeds and applies a bounded one-hop graph bonus:
+
+```text
+seed score × 0.08 × edge confidence × direction weight
+```
+
+Outgoing edges use direction weight `1.0`; incoming edges use `0.6`. An edge cannot create a result for a node that has no loaded card. Result reasons retain direction, kind, and confidence such as `graph-out:calls@0.90`.
+
+`llmnav context` traverses confidence-ordered incoming and outgoing edges breadth-first. `--depth`, `--budget`, and `--max-edges` independently bound traversal and output. Selected cards are packed before compact edge evidence so a small token budget preserves the requested root card first.

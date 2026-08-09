@@ -56,10 +56,10 @@ excludes source rewriting, search ranking
 rel workflow>llmnav.syntax.parse
 
 @llmnav.search.query
-role Rank semantic cards from task language, aliases, metadata fields, and one-hop semantic relations.
-owns query ranking, multilingual aliases, context expansion
+role Rank cards from task language and pack confidence-weighted repository graph context.
+owns query ranking, graph ranking, multilingual aliases, context expansion
 excludes embedding generation, source mutation
-rel workflow>llmnav.index.generate, workflow>llmnav.index.inverted
+rel workflow>llmnav.index.generate, workflow>llmnav.index.inverted, workflow>llmnav.graph.generate
 
 @llmnav.syntax.parse
 role Parse LLMNav source comments into deterministic semantic cards and rewrite them canonically.

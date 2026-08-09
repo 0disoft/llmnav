@@ -1,11 +1,12 @@
 /* llmnav/1 module
 id=llmnav.search.query
-role=Rank semantic cards from task language, aliases, metadata fields, and one-hop semantic relations.
-owns=query ranking|multilingual aliases|context expansion
+role=Rank cards from task language and pack confidence-weighted repository graph context.
+owns=query ranking|graph ranking|multilingual aliases|context expansion
 excludes=embedding generation|source mutation
-search=semantic code search|agent navigation|multilingual query
+search=semantic code search|graph-aware ranking|agent navigation|multilingual query
 rel=workflow>llmnav.index.generate
 rel=workflow>llmnav.index.inverted
+rel=workflow>llmnav.graph.generate
 stability=architecture
 */
 
@@ -23,6 +24,7 @@ import {
 } from "./inverted-index.js";
 import { normalizeSearchText, tokenize } from "./tokenizer.js";
 import { recoverGenerationTransaction } from "./transaction.js";
+import { isCompatibleRepositoryGraph } from "./graph.js";
 
 const preparedIndexCache = new WeakMap();
 const preparedSearchIndexCache = new WeakMap();
@@ -35,6 +37,22 @@ export async function loadSearchData(root) {
   if (!index) throw new Error("No generated index found. Run `llmnav generate` first.");
   const lexicon = await readJsonSafe(path.join(root, ".llmnav", "lexicon.json"), { version: 1, aliases: {} });
   const manifest = await readJsonSafe(path.join(cacheRoot, "manifest.json"), null);
+  const graphRelative = `${toPosix(config.generation.cacheDirectory).replace(/\/+$/u, "")}/graph.json`;
+  const graphText = await readText(path.join(cacheRoot, "graph.json"), null);
+  let graph = null;
+  if (graphText !== null) {
+    try {
+      graph = JSON.parse(graphText);
+    } catch {
+      graph = null;
+    }
+  }
+  const graphMatches = Boolean(
+    graphText !== null &&
+      manifest?.files?.[graphRelative] === sha256(graphText) &&
+      isCompatibleRepositoryGraph(graph, index.repositoryId),
+  );
+  if (!graphMatches) graph = null;
   const searchRelative = `${toPosix(config.generation.cacheDirectory).replace(/\/+$/u, "")}/search-index.json`;
   const searchText = await readText(path.join(cacheRoot, "search-index.json"), null);
   let searchIndex = null;
@@ -55,12 +73,12 @@ export async function loadSearchData(root) {
   if (!isCompatibleSearchIndex(searchIndex, index.repositoryId) || (!manifestMatches && !verifySearchIndex(index, searchIndex))) {
     searchIndex = buildInvertedIndex(index).searchIndex;
   }
-  return { index, lexicon, searchIndex };
+  return { index, lexicon, searchIndex, graph };
 }
 
 export async function queryProject(root, query, options = {}) {
-  const { index, lexicon, searchIndex } = await loadSearchData(root);
-  return queryPreparedIndex(index, searchIndex, query, { ...options, lexicon });
+  const { index, lexicon, searchIndex, graph } = await loadSearchData(root);
+  return queryPreparedIndex(index, searchIndex, query, { ...options, lexicon, graph });
 }
 
 export function queryIndex(index, query, options = {}) {
@@ -94,6 +112,7 @@ export function queryPreparedIndex(index, searchIndex, query, options = {}) {
     metrics.postingVisits = 0;
     metrics.phraseDocumentsScanned = 0;
     metrics.idDocumentsScanned = 0;
+    metrics.graphEdgesVisited = 0;
   }
 
   for (const [alias, targetValue] of aliases) {
@@ -156,16 +175,10 @@ export function queryPreparedIndex(index, searchIndex, query, options = {}) {
   const seeds = [...results]
     .sort((left, right) => right.score - left.score || (cardOrder.get(left.card.id) ?? 0) - (cardOrder.get(right.card.id) ?? 0))
     .slice(0, 3);
-  for (const seed of seeds) {
-    for (const relation of seed.card.rel ?? []) {
-      const separator = relation.indexOf(">");
-      if (separator <= 0) continue;
-      const target = relation.slice(separator + 1);
-      const targetCard = byId.get(target);
-      if (!targetCard) continue;
-      const bonus = seed.score * 0.08;
-      addScore(resultsById, targetCard, bonus, `related-from=${seed.card.id}`);
-    }
+  if (isCompatibleRepositoryGraph(options.graph, index.repositoryId)) {
+    applyGraphBonuses(index, options.graph, seeds, byId, resultsById, metrics);
+  } else {
+    applyLegacyRelationBonuses(seeds, byId, resultsById);
   }
 
   return [...resultsById.values()]
@@ -314,7 +327,7 @@ export async function showProjectCard(root, id) {
 }
 
 export async function buildContext(root, id, options = {}) {
-  const { index } = await loadSearchData(root);
+  const { index, graph } = await loadSearchData(root);
   const registry = await loadRegistry(root);
   const direct = index.cards.find((card) => card.id === id);
   const resolved = direct ? { id, state: "active" } : resolveRegistryId(registry, id);
@@ -322,6 +335,7 @@ export async function buildContext(root, id, options = {}) {
   const rootId = resolved.id;
   const depth = boundedInteger(options.depth, 1, 0, 8);
   const budget = boundedInteger(options.budget, 2500, 128, 100000);
+  const maxEdges = boundedInteger(options.maxEdges, 24, 0, 1000);
   const start = index.cards.find((card) => card.id === rootId);
   if (!start) throw new Error(`No indexed source card exists for semantic ID ${rootId}.`);
   const byId = new Map(index.cards.map((card) => [card.id, card]));
@@ -338,6 +352,11 @@ export async function buildContext(root, id, options = {}) {
   const queue = [{ id: rootId, depth: 0 }];
   const visited = new Set();
   const selected = [];
+  const selectedEdges = [];
+  const seenEdges = new Set();
+  const graphAdjacency = isCompatibleRepositoryGraph(graph, index.repositoryId)
+    ? buildGraphAdjacency(graph)
+    : null;
   while (queue.length > 0) {
     const current = queue.shift();
     if (!current || visited.has(current.id)) continue;
@@ -346,11 +365,24 @@ export async function buildContext(root, id, options = {}) {
     if (!card) continue;
     selected.push(card);
     if (current.depth >= depth) continue;
-    for (const relation of card.rel ?? []) {
-      const target = relation.slice(relation.indexOf(">") + 1);
-      queue.push({ id: target, depth: current.depth + 1 });
+    if (graphAdjacency) {
+      const key = `${index.repositoryId}/${card.id}`;
+      for (const entry of graphAdjacency.get(key) ?? []) {
+        if (selectedEdges.length >= maxEdges) break;
+        if (!seenEdges.has(entry.edge.id)) {
+          selectedEdges.push(entry.edge);
+          seenEdges.add(entry.edge.id);
+        }
+        const target = localSemanticId(entry.neighbor, index.repositoryId);
+        if (target) queue.push({ id: target, depth: current.depth + 1 });
+      }
+    } else {
+      for (const relation of card.rel ?? []) {
+        const target = relation.slice(relation.indexOf(">") + 1);
+        queue.push({ id: target, depth: current.depth + 1 });
+      }
+      for (const source of reverse.get(card.id) ?? []) queue.push({ id: source, depth: current.depth + 1 });
     }
-    for (const source of reverse.get(card.id) ?? []) queue.push({ id: source, depth: current.depth + 1 });
   }
 
   const header = `llmnav-context/1 root=${rootId} depth=${depth}\n`;
@@ -368,13 +400,93 @@ export async function buildContext(root, id, options = {}) {
     output += rendered;
     included.push(card.id);
   }
+  const includedEdges = [];
+  for (const edge of selectedEdges) {
+    const rendered = `graph ${edge.from} -[${edge.kind} confidence=${edge.confidence.toFixed(2)} provenance=${edge.provenance.type}]-> ${edge.to}\n`;
+    if (approximateTokens(output + rendered) > budget) break;
+    output += rendered;
+    includedEdges.push(edge.id);
+  }
   return {
     id: rootId,
     depth,
     budget,
+    maxEdges,
     included,
+    includedEdges,
     text: truncateToTokenBudget(output.trimEnd(), budget),
   };
+}
+
+function applyGraphBonuses(index, graph, seeds, byId, resultsById, metrics) {
+  const adjacency = buildGraphAdjacency(graph);
+  for (const seed of seeds) {
+    const key = `${index.repositoryId}/${seed.card.id}`;
+    for (const entry of adjacency.get(key) ?? []) {
+      if (metrics) metrics.graphEdgesVisited += 1;
+      const target = localSemanticId(entry.neighbor, index.repositoryId);
+      const targetCard = target ? byId.get(target) : null;
+      if (!targetCard) continue;
+      const directionWeight = entry.direction === "out" ? 1 : 0.6;
+      const bonus = seed.score * 0.08 * edgeConfidence(entry.edge) * directionWeight;
+      if (bonus <= 0) continue;
+      addScore(
+        resultsById,
+        targetCard,
+        bonus,
+        `graph-${entry.direction}:${entry.edge.kind}@${edgeConfidence(entry.edge).toFixed(2)}`,
+      );
+    }
+  }
+}
+
+function applyLegacyRelationBonuses(seeds, byId, resultsById) {
+  for (const seed of seeds) {
+    for (const relation of seed.card.rel ?? []) {
+      const separator = relation.indexOf(">");
+      if (separator <= 0) continue;
+      const target = relation.slice(separator + 1);
+      const targetCard = byId.get(target);
+      if (targetCard) addScore(resultsById, targetCard, seed.score * 0.08, `related-from=${seed.card.id}`);
+    }
+  }
+}
+
+function buildGraphAdjacency(graph) {
+  const adjacency = new Map();
+  for (const edge of [...graph.edges].sort(compareGraphEdgesForTraversal)) {
+    appendGraphNeighbor(adjacency, edge.from, { neighbor: edge.to, direction: "out", edge });
+    appendGraphNeighbor(adjacency, edge.to, { neighbor: edge.from, direction: "in", edge });
+  }
+  for (const entries of adjacency.values()) {
+    entries.sort((left, right) =>
+      edgeConfidence(right.edge) - edgeConfidence(left.edge) ||
+      compareText(left.edge.kind, right.edge.kind) ||
+      compareText(left.neighbor, right.neighbor) ||
+      compareText(left.edge.id, right.edge.id),
+    );
+  }
+  return adjacency;
+}
+
+function appendGraphNeighbor(adjacency, key, entry) {
+  const values = adjacency.get(key) ?? [];
+  values.push(entry);
+  adjacency.set(key, values);
+}
+
+function localSemanticId(key, repositoryId) {
+  const prefix = `${repositoryId}/`;
+  return key.startsWith(prefix) ? key.slice(prefix.length) : null;
+}
+
+function edgeConfidence(edge) {
+  return Math.max(0, Math.min(1, Number(edge.confidence) || 0));
+}
+
+function compareGraphEdgesForTraversal(left, right) {
+  return compareText(left.from, right.from) || compareText(left.to, right.to) || compareText(left.kind, right.kind) ||
+    compareText(left.id, right.id);
 }
 
 function addScore(resultsById, card, score, reasons) {

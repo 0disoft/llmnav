@@ -1431,7 +1431,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "d352de7820e25fb4b751dfcc46f212bd5520fc2cd7f404016838d9ae2bf926cf",
+      "contentHash": "9735d9815c4a97146c31c7b8a1c23aa409128140a62239a256fa97ef3d6c0cc1",
       "declarations": [
         null
       ],
@@ -1470,7 +1470,8 @@
         ", ",
         ", 1),\n    budget: parseCliIntegerOption(args, ",
         ", 1)[0];\n      if (!argument.includes(",
-        ", 2500),\n  });\n  if (json) console.log(JSON.stringify(result, null, 2));\n  else console.log(result.text);\n  return 0;\n}\n\nasync function runEval(root, args, json) {\n  const result = await evaluateProject(root, {\n    top: parseCliIntegerOption(args, ",
+        ", 24),\n  });\n  if (json) console.log(JSON.stringify(result, null, 2));\n  else console.log(result.text);\n  return 0;\n}\n\nasync function runEval(root, args, json) {\n  const result = await evaluateProject(root, {\n    top: parseCliIntegerOption(args, ",
+        ", 2500),\n    maxEdges: parseCliIntegerOption(args, ",
         ", 5),\n    file: getOption(args, ",
         "--agents",
         "--budget",
@@ -1481,6 +1482,7 @@
         "--format",
         "--help",
         "--json",
+        "--max-edges",
         "--package-scripts",
         "--root",
         "--top",
@@ -1537,7 +1539,7 @@
       ],
       "path": "src/cli.js",
       "semanticBytes": 473,
-      "sourceBytes": 14516
+      "sourceBytes": 14625
     },
     {
       "blocks": [],
@@ -2434,7 +2436,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "18e8dbe842d3df0ed6642641e03f56528ca4302dea5bef822d16cdec541f19fe",
+      "contentHash": "0653b3d47e4a6f6db6e80bd25162686b73ed673204606e63ef1c954f220e5037",
       "declarations": [
         null
       ],
@@ -2462,11 +2464,13 @@
         "llmnav-index",
         "local-import",
         "node:path",
-        "source-card"
+        "number",
+        "source-card",
+        "string"
       ],
       "path": "src/graph.js",
       "semanticBytes": 397,
-      "sourceBytes": 7483
+      "sourceBytes": 8304
     },
     {
       "blocks": [
@@ -2584,7 +2588,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "51b5fabbd88f39600875655428183415ac3aa5ab48a4a52cf4a2a06d949ef10c",
+      "contentHash": "79d7d4aa66498f5355ad4b90428bec038e1d7898ff79b7d3aa77464bd8398739",
       "declarations": [],
       "imports": [
         " | ",
@@ -2596,7 +2600,7 @@
         ";\n  prefix: string | null;\n  indent: string;\n  raw: string;\n  start: number;\n  end: number;\n  startLine: number;\n  endLine: number;\n  newline: string;\n}\n\nexport interface Declaration {\n  kind: string;\n  symbol: string;\n  signature: string;\n  language: ",
         ";\n  previous: string | null;\n  current: string | null;\n}\n\nexport interface SearchDocument {\n  hash: string;\n  phrases: string[];\n  terms: Array<[token: string, sparseFieldCounts: number[]]>;\n  tokens: string[];\n}\n\nexport type CompactSearchDocument = [hash: string, phrases: string[]];\nexport type CompactSearchPosting = [cardIndex: number, sparseFieldCounts: number[]];\n\nexport interface LlmnavSearchIndex {\n  schemaVersion: 2;\n  encoding: ",
         ";\n  receiver: string | null;\n  line: number;\n  offset: number;\n  endOffset: number;\n  bodyHash: string;\n}\n\nexport interface DetectedBoundary {\n  kind: ",
-        ";\n  tokenizerVersion: number;\n  repositoryId: string;\n  cardSetHash: string;\n  documentCount: number;\n  fieldOrder: string[];\n  cardIds: string[];\n  tokens: string[];\n  documents: CompactSearchDocument[];\n  postings: CompactSearchPosting[][];\n}\n\nexport interface SearchIndexStats {\n  previousUsable: boolean;\n  totalCards: number;\n  reusedCards: number;\n  indexedCards: number;\n  removedCards: number;\n  changedIds: string[];\n  removedIds: string[];\n  tokenCount: number;\n}\n\nexport interface SearchMetrics {\n  queryTokens?: number;\n  documentTokenizations?: number;\n  postingVisits?: number;\n  phraseDocumentsScanned?: number;\n  idDocumentsScanned?: number;\n}\n\nexport interface SearchResult {\n  id: string;\n  score: number;\n  reasons: string[];\n  role: string;\n  location: IndexedLocation;\n  card: IndexedCard;\n}\n\nexport interface RegistryRecord {\n  id: string;\n  state: ",
+        ";\n  tokenizerVersion: number;\n  repositoryId: string;\n  cardSetHash: string;\n  documentCount: number;\n  fieldOrder: string[];\n  cardIds: string[];\n  tokens: string[];\n  documents: CompactSearchDocument[];\n  postings: CompactSearchPosting[][];\n}\n\nexport interface SearchIndexStats {\n  previousUsable: boolean;\n  totalCards: number;\n  reusedCards: number;\n  indexedCards: number;\n  removedCards: number;\n  changedIds: string[];\n  removedIds: string[];\n  tokenCount: number;\n}\n\nexport interface SearchMetrics {\n  queryTokens?: number;\n  documentTokenizations?: number;\n  postingVisits?: number;\n  phraseDocumentsScanned?: number;\n  idDocumentsScanned?: number;\n  graphEdgesVisited?: number;\n}\n\nexport interface SearchResult {\n  id: string;\n  score: number;\n  reasons: string[];\n  role: string;\n  location: IndexedLocation;\n  card: IndexedCard;\n}\n\nexport interface RegistryRecord {\n  id: string;\n  state: ",
         ";\n  unknown?: Array<{ key: string; value: string; line: number }>;\n}\n\nexport interface LlmnavEntry {\n  key: string;\n  value: string;\n  line: number;\n  order: number;\n}\n\nexport interface LlmnavBlock {\n  specVersion: string;\n  filePath: string;\n  scope: LlmnavScope;\n  card: LlmnavCard;\n  entries: LlmnavEntry[];\n  syntaxErrors: Array<{ line: number; message: string }>;\n  style: ",
         "> {\n  location: IndexedLocation;\n  imports: string[];\n  boundaries: DetectedBoundary[];\n  hashes: {\n    semantic: string;\n    structure: string;\n    body: string;\n  };\n}\n\nexport interface LlmnavIndex {\n  schemaVersion: 1;\n  specVersion: string;\n  generatedBy: string;\n  repositoryId: string;\n  contractFingerprints?: ContractFingerprints;\n  sourceHash: string;\n  cards: IndexedCard[];\n}\n\nexport interface ContractFingerprint {\n  sha256: string;\n  count?: number;\n}\n\nexport interface ContractFingerprints {\n  schemaVersion: 1;\n  exportedApi: ContractFingerprint;\n  configuration: ContractFingerprint;\n}\n\nexport interface ContractFingerprintChange {\n  kind: ",
         "] | null;\n  exported: boolean | null;\n  visibility: Declaration[",
@@ -2613,11 +2617,11 @@
       ],
       "path": "src/index.d.ts",
       "semanticBytes": 0,
-      "sourceBytes": 19300
+      "sourceBytes": 19534
     },
     {
       "blocks": [],
-      "contentHash": "3dc184dda49a3625a749a9d0bcc2936199a311b6893f51ed457bf71e42118b17",
+      "contentHash": "1ef51f48611c7ff9e42711b0fed989cc583ef3d8798e7273497226751aa2a13c",
       "declarations": [],
       "imports": [
         "./agents.js",
@@ -2649,7 +2653,7 @@
       ],
       "path": "src/index.js",
       "semanticBytes": 0,
-      "sourceBytes": 2567
+      "sourceBytes": 2596
     },
     {
       "blocks": [
@@ -3391,26 +3395,29 @@
             "invariant": [],
             "owns": [
               "query ranking",
+              "graph ranking",
               "multilingual aliases",
               "context expansion"
             ],
             "rel": [
               "workflow>llmnav.index.generate",
-              "workflow>llmnav.index.inverted"
+              "workflow>llmnav.index.inverted",
+              "workflow>llmnav.graph.generate"
             ],
             "risk": [],
-            "role": "Rank semantic cards from task language, aliases, metadata fields, and one-hop semantic relations.",
+            "role": "Rank cards from task language and pack confidence-weighted repository graph context.",
             "scope": "module",
             "search": [
               "semantic code search",
+              "graph-aware ranking",
               "agent navigation",
               "multilingual query"
             ],
             "stability": "architecture",
             "unknown": []
           },
-          "end": 408,
-          "endLine": 10,
+          "end": 464,
+          "endLine": 11,
           "entries": [
             {
               "key": "id",
@@ -3422,13 +3429,13 @@
               "key": "role",
               "line": 3,
               "order": 1,
-              "value": "Rank semantic cards from task language, aliases, metadata fields, and one-hop semantic relations."
+              "value": "Rank cards from task language and pack confidence-weighted repository graph context."
             },
             {
               "key": "owns",
               "line": 4,
               "order": 2,
-              "value": "query ranking|multilingual aliases|context expansion"
+              "value": "query ranking|graph ranking|multilingual aliases|context expansion"
             },
             {
               "key": "excludes",
@@ -3440,7 +3447,7 @@
               "key": "search",
               "line": 6,
               "order": 4,
-              "value": "semantic code search|agent navigation|multilingual query"
+              "value": "semantic code search|graph-aware ranking|agent navigation|multilingual query"
             },
             {
               "key": "rel",
@@ -3455,9 +3462,15 @@
               "value": "workflow>llmnav.index.inverted"
             },
             {
-              "key": "stability",
+              "key": "rel",
               "line": 9,
               "order": 7,
+              "value": "workflow>llmnav.graph.generate"
+            },
+            {
+              "key": "stability",
+              "line": 10,
+              "order": 8,
               "value": "architecture"
             }
           ],
@@ -3465,7 +3478,7 @@
           "indent": "",
           "newline": "\n",
           "prefix": null,
-          "raw": "/* llmnav/1 module\nid=llmnav.search.query\nrole=Rank semantic cards from task language, aliases, metadata fields, and one-hop semantic relations.\nowns=query ranking|multilingual aliases|context expansion\nexcludes=embedding generation|source mutation\nsearch=semantic code search|agent navigation|multilingual query\nrel=workflow>llmnav.index.generate\nrel=workflow>llmnav.index.inverted\nstability=architecture\n*/",
+          "raw": "/* llmnav/1 module\nid=llmnav.search.query\nrole=Rank cards from task language and pack confidence-weighted repository graph context.\nowns=query ranking|graph ranking|multilingual aliases|context expansion\nexcludes=embedding generation|source mutation\nsearch=semantic code search|graph-aware ranking|agent navigation|multilingual query\nrel=workflow>llmnav.index.generate\nrel=workflow>llmnav.index.inverted\nrel=workflow>llmnav.graph.generate\nstability=architecture\n*/",
           "scope": "module",
           "specVersion": "1",
           "start": 0,
@@ -3474,16 +3487,17 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "c38ec84d77f7bbda0736801fc6f3f04590b894dc10147019ef78b9dfb23fa032",
+      "contentHash": "4919a64ed7bd60a5d551a7e08c79a1a68de4eeb2739a0c914e2f8c7256ed80ef",
       "declarations": [
         null
       ],
       "imports": [
+        " ? 1 : 0.6;\n      const bonus = seed.score * 0.08 * edgeConfidence(entry.edge) * directionWeight;\n      if (bonus <= 0) continue;\n      addScore(\n        resultsById,\n        targetCard,\n        bonus,\n        `graph-${entry.direction}:${entry.edge.kind}@${edgeConfidence(entry.edge).toFixed(2)}`,\n      );\n    }\n  }\n}\n\nfunction applyLegacyRelationBonuses(seeds, byId, resultsById) {\n  for (const seed of seeds) {\n    for (const relation of seed.card.rel ?? []) {\n      const separator = relation.indexOf(",
         " } : resolveRegistryId(registry, id);\n  if (resolved.state !== ",
-        ") + 1);\n      const list = reverse.get(target) ?? [];\n      list.push(card.id);\n      reverse.set(target, list);\n    }\n  }\n\n  const queue = [{ id: rootId, depth: 0 }];\n  const visited = new Set();\n  const selected = [];\n  while (queue.length > 0) {\n    const current = queue.shift();\n    if (!current || visited.has(current.id)) continue;\n    visited.add(current.id);\n    const card = byId.get(current.id);\n    if (!card) continue;\n    selected.push(card);\n    if (current.depth >= depth) continue;\n    for (const relation of card.rel ?? []) {\n      const target = relation.slice(relation.indexOf(",
-        ") + 1);\n      queue.push({ id: target, depth: current.depth + 1 });\n    }\n    for (const source of reverse.get(card.id) ?? []) queue.push({ id: source, depth: current.depth + 1 });\n  }\n\n  const header = `llmnav-context/1 root=${rootId} depth=${depth}\\n`;\n  let output = header;\n  const included = [];\n  for (const card of selected) {\n    const rendered = `${renderCompactCard(card)}\\n\\n`;\n    if (approximateTokens(output + rendered) > budget) {\n      if (included.length === 0) {\n        output = truncateToTokenBudget(output + rendered, budget);\n        included.push(card.id);\n      }\n      break;\n    }\n    output += rendered;\n    included.push(card.id);\n  }\n  return {\n    id: rootId,\n    depth,\n    budget,\n    included,\n    text: truncateToTokenBudget(output.trimEnd(), budget),\n  };\n}\n\nfunction addScore(resultsById, card, score, reasons) {\n  const existing = resultsById.get(card.id) ?? { card, score: 0, reasons: [] };\n  existing.score += score;\n  if (Array.isArray(reasons)) existing.reasons.push(...reasons);\n  else existing.reasons.push(reasons);\n  resultsById.set(card.id, existing);\n}\n\nfunction boundedInteger(value, fallback, minimum, maximum) {\n  const parsed = Number.isInteger(value) ? value : Number.parseInt(String(value ?? ",
-        ") return { card: null, resolvedFrom: resolved };\n  return {\n    card: index.cards.find((card) => card.id === resolved.id) ?? null,\n    resolvedFrom: resolved,\n  };\n}\n\nexport async function buildContext(root, id, options = {}) {\n  const { index } = await loadSearchData(root);\n  const registry = await loadRegistry(root);\n  const direct = index.cards.find((card) => card.id === id);\n  const resolved = direct ? { id, state: ",
-        ") throw new Error(`Unknown or inactive semantic ID ${id}.`);\n  const rootId = resolved.id;\n  const depth = boundedInteger(options.depth, 1, 0, 8);\n  const budget = boundedInteger(options.budget, 2500, 128, 100000);\n  const start = index.cards.find((card) => card.id === rootId);\n  if (!start) throw new Error(`No indexed source card exists for semantic ID ${rootId}.`);\n  const byId = new Map(index.cards.map((card) => [card.id, card]));\n  const reverse = new Map();\n  for (const card of index.cards) {\n    for (const relation of card.rel ?? []) {\n      const target = relation.slice(relation.indexOf(",
+        ") + 1);\n        queue.push({ id: target, depth: current.depth + 1 });\n      }\n      for (const source of reverse.get(card.id) ?? []) queue.push({ id: source, depth: current.depth + 1 });\n    }\n  }\n\n  const header = `llmnav-context/1 root=${rootId} depth=${depth}\\n`;\n  let output = header;\n  const included = [];\n  for (const card of selected) {\n    const rendered = `${renderCompactCard(card)}\\n\\n`;\n    if (approximateTokens(output + rendered) > budget) {\n      if (included.length === 0) {\n        output = truncateToTokenBudget(output + rendered, budget);\n        included.push(card.id);\n      }\n      break;\n    }\n    output += rendered;\n    included.push(card.id);\n  }\n  const includedEdges = [];\n  for (const edge of selectedEdges) {\n    const rendered = `graph ${edge.from} -[${edge.kind} confidence=${edge.confidence.toFixed(2)} provenance=${edge.provenance.type}]-> ${edge.to}\\n`;\n    if (approximateTokens(output + rendered) > budget) break;\n    output += rendered;\n    includedEdges.push(edge.id);\n  }\n  return {\n    id: rootId,\n    depth,\n    budget,\n    maxEdges,\n    included,\n    includedEdges,\n    text: truncateToTokenBudget(output.trimEnd(), budget),\n  };\n}\n\nfunction applyGraphBonuses(index, graph, seeds, byId, resultsById, metrics) {\n  const adjacency = buildGraphAdjacency(graph);\n  for (const seed of seeds) {\n    const key = `${index.repositoryId}/${seed.card.id}`;\n    for (const entry of adjacency.get(key) ?? []) {\n      if (metrics) metrics.graphEdgesVisited += 1;\n      const target = localSemanticId(entry.neighbor, index.repositoryId);\n      const targetCard = target ? byId.get(target) : null;\n      if (!targetCard) continue;\n      const directionWeight = entry.direction === ",
+        ") + 1);\n      const list = reverse.get(target) ?? [];\n      list.push(card.id);\n      reverse.set(target, list);\n    }\n  }\n\n  const queue = [{ id: rootId, depth: 0 }];\n  const visited = new Set();\n  const selected = [];\n  const selectedEdges = [];\n  const seenEdges = new Set();\n  const graphAdjacency = isCompatibleRepositoryGraph(graph, index.repositoryId)\n    ? buildGraphAdjacency(graph)\n    : null;\n  while (queue.length > 0) {\n    const current = queue.shift();\n    if (!current || visited.has(current.id)) continue;\n    visited.add(current.id);\n    const card = byId.get(current.id);\n    if (!card) continue;\n    selected.push(card);\n    if (current.depth >= depth) continue;\n    if (graphAdjacency) {\n      const key = `${index.repositoryId}/${card.id}`;\n      for (const entry of graphAdjacency.get(key) ?? []) {\n        if (selectedEdges.length >= maxEdges) break;\n        if (!seenEdges.has(entry.edge.id)) {\n          selectedEdges.push(entry.edge);\n          seenEdges.add(entry.edge.id);\n        }\n        const target = localSemanticId(entry.neighbor, index.repositoryId);\n        if (target) queue.push({ id: target, depth: current.depth + 1 });\n      }\n    } else {\n      for (const relation of card.rel ?? []) {\n        const target = relation.slice(relation.indexOf(",
+        ") return { card: null, resolvedFrom: resolved };\n  return {\n    card: index.cards.find((card) => card.id === resolved.id) ?? null,\n    resolvedFrom: resolved,\n  };\n}\n\nexport async function buildContext(root, id, options = {}) {\n  const { index, graph } = await loadSearchData(root);\n  const registry = await loadRegistry(root);\n  const direct = index.cards.find((card) => card.id === id);\n  const resolved = direct ? { id, state: ",
+        ") throw new Error(`Unknown or inactive semantic ID ${id}.`);\n  const rootId = resolved.id;\n  const depth = boundedInteger(options.depth, 1, 0, 8);\n  const budget = boundedInteger(options.budget, 2500, 128, 100000);\n  const maxEdges = boundedInteger(options.maxEdges, 24, 0, 1000);\n  const start = index.cards.find((card) => card.id === rootId);\n  if (!start) throw new Error(`No indexed source card exists for semantic ID ${rootId}.`);\n  const byId = new Map(index.cards.map((card) => [card.id, card]));\n  const reverse = new Map();\n  for (const card of index.cards) {\n    for (const relation of card.rel ?? []) {\n      const target = relation.slice(relation.indexOf(",
         ")),\n    effect: tokenize((card.effect ?? []).join(",
         ")),\n    excludes: tokenize((card.excludes ?? []).join(",
         ")),\n    invariant: tokenize((card.invariant ?? []).join(",
@@ -3495,19 +3509,24 @@
         "),\n    signature: tokenize(card.location?.signature ?? ",
         "),\n  };\n  return { fields, allTokens: Object.values(fields).flat() };\n}\n\nexport { tokenize } from ",
         "), 10);\n  if (!Number.isFinite(parsed)) return fallback;\n  return Math.min(maximum, Math.max(minimum, parsed));\n}\n\nfunction buildLegacyDocument(card) {\n  const fields = {\n    id: tokenize(card.id.replaceAll(",
-        "), null);\n  let searchIndex = null;\n  if (searchText !== null) {\n    try {\n      searchIndex = JSON.parse(searchText);\n    } catch {\n      searchIndex = null;\n    }\n  }\n  const manifestMatches = Boolean(\n    searchText !== null &&\n      manifest?.searchCardSetHash &&\n      searchIndex?.cardSetHash === manifest.searchCardSetHash &&\n      searchIndex?.documentCount === index.cards.length &&\n      manifest.files?.[searchRelative] === sha256(searchText),\n  );\n  if (!isCompatibleSearchIndex(searchIndex, index.repositoryId) || (!manifestMatches && !verifySearchIndex(index, searchIndex))) {\n    searchIndex = buildInvertedIndex(index).searchIndex;\n  }\n  return { index, lexicon, searchIndex };\n}\n\nexport async function queryProject(root, query, options = {}) {\n  const { index, lexicon, searchIndex } = await loadSearchData(root);\n  return queryPreparedIndex(index, searchIndex, query, { ...options, lexicon });\n}\n\nexport function queryIndex(index, query, options = {}) {\n  let searchIndex = options.invertedIndex;\n  if (!searchIndex) {\n    searchIndex = preparedIndexCache.get(index);\n    if (!searchIndex) {\n      searchIndex = buildInvertedIndex(index).searchIndex;\n      preparedIndexCache.set(index, searchIndex);\n    }\n  }\n  return queryPreparedIndex(index, searchIndex, query, options);\n}\n\nexport function queryPreparedIndex(index, searchIndex, query, options = {}) {\n  const top = boundedInteger(options.top, 5, 1, 100);\n  const lexicon = options.lexicon ?? { aliases: {} };\n  const metrics = options.metrics ?? null;\n  const normalizedQuery = normalizeSearchText(query);\n  const queryTokens = tokenize(query);\n  const aliases = Object.entries(lexicon.aliases ?? {});\n  const aliasTargets = new Set();\n  const aliasReasons = new Map();\n  const byId = new Map(index.cards.map((card) => [card.id, card]));\n  const cardOrder = new Map(index.cards.map((card, cardIndex) => [card.id, cardIndex]));\n  const resultsById = new Map();\n\n  if (metrics) {\n    metrics.queryTokens = queryTokens.length;\n    metrics.documentTokenizations = 0;\n    metrics.postingVisits = 0;\n    metrics.phraseDocumentsScanned = 0;\n    metrics.idDocumentsScanned = 0;\n  }\n\n  for (const [alias, targetValue] of aliases) {\n    const normalizedAlias = normalizeSearchText(alias);\n    if (!normalizedAlias || !normalizedQuery.includes(normalizedAlias)) continue;\n    const targets = Array.isArray(targetValue) ? targetValue : [targetValue];\n    for (const target of targets) {\n      aliasTargets.add(target);\n      const reasons = aliasReasons.get(target) ?? [];\n      reasons.push(`alias=${JSON.stringify(alias)}`);\n      aliasReasons.set(target, reasons);\n    }\n  }\n\n  for (const card of index.cards) {\n    if (metrics) metrics.idDocumentsScanned += 1;\n    if (normalizeSearchText(card.id) === normalizedQuery) {\n      addScore(resultsById, card, 1000, ",
-        ");\n      if (separator <= 0) continue;\n      const target = relation.slice(separator + 1);\n      const targetCard = byId.get(target);\n      if (!targetCard) continue;\n      const bonus = seed.score * 0.08;\n      addScore(resultsById, targetCard, bonus, `related-from=${seed.card.id}`);\n    }\n  }\n\n  return [...resultsById.values()]\n    .filter((result) => result.score > 0)\n    .sort((left, right) => right.score - left.score || compareText(left.card.id, right.card.id))\n    .slice(0, top)\n    .map((result) => ({\n      id: result.card.id,\n      score: Number(result.score.toFixed(3)),\n      reasons: [...new Set(result.reasons)].slice(0, 6),\n      role: result.card.role,\n      location: result.card.location,\n      card: result.card,\n    }));\n}\n\nfunction prepareCompactSearchIndex(searchIndex) {\n  let prepared = preparedSearchIndexCache.get(searchIndex);\n  if (prepared) return prepared;\n  prepared = {\n    tokenIndex: new Map((searchIndex.tokens ?? []).map((token, index) => [token, index])),\n  };\n  preparedSearchIndexCache.set(searchIndex, prepared);\n  return prepared;\n}\n\nexport function queryIndexLegacy(index, query, options = {}) {\n  const top = boundedInteger(options.top, 5, 1, 100);\n  const lexicon = options.lexicon ?? { aliases: {} };\n  const normalizedQuery = normalizeSearchText(query);\n  const queryTokens = tokenize(query);\n  const aliases = Object.entries(lexicon.aliases ?? {});\n  const aliasTargets = new Set();\n  const aliasReasons = new Map();\n\n  for (const [alias, targetValue] of aliases) {\n    const normalizedAlias = normalizeSearchText(alias);\n    if (!normalizedAlias || !normalizedQuery.includes(normalizedAlias)) continue;\n    const targets = Array.isArray(targetValue) ? targetValue : [targetValue];\n    for (const target of targets) {\n      aliasTargets.add(target);\n      const reasons = aliasReasons.get(target) ?? [];\n      reasons.push(`alias=${JSON.stringify(alias)}`);\n      aliasReasons.set(target, reasons);\n    }\n  }\n\n  const documents = index.cards.map((card) => buildLegacyDocument(card));\n  const documentFrequency = new Map();\n  for (const document of documents) {\n    for (const token of new Set(document.allTokens)) {\n      documentFrequency.set(token, (documentFrequency.get(token) ?? 0) + 1);\n    }\n  }\n\n  const results = [];\n  for (const [cardIndex, card] of index.cards.entries()) {\n    const document = documents[cardIndex];\n    let score = 0;\n    const reasons = [];\n\n    if (normalizeSearchText(card.id) === normalizedQuery) {\n      score += 1000;\n      reasons.push(",
+        "), null);\n  let graph = null;\n  if (graphText !== null) {\n    try {\n      graph = JSON.parse(graphText);\n    } catch {\n      graph = null;\n    }\n  }\n  const graphMatches = Boolean(\n    graphText !== null &&\n      manifest?.files?.[graphRelative] === sha256(graphText) &&\n      isCompatibleRepositoryGraph(graph, index.repositoryId),\n  );\n  if (!graphMatches) graph = null;\n  const searchRelative = `${toPosix(config.generation.cacheDirectory).replace(/\\/+$/u, ",
+        "), null);\n  let searchIndex = null;\n  if (searchText !== null) {\n    try {\n      searchIndex = JSON.parse(searchText);\n    } catch {\n      searchIndex = null;\n    }\n  }\n  const manifestMatches = Boolean(\n    searchText !== null &&\n      manifest?.searchCardSetHash &&\n      searchIndex?.cardSetHash === manifest.searchCardSetHash &&\n      searchIndex?.documentCount === index.cards.length &&\n      manifest.files?.[searchRelative] === sha256(searchText),\n  );\n  if (!isCompatibleSearchIndex(searchIndex, index.repositoryId) || (!manifestMatches && !verifySearchIndex(index, searchIndex))) {\n    searchIndex = buildInvertedIndex(index).searchIndex;\n  }\n  return { index, lexicon, searchIndex, graph };\n}\n\nexport async function queryProject(root, query, options = {}) {\n  const { index, lexicon, searchIndex, graph } = await loadSearchData(root);\n  return queryPreparedIndex(index, searchIndex, query, { ...options, lexicon, graph });\n}\n\nexport function queryIndex(index, query, options = {}) {\n  let searchIndex = options.invertedIndex;\n  if (!searchIndex) {\n    searchIndex = preparedIndexCache.get(index);\n    if (!searchIndex) {\n      searchIndex = buildInvertedIndex(index).searchIndex;\n      preparedIndexCache.set(index, searchIndex);\n    }\n  }\n  return queryPreparedIndex(index, searchIndex, query, options);\n}\n\nexport function queryPreparedIndex(index, searchIndex, query, options = {}) {\n  const top = boundedInteger(options.top, 5, 1, 100);\n  const lexicon = options.lexicon ?? { aliases: {} };\n  const metrics = options.metrics ?? null;\n  const normalizedQuery = normalizeSearchText(query);\n  const queryTokens = tokenize(query);\n  const aliases = Object.entries(lexicon.aliases ?? {});\n  const aliasTargets = new Set();\n  const aliasReasons = new Map();\n  const byId = new Map(index.cards.map((card) => [card.id, card]));\n  const cardOrder = new Map(index.cards.map((card, cardIndex) => [card.id, cardIndex]));\n  const resultsById = new Map();\n\n  if (metrics) {\n    metrics.queryTokens = queryTokens.length;\n    metrics.documentTokenizations = 0;\n    metrics.postingVisits = 0;\n    metrics.phraseDocumentsScanned = 0;\n    metrics.idDocumentsScanned = 0;\n    metrics.graphEdgesVisited = 0;\n  }\n\n  for (const [alias, targetValue] of aliases) {\n    const normalizedAlias = normalizeSearchText(alias);\n    if (!normalizedAlias || !normalizedQuery.includes(normalizedAlias)) continue;\n    const targets = Array.isArray(targetValue) ? targetValue : [targetValue];\n    for (const target of targets) {\n      aliasTargets.add(target);\n      const reasons = aliasReasons.get(target) ?? [];\n      reasons.push(`alias=${JSON.stringify(alias)}`);\n      aliasReasons.set(target, reasons);\n    }\n  }\n\n  for (const card of index.cards) {\n    if (metrics) metrics.idDocumentsScanned += 1;\n    if (normalizeSearchText(card.id) === normalizedQuery) {\n      addScore(resultsById, card, 1000, ",
+        ");\n      if (separator <= 0) continue;\n      const target = relation.slice(separator + 1);\n      const targetCard = byId.get(target);\n      if (targetCard) addScore(resultsById, targetCard, seed.score * 0.08, `related-from=${seed.card.id}`);\n    }\n  }\n}\n\nfunction buildGraphAdjacency(graph) {\n  const adjacency = new Map();\n  for (const edge of [...graph.edges].sort(compareGraphEdgesForTraversal)) {\n    appendGraphNeighbor(adjacency, edge.from, { neighbor: edge.to, direction: ",
         ");\n      if (separator <= 0) continue;\n      const target = relation.slice(separator + 1);\n      const targetCard = index.cards.find((card) => card.id === target);\n      if (!targetCard) continue;\n      const existing = byId.get(target);\n      const bonus = seed.score * 0.08;\n      if (existing) {\n        existing.score += bonus;\n        existing.reasons.push(`related-from=${seed.card.id}`);\n      } else {\n        const result = { card: targetCard, score: bonus, reasons: [`related-from=${seed.card.id}`] };\n        results.push(result);\n        byId.set(target, result);\n      }\n    }\n  }\n\n  return results\n    .sort((left, right) => right.score - left.score || compareText(left.card.id, right.card.id))\n    .slice(0, top)\n    .map((result) => ({\n      id: result.card.id,\n      score: Number(result.score.toFixed(3)),\n      reasons: [...new Set(result.reasons)].slice(0, 6),\n      role: result.card.role,\n      location: result.card.location,\n      card: result.card,\n    }));\n}\n\nexport async function showProjectCard(root, id) {\n  const { index } = await loadSearchData(root);\n  const direct = index.cards.find((card) => card.id === id);\n  if (direct) return { card: direct, resolvedFrom: null };\n  const registry = await loadRegistry(root);\n  const resolved = resolveRegistryId(registry, id);\n  if (resolved.state !== ",
         ");\n    }\n\n    if (aliasTargets.has(card.id)) {\n      score += 500;\n      reasons.push(...(aliasReasons.get(card.id) ?? []));\n    }\n\n    for (const token of queryTokens) {\n      const frequency = documentFrequency.get(token) ?? 0;\n      const idf = Math.log(1 + (index.cards.length + 1) / (frequency + 1));\n      let tokenScore = 0;\n      for (const [field, weight] of Object.entries(SEARCH_FIELD_WEIGHTS)) {\n        const count = document.fields[field]?.filter((item) => item === token).length ?? 0;\n        tokenScore += count * weight * idf;\n      }\n      if (tokenScore > 0) {\n        score += tokenScore;\n        reasons.push(`token=${token}`);\n      }\n    }\n\n    const phraseFields = [card.role, ...(card.search ?? []), ...(card.invariant ?? []), ...(card.owns ?? [])]\n      .filter(Boolean)\n      .map(normalizeSearchText);\n    if (normalizedQuery.length >= 4 && phraseFields.some((field) => field.includes(normalizedQuery))) {\n      score += 40;\n      reasons.push(",
         ");\n    }\n\n    if (score > 0) results.push({ card, score, reasons: [...new Set(reasons)].slice(0, 6) });\n  }\n\n  const byId = new Map(results.map((result) => [result.card.id, result]));\n  const seeds = [...results].sort((left, right) => right.score - left.score).slice(0, 3);\n  for (const seed of seeds) {\n    for (const relation of seed.card.rel ?? []) {\n      const separator = relation.indexOf(",
         ");\n    }\n    if (aliasTargets.has(card.id)) {\n      addScore(resultsById, card, 500, aliasReasons.get(card.id) ?? []);\n    }\n  }\n\n  const preparedSearchIndex = prepareCompactSearchIndex(searchIndex);\n  const documentCount = index.cards.length;\n  for (const token of queryTokens) {\n    const tokenIndex = preparedSearchIndex.tokenIndex.get(token);\n    const tokenPostings = tokenIndex === undefined ? [] : (searchIndex.postings[tokenIndex] ?? []);\n    const frequency = tokenPostings.length;\n    const idf = Math.log(1 + (documentCount + 1) / (frequency + 1));\n    for (const [cardIndex, vector] of tokenPostings) {\n      if (metrics) metrics.postingVisits += 1;\n      const id = searchIndex.cardIds[cardIndex];\n      const card = byId.get(id);\n      if (!card) continue;\n      let tokenScore = 0;\n      for (let vectorIndex = 0; vectorIndex < vector.length; vectorIndex += 2) {\n        const field = SEARCH_FIELD_ORDER[vector[vectorIndex]];\n        const count = vector[vectorIndex + 1] ?? 0;\n        if (field) tokenScore += count * SEARCH_FIELD_WEIGHTS[field] * idf;\n      }\n      if (tokenScore > 0) addScore(resultsById, card, tokenScore, `token=${token}`);\n    }\n  }\n\n  if (normalizedQuery.length >= 4) {\n    for (const [cardIndex, document] of searchIndex.documents.entries()) {\n      if (metrics) metrics.phraseDocumentsScanned += 1;\n      const phrases = Array.isArray(document) && Array.isArray(document[1]) ? document[1] : [];\n      if (!phrases.some((field) => field.includes(normalizedQuery))) continue;\n      const card = byId.get(searchIndex.cardIds[cardIndex]);\n      if (card) addScore(resultsById, card, 40, ",
-        ");\n    }\n  }\n\n  const results = [...resultsById.values()].filter((result) => result.score > 0);\n  const seeds = [...results]\n    .sort((left, right) => right.score - left.score || (cardOrder.get(left.card.id) ?? 0) - (cardOrder.get(right.card.id) ?? 0))\n    .slice(0, 3);\n  for (const seed of seeds) {\n    for (const relation of seed.card.rel ?? []) {\n      const separator = relation.indexOf(",
+        ");\n    }\n  }\n\n  const results = [...resultsById.values()].filter((result) => result.score > 0);\n  const seeds = [...results]\n    .sort((left, right) => right.score - left.score || (cardOrder.get(left.card.id) ?? 0) - (cardOrder.get(right.card.id) ?? 0))\n    .slice(0, 3);\n  if (isCompatibleRepositoryGraph(options.graph, index.repositoryId)) {\n    applyGraphBonuses(index, options.graph, seeds, byId, resultsById, metrics);\n  } else {\n    applyLegacyRelationBonuses(seeds, byId, resultsById);\n  }\n\n  return [...resultsById.values()]\n    .filter((result) => result.score > 0)\n    .sort((left, right) => right.score - left.score || compareText(left.card.id, right.card.id))\n    .slice(0, top)\n    .map((result) => ({\n      id: result.card.id,\n      score: Number(result.score.toFixed(3)),\n      reasons: [...new Set(result.reasons)].slice(0, 6),\n      role: result.card.role,\n      location: result.card.location,\n      card: result.card,\n    }));\n}\n\nfunction prepareCompactSearchIndex(searchIndex) {\n  let prepared = preparedSearchIndexCache.get(searchIndex);\n  if (prepared) return prepared;\n  prepared = {\n    tokenIndex: new Map((searchIndex.tokens ?? []).map((token, index) => [token, index])),\n  };\n  preparedSearchIndexCache.set(searchIndex, prepared);\n  return prepared;\n}\n\nexport function queryIndexLegacy(index, query, options = {}) {\n  const top = boundedInteger(options.top, 5, 1, 100);\n  const lexicon = options.lexicon ?? { aliases: {} };\n  const normalizedQuery = normalizeSearchText(query);\n  const queryTokens = tokenize(query);\n  const aliases = Object.entries(lexicon.aliases ?? {});\n  const aliasTargets = new Set();\n  const aliasReasons = new Map();\n\n  for (const [alias, targetValue] of aliases) {\n    const normalizedAlias = normalizeSearchText(alias);\n    if (!normalizedAlias || !normalizedQuery.includes(normalizedAlias)) continue;\n    const targets = Array.isArray(targetValue) ? targetValue : [targetValue];\n    for (const target of targets) {\n      aliasTargets.add(target);\n      const reasons = aliasReasons.get(target) ?? [];\n      reasons.push(`alias=${JSON.stringify(alias)}`);\n      aliasReasons.set(target, reasons);\n    }\n  }\n\n  const documents = index.cards.map((card) => buildLegacyDocument(card));\n  const documentFrequency = new Map();\n  for (const document of documents) {\n    for (const token of new Set(document.allTokens)) {\n      documentFrequency.set(token, (documentFrequency.get(token) ?? 0) + 1);\n    }\n  }\n\n  const results = [];\n  for (const [cardIndex, card] of index.cards.entries()) {\n    const document = documents[cardIndex];\n    let score = 0;\n    const reasons = [];\n\n    if (normalizeSearchText(card.id) === normalizedQuery) {\n      score += 1000;\n      reasons.push(",
         ");\n    } else if (normalizeSearchText(card.id).includes(normalizedQuery) && normalizedQuery.length > 2) {\n      addScore(resultsById, card, 100, ",
         ");\n    } else if (normalizeSearchText(card.id).includes(normalizedQuery) && normalizedQuery.length > 2) {\n      score += 100;\n      reasons.push(",
+        ")}/graph.json`;\n  const graphText = await readText(path.join(cacheRoot, ",
         ")}/search-index.json`;\n  const searchText = await readText(path.join(cacheRoot, ",
         ", ",
+        ", edge });\n    appendGraphNeighbor(adjacency, edge.to, { neighbor: edge.from, direction: ",
+        ", edge });\n  }\n  for (const entries of adjacency.values()) {\n    entries.sort((left, right) =>\n      edgeConfidence(right.edge) - edgeConfidence(left.edge) ||\n      compareText(left.edge.kind, right.edge.kind) ||\n      compareText(left.neighbor, right.neighbor) ||\n      compareText(left.edge.id, right.edge.id),\n    );\n  }\n  return adjacency;\n}\n\nfunction appendGraphNeighbor(adjacency, key, entry) {\n  const values = adjacency.get(key) ?? [];\n  values.push(entry);\n  adjacency.set(key, values);\n}\n\nfunction localSemanticId(key, repositoryId) {\n  const prefix = `${repositoryId}/`;\n  return key.startsWith(prefix) ? key.slice(prefix.length) : null;\n}\n\nfunction edgeConfidence(edge) {\n  return Math.max(0, Math.min(1, Number(edge.confidence) || 0));\n}\n\nfunction compareGraphEdgesForTraversal(left, right) {\n  return compareText(left.from, right.from) || compareText(left.to, right.to) || compareText(left.kind, right.kind) ||\n    compareText(left.id, right.id);\n}\n\nfunction addScore(resultsById, card, score, reasons) {\n  const existing = resultsById.get(card.id) ?? { card, score: 0, reasons: [] };\n  existing.score += score;\n  if (Array.isArray(reasons)) existing.reasons.push(...reasons);\n  else existing.reasons.push(reasons);\n  resultsById.set(card.id, existing);\n}\n\nfunction boundedInteger(value, fallback, minimum, maximum) {\n  const parsed = Number.isInteger(value) ? value : Number.parseInt(String(value ?? ",
         "./config.js",
         "./generator.js",
+        "./graph.js",
         "./inverted-index.js",
         "./registry.js",
         "./tokenizer.js",
@@ -3521,8 +3540,8 @@
         "node:path"
       ],
       "path": "src/search.js",
-      "semanticBytes": 408,
-      "sourceBytes": 16170
+      "semanticBytes": 464,
+      "sourceBytes": 20421
     },
     {
       "blocks": [],
@@ -4456,6 +4475,62 @@
       "path": "tests/graph-input.test.js",
       "semanticBytes": 0,
       "sourceBytes": 2937
+    },
+    {
+      "blocks": [],
+      "contentHash": "6446f0b66b3aa2f1591c06fe1c17899177f68cea47a96b176fb5b7f26cb8eb15",
+      "declarations": [],
+      "imports": [
+        " ",
+        ".",
+        "../src/generator.js",
+        "../src/initializer.js",
+        "../src/inverted-index.js",
+        "../src/search.js",
+        ".llmnav",
+        ".llmnav/imports/graph.json",
+        ":",
+        "Revoke the token family after replay.",
+        "Rotate a refresh credential atomically.",
+        "adds confidence-weighted graph neighbors without replacing lexical seeds",
+        "auth.session.revoke",
+        "auth.session.rotate",
+        "auth.ts",
+        "calls",
+        "config.json",
+        "contract",
+        "edge-1",
+        "fixture",
+        "fixture.json",
+        "generated-index",
+        "graph-context",
+        "graph-out:calls@0.75",
+        "graph-search",
+        "graph-search/auth.session.revoke",
+        "graph-search/auth.session.rotate",
+        "graph.json",
+        "imports",
+        "llmnav-graph-context-",
+        "node:assert/strict",
+        "node:fs/promises",
+        "node:os",
+        "node:path",
+        "node:test",
+        "none",
+        "package.json",
+        "packs graph neighbors and edge evidence within explicit bounds",
+        "revokeSession",
+        "rotate refresh credential",
+        "rotateSession",
+        "src",
+        "src/auth.ts",
+        "utf8",
+        "{",
+        "}\\n"
+      ],
+      "path": "tests/graph-search.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 4281
     },
     {
       "blocks": [],

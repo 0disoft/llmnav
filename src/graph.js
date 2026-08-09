@@ -127,6 +127,30 @@ export function renderRepositoryGraph(graph) {
   return stableStringify(graph);
 }
 
+export function isCompatibleRepositoryGraph(graph, repositoryId = undefined) {
+  return Boolean(
+    graph &&
+      graph.schemaVersion === GRAPH_SCHEMA_VERSION &&
+      typeof graph.repositoryId === "string" &&
+      typeof graph.sourceHash === "string" &&
+      Array.isArray(graph.nodes) &&
+      Array.isArray(graph.edges) &&
+      graph.edges.every((edge) =>
+        edge &&
+        typeof edge.id === "string" &&
+        typeof edge.from === "string" &&
+        typeof edge.to === "string" &&
+        typeof edge.kind === "string" &&
+        typeof edge.confidence === "number" &&
+        edge.confidence >= 0 &&
+        edge.confidence <= 1 &&
+        edge.provenance &&
+        typeof edge.provenance.type === "string"
+      ) &&
+      (repositoryId === undefined || graph.repositoryId === repositoryId),
+  );
+}
+
 function addEdge(edges, nodes, edge, localRepositoryId) {
   mergeNode(nodes, edge.from, {}, localRepositoryId);
   mergeNode(nodes, edge.to, {}, localRepositoryId);

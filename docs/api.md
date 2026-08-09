@@ -232,6 +232,8 @@ import {
 
 `buildRepositoryGraph(project, index)` returns the schemaVersion 1 qualified node and edge graph. `renderRepositoryGraph(graph)` serializes it deterministically. Successful generation also exposes the graph as `result.graph` and writes it to `.llmnav/cache/graph.json`.
 
+`queryPreparedIndex` accepts an optional `graph`. Graph bonuses preserve lexical seeds and scale by edge confidence and direction. `buildContext` accepts `maxEdges` in addition to `depth` and `budget`, and returns the stable IDs of packed edges as `includedEdges`.
+
 The normative source vocabulary remains available from `llmnav/spec`.
 
 ```js

@@ -4,7 +4,7 @@ export { loadConfig, validateConfig } from "./config.js";
 export { BOUNDARY_KINDS, detectBoundaries } from "./boundaries.js";
 export { diagnosticsToSarif, SARIF_SCHEMA, SARIF_VERSION } from "./sarif.js";
 export { GRAPH_INPUT_SCHEMA_VERSION, loadGraphInputs, normalizeGraphInput } from "./graph-input.js";
-export { buildRepositoryGraph, GRAPH_SCHEMA_VERSION, renderRepositoryGraph } from "./graph.js";
+export { buildRepositoryGraph, GRAPH_SCHEMA_VERSION, isCompatibleRepositoryGraph, renderRepositoryGraph } from "./graph.js";
 export {
   buildSearchShards,
   SEARCH_SHARD_ENCODING,

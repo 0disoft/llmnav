@@ -164,6 +164,7 @@ export interface SearchMetrics {
   postingVisits?: number;
   phraseDocumentsScanned?: number;
   idDocumentsScanned?: number;
+  graphEdgesVisited?: number;
 }
 
 export interface SearchResult {
@@ -469,6 +470,7 @@ export function detectBoundaries(record: ProjectRecord): DetectedBoundary[];
 export function normalizeGraphInput(value: unknown, file?: string, contentHash?: string | null): GraphInputIndex;
 export function loadGraphInputs(root: string, config: LlmnavConfig): Promise<{ indexes: GraphInputIndex[]; diagnostics: Diagnostic[] }>;
 export function buildRepositoryGraph(project: ScannedProject, index: LlmnavIndex): RepositoryGraph;
+export function isCompatibleRepositoryGraph(graph: unknown, repositoryId?: string): graph is RepositoryGraph;
 export function renderRepositoryGraph(graph: RepositoryGraph): string;
 export function diagnosticsToSarif(diagnostics: Diagnostic[]): Record<string, unknown>;
 export function buildSearchShards(index: LlmnavIndex, searchIndex: LlmnavSearchIndex, shardSize: number): {
@@ -522,10 +524,10 @@ export function scanProject(root: string, options?: { paths?: string[] }): Promi
 export function ensureActiveIds(root: string, registry: Registry, ids: string[]): Promise<void>;
 export function loadRegistry(root: string): Promise<Registry>;
 export function resolveRegistryId(registry: Registry, id: string): { id: string; state: string; [key: string]: unknown };
-export function buildContext(root: string, id: string, options?: { depth?: number; budget?: number }): Promise<{ id: string; depth: number; budget: number; included: string[]; text: string }>;
+export function buildContext(root: string, id: string, options?: { depth?: number; budget?: number; maxEdges?: number }): Promise<{ id: string; depth: number; budget: number; maxEdges: number; included: string[]; includedEdges: string[]; text: string }>;
 export function loadSearchData(root: string): Promise<{ index: LlmnavIndex; searchIndex: LlmnavSearchIndex; lexicon: { version?: number; aliases: Record<string, string | string[]> } }>;
 export function queryIndex(index: LlmnavIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> }; invertedIndex?: LlmnavSearchIndex; metrics?: SearchMetrics }): SearchResult[];
-export function queryPreparedIndex(index: LlmnavIndex, searchIndex: LlmnavSearchIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> }; metrics?: SearchMetrics }): SearchResult[];
+export function queryPreparedIndex(index: LlmnavIndex, searchIndex: LlmnavSearchIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> }; metrics?: SearchMetrics; graph?: RepositoryGraph | null }): SearchResult[];
 export function queryIndexLegacy(index: LlmnavIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> } }): SearchResult[];
 export function queryProject(root: string, query: string, options?: { top?: number }): Promise<SearchResult[]>;
 export function showProjectCard(root: string, id: string): Promise<{ card: IndexedCard | null; resolvedFrom: unknown }>;

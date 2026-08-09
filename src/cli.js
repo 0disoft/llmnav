@@ -34,7 +34,7 @@ import { parseInteger } from "./util.js";
 import { diagnosticsToSarif } from "./sarif.js";
 import { loadGraphInputs } from "./graph-input.js";
 
-const VALUE_OPTIONS = new Set(["--root", "--format", "--top", "--depth", "--budget", "--agents", "--file"]);
+const VALUE_OPTIONS = new Set(["--root", "--format", "--top", "--depth", "--budget", "--max-edges", "--agents", "--file"]);
 
 const COMMAND_OPTIONS = Object.freeze({
   init: new Set(["--agents", "--package-scripts", "--force", "--root", "--json"]),
@@ -44,7 +44,7 @@ const COMMAND_OPTIONS = Object.freeze({
   index: new Set(["--check", "--verify", "--root", "--json"]),
   query: new Set(["--top", "--root", "--json"]),
   show: new Set(["--root", "--json"]),
-  context: new Set(["--depth", "--budget", "--root", "--json"]),
+  context: new Set(["--depth", "--budget", "--max-edges", "--root", "--json"]),
   eval: new Set(["--file", "--top", "--root", "--json"]),
   doctor: new Set(["--root", "--json"]),
   spec: new Set(["--root", "--json"]),
@@ -240,6 +240,7 @@ async function runContext(root, args, json) {
   const result = await buildContext(root, id, {
     depth: parseCliIntegerOption(args, "--depth", 1),
     budget: parseCliIntegerOption(args, "--budget", 2500),
+    maxEdges: parseCliIntegerOption(args, "--max-edges", 24),
   });
   if (json) console.log(JSON.stringify(result, null, 2));
   else console.log(result.text);
@@ -400,7 +401,7 @@ Usage
   llmnav generate [--check]
   llmnav query "<task>" [--top 5]
   llmnav show <semantic-id>
-  llmnav context <semantic-id> [--depth 1] [--budget 2500]
+  llmnav context <semantic-id> [--depth 1] [--budget 2500] [--max-edges 24]
   llmnav eval [--file path] [--top 5]
   llmnav doctor
   llmnav spec

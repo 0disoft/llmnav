@@ -10,6 +10,7 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 
 * Added strict repository-local imports for generated definition and reference indexes with `LNV014` diagnostics.
 * Added deterministic qualified repository graphs with source-card, local-import, and generated-index edge provenance and confidence.
+* Added confidence-weighted graph ranking and context packing bounded by depth, token budget, and edge count.
 
 ## [0.3.0] — 2026-08-09
 

@@ -28,7 +28,7 @@
     "llmnav.structure.boundaries",
     "llmnav.syntax.parse"
   ],
-  "cardSetHash": "86221b488e2e712c4b46cbee27968fc74128d4599ec44e4ee03caf37ec4154fd",
+  "cardSetHash": "1db279c6858cc04fe8a553b8f384f093f86d5853fcc1c4376af35556770c2c82",
   "documentCount": 27,
   "documents": [
     [
@@ -299,13 +299,15 @@
       ]
     ],
     [
-      "45a25fd483262f62817713e983a80840888b087cae9f0e6a5a8fd1729edbfc89",
+      "15334655d59995adaa9d1ac675e834284745522505518d88221b93bff6aa2d2e",
       [
-        "rank semantic cards from task language, aliases, metadata fields, and one-hop semantic relations.",
+        "rank cards from task language and pack confidence-weighted repository graph context.",
         "semantic code search",
+        "graph-aware ranking",
         "agent navigation",
         "multilingual query",
         "query ranking",
+        "graph ranking",
         "multilingual aliases",
         "context expansion"
       ]
@@ -592,8 +594,6 @@
       [
         23,
         [
-          1,
-          1,
           3,
           1
         ]
@@ -1029,6 +1029,15 @@
     ],
     [
       [
+        23,
+        [
+          2,
+          1
+        ]
+      ]
+    ],
+    [
+      [
         18,
         [
           1,
@@ -1647,6 +1656,13 @@
         ]
       ],
       [
+        23,
+        [
+          1,
+          1
+        ]
+      ],
+      [
         25,
         [
           3,
@@ -1703,6 +1719,8 @@
       [
         23,
         [
+          1,
+          1,
           3,
           1
         ]
@@ -2682,13 +2700,6 @@
           1,
           1
         ]
-      ],
-      [
-        23,
-        [
-          1,
-          1
-        ]
       ]
     ],
     [
@@ -3061,6 +3072,17 @@
           9,
           1
         ]
+      ],
+      [
+        23,
+        [
+          1,
+          1,
+          2,
+          1,
+          3,
+          1
+        ]
       ]
     ],
     [
@@ -3093,15 +3115,6 @@
         4,
         [
           2,
-          1
-        ]
-      ]
-    ],
-    [
-      [
-        23,
-        [
-          1,
           1
         ]
       ]
@@ -4174,13 +4187,6 @@
           2,
           1
         ]
-      ],
-      [
-        23,
-        [
-          1,
-          1
-        ]
       ]
     ],
     [
@@ -4508,13 +4514,6 @@
           1,
           1
         ]
-      ],
-      [
-        23,
-        [
-          1,
-          1
-        ]
       ]
     ],
     [
@@ -4604,6 +4603,15 @@
       ],
       [
         5,
+        [
+          1,
+          1
+        ]
+      ]
+    ],
+    [
+      [
+        23,
         [
           1,
           1
@@ -5089,8 +5097,10 @@
       [
         23,
         [
+          2,
+          1,
           3,
-          1
+          2
         ]
       ],
       [
@@ -5233,15 +5243,6 @@
       ],
       [
         22,
-        [
-          1,
-          1
-        ]
-      ]
-    ],
-    [
-      [
-        23,
         [
           1,
           1
@@ -5393,6 +5394,13 @@
           1,
           1,
           2,
+          1
+        ]
+      ],
+      [
+        23,
+        [
+          1,
           1
         ]
       ],
@@ -6019,8 +6027,6 @@
       [
         23,
         [
-          1,
-          2,
           2,
           1
         ]
@@ -7097,6 +7103,15 @@
         2,
         [
           10,
+          1
+        ]
+      ]
+    ],
+    [
+      [
+        23,
+        [
+          1,
           1
         ]
       ]
@@ -7296,6 +7311,7 @@
     "auth",
     "automatic",
     "automation",
+    "aware",
     "be",
     "before",
     "behavior",
@@ -7421,7 +7437,6 @@
     "guarantees",
     "has",
     "hold",
-    "hop",
     "id",
     "idempotency",
     "idempotencykey",
@@ -7507,6 +7522,7 @@
     "output",
     "oversized",
     "own",
+    "pack",
     "package",
     "parse",
     "parsed",
@@ -7551,7 +7567,6 @@
     "registry",
     "regression",
     "reject",
-    "relations",
     "rename",
     "renewal",
     "replace",
@@ -7662,6 +7677,7 @@
     "verify",
     "version",
     "void",
+    "weighted",
     "whether",
     "while",
     "window",

@@ -148,10 +148,10 @@ Prints one compact card. Redirected registry IDs resolve to their active target.
 ## `llmnav context`
 
 ```sh
-llmnav context <semantic-id> [--depth <n>] [--budget <tokens>] [--json]
+llmnav context <semantic-id> [--depth <n>] [--budget <tokens>] [--max-edges <n>] [--json]
 ```
 
-Resolves redirected IDs, traverses outgoing and incoming semantic relations breadth-first, and emits cards until the approximate token budget is reached.
+Resolves redirected IDs, traverses confidence-ordered outgoing and incoming graph edges breadth-first, and emits cards until the approximate token budget is reached. `--max-edges` defaults to 24 and can be set to zero to disable graph edge traversal. When no compatible graph is available, source-card semantic relations remain the fallback.
 
 Depth defaults to 1 and is bounded from 0 to 8. Budget defaults to 2,500 approximate tokens and is bounded from 128 to 100,000. The root card is retained even when it must be truncated.
 

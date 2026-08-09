@@ -717,6 +717,34 @@
     {
       "confidence": 0.85,
       "from": "llmnav/llmnav.search.query",
+      "id": "7c5c1884b27c8e2764b3b815c369599a83e4c26d97339bbef11247cd500862d1",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/search.js",
+        "source": "src/search.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.graph.generate"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.search.query",
+      "id": "507ca64bff9848e6fb1de5c71928552f70d64d84e0dced8057c086b0baa5b3d7",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/search.js",
+        "source": "src/search.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.graph.generate"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.search.query",
       "id": "a50320bd2e4a0d9a70fca3d05c907b2c9ceaa0c76c576284952f7cc3cff00362",
       "kind": "imports",
       "provenance": {
@@ -1400,7 +1428,7 @@
       "key": "llmnav/llmnav.search.query",
       "location": {
         "declarationLine": null,
-        "endLine": 10,
+        "endLine": 11,
         "exported": null,
         "kind": null,
         "language": null,
@@ -1412,7 +1440,7 @@
         "visibility": null
       },
       "repositoryId": "llmnav",
-      "role": "Rank semantic cards from task language, aliases, metadata fields, and one-hop semantic relations.",
+      "role": "Rank cards from task language and pack confidence-weighted repository graph context.",
       "semanticId": "llmnav.search.query",
       "unresolved": false
     },
@@ -1485,9 +1513,9 @@
   ],
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "da4da1967c57a9b18ad2a5aa011603a6b594051f94dd98662252d9427cb0a5a3",
+  "sourceHash": "690496c3759cbdc4b820ba11f4e2a9dfbef4d1721600cb5123a36b4d247a3b54",
   "stats": {
-    "edgeCount": 59,
+    "edgeCount": 61,
     "importedIndexCount": 0,
     "nodeCount": 27,
     "unresolvedNodeCount": 0
