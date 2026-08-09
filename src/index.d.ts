@@ -472,6 +472,13 @@ export function loadGraphInputs(root: string, config: LlmnavConfig): Promise<{ i
 export function buildRepositoryGraph(project: ScannedProject, index: LlmnavIndex): RepositoryGraph;
 export function isCompatibleRepositoryGraph(graph: unknown, repositoryId?: string): graph is RepositoryGraph;
 export function renderRepositoryGraph(graph: RepositoryGraph): string;
+export function renderGraphNode(node: GraphNode): string;
+export function resolveGraphNode(graph: RepositoryGraph | null | undefined, id: string, localRepositoryId?: string): {
+  state: "resolved" | "ambiguous" | "missing";
+  id: string;
+  candidates: string[];
+  node: GraphNode | null;
+};
 export function diagnosticsToSarif(diagnostics: Diagnostic[]): Record<string, unknown>;
 export function buildSearchShards(index: LlmnavIndex, searchIndex: LlmnavSearchIndex, shardSize: number): {
   manifest: null | {
@@ -530,7 +537,7 @@ export function queryIndex(index: LlmnavIndex, query: string, options?: { top?: 
 export function queryPreparedIndex(index: LlmnavIndex, searchIndex: LlmnavSearchIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> }; metrics?: SearchMetrics; graph?: RepositoryGraph | null }): SearchResult[];
 export function queryIndexLegacy(index: LlmnavIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> } }): SearchResult[];
 export function queryProject(root: string, query: string, options?: { top?: number }): Promise<SearchResult[]>;
-export function showProjectCard(root: string, id: string): Promise<{ card: IndexedCard | null; resolvedFrom: unknown }>;
+export function showProjectCard(root: string, id: string): Promise<{ card: IndexedCard | null; node: GraphNode | null; resolvedFrom: unknown }>;
 export function tokenize(value: string): string[];
 export function normalizeSearchText(value: string): string;
 export function commitGeneratedCache(root: string, cacheDirectory: string, artifacts: Map<string, string>, options?: Record<string, unknown>): Promise<TransactionResult>;

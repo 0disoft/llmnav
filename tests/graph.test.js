@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { buildRepositoryGraph } from "../src/graph.js";
+import { buildRepositoryGraph, resolveGraphNode } from "../src/graph.js";
 
 test("builds deterministic graph edges with provenance and confidence", () => {
   const cards = [
@@ -44,6 +44,28 @@ test("builds deterministic graph edges with provenance and confidence", () => {
   assert.equal(graph.nodes.find((node) => node.key === "payments/billing.capture.run").external, true);
 });
 
+test("resolves qualified and unique workspace IDs while rejecting ambiguity", () => {
+  const graph = {
+    schemaVersion: 1,
+    repositoryId: "local",
+    sourceHash: "fixture",
+    edges: [],
+    nodes: [
+      graphNode("local/auth.session.rotate"),
+      graphNode("accounts/auth.password.reset"),
+      graphNode("payments/billing.capture.run"),
+      graphNode("archive/billing.capture.run"),
+    ],
+  };
+  assert.equal(resolveGraphNode(graph, "accounts/auth.password.reset", "local").node.key, "accounts/auth.password.reset");
+  assert.equal(resolveGraphNode(graph, "auth.password.reset", "local").node.key, "accounts/auth.password.reset");
+  assert.deepEqual(resolveGraphNode(graph, "billing.capture.run", "local").candidates, [
+    "archive/billing.capture.run",
+    "payments/billing.capture.run",
+  ]);
+  assert.equal(resolveGraphNode(graph, "billing.capture.run", "local").state, "ambiguous");
+});
+
 function card(id, file, rel = [], imports = []) {
   return {
     id,
@@ -63,5 +85,19 @@ function card(id, file, rel = [], imports = []) {
       visibility: "public",
       receiver: null,
     },
+  };
+}
+
+function graphNode(key) {
+  const separator = key.indexOf("/");
+  return {
+    key,
+    repositoryId: key.slice(0, separator),
+    semanticId: key.slice(separator + 1),
+    role: null,
+    location: null,
+    external: !key.startsWith("local/"),
+    unresolved: false,
+    definitions: [{ symbol: "fixture", path: "src/fixture.ts", line: 1, kind: "function", provenance: { type: "generated-index", source: "fixture", generator: "fixture" } }],
   };
 }

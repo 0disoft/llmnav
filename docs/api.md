@@ -234,6 +234,8 @@ import {
 
 `queryPreparedIndex` accepts an optional `graph`. Graph bonuses preserve lexical seeds and scale by edge confidence and direction. `buildContext` accepts `maxEdges` in addition to `depth` and `budget`, and returns the stable IDs of packed edges as `includedEdges`.
 
+`resolveGraphNode(graph, id, localRepositoryId)` returns `resolved`, `ambiguous`, or `missing`. `renderGraphNode(node)` emits compact external definition context. `showProjectCard` returns either a local `card` or an external graph `node`.
+
 The normative source vocabulary remains available from `llmnav/spec`.
 
 ```js

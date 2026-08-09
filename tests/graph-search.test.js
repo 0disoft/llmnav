@@ -6,7 +6,7 @@ import test from "node:test";
 import { generateProject } from "../src/generator.js";
 import { initializeProject } from "../src/initializer.js";
 import { buildInvertedIndex } from "../src/inverted-index.js";
-import { buildContext, queryPreparedIndex } from "../src/search.js";
+import { buildContext, queryPreparedIndex, showProjectCard } from "../src/search.js";
 
 test("adds confidence-weighted graph neighbors without replacing lexical seeds", () => {
   const index = {
@@ -53,7 +53,7 @@ test("packs graph neighbors and edge evidence within explicit bounds", async (co
   await writeFile(path.join(root, ".llmnav", "imports", "graph.json"), `${JSON.stringify({
     schemaVersion: 1,
     repositoryId: "graph-context",
-    definitions: [],
+    definitions: [{ id: "other/external.capability", symbol: "externalCapability", path: "src/external.ts", line: 7, kind: "function" }],
     references: [{ from: "auth.session.rotate", to: "auth.session.revoke", kind: "calls", confidence: 0.9 }],
   }, null, 2)}\n`);
   const configPath = path.join(root, ".llmnav", "config.json");
@@ -67,6 +67,13 @@ test("packs graph neighbors and edge evidence within explicit bounds", async (co
   assert.deepEqual(packed.included, ["auth.session.rotate", "auth.session.revoke"]);
   assert.equal(packed.includedEdges.length, 1);
   assert.match(packed.text, /graph graph-context\/auth\.session\.rotate -\[calls confidence=0\.90 provenance=generated-index\]-> graph-context\/auth\.session\.revoke/u);
+
+  const external = await showProjectCard(root, "external.capability");
+  assert.equal(external.card, null);
+  assert.equal(external.node.key, "other/external.capability");
+  const externalContext = await buildContext(root, "other/external.capability", { depth: 0, budget: 500, maxEdges: 0 });
+  assert.deepEqual(externalContext.included, ["other/external.capability"]);
+  assert.match(externalContext.text, /def externalCapability src\/external\.ts:7 kind=function/u);
 });
 
 function indexedCard(id, role) {

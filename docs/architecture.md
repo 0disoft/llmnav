@@ -86,6 +86,8 @@ Unresolved targets are preserved as placeholder nodes. This allows later workspa
 
 Search treats lexical results as seeds and applies only a confidence-scaled one-hop graph bonus. Context traversal is breadth-first and bounded by depth, token budget, and edge count. Invalid or manifest-mismatched graph data is not used for ranking; search falls back to the compatible lexical and source-relation behavior.
 
+The graph is also the explicit workspace resolution surface. Qualified IDs resolve by exact node key. Unqualified IDs prefer the local repository and resolve externally only when the semantic ID is unique across imported repositories. No directory discovery or network lookup occurs during resolution.
+
 Each card entry stores a hash of its searchable fields and its normalized phrase fields. The global token dictionary is sorted once. Every dictionary entry points to a posting list encoded as sorted card ordinals and sparse field-frequency vectors. The ordinals resolve through the sorted `cardIds` table.
 
 Field order and field weights are versioned constants. Tokens, card IDs, object keys, and posting entries use locale-independent UTF-16 lexical comparison.

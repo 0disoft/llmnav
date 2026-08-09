@@ -33,6 +33,7 @@ import {
 import { parseInteger } from "./util.js";
 import { diagnosticsToSarif } from "./sarif.js";
 import { loadGraphInputs } from "./graph-input.js";
+import { renderGraphNode } from "./graph.js";
 
 const VALUE_OPTIONS = new Set(["--root", "--format", "--top", "--depth", "--budget", "--max-edges", "--agents", "--file"]);
 
@@ -218,15 +219,16 @@ async function runShow(root, args, json) {
     return 2;
   }
   const result = await showProjectCard(root, id);
-  if (!result.card) {
+  if (!result.card && !result.node) {
     if (json) console.log(JSON.stringify(result, null, 2));
     else console.error(`Unknown or inactive semantic ID ${id}.`);
     return 1;
   }
   if (json) console.log(JSON.stringify(result, null, 2));
   else {
-    if (result.resolvedFrom) console.log(`resolved ${id} -> ${result.card.id}\n`);
-    console.log(renderCompactCard(result.card));
+    const resolvedId = result.card?.id ?? result.node?.key;
+    if (result.resolvedFrom) console.log(`resolved ${id} -> ${resolvedId}\n`);
+    console.log(result.card ? renderCompactCard(result.card) : renderGraphNode(result.node));
   }
   return 0;
 }

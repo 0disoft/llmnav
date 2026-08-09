@@ -74,3 +74,11 @@ seed score × 0.08 × edge confidence × direction weight
 Outgoing edges use direction weight `1.0`; incoming edges use `0.6`. An edge cannot create a result for a node that has no loaded card. Result reasons retain direction, kind, and confidence such as `graph-out:calls@0.90`.
 
 `llmnav context` traverses confidence-ordered incoming and outgoing edges breadth-first. `--depth`, `--budget`, and `--max-edges` independently bound traversal and output. Selected cards are packed before compact edge evidence so a small token budget preserves the requested root card first.
+
+## Workspace and cross-repository IDs
+
+Configured graph inputs may contribute nodes from multiple repository IDs. LLMNav treats those imported nodes as one explicit logical workspace; it does not scan sibling directories automatically.
+
+Qualified IDs such as `accounts/auth.session.rotate` resolve exactly. An unqualified ID first prefers the local repository. If no local node exists, it resolves only when exactly one workspace node has that semantic ID. Multiple matches return an ambiguity with sorted qualified candidates and require the caller to choose one.
+
+`show` renders external definitions when no local card exists. `context` can start from an external or unresolved graph node and pack its definitions and bounded edge evidence. External nodes do not become searchable lexical cards merely because they were imported.

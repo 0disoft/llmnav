@@ -24,7 +24,7 @@ import {
 } from "./inverted-index.js";
 import { normalizeSearchText, tokenize } from "./tokenizer.js";
 import { recoverGenerationTransaction } from "./transaction.js";
-import { isCompatibleRepositoryGraph } from "./graph.js";
+import { isCompatibleRepositoryGraph, renderGraphNode, resolveGraphNode } from "./graph.js";
 
 const preparedIndexCache = new WeakMap();
 const preparedSearchIndexCache = new WeakMap();
@@ -314,28 +314,114 @@ export function queryIndexLegacy(index, query, options = {}) {
 }
 
 export async function showProjectCard(root, id) {
-  const { index } = await loadSearchData(root);
+  const { index, graph } = await loadSearchData(root);
   const direct = index.cards.find((card) => card.id === id);
-  if (direct) return { card: direct, resolvedFrom: null };
-  const registry = await loadRegistry(root);
-  const resolved = resolveRegistryId(registry, id);
-  if (resolved.state !== "active") return { card: null, resolvedFrom: resolved };
-  return {
-    card: index.cards.find((card) => card.id === resolved.id) ?? null,
-    resolvedFrom: resolved,
-  };
+  if (direct) return { card: direct, node: null, resolvedFrom: null };
+  if (!String(id).includes("/")) {
+    const registry = await loadRegistry(root);
+    const resolved = resolveRegistryId(registry, id);
+    if (resolved.state === "active") {
+      const card = index.cards.find((item) => item.id === resolved.id) ?? null;
+      if (card) return { card, node: null, resolvedFrom: resolved };
+    }
+  }
+  const graphResolution = resolveGraphNode(graph, id, index.repositoryId);
+  if (graphResolution.state !== "resolved") return { card: null, node: null, resolvedFrom: graphResolution };
+  const localId = localSemanticId(graphResolution.node.key, index.repositoryId);
+  const card = localId ? index.cards.find((item) => item.id === localId) ?? null : null;
+  return { card, node: card ? null : graphResolution.node, resolvedFrom: graphResolution };
 }
 
 export async function buildContext(root, id, options = {}) {
   const { index, graph } = await loadSearchData(root);
   const registry = await loadRegistry(root);
-  const direct = index.cards.find((card) => card.id === id);
-  const resolved = direct ? { id, state: "active" } : resolveRegistryId(registry, id);
-  if (resolved.state !== "active") throw new Error(`Unknown or inactive semantic ID ${id}.`);
-  const rootId = resolved.id;
   const depth = boundedInteger(options.depth, 1, 0, 8);
   const budget = boundedInteger(options.budget, 2500, 128, 100000);
   const maxEdges = boundedInteger(options.maxEdges, 24, 0, 1000);
+  const direct = index.cards.find((card) => card.id === id);
+  let rootId = direct?.id ?? null;
+  if (!rootId && !String(id).includes("/")) {
+    const resolved = resolveRegistryId(registry, id);
+    if (resolved.state === "active" && index.cards.some((card) => card.id === resolved.id)) rootId = resolved.id;
+  }
+  if (isCompatibleRepositoryGraph(graph, index.repositoryId)) {
+    const resolution = rootId
+      ? resolveGraphNode(graph, `${index.repositoryId}/${rootId}`, index.repositoryId)
+      : resolveGraphNode(graph, id, index.repositoryId);
+    if (resolution.state === "ambiguous") {
+      throw new Error(`Ambiguous semantic ID ${id}; qualify one of ${resolution.candidates.join(", ")}.`);
+    }
+    if (resolution.state !== "resolved") throw new Error(`Unknown or inactive semantic ID ${id}.`);
+    return buildGraphContext(index, graph, resolution.node, { depth, budget, maxEdges });
+  }
+  if (!rootId) throw new Error(`Unknown or inactive semantic ID ${id}.`);
+  return buildLegacyContext(index, rootId, { depth, budget, maxEdges });
+}
+
+function buildGraphContext(index, graph, rootNode, options) {
+  const { depth, budget, maxEdges } = options;
+  const byId = new Map(index.cards.map((card) => [card.id, card]));
+  const nodesByKey = new Map(graph.nodes.map((node) => [node.key, node]));
+  const graphAdjacency = buildGraphAdjacency(graph);
+  const queue = [{ key: rootNode.key, depth: 0 }];
+  const visited = new Set();
+  const selected = [];
+  const selectedEdges = [];
+  const seenEdges = new Set();
+  while (queue.length > 0) {
+    const current = queue.shift();
+    if (!current || visited.has(current.key)) continue;
+    visited.add(current.key);
+    const node = nodesByKey.get(current.key);
+    if (!node) continue;
+    const localId = localSemanticId(node.key, index.repositoryId);
+    selected.push({ node, card: localId ? byId.get(localId) ?? null : null });
+    if (current.depth >= depth) continue;
+    for (const entry of graphAdjacency.get(current.key) ?? []) {
+      if (selectedEdges.length >= maxEdges) break;
+      if (!seenEdges.has(entry.edge.id)) {
+        selectedEdges.push(entry.edge);
+        seenEdges.add(entry.edge.id);
+      }
+      queue.push({ key: entry.neighbor, depth: current.depth + 1 });
+    }
+  }
+
+  const rootOutputId = contextNodeId(rootNode, index.repositoryId);
+  let output = `llmnav-context/1 root=${rootOutputId} depth=${depth}\n`;
+  const included = [];
+  for (const item of selected) {
+    const rendered = `${item.card ? renderCompactCard(item.card) : renderGraphNode(item.node)}\n\n`;
+    if (approximateTokens(output + rendered) > budget) {
+      if (included.length === 0) {
+        output = truncateToTokenBudget(output + rendered, budget);
+        included.push(contextNodeId(item.node, index.repositoryId));
+      }
+      break;
+    }
+    output += rendered;
+    included.push(contextNodeId(item.node, index.repositoryId));
+  }
+  const includedEdges = [];
+  for (const edge of selectedEdges) {
+    const rendered = renderGraphEdge(edge);
+    if (approximateTokens(output + rendered) > budget) break;
+    output += rendered;
+    includedEdges.push(edge.id);
+  }
+  return {
+    id: rootOutputId,
+    depth,
+    budget,
+    maxEdges,
+    included,
+    includedEdges,
+    text: truncateToTokenBudget(output.trimEnd(), budget),
+  };
+}
+
+function buildLegacyContext(index, rootId, options) {
+  const { depth, budget, maxEdges } = options;
   const start = index.cards.find((card) => card.id === rootId);
   if (!start) throw new Error(`No indexed source card exists for semantic ID ${rootId}.`);
   const byId = new Map(index.cards.map((card) => [card.id, card]));
@@ -352,11 +438,6 @@ export async function buildContext(root, id, options = {}) {
   const queue = [{ id: rootId, depth: 0 }];
   const visited = new Set();
   const selected = [];
-  const selectedEdges = [];
-  const seenEdges = new Set();
-  const graphAdjacency = isCompatibleRepositoryGraph(graph, index.repositoryId)
-    ? buildGraphAdjacency(graph)
-    : null;
   while (queue.length > 0) {
     const current = queue.shift();
     if (!current || visited.has(current.id)) continue;
@@ -365,24 +446,11 @@ export async function buildContext(root, id, options = {}) {
     if (!card) continue;
     selected.push(card);
     if (current.depth >= depth) continue;
-    if (graphAdjacency) {
-      const key = `${index.repositoryId}/${card.id}`;
-      for (const entry of graphAdjacency.get(key) ?? []) {
-        if (selectedEdges.length >= maxEdges) break;
-        if (!seenEdges.has(entry.edge.id)) {
-          selectedEdges.push(entry.edge);
-          seenEdges.add(entry.edge.id);
-        }
-        const target = localSemanticId(entry.neighbor, index.repositoryId);
-        if (target) queue.push({ id: target, depth: current.depth + 1 });
-      }
-    } else {
-      for (const relation of card.rel ?? []) {
-        const target = relation.slice(relation.indexOf(">") + 1);
-        queue.push({ id: target, depth: current.depth + 1 });
-      }
-      for (const source of reverse.get(card.id) ?? []) queue.push({ id: source, depth: current.depth + 1 });
+    for (const relation of card.rel ?? []) {
+      const target = relation.slice(relation.indexOf(">") + 1);
+      queue.push({ id: target, depth: current.depth + 1 });
     }
+    for (const source of reverse.get(card.id) ?? []) queue.push({ id: source, depth: current.depth + 1 });
   }
 
   const header = `llmnav-context/1 root=${rootId} depth=${depth}\n`;
@@ -400,22 +468,23 @@ export async function buildContext(root, id, options = {}) {
     output += rendered;
     included.push(card.id);
   }
-  const includedEdges = [];
-  for (const edge of selectedEdges) {
-    const rendered = `graph ${edge.from} -[${edge.kind} confidence=${edge.confidence.toFixed(2)} provenance=${edge.provenance.type}]-> ${edge.to}\n`;
-    if (approximateTokens(output + rendered) > budget) break;
-    output += rendered;
-    includedEdges.push(edge.id);
-  }
   return {
     id: rootId,
     depth,
     budget,
     maxEdges,
     included,
-    includedEdges,
+    includedEdges: [],
     text: truncateToTokenBudget(output.trimEnd(), budget),
   };
+}
+
+function renderGraphEdge(edge) {
+  return `graph ${edge.from} -[${edge.kind} confidence=${edge.confidence.toFixed(2)} provenance=${edge.provenance.type}]-> ${edge.to}\n`;
+}
+
+function contextNodeId(node, localRepositoryId) {
+  return node.repositoryId === localRepositoryId ? node.semanticId : node.key;
 }
 
 function applyGraphBonuses(index, graph, seeds, byId, resultsById, metrics) {

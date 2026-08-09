@@ -1,9 +1,9 @@
 /* llmnav/1 module
 id=llmnav.graph.generate
-role=Build a deterministic repository graph with qualified nodes, provenance, and confidence.
-owns=graph schema|edge normalization|local import resolution
+role=Build deterministic repository graphs and resolve qualified IDs across imported workspace nodes.
+owns=graph schema|edge normalization|local import resolution|workspace ID resolution
 excludes=query scoring|workspace file discovery
-search=repository graph|edge provenance|graph confidence
+search=repository graph|cross repository ID|workspace resolution|edge provenance|graph confidence
 rel=workflow>llmnav.graph.import
 rel=workflow>llmnav.index.generate
 stability=architecture
@@ -149,6 +149,36 @@ export function isCompatibleRepositoryGraph(graph, repositoryId = undefined) {
       ) &&
       (repositoryId === undefined || graph.repositoryId === repositoryId),
   );
+}
+
+export function resolveGraphNode(graph, id, localRepositoryId = graph?.repositoryId) {
+  if (!isCompatibleRepositoryGraph(graph)) return { state: "missing", id, candidates: [], node: null };
+  const value = String(id).trim();
+  const byKey = new Map(graph.nodes.map((node) => [node.key, node]));
+  if (value.includes("/")) {
+    const node = byKey.get(value) ?? null;
+    return node
+      ? { state: "resolved", id: value, candidates: [value], node }
+      : { state: "missing", id: value, candidates: [], node: null };
+  }
+  const localKey = `${localRepositoryId}/${value}`;
+  if (byKey.has(localKey)) return { state: "resolved", id: localKey, candidates: [localKey], node: byKey.get(localKey) };
+  const candidates = graph.nodes.filter((node) => node.semanticId === value).map((node) => node.key).sort(compareText);
+  if (candidates.length === 1) return { state: "resolved", id: candidates[0], candidates, node: byKey.get(candidates[0]) };
+  if (candidates.length > 1) return { state: "ambiguous", id: value, candidates, node: null };
+  return { state: "missing", id: value, candidates: [], node: null };
+}
+
+export function renderGraphNode(node) {
+  const lines = [`@${node.key}`];
+  if (node.role) lines.push(`role ${node.role}`);
+  if (node.external) lines.push("external true");
+  if (node.unresolved) lines.push("unresolved true");
+  for (const definition of node.definitions ?? []) {
+    const location = `${definition.path}${definition.line ? `:${definition.line}` : ""}`;
+    lines.push(`def ${definition.symbol} ${location}${definition.kind ? ` kind=${definition.kind}` : ""}`);
+  }
+  return lines.join("\n");
 }
 
 function addEdge(edges, nodes, edge, localRepositoryId) {

@@ -87,6 +87,20 @@
     {
       "confidence": 0.85,
       "from": "llmnav/llmnav.cli.dispatch",
+      "id": "351b626f0528b42d79855a54cabf036edd02ea1061e1c1b91e444c6838bbe6ea",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/cli.js",
+        "source": "src/cli.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.graph.generate"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.cli.dispatch",
       "id": "5761880b6fa28189244fbb37e45ff38cd85d5ae0d5f2b27e93a8cc62099a8577",
       "kind": "imports",
       "provenance": {
@@ -1220,7 +1234,7 @@
         "visibility": null
       },
       "repositoryId": "llmnav",
-      "role": "Build a deterministic repository graph with qualified nodes, provenance, and confidence.",
+      "role": "Build deterministic repository graphs and resolve qualified IDs across imported workspace nodes.",
       "semanticId": "llmnav.graph.generate",
       "unresolved": false
     },
@@ -1513,9 +1527,9 @@
   ],
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "690496c3759cbdc4b820ba11f4e2a9dfbef4d1721600cb5123a36b4d247a3b54",
+  "sourceHash": "1df1a4996850ca7630334611f13ec0890f39339930ffe2ccc16a6f6db55ba158",
   "stats": {
-    "edgeCount": 61,
+    "edgeCount": 62,
     "importedIndexCount": 0,
     "nodeCount": 27,
     "unresolvedNodeCount": 0

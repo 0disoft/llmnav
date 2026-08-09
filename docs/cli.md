@@ -143,7 +143,7 @@ Before reading the cache, `query` recovers an interrupted generation transaction
 llmnav show <semantic-id> [--json]
 ```
 
-Prints one compact card. Redirected registry IDs resolve to their active target. Replaced records resolve to the first replacement for navigation convenience; JSON callers that need every replacement should read the registry record.
+Prints one compact card. Redirected registry IDs resolve to their active target. Qualified and unique external workspace IDs resolve to generated graph definitions when no local card exists. Ambiguous unqualified workspace IDs fail and report the qualified candidates.
 
 ## `llmnav context`
 
