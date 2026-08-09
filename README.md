@@ -6,7 +6,7 @@ It adds compact, stable metadata to a small number of architectural and behavior
 
 LLMNav is not a documentation generator, an embedding database, or a reason to annotate every function. It is a zero-runtime-dependency Node.js CLI and ESM library for reducing broad repository scans, irrelevant context, stale hand-written links, repeated card tokenization, and avoidable cache invalidation.
 
-## What v0.2 provides
+## What v0.3 provides
 
 * The backward-compatible `llmnav/1` source comment specification
 * A parser and data-loss-resistant canonical formatter
@@ -15,7 +15,12 @@ LLMNav is not a documentation generator, an embedding database, or a reason to a
 * A deterministic persistent inverted index that reuses unchanged card tokenization
 * File and card-level incremental indexing
 * Transactional cache generation with rollback and interrupted-run recovery
-* Machine-readable changed-card and affected-catalog output
+* Machine-readable changed-card, affected-boundary, and affected-catalog output
+* Exported API and effective configuration contract fingerprints
+* TypeScript and Go declaration enrichment with declaration-level body hashes
+* Generated route, event, schema, migration, and command boundaries
+* SARIF 2.1.0 diagnostic output
+* Optional deterministic card-range search shards for very large repositories
 * Repository and module catalogs designed for prompt-prefix reuse
 * Multilingual alias routing and CJK n-gram retrieval
 * Search regression tests with Recall@1, Recall@5, and MRR
@@ -92,7 +97,7 @@ Windows transient rename failures such as `EPERM`, `EBUSY`, `EACCES`, `EEXIST`, 
 npx llmnav generate --json
 ```
 
-The JSON response preserves the v0.1 fields and adds stable records for changed cards, affected catalogs, file reuse, card retokenization, and transaction recovery.
+The JSON response preserves the v0.1 fields and adds stable records for changed cards, affected boundaries, affected catalogs, file reuse, card retokenization, and transaction recovery.
 
 ```json
 {
@@ -101,6 +106,13 @@ The JSON response preserves the v0.1 fields and adds stable records for changed 
       "id": "auth.session.rotate",
       "change": "modified",
       "dimensions": ["semantic"]
+    }
+  ],
+  "affectedBoundaries": [
+    {
+      "id": "auth.session.rotate",
+      "modules": ["auth.session"],
+      "boundaries": [{ "kind": "route", "confidence": "high", "evidence": ["path"] }]
     }
   ],
   "affectedCatalogs": [
@@ -120,7 +132,7 @@ Locations and hashes are included in the complete records. Array ordering and ge
 | Layer | Examples | Owner | Storage |
 | --- | --- | --- | --- |
 | Stable meaning | role, invariant, domain search phrases, effects, risks, semantic relations | human or coding agent | source comment |
-| Generated structure | path, declaration, signature, imports, hashes | LLMNav | generated cache |
+| Generated structure | path, declaration, language, visibility, boundaries, imports, fingerprints, hashes | LLMNav | generated cache |
 | Task state | branch, diff, test output, current request | agent harness | never stored in a card |
 
 Paths, line numbers, commit hashes, callers, imports, and signatures are forbidden in source cards. They change too often and are more accurately generated.
@@ -222,9 +234,9 @@ Do not annotate trivial getters, generated files, obvious wrappers, every test f
 
 ## Current implementation boundary
 
-Version 0.2 provides the stable semantic layer, compatible deterministic index, persistent lexical inverted index, incremental file and card indexing, transaction recovery, generated declaration and import data, relation traversal, and local search evaluation.
+Version 0.3 provides the stable semantic layer, compatible deterministic index, persistent lexical inverted index, incremental and transactional generation, contract fingerprints, language-aware local declaration data, generated structural boundaries, affected-boundary reports, SARIF output, optional search shards, relation traversal, and local search evaluation.
 
-MCP, embeddings, SCIP, a hosted service, and a full language-aware call graph are intentionally outside v0.2. Generated structure enrichers remain future work and must never write derived edges into source cards.
+MCP, embeddings, SCIP, a hosted service, cross-repository resolution, and a full language-aware call graph remain outside v0.3. Generated structure never writes derived edges into source cards.
 
 ## Documentation
 
@@ -260,7 +272,7 @@ The project uses the Node.js standard library and built-in test runner. There is
 
 ## Status
 
-LLMNav is an experimental protocol and a usable v0.2 CLI. The source format remains `llmnav/1`; npm package changes and source-grammar changes are versioned independently.
+LLMNav is an experimental protocol and a usable v0.3 CLI. The source format remains `llmnav/1`; npm package changes and source-grammar changes are versioned independently.
 
 ## License
 

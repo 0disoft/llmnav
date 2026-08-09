@@ -40,7 +40,7 @@ The files are deterministic agent context. Committing them makes drift reviewabl
 
 ## Does LLMNav execute project code?
 
-No. Version 0.2 reads text files and writes its generated artifacts or explicitly requested card formatting. It has no plugin loader, install hook, or network request.
+No. Version 0.3 reads text files and writes its generated artifacts or explicitly requested card formatting. It has no plugin loader, install hook, or network request.
 
 ## Can cards be written in Korean?
 

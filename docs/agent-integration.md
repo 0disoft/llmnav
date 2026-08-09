@@ -86,7 +86,7 @@ LLMNav emits catalogs but deliberately leaves provider-specific caching to the a
 
 ## Tool wrappers
 
-LLMNav v0.2 does not ship an MCP server. A separate wrapper may expose a small stable tool surface instead of one tool per operation.
+LLMNav v0.3 does not ship an MCP server. A separate wrapper may expose a small stable tool surface instead of one tool per operation.
 
 Suggested contract:
 

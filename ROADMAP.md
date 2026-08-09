@@ -33,7 +33,7 @@ Implemented:
 
 ## 0.3 — stronger local structure
 
-Implemented during 0.3 development:
+Implemented:
 
 * exported API and configuration contract fingerprints
 * route, event, schema, migration, and command-boundary detection

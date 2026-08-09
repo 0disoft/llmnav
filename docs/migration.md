@@ -7,7 +7,7 @@ No source-card migration is required. Keep every `llmnav/1` comment and the exis
 Upgrade and regenerate:
 
 ```sh
-npm install --save-dev llmnav@^0.2.0
+npm install --save-dev llmnav@^0.3.0
 npx llmnav init --agents all
 npx llmnav generate
 npx llmnav doctor
@@ -15,9 +15,9 @@ npx llmnav doctor
 
 The regeneration adds deterministic `search-index.json` and `file-state.json`. Initialization refreshes `.llmnav/.gitignore` so volatile `state/`, `.transactions/`, and `generation-transaction.json` are not committed.
 
-Review `generate --json` during the first upgrade. Every existing card will be reported as added only when no previous compatible primary index exists. After the first successful v0.2 generation, later output is card-granular.
+Review `generate --json` during the first upgrade. Every existing card will be reported as added only when no previous compatible primary index exists. After the first successful generation, later output is card-granular. A first v0.3 generation adds contract fingerprints and may report `LNV009` only after a previously recorded fingerprint changes.
 
-Do not delete `index.json`, rewrite semantic IDs, or copy generated paths into comments. v0.2 acceleration is additive.
+Do not delete `index.json`, rewrite semantic IDs, or copy generated paths into comments. v0.3 fingerprints, boundary fields, affected-boundary reports, SARIF output, and optional shards are additive.
 
 ## Do not annotate the whole repository
 
