@@ -887,7 +887,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "ff54d08adbb24ce8a8c6a86aaaea80a619c8478e0681daee76eb36a02027f3ce",
+      "contentHash": "5f3d3cec2d137f19d5fcb536ac3e8db7b746d19bfa4db69b3200cbf098331662",
       "declarations": [],
       "imports": [
         "--agents",
@@ -897,7 +897,7 @@
         "--json",
         "--root",
         "../",
-        "0.4.0",
+        "0.5.0",
         "auth.session.rotate",
         "check",
         "compact-v1",
@@ -4137,7 +4137,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "f7e5e6aa457add3ee30164f4fc57b2f041bc519d2af022b266ca13fd6234e45d",
+      "contentHash": "db82e23849a85d771619b1620db2e25c2952cca11f38995b5d4eae87a6992b52",
       "declarations": [],
       "imports": [
         "*.bundle.js",
@@ -4187,7 +4187,7 @@
         ".vscode",
         ".vue",
         ".zsh",
-        "0.4.0",
+        "0.5.0",
         "1",
         "architecture",
         "auth",

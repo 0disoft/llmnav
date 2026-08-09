@@ -55,7 +55,7 @@ Implemented:
 
 ## 0.5 — agent protocol integrations
 
-Implemented during 0.5 development:
+Implemented:
 
 * stable tool-schema adapters over existing query, show, context, and check operations
 * prompt-prefix bundle generation with explicit cache partitions

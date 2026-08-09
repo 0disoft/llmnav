@@ -6,7 +6,7 @@ It adds compact, stable metadata to a small number of architectural and behavior
 
 LLMNav is not a documentation generator, an embedding database, or a reason to annotate every function. It is a zero-runtime-dependency Node.js CLI and ESM library for reducing broad repository scans, irrelevant context, stale hand-written links, repeated card tokenization, and avoidable cache invalidation.
 
-## What v0.4 provides
+## What v0.5 provides
 
 * The backward-compatible `llmnav/1` source comment specification
 * A parser and data-loss-resistant canonical formatter
@@ -246,7 +246,7 @@ Do not annotate trivial getters, generated files, obvious wrappers, every test f
 
 ## Current implementation boundary
 
-Version 0.4 adds validated generated definition/reference inputs, deterministic qualified repository graphs, confidence-aware ranking, bounded graph context, explicit cross-repository ID resolution, and content-addressed graph invalidation to the stable semantic and incremental local-navigation layers.
+Version 0.5 adds stable provider-neutral agent tools, trusted-root operation dispatch, explicit prompt-prefix cache partitions, deterministic editor diagnostics, a VS Code task integration, and a runnable typed host example to the repository graph and incremental navigation layers.
 
 LLMNav does not discover sibling repositories automatically and does not ship an MCP server, embedding database, hosted service, SCIP generator, or complete language-aware call graph. External tools may export the documented compact graph-input schema. Generated structure never writes derived edges into source cards.
 
@@ -287,7 +287,7 @@ The project uses the Node.js standard library and built-in test runner. There is
 
 ## Status
 
-LLMNav is an experimental protocol and a usable v0.4 CLI. The source format remains `llmnav/1`; npm package changes and source-grammar changes are versioned independently.
+LLMNav is an experimental protocol and a usable v0.5 CLI. The source format remains `llmnav/1`; npm package changes and source-grammar changes are versioned independently.
 
 ## License
 

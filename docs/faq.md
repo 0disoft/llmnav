@@ -8,9 +8,9 @@ No. That makes retrieval noisier and creates a second copy of the program in pro
 
 JSDoc and docstrings target generated human documentation and language tooling. They do not define durable semantic IDs, controlled effects and risks, append-only catalog order, relation validation, deterministic search artifacts, or search regression gates. They can coexist with LLMNav cards.
 
-## Does v0.4 change the `llmnav/1` syntax?
+## Does v0.5 change the `llmnav/1` syntax?
 
-No. The source grammar remains `llmnav/1`. v0.4 adds optional generated graph inputs and independently versioned graph cache files beside the existing schemaVersion 1 `index.json`.
+No. The source grammar remains `llmnav/1`. v0.5 adds independently versioned agent-operation, prompt-bundle, and editor-diagnostic contracts beside the existing schemaVersion 1 `index.json`.
 
 ## Does every query still tokenize every card?
 
@@ -40,7 +40,7 @@ The files are deterministic agent context. Committing them makes drift reviewabl
 
 ## Does LLMNav execute project code?
 
-No. Version 0.4 reads text and configured repository-local JSON files, then writes generated artifacts or explicitly requested card formatting. It has no plugin loader, install hook, or network request.
+No. Version 0.5 reads text and configured repository-local JSON files, then writes generated artifacts or explicitly requested card formatting. Its tool dispatcher remains local and has no plugin loader, install hook, or network request.
 
 ## Can cards be written in Korean?
 

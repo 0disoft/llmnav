@@ -1,4 +1,4 @@
-export const PACKAGE_VERSION = "0.4.0";
+export const PACKAGE_VERSION = "0.5.0";
 export const SPEC_VERSION = "1";
 
 export const SCOPES = Object.freeze(["file", "module", "symbol"]);
