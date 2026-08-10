@@ -61,8 +61,8 @@ npm publish --provenance=false --access public
 Automated publication:
 
 ```sh
-git tag v0.5.2
-git push origin v0.5.2
+git tag v0.5.3
+git push origin v0.5.3
 ```
 
 The release workflow rejects a tag that does not match `package.json`. If the exact version is already present in npm, the workflow succeeds only when the registry tarball integrity matches the tagged package; a mismatched package fails closed.

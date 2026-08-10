@@ -36,7 +36,7 @@ Generated paths, signatures, callers, references, timestamps, and hashes are nev
 {
   "schemaVersion": 1,
   "specVersion": "1",
-  "generatedBy": "llmnav@0.5.2",
+  "generatedBy": "llmnav@0.5.3",
   "repositoryId": "example",
   "contractFingerprints": {
     "schemaVersion": 1,

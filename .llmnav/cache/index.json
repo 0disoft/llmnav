@@ -1487,11 +1487,61 @@
         "diagnostic range"
       ],
       "stability": "contract"
+    },
+    {
+      "boundaries": [],
+      "excludes": [
+        "source-card validation",
+        "schema file generation"
+      ],
+      "hashes": {
+        "body": "079d3585ec59d2c0aa85317690d174683b4cabe356745b19510db19187bc75e0",
+        "semantic": "69fbf9f22cc16fc3ef97d64bd1d5f4a3792793713c22a3ec717129048bd4c3f9",
+        "structure": "bda327c68be34af716f65dc6a472dbac9d47af8c9436c253cbad210a336bd167"
+      },
+      "id": "llmnav.config.load",
+      "imports": [
+        "./spec.js",
+        "./util.js",
+        "node:path"
+      ],
+      "invariant": [
+        "Unknown configuration keys and escaping project paths are rejected before use."
+      ],
+      "location": {
+        "declarationLine": null,
+        "endLine": 10,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/config.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "owns": [
+        "configuration loading",
+        "default merging",
+        "configuration schema validation"
+      ],
+      "rel": [
+        "workflow>llmnav.rules.validate"
+      ],
+      "role": "Load, merge, and validate repository configuration before project operations observe it.",
+      "scope": "module",
+      "search": [
+        "load llmnav config",
+        "configuration validation",
+        "coverage rules"
+      ],
+      "stability": "contract"
     }
   ],
   "contractFingerprints": {
     "configuration": {
-      "sha256": "6f8169cb348aca7b2866252eced29e782451f541a6db49b6b6724d1af2541d3b"
+      "sha256": "2bf26701e84554e9b70353fe8f0bf91ea43fa0cfef8a8d283f5af1f386256bfd"
     },
     "exportedApi": {
       "count": 5,
@@ -1499,9 +1549,9 @@
     },
     "schemaVersion": 1
   },
-  "generatedBy": "llmnav@0.5.2",
+  "generatedBy": "llmnav@0.5.3",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "e5d80c33bd53eb14a053c1b69b6d2801b5be9fa1ac5eaeb136b0a848a8b5061e",
+  "sourceHash": "e9032b6458dbab12abb9817c1e3ab82b33da9386695c455b79561915221949ac",
   "specVersion": "1"
 }

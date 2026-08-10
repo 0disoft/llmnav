@@ -1,3 +1,14 @@
+/* llmnav/1 module
+id=llmnav.config.load
+role=Load, merge, and validate repository configuration before project operations observe it.
+owns=configuration loading|default merging|configuration schema validation
+excludes=source-card validation|schema file generation
+search=load llmnav config|configuration validation|coverage rules
+invariant=Unknown configuration keys and escaping project paths are rejected before use.
+rel=workflow>llmnav.rules.validate
+stability=contract
+*/
+
 import path from "node:path";
 import {
   ALLOWED_KEYS,

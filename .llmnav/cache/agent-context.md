@@ -14,6 +14,7 @@ Keep semantic IDs stable across moves and renames.
 * example.privacy: .llmnav/cache/modules/example.privacy.txt (3 cards)
 * llmnav.agent: .llmnav/cache/modules/llmnav.agent.txt (4 cards)
 * llmnav.cli: .llmnav/cache/modules/llmnav.cli.txt (1 cards)
+* llmnav.config: .llmnav/cache/modules/llmnav.config.txt (1 cards)
 * llmnav.contract: .llmnav/cache/modules/llmnav.contract.txt (1 cards)
 * llmnav.diagnostics: .llmnav/cache/modules/llmnav.diagnostics.txt (2 cards)
 * llmnav.eval: .llmnav/cache/modules/llmnav.eval.txt (1 cards)

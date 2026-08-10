@@ -6,6 +6,7 @@
 {"query":"rank cards from multilingual task language","expected":["llmnav.search.query"]}
 {"query":"install navigation instructions for coding assistants","expected":["llmnav.agent.install"]}
 {"query":"bootstrap a repository with config registry and schema","expected":["llmnav.project.initialize"]}
+{"query":"load merge and validate llmnav repository configuration","expected":["llmnav.config.load"]}
 {"query":"measure recall at five for navigation queries","expected":["llmnav.eval.measure"]}
 {"query":"토큰 재사용 공격이 발생하면 세션 패밀리를 폐기","expected":["example.auth.session.rotate"]}
 {"query":"외부 생성 작업 전에 크레딧을 선점","expected":["example.billing.credit.reserve"]}

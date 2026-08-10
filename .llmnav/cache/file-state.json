@@ -822,7 +822,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "845c266c83311ca0bb452873c824242cb596e0ddd7ccb4bc1062070feebc05e7",
+      "contentHash": "2f811031b03e78fbfcf581b323001e508fcfa557cac41d099ba074a65dfc5d82",
       "declarations": [],
       "imports": [
         "node:child_process",
@@ -1514,17 +1514,114 @@
       "sourceBytes": 16530
     },
     {
-      "blocks": [],
-      "contentHash": "fe7693839c06aae8b0402423de944418e6bf498d633c7686f3a38e5b06fcfffa",
-      "declarations": [],
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
+              "source-card validation",
+              "schema file generation"
+            ],
+            "id": "llmnav.config.load",
+            "invariant": [
+              "Unknown configuration keys and escaping project paths are rejected before use."
+            ],
+            "owns": [
+              "configuration loading",
+              "default merging",
+              "configuration schema validation"
+            ],
+            "rel": [
+              "workflow>llmnav.rules.validate"
+            ],
+            "risk": [],
+            "role": "Load, merge, and validate repository configuration before project operations observe it.",
+            "scope": "module",
+            "search": [
+              "load llmnav config",
+              "configuration validation",
+              "coverage rules"
+            ],
+            "stability": "contract",
+            "unknown": []
+          },
+          "end": 476,
+          "endLine": 10,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.config.load"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Load, merge, and validate repository configuration before project operations observe it."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "configuration loading|default merging|configuration schema validation"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "source-card validation|schema file generation"
+            },
+            {
+              "key": "search",
+              "line": 6,
+              "order": 4,
+              "value": "load llmnav config|configuration validation|coverage rules"
+            },
+            {
+              "key": "invariant",
+              "line": 7,
+              "order": 5,
+              "value": "Unknown configuration keys and escaping project paths are rejected before use."
+            },
+            {
+              "key": "rel",
+              "line": 8,
+              "order": 6,
+              "value": "workflow>llmnav.rules.validate"
+            },
+            {
+              "key": "stability",
+              "line": 9,
+              "order": 7,
+              "value": "contract"
+            }
+          ],
+          "filePath": "src/config.js",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.config.load\nrole=Load, merge, and validate repository configuration before project operations observe it.\nowns=configuration loading|default merging|configuration schema validation\nexcludes=source-card validation|schema file generation\nsearch=load llmnav config|configuration validation|coverage rules\ninvariant=Unknown configuration keys and escaping project paths are rejected before use.\nrel=workflow>llmnav.rules.validate\nstability=contract\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "079d3585ec59d2c0aa85317690d174683b4cabe356745b19510db19187bc75e0",
+      "declarations": [
+        null
+      ],
       "imports": [
         "./spec.js",
         "./util.js",
         "node:path"
       ],
       "path": "src/config.js",
-      "semanticBytes": 0,
-      "sourceBytes": 13316
+      "semanticBytes": 476,
+      "sourceBytes": 13794
     },
     {
       "blocks": [
@@ -3212,7 +3309,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "78f64b02849ee4253cd49ec8f1b10f6dacf55bfd85595340e51515851fca1645",
+      "contentHash": "7f0b287b2addef32e0b46d6e6db922323a72c55fd933e658bac5aad0ae5d02ee",
       "declarations": [],
       "imports": [],
       "path": "src/spec.js",

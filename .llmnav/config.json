@@ -1,6 +1,18 @@
 {
   "$schema": "./schema/config.schema.json",
-  "coverageRules": [],
+  "coverageRules": [
+    {
+      "match": [
+        "src/config.js"
+      ],
+      "name": "repository configuration contract",
+      "requiredFields": [
+        "owns",
+        "invariant"
+      ],
+      "scope": "module"
+    }
+  ],
   "evaluation": {
     "minimumRecallAt1": 0.75,
     "minimumRecallAt5": 0.9,
