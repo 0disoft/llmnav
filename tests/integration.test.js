@@ -8,6 +8,7 @@ import { evaluateProject } from "../src/evaluation.js";
 import { findProjectRoot } from "../src/files.js";
 import { generateProject } from "../src/generator.js";
 import { initializeProject } from "../src/initializer.js";
+import { scanProject } from "../src/project.js";
 import { buildContext, queryProject } from "../src/search.js";
 
 test("initializes, generates, verifies, and searches a project", async (context) => {
@@ -93,6 +94,22 @@ test("semantic catalogs survive body edits and file moves", async (context) => {
   assert.equal(secondCatalog, firstCatalog);
   assert.notEqual(secondIndex, firstIndex);
   assert.doesNotMatch(secondCatalog, /reserve-moved|reserveCreditsRenamed|loc |sig /u);
+});
+
+test("default discovery excludes package-manager caches", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-package-cache-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await writeFile(path.join(root, "package.json"), '{"name":"package-cache-fixture"}\n');
+  await mkdir(path.join(root, "src"));
+  await mkdir(path.join(root, ".bun-cache", "dependency"), { recursive: true });
+  await mkdir(path.join(root, ".pnpm-store", "dependency"), { recursive: true });
+  await writeFile(path.join(root, "src", "owned.ts"), "export const owned = true;\n");
+  await writeFile(path.join(root, ".bun-cache", "dependency", "foreign.ts"), "export const foreign = true;\n");
+  await writeFile(path.join(root, ".pnpm-store", "dependency", "foreign.ts"), "export const foreign = true;\n");
+  await initializeProject(root, { agents: ["none"] });
+
+  const project = await scanProject(root);
+  assert.deepEqual(project.fileRecords.map((record) => record.relativePath), ["src/owned.ts"]);
 });
 
 test("force initialization preserves semantic state and evaluation data", async (context) => {

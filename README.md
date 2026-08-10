@@ -169,7 +169,7 @@ Line-comment cards require an explicit terminator and work with `//`, `#`, and `
 | Command | Purpose |
 | --- | --- |
 | `llmnav init` | Create configuration, registry, schemas, agent instructions, and the initial cache |
-| `llmnav audit` | Rank unannotated architectural boundary candidates without modifying source |
+| `llmnav audit` | Rank unannotated architectural boundary candidates, with compact or file-backed output |
 | `llmnav check` | Validate cards, relations, coverage rules, and registry state |
 | `llmnav format` | Rewrite safe cards into canonical order and spacing |
 | `llmnav generate` | Incrementally compile and transactionally commit generated artifacts |
@@ -250,7 +250,7 @@ Do not annotate trivial getters, generated files, obvious wrappers, every test f
 
 ## Current implementation boundary
 
-Version 0.6 adds a deterministic coverage audit that prioritizes public entrypoints, structural boundaries, and high fan-in modules while suppressing declaration files, test support code, simple barrels, and broad utilities. It suggests narrow coverage rules but never writes cards or invents semantic roles.
+Version 0.6 adds a deterministic coverage audit that prioritizes root and nested-package entrypoints, structural boundaries, Rust/Tauri runtime signals, and high fan-in modules while suppressing declaration files, dependency caches, test support code, simple barrels, and broad utilities. It suggests narrow coverage rules but never writes cards or invents semantic roles. Use `llmnav audit --summary --json` for a compact automation result or `llmnav audit --json --output .llmnav/audit.json` to keep the full candidate report out of captured stdout.
 
 LLMNav does not discover sibling repositories automatically and does not ship an MCP server, embedding database, hosted service, SCIP generator, or complete language-aware call graph. External tools may export the documented compact graph-input schema. Generated structure never writes derived edges into source cards.
 

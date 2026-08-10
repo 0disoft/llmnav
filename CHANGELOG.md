@@ -6,6 +6,17 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 
 ## [Unreleased]
 
+## [0.6.1] — 2026-08-10
+
+### Added
+
+* Added compact `audit --summary` output and repository-contained `audit --output <path>` reports.
+* Added nested workspace package entrypoint discovery and Rust/Tauri command, module, and platform-lifecycle signals.
+
+### Fixed
+
+* Excluded Bun and pnpm package-manager caches from default source discovery.
+
 ## [0.6.0] — 2026-08-10
 
 ### Added

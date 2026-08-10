@@ -47,8 +47,7 @@ export async function auditProject(root) {
     for (const target of unique) importedBy.get(target)?.add(file);
   }
 
-  const packageJson = await readJsonSafe(path.join(root, "package.json"), {});
-  const entrypoints = collectPackageEntrypoints(packageJson, fileByPath);
+  const entrypoints = await collectWorkspacePackageEntrypoints(root, fileByPath);
   const publicApiPaths = collectPublicApiPaths(entrypoints, fileByPath);
   const candidates = [];
 
@@ -58,6 +57,7 @@ export async function auditProject(root) {
     const boundaries = detectBoundaries({
       relativePath: file,
       card: { effect: [], risk: [] },
+      source: record.source ?? "",
     }).map((boundary) => boundary.kind);
     const exportedDeclarations = countExportedDeclarations(record.source ?? "", file);
     const entrypoint = entrypoints.has(file);
@@ -174,14 +174,34 @@ function buildCoverageSuggestion(file) {
   };
 }
 
-function collectPackageEntrypoints(packageJson, fileByPath) {
+async function collectWorkspacePackageEntrypoints(root, fileByPath) {
+  const packageDirectories = new Set([""]);
+  for (const file of fileByPath.keys()) {
+    let directory = path.posix.dirname(file);
+    while (directory !== "." && directory !== "") {
+      packageDirectories.add(directory);
+      const parent = path.posix.dirname(directory);
+      if (parent === directory || parent === ".") break;
+      directory = parent;
+    }
+  }
+  const entrypoints = new Set();
+  for (const directory of [...packageDirectories].sort(compareText)) {
+    const packageJson = await readJsonSafe(path.join(root, directory, "package.json"), null);
+    if (!packageJson || typeof packageJson !== "object") continue;
+    for (const entrypoint of collectPackageEntrypoints(packageJson, fileByPath, directory)) entrypoints.add(entrypoint);
+  }
+  return entrypoints;
+}
+
+function collectPackageEntrypoints(packageJson, fileByPath, packageDirectory = "") {
   const raw = [packageJson?.main, packageJson?.module, ...collectStringLeaves(packageJson?.bin), ...collectStringLeaves(packageJson?.exports)];
   const entrypoints = new Set();
   for (const value of raw) {
     if (typeof value !== "string" || /\.d\.[cm]?ts$/u.test(value)) continue;
     const normalized = normalizePackagePath(value);
     if (!normalized) continue;
-    const resolved = resolveProjectPath(normalized, fileByPath);
+    const resolved = resolveProjectPath(path.posix.join(packageDirectory, normalized), fileByPath);
     if (resolved) entrypoints.add(resolved);
   }
   return entrypoints;
@@ -237,10 +257,50 @@ function isReexportBarrel(source, file) {
 }
 
 function resolveLocalSpecifier(fromFile, specifier, fileByPath) {
+  if (/\.rs$/u.test(fromFile)) return resolveRustSpecifier(fromFile, specifier, fileByPath);
   if (!specifier.startsWith(".")) return null;
   const base = path.posix.normalize(path.posix.join(path.posix.dirname(fromFile), toPosix(specifier)));
   if (base.startsWith("../") || base === "..") return null;
   return resolveProjectPath(base, fileByPath);
+}
+
+function resolveRustSpecifier(fromFile, specifier, fileByPath) {
+  const normalized = specifier
+    .replace(/\s+as\s+.+$/u, "")
+    .replace(/::\{[\s\S]*$/u, "")
+    .replace(/::\*$/u, "")
+    .trim();
+  if (!normalized || /[{}(),]/u.test(normalized)) return null;
+  const parts = normalized.split("::").filter(Boolean);
+  const sourceIndex = fromFile.split("/").lastIndexOf("src");
+  const crateSource = sourceIndex >= 0 ? fromFile.split("/").slice(0, sourceIndex + 1).join("/") : path.posix.dirname(fromFile);
+  let base;
+  if (parts[0] === "crate") {
+    parts.shift();
+    base = crateSource;
+  } else if (parts[0] === "self") {
+    parts.shift();
+    base = rustModuleDirectory(fromFile);
+  } else if (parts[0] === "super") {
+    while (parts[0] === "super") {
+      parts.shift();
+      base = path.posix.dirname(base ?? rustModuleDirectory(fromFile));
+    }
+  } else {
+    base = rustModuleDirectory(fromFile);
+  }
+  if (parts.length === 0) return null;
+  const candidate = path.posix.join(base, ...parts);
+  return [
+    `${candidate}.rs`,
+    `${candidate}/mod.rs`,
+  ].find((value) => fileByPath.has(value)) ?? null;
+}
+
+function rustModuleDirectory(fromFile) {
+  const basename = path.posix.basename(fromFile);
+  if (basename === "lib.rs" || basename === "main.rs" || basename === "mod.rs") return path.posix.dirname(fromFile);
+  return path.posix.join(path.posix.dirname(fromFile), path.posix.basename(fromFile, ".rs"));
 }
 
 function resolveProjectPath(candidate, fileByPath) {

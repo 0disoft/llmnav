@@ -31,7 +31,7 @@ import {
   SPEC_VERSION,
   STABILITIES,
 } from "./spec.js";
-import { parseInteger } from "./util.js";
+import { assertNoSymlinkTraversal, atomicWrite, parseInteger, relativePosix } from "./util.js";
 import { diagnosticsToSarif } from "./sarif.js";
 import { loadGraphInputs } from "./graph-input.js";
 import { renderGraphNode } from "./graph.js";
@@ -40,7 +40,7 @@ import { loadPromptPrefixBundle } from "./prompt-bundle.js";
 import { diagnosticsToEditor, getEditorIntegration } from "./editor.js";
 import { AUDIT_PRIORITIES, auditHasFindings, auditProject } from "./audit.js";
 
-const VALUE_OPTIONS = new Set(["--root", "--format", "--top", "--depth", "--budget", "--max-edges", "--agents", "--file", "--fail-on"]);
+const VALUE_OPTIONS = new Set(["--root", "--format", "--top", "--depth", "--budget", "--max-edges", "--agents", "--file", "--fail-on", "--output"]);
 
 const COMMAND_OPTIONS = Object.freeze({
   init: new Set(["--agents", "--package-scripts", "--force", "--root", "--json"]),
@@ -53,7 +53,7 @@ const COMMAND_OPTIONS = Object.freeze({
   context: new Set(["--depth", "--budget", "--max-edges", "--root", "--json"]),
   eval: new Set(["--file", "--top", "--root", "--json"]),
   doctor: new Set(["--root", "--json"]),
-  audit: new Set(["--root", "--json", "--fail-on"]),
+  audit: new Set(["--root", "--json", "--summary", "--fail-on", "--output"]),
   spec: new Set(["--root", "--json"]),
   tools: new Set(["--json"]),
   bundle: new Set(["--root", "--json"]),
@@ -300,10 +300,27 @@ async function runAudit(root, args, json) {
   if (failOn !== "none" && !AUDIT_PRIORITIES.includes(failOn)) {
     throw usageError(`audit --fail-on must be one of none, ${AUDIT_PRIORITIES.join(", ")}.`);
   }
+  const outputOption = getOption(args, "--output");
+  const outputPath = outputOption ? path.resolve(root, outputOption) : null;
+  if (outputPath) {
+    try {
+      await assertNoSymlinkTraversal(root, outputPath, "audit output file");
+    } catch (error) {
+      throw usageError(error instanceof Error ? error.message : String(error));
+    }
+  }
   const result = await auditProject(root);
   const report = { ...result, failOn };
+  const selectedReport = hasFlag(args, "--summary")
+    ? { schemaVersion: result.schemaVersion, repositoryId: result.repositoryId, summary: result.summary, failOn }
+    : report;
+  if (outputPath) {
+    await atomicWrite(outputPath, `${JSON.stringify(selectedReport, null, 2)}\n`);
+  }
   if (json) {
-    console.log(JSON.stringify(report, null, 2));
+    console.log(JSON.stringify(outputPath
+      ? { schemaVersion: result.schemaVersion, repositoryId: result.repositoryId, summary: result.summary, failOn, output: relativePosix(root, outputPath) }
+      : selectedReport, null, 2));
   } else {
     const { summary } = result;
     console.log(
@@ -314,6 +331,7 @@ async function runAudit(root, args, json) {
       console.log(`${candidate.priority} ${candidate.path} score=${candidate.score} ${candidate.reasons.join(",")}`);
     }
     if (summary.low > 0) console.log(`${summary.low} low-priority candidate(s) are available in --json output.`);
+    if (outputPath) console.log(`wrote ${relativePosix(root, outputPath)}`);
   }
   return auditHasFindings(result, failOn) ? 1 : 0;
 }
@@ -474,7 +492,7 @@ Usage
   llmnav context <semantic-id> [--depth 1] [--budget 2500] [--max-edges 24]
   llmnav eval [--file path] [--top 5]
   llmnav doctor
-  llmnav audit [--fail-on none|high|medium|low]
+  llmnav audit [--summary] [--output path] [--fail-on none|high|medium|low]
   llmnav spec
   llmnav tools [--json]
   llmnav bundle [--json]

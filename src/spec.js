@@ -10,7 +10,7 @@ rel=workflow>llmnav.rules.validate
 stability=contract
 */
 
-export const PACKAGE_VERSION = "0.6.0";
+export const PACKAGE_VERSION = "0.6.1";
 export const SPEC_VERSION = "1";
 
 export const SCOPES = Object.freeze(["file", "module", "symbol"]);
@@ -163,6 +163,8 @@ export const DEFAULT_EXCLUDED_DIRECTORIES = Object.freeze([
   ".astro",
   ".turbo",
   ".cache",
+  ".bun-cache",
+  ".pnpm-store",
   "target",
   "bin",
   "obj",

@@ -11,6 +11,8 @@ async function createAuditFixture(context) {
   const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-audit-"));
   context.after(() => rm(root, { recursive: true, force: true }));
   await mkdir(path.join(root, "src", "cli"), { recursive: true });
+  await mkdir(path.join(root, "packages", "nested", "src"), { recursive: true });
+  await mkdir(path.join(root, "src-tauri", "src"), { recursive: true });
   await mkdir(path.join(root, "tests", "helpers"), { recursive: true });
   await writeFile(
     path.join(root, "package.json"),
@@ -49,6 +51,19 @@ export function carded() {}
   );
   await writeFile(path.join(root, "tests", "helpers", "shared.js"), "export function sharedFixture() {}\n");
   await writeFile(path.join(root, "src", "types.d.ts"), "export interface PublicShape {}\n");
+  await writeFile(
+    path.join(root, "packages", "nested", "package.json"),
+    `${JSON.stringify({ name: "nested-package", exports: { ".": "./src/index.js" } }, null, 2)}\n`,
+  );
+  await writeFile(path.join(root, "packages", "nested", "src", "index.js"), "export function nestedEntry() {}\n");
+  await writeFile(
+    path.join(root, "src-tauri", "src", "lib.rs"),
+    "mod process_tree;\n#[tauri::command]\nfn open_window() {}\nfn register() { tauri::generate_handler![open_window]; }\n",
+  );
+  await writeFile(
+    path.join(root, "src-tauri", "src", "process_tree.rs"),
+    "#[cfg(windows)]\npub(crate) fn shutdown_all_process_trees() {}\nimpl Drop for ProcessTree { fn drop(&mut self) {} }\nstruct ProcessTree;\n",
+  );
   await initializeProject(root, { agents: ["none"] });
   return root;
 }
@@ -84,6 +99,10 @@ test("audits missing semantic boundaries without modifying source", async (conte
   assert.equal(byPath.has("tests/helpers/shared.js"), false);
   assert.equal(byPath.has("src/types.d.ts"), false);
   assert.equal(byPath.has("src/carded.js"), false);
+  assert.equal(byPath.get("packages/nested/src/index.js").signals.packageEntrypoint, true);
+  assert.equal(byPath.get("src-tauri/src/lib.rs").signals.boundaries.includes("command"), true);
+  assert.equal(byPath.get("src-tauri/src/process_tree.rs").signals.importedBy, 1);
+  assert.equal(byPath.get("src-tauri/src/process_tree.rs").signals.boundaries.includes("runtime"), true);
   assert.deepEqual(byPath.get("src/public-api.js").suggestedCoverageRule, {
     name: "public-api module boundary",
     match: ["src/public-api.js"],
@@ -114,4 +133,19 @@ test("audit CLI emits stable JSON and supports fail-on thresholds", async (conte
   const invalid = spawnSync(process.execPath, [cli, "audit", "--root", root, "--fail-on", "urgent"], { encoding: "utf8" });
   assert.equal(invalid.status, 2);
   assert.match(invalid.stderr, /audit --fail-on must be one of/u);
+
+  const summary = spawnSync(process.execPath, [cli, "audit", "--root", root, "--json", "--summary"], { encoding: "utf8" });
+  assert.equal(summary.status, 0, summary.stderr);
+  assert.deepEqual(Object.keys(JSON.parse(summary.stdout)), ["schemaVersion", "repositoryId", "summary", "failOn"]);
+
+  const outputFile = path.join(root, ".llmnav", "audit.json");
+  const output = spawnSync(process.execPath, [cli, "audit", "--root", root, "--json", "--output", ".llmnav/audit.json"], { encoding: "utf8" });
+  assert.equal(output.status, 0, output.stderr);
+  const envelope = JSON.parse(output.stdout);
+  assert.equal(envelope.output, ".llmnav/audit.json");
+  assert.equal(Array.isArray(JSON.parse(await readFile(outputFile, "utf8")).candidates), true);
+
+  const escaped = spawnSync(process.execPath, [cli, "audit", "--root", root, "--output", "../audit.json"], { encoding: "utf8" });
+  assert.equal(escaped.status, 2);
+  assert.match(escaped.stderr, /audit output file escapes the repository root/u);
 });

@@ -11,13 +11,14 @@ stability=architecture
 import path from "node:path";
 import { compareText, toPosix } from "./util.js";
 
-export const BOUNDARY_KINDS = Object.freeze(["command", "event", "migration", "route", "schema"]);
+export const BOUNDARY_KINDS = Object.freeze(["command", "event", "migration", "route", "runtime", "schema"]);
 
 export function detectBoundaries(record) {
   const relativePath = toPosix(record.relativePath).toLowerCase();
   const basename = path.posix.basename(relativePath);
   const effects = record.card.effect ?? [];
   const risks = record.card.risk ?? [];
+  const source = record.source ?? "";
   const boundaries = new Map();
   const add = (kind, confidence, evidence) => {
     const current = boundaries.get(kind);
@@ -44,6 +45,14 @@ export function detectBoundaries(record) {
   }
   if (/(?:^|\/)(?:commands?|cli|bin)(?:\/|$)/u.test(relativePath) || /(?:command|cmd)\.[^.]+$/u.test(basename)) {
     add("command", "high", "path");
+  }
+  if (/\.rs$/u.test(relativePath) && /#\[tauri::command\]|tauri::generate_handler!/u.test(source)) {
+    add("command", "high", "tauri-command");
+  }
+  if (/\.rs$/u.test(relativePath) &&
+      /#\[cfg\((?:windows|unix|target_(?:os|family))/u.test(source) &&
+      /\b(?:Drop|shutdown|terminate|kill|process_group|job_object)\b/iu.test(source)) {
+    add("runtime", "medium", "platform-lifecycle");
   }
 
   return [...boundaries.values()].sort((left, right) => compareText(left.kind, right.kind));

@@ -394,7 +394,7 @@
         "index persistence format"
       ],
       "hashes": {
-        "body": "7dadcacfb2e6fdb74c3f70f182f659d1c4de7548e3f2f21842427f4380a8475d",
+        "body": "86b3a62841176a386eb15a87cc7c7ad2a3c44a909b4476dbf616950413b6033b",
         "semantic": "f4671d61fc8164fc24498faa91ba84f777e28a7f325750991908542867a69b6e",
         "structure": "29495abcc3dcefadd2c8eb6cc2514f01eed0f6a893658809b567a2def19117b3"
       },
@@ -1062,7 +1062,7 @@
         "source annotations"
       ],
       "hashes": {
-        "body": "540849fed97aa347114ef516e974e3827e8228f3ae3a8f1104f914abb5c3894c",
+        "body": "99b4a8251771170da4020aa4468b3e3a8802934b6ae9b31d8ae79a18671cccc8",
         "semantic": "edcf0e0f968695b53ccea93a68340028178fbaf8ff25ade7612e288c28eb438b",
         "structure": "99e265a2351e72cb35a2d433f0b51d2d691b205e3fdd70de478d69339f8e28ef"
       },
@@ -1857,7 +1857,7 @@
         "source parsing"
       ],
       "hashes": {
-        "body": "12f20bb8c04159c1f75b996574bf56bd211b5d73d414c5f3c0d6b1505454dd26",
+        "body": "fbc756bcaaa1a7e98460754ffb7ac9aa7b4cab6e19765c7e53760ce2baf83981",
         "semantic": "59aa3e9e793d505ecdf110fec023c201aaee0154d2f6c9cf71afe1bbf71a7be5",
         "structure": "e213e073414c75bc75df1c8669a7045096142b6c0845694191893d90bf23e3c2"
       },
@@ -1953,7 +1953,7 @@
         "semantic role generation"
       ],
       "hashes": {
-        "body": "d01b983957e72f64cd7ee527ae0cfdbacd557b8c84ee3e5291df233457a93c93",
+        "body": "ce776f72b5e52ba5e951f5310c7465af4a2887a4b24cc957878eef6c797ed1ff",
         "semantic": "aac17e46887fb32325f2255731d30aad7671051d5a63d8d39139e169cd16815d",
         "structure": "056af1b92b36055c6fd679fe7a6c29048d740a7750fd3d387502a9abe5edb5c8"
       },
@@ -2008,9 +2008,9 @@
     },
     "schemaVersion": 1
   },
-  "generatedBy": "llmnav@0.6.0",
+  "generatedBy": "llmnav@0.6.1",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "33fed554feba1ee1a9df0cc9553430b6bef8a392713ce1e2e8c5d68bc1fb110f",
+  "sourceHash": "41027b41df559f2928b95cbb34370cba8ac3d0555745def89fc0b2be02447025",
   "specVersion": "1"
 }

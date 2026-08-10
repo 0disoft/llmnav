@@ -71,7 +71,7 @@ Every source root must remain inside the repository and cannot be a symbolic lin
 
 `includeExtensions` is an allowlist. LLMNav does not scan Markdown or YAML by default because documentation examples routinely contain card syntax.
 
-`excludeDirectories` matches directory names at any depth. `excludeFiles` uses repository-relative globs with `*`, `?`, and `**`.
+`excludeDirectories` matches directory names at any depth. Defaults exclude dependency and tool output including `node_modules`, `.bun-cache`, `.pnpm-store`, `.cache`, build directories, and language targets. `excludeFiles` uses repository-relative globs with `*`, `?`, and `**`.
 
 ## Coverage rules
 
