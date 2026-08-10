@@ -44,8 +44,10 @@ The generated instruction tells an agent to:
 5. Keep IDs stable across moves and renames.
 6. Update semantic fields only when meaning changes.
 7. Never hand-maintain call, import, reference, implementation, export, or override relations.
-8. Run format, check, and generation after semantic changes.
-9. Fall back to broad search when no credible card is returned.
+8. Run `llmnav audit` after initialization and structural boundary changes, review high and medium candidates, and never annotate automatically.
+9. Encode accepted boundaries in narrow coverage rules and retrieval queries.
+10. Run format, check, and generation after semantic changes.
+11. Fall back to broad search when no credible card is returned.
 
 When a host supports structured tool calls, `llmnav tools --json` returns four stable provider-neutral definitions in fixed order: `llmnav_query`, `llmnav_show`, `llmnav_context`, and `llmnav_check`. The schemas reject unknown fields and omit the repository root so the trusted host binds scope outside model-generated input.
 
@@ -112,3 +114,5 @@ An agent should not stop when a repository is partially annotated.
 When `query` returns no credible result, the correct fallback is normal symbol search, grep, or language-server navigation. After completing the task, the agent may propose a new card only when the missed boundary satisfies the repository's annotation policy.
 
 Search failure alone is not permission to annotate every function sharing a keyword.
+
+Audit priority is also not permission to invent a card. It is a deterministic prompt to inspect likely boundaries; durable ownership and invariants still come from the current source and repository contracts.

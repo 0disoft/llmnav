@@ -348,7 +348,7 @@
         "agent execution"
       ],
       "hashes": {
-        "body": "c44de92d139b93e3fb0a0aa63677d70d28a2c22e4a28d1ecfaccd3db28b3dc25",
+        "body": "41fae0bacac87dae5f5074a84e50968be006a14763d6f4091268db734fc0af0f",
         "semantic": "7258d93062db7c24d1bdf4076e99802a3fcc413f4012e0aca49148a9fe1dedaa",
         "structure": "62e268ed9d2dd21c68421c28b2731d9a84ff0f7a1b1bcd17b9bde4f90f1e7cc1"
       },
@@ -394,13 +394,14 @@
         "index persistence format"
       ],
       "hashes": {
-        "body": "88767bee1ed6ddd4ca50f67246366a7f6e6a893dac7ba269fd32f4f6ece8e6e1",
-        "semantic": "ce9c7cd107639f96de4f26b913a7e6bdd206af278fbd30acf02ff833ac9d3498",
-        "structure": "9709c8adbc56a3c4d9ffddcc266fc4b5545791c6602ac12400b1b1605abcabbc"
+        "body": "7dadcacfb2e6fdb74c3f70f182f659d1c4de7548e3f2f21842427f4380a8475d",
+        "semantic": "f4671d61fc8164fc24498faa91ba84f777e28a7f325750991908542867a69b6e",
+        "structure": "29495abcc3dcefadd2c8eb6cc2514f01eed0f6a893658809b567a2def19117b3"
       },
       "id": "llmnav.cli.dispatch",
       "imports": [
         "./agent-protocol.js",
+        "./audit.js",
         "./doctor.js",
         "./editor.js",
         "./evaluation.js",
@@ -421,7 +422,7 @@
       ],
       "location": {
         "declarationLine": null,
-        "endLine": 12,
+        "endLine": 13,
         "exported": null,
         "kind": null,
         "language": null,
@@ -441,7 +442,8 @@
         "workflow>llmnav.project.initialize",
         "workflow>llmnav.rules.validate",
         "workflow>llmnav.search.query",
-        "workflow>llmnav.eval.measure"
+        "workflow>llmnav.eval.measure",
+        "workflow>llmnav.audit.coverage"
       ],
       "role": "Expose initialization, validation, generation, search, evaluation, and diagnostics through one CLI.",
       "scope": "module",
@@ -575,7 +577,7 @@
         "automatic annotation"
       ],
       "hashes": {
-        "body": "89b39adc8b7678b704527ddb31d529c6d1f57508e96f09ad1e68a28ed037a4ed",
+        "body": "4797249ef453fa02afff5119d0803189e9d024e8faf3eb8ee07a03942bd4f7ec",
         "semantic": "32b959f42c7911d86ba137ce781e1b28f71b1d6f089e5ad0533bfe7e6a7e5956",
         "structure": "abe92e87f0692370a352bfd2b4227d079aa8e1c55f8bd08f60e815d202cd259b"
       },
@@ -1855,7 +1857,7 @@
         "source parsing"
       ],
       "hashes": {
-        "body": "dd50bf46d1ce1bb4853ec4db361341ec99e5135d60297acf8eebee6ae41d4bb3",
+        "body": "12f20bb8c04159c1f75b996574bf56bd211b5d73d414c5f3c0d6b1505454dd26",
         "semantic": "59aa3e9e793d505ecdf110fec023c201aaee0154d2f6c9cf71afe1bbf71a7be5",
         "structure": "e213e073414c75bc75df1c8669a7045096142b6c0845694191893d90bf23e3c2"
       },
@@ -1894,11 +1896,111 @@
         "default config"
       ],
       "stability": "contract"
+    },
+    {
+      "boundaries": [],
+      "excludes": [
+        "model provider client",
+        "authentication",
+        "model-selected repository roots"
+      ],
+      "hashes": {
+        "body": "b0f8bf2d73f487a5bf842e97a09c23fb7291de6b486f6120928f92a2c87fe218",
+        "semantic": "7ddc913aae938e8dcdeba2e7c1ba7a102fe88af9a4790c863b5fa8c24b3c9c13",
+        "structure": "926240ed9207ce8468e7dd278266c6a22790c021a1ac96ac9aff4bd61e41855a"
+      },
+      "id": "llmnav.agent.provider-neutral-host",
+      "imports": [
+        "llmnav"
+      ],
+      "invariant": [
+        "The host supplies the repository root; model-generated tool input cannot replace it."
+      ],
+      "location": {
+        "declarationLine": null,
+        "endLine": 10,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "examples/provider-neutral-host.mjs",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "owns": [
+        "host-side root binding",
+        "project session lifecycle",
+        "prompt partition selection"
+      ],
+      "rel": [
+        "workflow>llmnav.agent.protocol"
+      ],
+      "role": "Demonstrate a provider-neutral host that binds one trusted repository root to reusable LLMNav tools and prompt partitions.",
+      "scope": "module",
+      "search": [
+        "provider neutral host",
+        "tool call adapter",
+        "project session example"
+      ],
+      "stability": "contract"
+    },
+    {
+      "boundaries": [],
+      "excludes": [
+        "automatic source annotation",
+        "semantic role generation"
+      ],
+      "hashes": {
+        "body": "d01b983957e72f64cd7ee527ae0cfdbacd557b8c84ee3e5291df233457a93c93",
+        "semantic": "aac17e46887fb32325f2255731d30aad7671051d5a63d8d39139e169cd16815d",
+        "structure": "056af1b92b36055c6fd679fe7a6c29048d740a7750fd3d387502a9abe5edb5c8"
+      },
+      "id": "llmnav.audit.coverage",
+      "imports": [
+        "./boundaries.js",
+        "./project.js",
+        "./util.js",
+        "node:path"
+      ],
+      "invariant": [
+        "Audit output is deterministic, repository-relative, and advisory unless an explicit fail threshold is selected."
+      ],
+      "location": {
+        "declarationLine": null,
+        "endLine": 10,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/audit.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "owns": [
+        "annotation coverage audit",
+        "candidate prioritization",
+        "coverage rule suggestions"
+      ],
+      "rel": [
+        "workflow>llmnav.project.scan"
+      ],
+      "role": "Identify high-value source modules that lack semantic navigation boundaries without modifying source.",
+      "scope": "module",
+      "search": [
+        "llmnav audit",
+        "missing module cards",
+        "coverage suggestions"
+      ],
+      "stability": "contract"
     }
   ],
   "contractFingerprints": {
     "configuration": {
-      "sha256": "b4e94bc3ea329d8492043ee997bb76b709eeee92d4aa4814df7f9e599dd98198"
+      "sha256": "2283b12870e465ee1ba97aafaf7eb79b8ef6a1da89ec7f5ba0f66fb5495363b7"
     },
     "exportedApi": {
       "count": 5,
@@ -1906,9 +2008,9 @@
     },
     "schemaVersion": 1
   },
-  "generatedBy": "llmnav@0.5.3",
+  "generatedBy": "llmnav@0.6.0",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "6884450f43cebb18a3bfb2d189a54dd84a9824b47aedcc704644bc0ac462007f",
+  "sourceHash": "33fed554feba1ee1a9df0cc9553430b6bef8a392713ce1e2e8c5d68bc1fb110f",
   "specVersion": "1"
 }

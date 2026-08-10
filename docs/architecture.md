@@ -36,7 +36,7 @@ Generated paths, signatures, callers, references, timestamps, and hashes are nev
 {
   "schemaVersion": 1,
   "specVersion": "1",
-  "generatedBy": "llmnav@0.5.3",
+  "generatedBy": "llmnav@0.6.0",
   "repositoryId": "example",
   "contractFingerprints": {
     "schemaVersion": 1,
@@ -67,6 +67,12 @@ Symbol attachment records the detected language, public/exported status, visibil
 Generated cards may contain a sorted `boundaries` array. LLMNav detects `route`, `event`, `schema`, `migration`, and `command` boundaries from repository-relative paths and controlled semantic effects or risks. Each record includes `confidence` and explicit evidence such as `path`, `effect`, or `risk`. These hints are generated navigation data and are never copied into source comments.
 
 Generation compares the previous and current primary indexes to emit `affectedBoundaries`. The report preserves the card change and hash dimensions while adding module IDs, structural boundary records, outbound relation targets, and reverse semantic dependents. It is returned through the API and `generate --json`; it is not stored in source cards.
+
+## Annotation coverage audit
+
+The read-only audit combines package entrypoints, public re-export reachability, generated structural boundaries, import fan-in, exported declaration counts, and source size. It lowers the priority of broad utilities, declaration files, non-production support paths, and pure re-export barrels. Every candidate retains its score inputs and deterministic repository-relative path.
+
+This analyzer deliberately stops before semantic generation. Structure can identify a file worth inspecting, but it cannot safely invent a durable ID, role, ownership statement, invariant, risk, or relation. Accepted boundaries become explicit source cards, path-specific coverage rules, and retrieval regression queries through normal review.
 
 ## Deterministic inverted index
 

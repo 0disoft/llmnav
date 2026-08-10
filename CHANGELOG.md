@@ -6,11 +6,17 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 
 ## [Unreleased]
 
-## [0.5.3] — 2026-08-10
+## [0.6.0] — 2026-08-10
 
 ### Added
 
 * Added semantic boundaries for configuration, source discovery and formatting, project scanning, declaration extraction, diagnostics, ID lifecycle, and the public protocol specification, with targeted coverage and retrieval regression queries.
+* Added a deterministic, read-only `audit` command and public API that ranks likely missing module boundaries, explains every signal, suggests narrow coverage rules, and supports opt-in CI thresholds.
+* Added generated agent guidance and an `llmnav:audit` package script so new repositories review coverage after initialization and structural changes.
+
+### Fixed
+
+* Suppressed declaration files and reduced false positives from tests, fixtures, benchmarks, broad utilities, and re-export barrels.
 
 ## [0.5.2] — 2026-08-09
 

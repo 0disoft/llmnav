@@ -1,3 +1,14 @@
+/* llmnav/1 module
+id=llmnav.agent.provider-neutral-host
+role=Demonstrate a provider-neutral host that binds one trusted repository root to reusable LLMNav tools and prompt partitions.
+owns=host-side root binding|project session lifecycle|prompt partition selection
+excludes=model provider client|authentication|model-selected repository roots
+search=provider neutral host|tool call adapter|project session example
+invariant=The host supplies the repository root; model-generated tool input cannot replace it.
+rel=workflow>llmnav.agent.protocol
+stability=contract
+*/
+
 import {
   executeAgentOperation,
   createProjectSession,

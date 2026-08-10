@@ -121,6 +121,7 @@ async function addPackageScripts(root) {
   const parsed = JSON.parse(text);
   parsed.scripts ??= {};
   const desired = {
+    "llmnav:audit": "llmnav audit --fail-on high",
     "llmnav:check": "llmnav check",
     "llmnav:format": "llmnav format",
     "llmnav:generate": "llmnav generate",

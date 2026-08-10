@@ -29,7 +29,7 @@ rel workflow>llmnav.search.query
 role Expose initialization, validation, generation, search, evaluation, and diagnostics through one CLI.
 owns command dispatch, terminal output, exit codes
 excludes semantic rule definitions, index persistence format
-rel workflow>llmnav.project.initialize, workflow>llmnav.rules.validate, workflow>llmnav.search.query, workflow>llmnav.eval.measure
+rel workflow>llmnav.project.initialize, workflow>llmnav.rules.validate, workflow>llmnav.search.query, workflow>llmnav.eval.measure, workflow>llmnav.audit.coverage
 
 @llmnav.eval.measure
 role Measure whether repository task queries retrieve expected semantic IDs within configured rank gates.

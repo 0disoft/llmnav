@@ -35,10 +35,12 @@ test("initializes, generates, verifies, and searches a project", async (context)
   ]) {
     const instructions = await readFile(path.join(root, instructionPath), "utf8");
     assert.match(instructions, /npm exec -- llmnav query/u);
+    assert.match(instructions, /npm exec -- llmnav audit/u);
     assert.match(instructions, /npm exec -- llmnav check/u);
   }
   const packageJson = JSON.parse(await readFile(path.join(root, "package.json"), "utf8"));
   assert.equal(packageJson.scripts["llmnav:check"], "llmnav check");
+  assert.equal(packageJson.scripts["llmnav:audit"], "llmnav audit --fail-on high");
 
   const verified = await generateProject(root, { check: true });
   assert.equal(verified.ok, true, verified.changedFiles.join(", "));

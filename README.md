@@ -6,7 +6,7 @@ It adds compact, stable metadata to a small number of architectural and behavior
 
 LLMNav is not a documentation generator, an embedding database, or a reason to annotate every function. It is a zero-runtime-dependency Node.js CLI and ESM library for reducing broad repository scans, irrelevant context, stale hand-written links, repeated card tokenization, and avoidable cache invalidation.
 
-## What v0.5 provides
+## What v0.6 provides
 
 * The backward-compatible `llmnav/1` source comment specification
 * A parser and data-loss-resistant canonical formatter
@@ -31,6 +31,7 @@ LLMNav is not a documentation generator, an embedding database, or a reason to a
 * Multilingual alias routing and CJK n-gram retrieval
 * Search regression tests with Recall@1, Recall@5, and MRR
 * Managed instructions for AGENTS.md, Claude Code, GitHub Copilot, and Cursor
+* A deterministic, read-only annotation coverage audit with explicit CI thresholds
 * Linux and Windows CI gates plus npm pack installation smoke tests
 
 The package supports Node.js 22 or newer, uses ESM, performs no network requests, and has no runtime dependencies.
@@ -43,6 +44,8 @@ npx llmnav init --agents all --package-scripts
 ```
 
 Initialization is explicit. LLMNav never edits a consumer repository from an npm `postinstall` script. Use `--agents none` when only the machine-readable control directory is desired.
+
+Before writing cards, run `npx llmnav audit`. It ranks likely architectural boundaries and explains each score. The command never edits source and remains advisory unless `--fail-on high`, `medium`, or `low` is selected. Review the candidates: a high score is evidence to inspect a file, not permission to generate semantic meaning automatically.
 
 ## Add the first card
 
@@ -166,6 +169,7 @@ Line-comment cards require an explicit terminator and work with `//`, `#`, and `
 | Command | Purpose |
 | --- | --- |
 | `llmnav init` | Create configuration, registry, schemas, agent instructions, and the initial cache |
+| `llmnav audit` | Rank unannotated architectural boundary candidates without modifying source |
 | `llmnav check` | Validate cards, relations, coverage rules, and registry state |
 | `llmnav format` | Rewrite safe cards into canonical order and spacing |
 | `llmnav generate` | Incrementally compile and transactionally commit generated artifacts |
@@ -246,7 +250,7 @@ Do not annotate trivial getters, generated files, obvious wrappers, every test f
 
 ## Current implementation boundary
 
-Version 0.5 adds stable provider-neutral agent tools, trusted-root operation dispatch, explicit prompt-prefix cache partitions, deterministic editor diagnostics, a VS Code task integration, and a runnable typed host example to the repository graph and incremental navigation layers.
+Version 0.6 adds a deterministic coverage audit that prioritizes public entrypoints, structural boundaries, and high fan-in modules while suppressing declaration files, test support code, simple barrels, and broad utilities. It suggests narrow coverage rules but never writes cards or invents semantic roles.
 
 LLMNav does not discover sibling repositories automatically and does not ship an MCP server, embedding database, hosted service, SCIP generator, or complete language-aware call graph. External tools may export the documented compact graph-input schema. Generated structure never writes derived edges into source cards.
 
@@ -287,7 +291,7 @@ The project uses the Node.js standard library and built-in test runner. There is
 
 ## Status
 
-LLMNav is an experimental protocol and a usable v0.5 CLI. The source format remains `llmnav/1`; npm package changes and source-grammar changes are versioned independently.
+LLMNav is an experimental protocol and a usable v0.6 CLI. The source format remains `llmnav/1`; npm package changes and source-grammar changes are versioned independently.
 
 ## License
 

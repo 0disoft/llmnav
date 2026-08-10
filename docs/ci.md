@@ -2,16 +2,19 @@
 
 ## Consumer repository gates
 
-A practical LLMNav gate has four stages.
+A practical LLMNav gate has five stages after the repository has reviewed its initial audit baseline.
 
 ```sh
 npx llmnav format --check
+npx llmnav audit --fail-on high
 npx llmnav check --format github
 npx llmnav generate --full --check
 npx llmnav eval
 ```
 
 `format --check` rejects non-canonical source-card serialization.
+
+`audit --fail-on high` rejects newly exposed high-priority unannotated boundaries. It does not modify source and should not be enabled until the initial candidate list has been reviewed. Medium and low candidates remain advisory by default to avoid turning heuristic scores into blanket annotation policy.
 
 `check` rejects invalid meaning, unresolved or retired semantic relations, malformed registry state, missing configured coverage, path escape, and declaration attachment failures.
 
@@ -81,6 +84,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx llmnav format --check
+      - run: npx llmnav audit --fail-on high
       - run: npx llmnav check --format github
       - run: npx llmnav generate --full --check
       - run: npx llmnav eval

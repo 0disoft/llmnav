@@ -37,3 +37,5 @@ llmnav.registry.ids
 llmnav.source.discover
 llmnav.source.format
 llmnav.spec.contract
+llmnav.agent.provider-neutral-host
+llmnav.audit.coverage

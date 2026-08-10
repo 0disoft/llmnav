@@ -1,6 +1,7 @@
 export type LlmnavScope = "file" | "module" | "symbol";
 export type LlmnavStability = "architecture" | "contract" | "implementation";
 export type DiagnosticSeverity = "error" | "warning" | "info";
+export type AuditPriority = "high" | "medium" | "low";
 
 export interface LlmnavCard {
   scope: LlmnavScope;
@@ -69,6 +70,46 @@ export interface Diagnostic {
   file: string;
   line: number;
   column: number;
+}
+
+export interface AuditCandidate {
+  path: string;
+  priority: AuditPriority;
+  score: number;
+  reasons: string[];
+  signals: {
+    packageEntrypoint: boolean;
+    publicApi: boolean;
+    exportedDeclarations: number;
+    importedBy: number;
+    boundaries: DetectedBoundary["kind"][];
+    largeSource: boolean;
+    broadUtility: boolean;
+    nonProduction: boolean;
+    reexportBarrel: boolean;
+  };
+  suggestedCoverageRule: null | {
+    name: string;
+    match: [string];
+    scope: "module";
+    requiredFields: ["owns", "search"];
+  };
+}
+
+export interface AuditResult {
+  schemaVersion: 1;
+  repositoryId: string;
+  summary: {
+    analyzedFiles: number;
+    cardedFiles: number;
+    filesWithoutModuleCards: number;
+    candidates: number;
+    high: number;
+    medium: number;
+    low: number;
+    coverageSuggestions: number;
+  };
+  candidates: AuditCandidate[];
 }
 
 export interface IndexedLocation {
@@ -541,6 +582,8 @@ export interface EvaluationResult {
 }
 
 export const AGENT_PROTOCOL: string;
+export const AUDIT_PRIORITIES: readonly AuditPriority[];
+export const AUDIT_SCHEMA_VERSION: 1;
 export const AGENT_OPERATION_SCHEMA_VERSION: 1;
 export const AGENT_TOOL_SCHEMA_VERSION: 1;
 export const BOUNDARY_KINDS: readonly DetectedBoundary["kind"][];
@@ -615,6 +658,8 @@ export function describeAffectedBoundaries(changedCards: ChangedCardRecord[], co
 export function describeAffectedCatalogs(changedFiles: string[], cacheDirectory: string, config: LlmnavConfig, previousIndex: LlmnavIndex | null, currentIndex: LlmnavIndex): AffectedCatalogRecord[];
 export function loadConfig(root: string): Promise<{ config: LlmnavConfig; configPath: string }>;
 export function validateConfig(config: LlmnavConfig, configPath?: string): void;
+export function auditProject(root: string): Promise<AuditResult>;
+export function auditHasFindings(result: AuditResult, minimumPriority?: AuditPriority | "none"): boolean;
 export function findAttachedDeclaration(source: string, block: LlmnavBlock, filePath: string): Declaration | null;
 export function extractImports(source: string, filePath: string): string[];
 export function doctorProject(root: string): Promise<{ ok: boolean; checks: Array<{ name: string; ok: boolean; message: string }> }>;

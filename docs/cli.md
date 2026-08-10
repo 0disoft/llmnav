@@ -25,9 +25,21 @@ Creates project configuration, schema, registry, lexicon, evaluation file, agent
 
 `--agents` accepts `agents`, `claude`, `copilot`, `cursor`, a comma-separated combination, `all`, or `none`. The default is `agents`.
 
-`--package-scripts` adds `llmnav:check`, `llmnav:format`, `llmnav:generate`, and `llmnav:eval` to an existing package.json.
+`--package-scripts` adds `llmnav:audit`, `llmnav:check`, `llmnav:format`, `llmnav:generate`, and `llmnav:eval` to an existing package.json. The audit script gates only high-priority candidates.
 
 `--force` refreshes configuration templates, schema, managed agent blocks, and `.llmnav/.gitignore`. It never resets semantic ID history, catalog order, aliases, evaluation cases, or source cards.
+
+## `llmnav audit`
+
+```sh
+llmnav audit [--fail-on none|high|medium|low] [--json]
+```
+
+Reads the selected source set and ranks files that lack file or module cards. Signals include package entrypoints, public re-exports, generated command/route/schema/migration/event boundaries, import fan-in, exported declarations, and source size. Declaration files are omitted; test support code, broad utilities, and pure re-export barrels receive penalties. Candidates whose penalties reduce their score to zero are omitted.
+
+The command never modifies source, configuration, registries, or generated caches. Its output is advisory and exits with status 0 by default. `--fail-on high` fails only for high candidates; `medium` fails for high or medium; `low` fails for any candidate. Invalid thresholds exit with status 2.
+
+JSON output uses schemaVersion 1, repository-relative paths, deterministic ordering, explainable `reasons` and `signals`, and a path-specific `suggestedCoverageRule` for high and medium candidates. Suggestions require human or agent review: LLMNav cannot infer a durable role, ownership boundary, invariant, or semantic ID from structure alone.
 
 ## `llmnav check`
 

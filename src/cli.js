@@ -8,6 +8,7 @@ rel=workflow>llmnav.project.initialize
 rel=workflow>llmnav.rules.validate
 rel=workflow>llmnav.search.query
 rel=workflow>llmnav.eval.measure
+rel=workflow>llmnav.audit.coverage
 stability=architecture
 */
 
@@ -37,8 +38,9 @@ import { renderGraphNode } from "./graph.js";
 import { getAgentToolDefinitions } from "./agent-protocol.js";
 import { loadPromptPrefixBundle } from "./prompt-bundle.js";
 import { diagnosticsToEditor, getEditorIntegration } from "./editor.js";
+import { AUDIT_PRIORITIES, auditHasFindings, auditProject } from "./audit.js";
 
-const VALUE_OPTIONS = new Set(["--root", "--format", "--top", "--depth", "--budget", "--max-edges", "--agents", "--file"]);
+const VALUE_OPTIONS = new Set(["--root", "--format", "--top", "--depth", "--budget", "--max-edges", "--agents", "--file", "--fail-on"]);
 
 const COMMAND_OPTIONS = Object.freeze({
   init: new Set(["--agents", "--package-scripts", "--force", "--root", "--json"]),
@@ -51,6 +53,7 @@ const COMMAND_OPTIONS = Object.freeze({
   context: new Set(["--depth", "--budget", "--max-edges", "--root", "--json"]),
   eval: new Set(["--file", "--top", "--root", "--json"]),
   doctor: new Set(["--root", "--json"]),
+  audit: new Set(["--root", "--json", "--fail-on"]),
   spec: new Set(["--root", "--json"]),
   tools: new Set(["--json"]),
   bundle: new Set(["--root", "--json"]),
@@ -97,6 +100,8 @@ export async function runCli(argv) {
       return runEval(root, args, json);
     case "doctor":
       return runDoctor(root, json);
+    case "audit":
+      return runAudit(root, args, json);
     case "spec":
       return runSpec(json);
     case "bundle":
@@ -290,6 +295,29 @@ async function runDoctor(root, json) {
   return result.ok ? 0 : 1;
 }
 
+async function runAudit(root, args, json) {
+  const failOn = getOption(args, "--fail-on") ?? "none";
+  if (failOn !== "none" && !AUDIT_PRIORITIES.includes(failOn)) {
+    throw usageError(`audit --fail-on must be one of none, ${AUDIT_PRIORITIES.join(", ")}.`);
+  }
+  const result = await auditProject(root);
+  const report = { ...result, failOn };
+  if (json) {
+    console.log(JSON.stringify(report, null, 2));
+  } else {
+    const { summary } = result;
+    console.log(
+      `audit files=${summary.analyzedFiles} carded=${summary.cardedFiles} candidates=${summary.candidates} ` +
+      `high=${summary.high} medium=${summary.medium} low=${summary.low}`,
+    );
+    for (const candidate of result.candidates.filter((item) => item.priority !== "low")) {
+      console.log(`${candidate.priority} ${candidate.path} score=${candidate.score} ${candidate.reasons.join(",")}`);
+    }
+    if (summary.low > 0) console.log(`${summary.low} low-priority candidate(s) are available in --json output.`);
+  }
+  return auditHasFindings(result, failOn) ? 1 : 0;
+}
+
 function runSpec(json) {
   const spec = {
     specVersion: SPEC_VERSION,
@@ -446,6 +474,7 @@ Usage
   llmnav context <semantic-id> [--depth 1] [--budget 2500] [--max-edges 24]
   llmnav eval [--file path] [--top 5]
   llmnav doctor
+  llmnav audit [--fail-on none|high|medium|low]
   llmnav spec
   llmnav tools [--json]
   llmnav bundle [--json]

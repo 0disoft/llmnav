@@ -13,6 +13,16 @@ Review `.llmnav/config.json` before annotating code. The default scans the repos
 
 Source roots and evaluation files must remain inside the repository. The generated cache directory must remain below `.llmnav/`; parent traversal and symbolic-link control directories are rejected.
 
+## Audit before annotating
+
+```sh
+npx llmnav audit
+```
+
+Start with high and medium candidates. The audit explains whether a file is a package entrypoint, public API, generated structural boundary, or high fan-in module. It does not write source or invent card contents. Declaration files and common non-production or utility shapes are suppressed so the result is a review queue, not a demand to annotate every file.
+
+After accepting a candidate, write its durable meaning by inspecting the source, add a narrow `coverageRules` entry for that exact boundary, and add a real task-language query to `.llmnav/eval/queries.jsonl`. Use `npx llmnav audit --fail-on high` in CI only after the initial review.
+
 ## Annotate a module boundary
 
 Choose a boundary that an agent is likely to search for by behavior rather than by current symbol name.

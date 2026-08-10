@@ -18,3 +18,5 @@
 {"query":"토큰 재사용 공격이 발생하면 세션 패밀리를 폐기","expected":["example.auth.session.rotate"]}
 {"query":"외부 생성 작업 전에 크레딧을 선점","expected":["example.billing.credit.reserve"]}
 {"query":"개인정보 내보내기 작업에서 object key를 비공개로 유지","expected":["example.privacy.export.prepare"]}
+{"query":"find important source modules that are missing llmnav cards","expected":["llmnav.audit.coverage"]}
+{"query":"bind a trusted repository root to provider neutral agent tools","expected":["llmnav.agent.provider-neutral-host"]}

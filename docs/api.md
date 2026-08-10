@@ -62,6 +62,21 @@ Stat hints are an optimization, not deterministic output. The returned `fileStat
 
 Attached symbol declarations expose generated `language`, `exported`, `visibility`, optional Go `receiver`, `endOffset`, and declaration `bodyHash` fields. Indexed cards also expose sorted route, event, schema, migration, and command `boundaries` with confidence and evidence.
 
+## Audit annotation coverage
+
+```js
+import { auditHasFindings, auditProject } from "llmnav";
+
+const result = await auditProject(process.cwd());
+for (const candidate of result.candidates) {
+  console.log(candidate.priority, candidate.path, candidate.reasons);
+}
+
+if (auditHasFindings(result, "high")) process.exitCode = 1;
+```
+
+`auditProject` is read-only and returns schemaVersion 1 data with repository-relative paths and deterministic ordering. Candidate signals are structural heuristics, not generated semantic meaning. Consumers should review high and medium candidates before adding a card and should never turn the suggested coverage rule into automatic source annotation.
+
 ## Generate incrementally and transactionally
 
 ```js

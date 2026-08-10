@@ -88,6 +88,8 @@ Coverage is opt-in and path-specific.
 
 A coverage rule checks files already selected by `sourceRoots` and extension filters. Its fields are closed and `requiredFields` must name valid LLMNav keys. It should target a real architectural boundary, never an entire source tree.
 
+Run `llmnav audit` to obtain path-specific candidate rules. A suggestion is not applied automatically and should be accepted only after the file's durable responsibility is confirmed. This separation prevents structural heuristics from creating vague or stale semantic cards.
+
 ## Lint profile
 
 Byte and field-count limits prevent semantic cards from becoming mini-documents. `maxSemanticRatio` produces a warning after the scanned source exceeds `minimumSourceBytesForRatio`.

@@ -198,6 +198,20 @@
     },
     {
       "confidence": 1,
+      "from": "llmnav/llmnav.agent.provider-neutral-host",
+      "id": "4f96b172a8cb479f0975610ce1121d081ec736a8e5c60f6a0ba6f63ae725e947",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "examples/provider-neutral-host.mjs",
+        "source": "examples/provider-neutral-host.mjs",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.agent.protocol"
+    },
+    {
+      "confidence": 1,
       "from": "llmnav/llmnav.agent.tool-schema",
       "id": "c8603bdcb39f3d647b142ed1abb609452ecad94d518b281be11b03b8ed8604d5",
       "kind": "workflow",
@@ -209,6 +223,48 @@
         "type": "source-card"
       },
       "to": "llmnav/llmnav.agent.protocol"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.audit.coverage",
+      "id": "8ea6682a38f8e11ad1a8ce548deff9b8ee04989f7f87bb614d1f8a92c7bf3238",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/audit.js",
+        "source": "src/audit.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.project.scan"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.audit.coverage",
+      "id": "cf70c3e8e78229c6199944fbcae3f99d3e136fb783596c617d516907f30679d0",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/audit.js",
+        "source": "src/audit.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.project.scan"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.audit.coverage",
+      "id": "2a2409bf74677fe9bbdf9bea9a86373fe6edf33dd4c074c0c80717656ec63b7d",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/audit.js",
+        "source": "src/audit.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.structure.boundaries"
     },
     {
       "confidence": 0.85,
@@ -237,6 +293,34 @@
         "type": "local-import"
       },
       "to": "llmnav/llmnav.agent.protocol"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.cli.dispatch",
+      "id": "d039b47b7714a0e47ad8eef0734294f5bef80f1433cb76198e7ec2fdec824a6a",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/cli.js",
+        "source": "src/cli.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.audit.coverage"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.cli.dispatch",
+      "id": "10420cab13bf3b56055295e456aeb1776e7bf1493da0623b7b180e1adca0ebf3",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/cli.js",
+        "source": "src/cli.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.audit.coverage"
     },
     {
       "confidence": 0.85,
@@ -2127,6 +2211,28 @@
     {
       "definitions": [],
       "external": false,
+      "key": "llmnav/llmnav.agent.provider-neutral-host",
+      "location": {
+        "declarationLine": null,
+        "endLine": 10,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "examples/provider-neutral-host.mjs",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Demonstrate a provider-neutral host that binds one trusted repository root to reusable LLMNav tools and prompt partitions.",
+      "semanticId": "llmnav.agent.provider-neutral-host",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
       "key": "llmnav/llmnav.agent.tool-schema",
       "location": {
         "declarationLine": null,
@@ -2149,10 +2255,32 @@
     {
       "definitions": [],
       "external": false,
+      "key": "llmnav/llmnav.audit.coverage",
+      "location": {
+        "declarationLine": null,
+        "endLine": 10,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/audit.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Identify high-value source modules that lack semantic navigation boundaries without modifying source.",
+      "semanticId": "llmnav.audit.coverage",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
       "key": "llmnav/llmnav.cli.dispatch",
       "location": {
         "declarationLine": null,
-        "endLine": 12,
+        "endLine": 13,
         "exported": null,
         "kind": null,
         "language": null,
@@ -2743,11 +2871,11 @@
   ],
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "30fea4dd4e25b5a48fe8e38aadb376a9c4b4559eb971622771f03ef3393a9ca2",
+  "sourceHash": "6e031b3622f4b19cfd081ccc431f22f3f7b94205fed7446b50afd07c6b9a5529",
   "stats": {
-    "edgeCount": 130,
+    "edgeCount": 136,
     "importedIndexCount": 0,
-    "nodeCount": 39,
+    "nodeCount": 41,
     "unresolvedNodeCount": 0
   }
 }

@@ -24,3 +24,10 @@ role Publish stable provider-neutral tool definitions without loading repository
 owns agent tool names, tool input schemas, tool order
 excludes operation execution, provider SDK transport, repository scope
 rel workflow>llmnav.agent.protocol
+
+@llmnav.agent.provider-neutral-host
+role Demonstrate a provider-neutral host that binds one trusted repository root to reusable LLMNav tools and prompt partitions.
+owns host-side root binding, project session lifecycle, prompt partition selection
+excludes model provider client, authentication, model-selected repository roots
+invariant The host supplies the repository root; model-generated tool input cannot replace it.
+rel workflow>llmnav.agent.protocol

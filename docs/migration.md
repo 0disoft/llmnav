@@ -7,7 +7,7 @@ No source-card migration is required. Keep every `llmnav/1` comment and the exis
 Upgrade and regenerate:
 
 ```sh
-npm install --save-dev llmnav@^0.5.3
+npm install --save-dev llmnav@^0.6.0
 npx llmnav init --agents all
 npx llmnav generate
 npx llmnav doctor

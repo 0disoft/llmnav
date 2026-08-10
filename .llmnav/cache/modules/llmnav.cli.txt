@@ -5,4 +5,4 @@ Read semantic cards before opening source. Resolve current paths and signatures 
 role Expose initialization, validation, generation, search, evaluation, and diagnostics through one CLI.
 owns command dispatch, terminal output, exit codes
 excludes semantic rule definitions, index persistence format
-rel workflow>llmnav.project.initialize, workflow>llmnav.rules.validate, workflow>llmnav.search.query, workflow>llmnav.eval.measure
+rel workflow>llmnav.project.initialize, workflow>llmnav.rules.validate, workflow>llmnav.search.query, workflow>llmnav.eval.measure, workflow>llmnav.audit.coverage

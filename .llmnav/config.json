@@ -28,6 +28,28 @@
         "invariant"
       ],
       "scope": "module"
+    },
+    {
+      "match": [
+        "src/audit.js"
+      ],
+      "name": "annotation coverage audit",
+      "requiredFields": [
+        "owns",
+        "invariant"
+      ],
+      "scope": "module"
+    },
+    {
+      "match": [
+        "examples/provider-neutral-host.mjs"
+      ],
+      "name": "provider-neutral host boundary",
+      "requiredFields": [
+        "owns",
+        "invariant"
+      ],
+      "scope": "module"
     }
   ],
   "evaluation": {

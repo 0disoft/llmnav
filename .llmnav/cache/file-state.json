@@ -238,15 +238,113 @@
       "sourceBytes": 941
     },
     {
-      "blocks": [],
-      "contentHash": "8b7d34bcb4a0315ade8bddada69b1b193a3b9ebe35783b4205b0a0857bbded2e",
-      "declarations": [],
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
+              "model provider client",
+              "authentication",
+              "model-selected repository roots"
+            ],
+            "id": "llmnav.agent.provider-neutral-host",
+            "invariant": [
+              "The host supplies the repository root; model-generated tool input cannot replace it."
+            ],
+            "owns": [
+              "host-side root binding",
+              "project session lifecycle",
+              "prompt partition selection"
+            ],
+            "rel": [
+              "workflow>llmnav.agent.protocol"
+            ],
+            "risk": [],
+            "role": "Demonstrate a provider-neutral host that binds one trusted repository root to reusable LLMNav tools and prompt partitions.",
+            "scope": "module",
+            "search": [
+              "provider neutral host",
+              "tool call adapter",
+              "project session example"
+            ],
+            "stability": "contract",
+            "unknown": []
+          },
+          "end": 566,
+          "endLine": 10,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.agent.provider-neutral-host"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Demonstrate a provider-neutral host that binds one trusted repository root to reusable LLMNav tools and prompt partitions."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "host-side root binding|project session lifecycle|prompt partition selection"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "model provider client|authentication|model-selected repository roots"
+            },
+            {
+              "key": "search",
+              "line": 6,
+              "order": 4,
+              "value": "provider neutral host|tool call adapter|project session example"
+            },
+            {
+              "key": "invariant",
+              "line": 7,
+              "order": 5,
+              "value": "The host supplies the repository root; model-generated tool input cannot replace it."
+            },
+            {
+              "key": "rel",
+              "line": 8,
+              "order": 6,
+              "value": "workflow>llmnav.agent.protocol"
+            },
+            {
+              "key": "stability",
+              "line": 9,
+              "order": 7,
+              "value": "contract"
+            }
+          ],
+          "filePath": "examples/provider-neutral-host.mjs",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.agent.provider-neutral-host\nrole=Demonstrate a provider-neutral host that binds one trusted repository root to reusable LLMNav tools and prompt partitions.\nowns=host-side root binding|project session lifecycle|prompt partition selection\nexcludes=model provider client|authentication|model-selected repository roots\nsearch=provider neutral host|tool call adapter|project session example\ninvariant=The host supplies the repository root; model-generated tool input cannot replace it.\nrel=workflow>llmnav.agent.protocol\nstability=contract\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "b0f8bf2d73f487a5bf842e97a09c23fb7291de6b486f6120928f92a2c87fe218",
+      "declarations": [
+        null
+      ],
       "imports": [
         "llmnav"
       ],
       "path": "examples/provider-neutral-host.mjs",
-      "semanticBytes": 0,
-      "sourceBytes": 1445
+      "semanticBytes": 566,
+      "sourceBytes": 2013
     },
     {
       "blocks": [
@@ -822,7 +920,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "2f811031b03e78fbfcf581b323001e508fcfa557cac41d099ba074a65dfc5d82",
+      "contentHash": "5772d3a3aeecf235939d050da38c5fbee5a3b4d6c34115c5a65ea1967746716e",
       "declarations": [],
       "imports": [
         "node:child_process",
@@ -1159,7 +1257,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "c44de92d139b93e3fb0a0aa63677d70d28a2c22e4a28d1ecfaccd3db28b3dc25",
+      "contentHash": "41fae0bacac87dae5f5074a84e50968be006a14763d6f4091268db734fc0af0f",
       "declarations": [
         null
       ],
@@ -1170,7 +1268,118 @@
       ],
       "path": "src/agents.js",
       "semanticBytes": 374,
-      "sourceBytes": 6076
+      "sourceBytes": 6486
+    },
+    {
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
+              "automatic source annotation",
+              "semantic role generation"
+            ],
+            "id": "llmnav.audit.coverage",
+            "invariant": [
+              "Audit output is deterministic, repository-relative, and advisory unless an explicit fail threshold is selected."
+            ],
+            "owns": [
+              "annotation coverage audit",
+              "candidate prioritization",
+              "coverage rule suggestions"
+            ],
+            "rel": [
+              "workflow>llmnav.project.scan"
+            ],
+            "risk": [],
+            "role": "Identify high-value source modules that lack semantic navigation boundaries without modifying source.",
+            "scope": "module",
+            "search": [
+              "llmnav audit",
+              "missing module cards",
+              "coverage suggestions"
+            ],
+            "stability": "contract",
+            "unknown": []
+          },
+          "end": 533,
+          "endLine": 10,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.audit.coverage"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Identify high-value source modules that lack semantic navigation boundaries without modifying source."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "annotation coverage audit|candidate prioritization|coverage rule suggestions"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "automatic source annotation|semantic role generation"
+            },
+            {
+              "key": "search",
+              "line": 6,
+              "order": 4,
+              "value": "llmnav audit|missing module cards|coverage suggestions"
+            },
+            {
+              "key": "invariant",
+              "line": 7,
+              "order": 5,
+              "value": "Audit output is deterministic, repository-relative, and advisory unless an explicit fail threshold is selected."
+            },
+            {
+              "key": "rel",
+              "line": 8,
+              "order": 6,
+              "value": "workflow>llmnav.project.scan"
+            },
+            {
+              "key": "stability",
+              "line": 9,
+              "order": 7,
+              "value": "contract"
+            }
+          ],
+          "filePath": "src/audit.js",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.audit.coverage\nrole=Identify high-value source modules that lack semantic navigation boundaries without modifying source.\nowns=annotation coverage audit|candidate prioritization|coverage rule suggestions\nexcludes=automatic source annotation|semantic role generation\nsearch=llmnav audit|missing module cards|coverage suggestions\ninvariant=Audit output is deterministic, repository-relative, and advisory unless an explicit fail threshold is selected.\nrel=workflow>llmnav.project.scan\nstability=contract\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "d01b983957e72f64cd7ee527ae0cfdbacd557b8c84ee3e5291df233457a93c93",
+      "declarations": [
+        null
+      ],
+      "imports": [
+        "./boundaries.js",
+        "./project.js",
+        "./util.js",
+        "node:path"
+      ],
+      "path": "src/audit.js",
+      "semanticBytes": 533,
+      "sourceBytes": 11497
     },
     {
       "blocks": [
@@ -1395,7 +1604,8 @@
               "workflow>llmnav.project.initialize",
               "workflow>llmnav.rules.validate",
               "workflow>llmnav.search.query",
-              "workflow>llmnav.eval.measure"
+              "workflow>llmnav.eval.measure",
+              "workflow>llmnav.audit.coverage"
             ],
             "risk": [],
             "role": "Expose initialization, validation, generation, search, evaluation, and diagnostics through one CLI.",
@@ -1408,8 +1618,8 @@
             "stability": "architecture",
             "unknown": []
           },
-          "end": 473,
-          "endLine": 12,
+          "end": 508,
+          "endLine": 13,
           "entries": [
             {
               "key": "id",
@@ -1466,9 +1676,15 @@
               "value": "workflow>llmnav.eval.measure"
             },
             {
-              "key": "stability",
+              "key": "rel",
               "line": 11,
               "order": 9,
+              "value": "workflow>llmnav.audit.coverage"
+            },
+            {
+              "key": "stability",
+              "line": 12,
+              "order": 10,
               "value": "architecture"
             }
           ],
@@ -1476,7 +1692,7 @@
           "indent": "",
           "newline": "\n",
           "prefix": null,
-          "raw": "/* llmnav/1 module\nid=llmnav.cli.dispatch\nrole=Expose initialization, validation, generation, search, evaluation, and diagnostics through one CLI.\nowns=command dispatch|terminal output|exit codes\nexcludes=semantic rule definitions|index persistence format\nsearch=llmnav cli|command line|automation interface\nrel=workflow>llmnav.project.initialize\nrel=workflow>llmnav.rules.validate\nrel=workflow>llmnav.search.query\nrel=workflow>llmnav.eval.measure\nstability=architecture\n*/",
+          "raw": "/* llmnav/1 module\nid=llmnav.cli.dispatch\nrole=Expose initialization, validation, generation, search, evaluation, and diagnostics through one CLI.\nowns=command dispatch|terminal output|exit codes\nexcludes=semantic rule definitions|index persistence format\nsearch=llmnav cli|command line|automation interface\nrel=workflow>llmnav.project.initialize\nrel=workflow>llmnav.rules.validate\nrel=workflow>llmnav.search.query\nrel=workflow>llmnav.eval.measure\nrel=workflow>llmnav.audit.coverage\nstability=architecture\n*/",
           "scope": "module",
           "specVersion": "1",
           "start": 0,
@@ -1485,12 +1701,13 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "88767bee1ed6ddd4ca50f67246366a7f6e6a893dac7ba269fd32f4f6ece8e6e1",
+      "contentHash": "7dadcacfb2e6fdb74c3f70f182f659d1c4de7548e3f2f21842427f4380a8475d",
       "declarations": [
         null
       ],
       "imports": [
         "./agent-protocol.js",
+        "./audit.js",
         "./doctor.js",
         "./editor.js",
         "./evaluation.js",
@@ -1510,8 +1727,8 @@
         "node:path"
       ],
       "path": "src/cli.js",
-      "semanticBytes": 473,
-      "sourceBytes": 16530
+      "semanticBytes": 508,
+      "sourceBytes": 17867
     },
     {
       "blocks": [
@@ -2840,22 +3057,23 @@
     },
     {
       "blocks": [],
-      "contentHash": "e637050b90d41cf2fada3a605de2ed7f47856014c73ea6a1e5f94690c9ebee65",
+      "contentHash": "dfff8cf51283d53063170c9f3bdee491f0364650825f4062eeff402f2590289e",
       "declarations": [],
       "imports": [
         "./spec.js"
       ],
       "path": "src/index.d.ts",
       "semanticBytes": 0,
-      "sourceBytes": 25469
+      "sourceBytes": 26663
     },
     {
       "blocks": [],
-      "contentHash": "fc1fccc2d76116b2ba7d641c60464b7311a28948255cfbccd9f5b46611e07ae4",
+      "contentHash": "1ccfe7bd5007ba0f1efad5fd260cf588b2157026c9b3ab7097b19c711a28bc55",
       "declarations": [],
       "imports": [
         "./agent-protocol.js",
         "./agents.js",
+        "./audit.js",
         "./boundaries.js",
         "./changes.js",
         "./config.js",
@@ -2886,7 +3104,7 @@
       ],
       "path": "src/index.js",
       "semanticBytes": 0,
-      "sourceBytes": 3405
+      "sourceBytes": 3506
     },
     {
       "blocks": [
@@ -2984,7 +3202,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "89b39adc8b7678b704527ddb31d529c6d1f57508e96f09ad1e68a28ed037a4ed",
+      "contentHash": "4797249ef453fa02afff5119d0803189e9d024e8faf3eb8ee07a03942bd4f7ec",
       "declarations": [
         null
       ],
@@ -2999,7 +3217,7 @@
       ],
       "path": "src/initializer.js",
       "semanticBytes": 418,
-      "sourceBytes": 4747
+      "sourceBytes": 4798
     },
     {
       "blocks": [
@@ -4000,7 +4218,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "dd50bf46d1ce1bb4853ec4db361341ec99e5135d60297acf8eebee6ae41d4bb3",
+      "contentHash": "12f20bb8c04159c1f75b996574bf56bd211b5d73d414c5f3c0d6b1505454dd26",
       "declarations": [
         null
       ],
@@ -4366,6 +4584,25 @@
     },
     {
       "blocks": [],
+      "contentHash": "845f8e0c7cb239cbc4fe4ddeda0cfc2822933ae4c913bdb6bbad42c98a1c0619",
+      "declarations": [],
+      "imports": [
+        "../src/audit.js",
+        "../src/initializer.js",
+        "node:assert/strict",
+        "node:child_process",
+        "node:fs/promises",
+        "node:os",
+        "node:path",
+        "node:test",
+        "node:url"
+      ],
+      "path": "tests/audit.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 5607
+    },
+    {
+      "blocks": [],
       "contentHash": "c5ecd6b0cc99c2e7bc5c42f89758571600a135d270bf285e5fb7b956f103bb77",
       "declarations": [],
       "imports": [
@@ -4581,7 +4818,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "b8113e1bf656102d931c13bb296722a67aeef85b2db793500c77437d23212911",
+      "contentHash": "dc17b7ded81ced5a20a06cfafb3148b1f5bc423a53072ca2059be069d6ebd7de",
       "declarations": [],
       "imports": [
         "../src/agents.js",
@@ -4598,7 +4835,7 @@
       ],
       "path": "tests/integration.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 9825
+      "sourceBytes": 9970
     },
     {
       "blocks": [],

@@ -37,3 +37,5 @@
 {"id":"llmnav.project.scan","state":"active"}
 {"id":"llmnav.registry.ids","state":"active"}
 {"id":"llmnav.spec.contract","state":"active"}
+{"id":"llmnav.agent.provider-neutral-host","state":"active"}
+{"id":"llmnav.audit.coverage","state":"active"}

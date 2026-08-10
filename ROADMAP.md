@@ -62,6 +62,17 @@ Implemented:
 * editor integrations and diagnostics
 * provider-neutral integration examples
 
+## 0.6 — annotation coverage audit
+
+Implemented:
+
+* deterministic read-only discovery of unannotated architectural boundary candidates
+* explainable priority signals for package entrypoints, public APIs, structural boundaries, fan-in, exports, and source size
+* false-positive penalties for declaration files, test support code, broad utilities, and re-export barrels
+* opt-in `--fail-on high|medium|low` CI enforcement
+* path-specific coverage-rule suggestions without automatic source annotation
+* audit guidance in generated agent instructions and package scripts
+
 ## 1.0 criteria
 
 The source grammar and generated formats will be declared stable only after use across multiple TypeScript, Go, Rust, Python, and mixed-language repositories. A 1.0 release requires migration tooling, documented compatibility guarantees, benchmark fixtures with published methodology, sustained Windows and Linux verification, and no unresolved high-severity parser or transaction ambiguity.
