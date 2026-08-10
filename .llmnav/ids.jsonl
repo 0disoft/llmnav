@@ -30,3 +30,10 @@
 {"id":"llmnav.agent.prompt-bundle","state":"active"}
 {"id":"llmnav.diagnostics.editor","state":"active"}
 {"id":"llmnav.config.load","state":"active"}
+{"id":"llmnav.declaration.extract","state":"active"}
+{"id":"llmnav.diagnostics.doctor","state":"active"}
+{"id":"llmnav.source.discover","state":"active"}
+{"id":"llmnav.source.format","state":"active"}
+{"id":"llmnav.project.scan","state":"active"}
+{"id":"llmnav.registry.ids","state":"active"}
+{"id":"llmnav.spec.contract","state":"active"}

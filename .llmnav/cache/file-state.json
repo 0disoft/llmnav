@@ -1725,21 +1725,215 @@
       "sourceBytes": 2497
     },
     {
-      "blocks": [],
-      "contentHash": "29138c0e00dca06e132d488c76f1c762938d01fff6eebeda0b2fde9e1dec02f9",
-      "declarations": [],
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
+              "semantic card parsing",
+              "type-system resolution"
+            ],
+            "id": "llmnav.declaration.extract",
+            "invariant": [
+              "String literals and comments do not create false declarations or imports."
+            ],
+            "owns": [
+              "declaration attachment",
+              "signature extraction",
+              "import extraction"
+            ],
+            "rel": [
+              "workflow>llmnav.project.scan"
+            ],
+            "risk": [],
+            "role": "Attach symbol cards to language declarations and derive structural metadata without executing source.",
+            "scope": "module",
+            "search": [
+              "declaration extraction",
+              "symbol attachment",
+              "body hash"
+            ],
+            "stability": "architecture",
+            "unknown": []
+          },
+          "end": 477,
+          "endLine": 10,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.declaration.extract"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Attach symbol cards to language declarations and derive structural metadata without executing source."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "declaration attachment|signature extraction|import extraction"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "semantic card parsing|type-system resolution"
+            },
+            {
+              "key": "search",
+              "line": 6,
+              "order": 4,
+              "value": "declaration extraction|symbol attachment|body hash"
+            },
+            {
+              "key": "invariant",
+              "line": 7,
+              "order": 5,
+              "value": "String literals and comments do not create false declarations or imports."
+            },
+            {
+              "key": "rel",
+              "line": 8,
+              "order": 6,
+              "value": "workflow>llmnav.project.scan"
+            },
+            {
+              "key": "stability",
+              "line": 9,
+              "order": 7,
+              "value": "architecture"
+            }
+          ],
+          "filePath": "src/declaration.js",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.declaration.extract\nrole=Attach symbol cards to language declarations and derive structural metadata without executing source.\nowns=declaration attachment|signature extraction|import extraction\nexcludes=semantic card parsing|type-system resolution\nsearch=declaration extraction|symbol attachment|body hash\ninvariant=String literals and comments do not create false declarations or imports.\nrel=workflow>llmnav.project.scan\nstability=architecture\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "0f73df2ad656a5914016a121da6c5cf5f0f3dcc69ce8ea76d71b6efaa0aed7d1",
+      "declarations": [
+        null
+      ],
       "imports": [
         "./util.js",
         "node:path"
       ],
       "path": "src/declaration.js",
-      "semanticBytes": 0,
-      "sourceBytes": 12847
+      "semanticBytes": 477,
+      "sourceBytes": 13326
     },
     {
-      "blocks": [],
-      "contentHash": "5fa9f6bfe9340902a0edfbda574a90d8b407a796c4f811fdd0084aee8e7ada9b",
-      "declarations": [],
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
+              "source formatting",
+              "package publication"
+            ],
+            "id": "llmnav.diagnostics.doctor",
+            "invariant": [
+              "Only interrupted generation recovery may mutate state; all other health checks are read-only."
+            ],
+            "owns": [
+              "project health checks",
+              "cache integrity checks",
+              "release readiness diagnostics"
+            ],
+            "rel": [
+              "workflow>llmnav.index.generate"
+            ],
+            "risk": [],
+            "role": "Diagnose project configuration, generated cache integrity, and recoverable generation state.",
+            "scope": "module",
+            "search": [
+              "llmnav doctor",
+              "project health",
+              "cache integrity"
+            ],
+            "stability": "contract",
+            "unknown": []
+          },
+          "end": 485,
+          "endLine": 10,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.diagnostics.doctor"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Diagnose project configuration, generated cache integrity, and recoverable generation state."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "project health checks|cache integrity checks|release readiness diagnostics"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "source formatting|package publication"
+            },
+            {
+              "key": "search",
+              "line": 6,
+              "order": 4,
+              "value": "llmnav doctor|project health|cache integrity"
+            },
+            {
+              "key": "invariant",
+              "line": 7,
+              "order": 5,
+              "value": "Only interrupted generation recovery may mutate state; all other health checks are read-only."
+            },
+            {
+              "key": "rel",
+              "line": 8,
+              "order": 6,
+              "value": "workflow>llmnav.index.generate"
+            },
+            {
+              "key": "stability",
+              "line": 9,
+              "order": 7,
+              "value": "contract"
+            }
+          ],
+          "filePath": "src/doctor.js",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.diagnostics.doctor\nrole=Diagnose project configuration, generated cache integrity, and recoverable generation state.\nowns=project health checks|cache integrity checks|release readiness diagnostics\nexcludes=source formatting|package publication\nsearch=llmnav doctor|project health|cache integrity\ninvariant=Only interrupted generation recovery may mutate state; all other health checks are read-only.\nrel=workflow>llmnav.index.generate\nstability=contract\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "9b5a187a958472e5ca164a0dab7d86103159af68e4e9966516a2f37a84de225e",
+      "declarations": [
+        null
+      ],
       "imports": [
         "./config.js",
         "./generator.js",
@@ -1750,8 +1944,8 @@
         "node:path"
       ],
       "path": "src/doctor.js",
-      "semanticBytes": 0,
-      "sourceBytes": 5178
+      "semanticBytes": 485,
+      "sourceBytes": 5665
     },
     {
       "blocks": [
@@ -1959,22 +2153,216 @@
       "sourceBytes": 2703
     },
     {
-      "blocks": [],
-      "contentHash": "1178a92757a5965c60654462b914cf8ecf3f17b18d295dfbd2a4dec85afdfadc",
-      "declarations": [],
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
+              "source parsing",
+              "generated artifact selection"
+            ],
+            "id": "llmnav.source.discover",
+            "invariant": [
+              "Selected source paths remain inside the repository and symbolic links are never traversed."
+            ],
+            "owns": [
+              "project root discovery",
+              "source traversal",
+              "include and exclude filtering"
+            ],
+            "rel": [
+              "workflow>llmnav.project.scan"
+            ],
+            "risk": [],
+            "role": "Locate ancestor LLMNav roots and collect project-contained source files without following symlinks.",
+            "scope": "module",
+            "search": [
+              "source discovery",
+              "project root",
+              "file traversal"
+            ],
+            "stability": "contract",
+            "unknown": []
+          },
+          "end": 485,
+          "endLine": 10,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.source.discover"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Locate ancestor LLMNav roots and collect project-contained source files without following symlinks."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "project root discovery|source traversal|include and exclude filtering"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "source parsing|generated artifact selection"
+            },
+            {
+              "key": "search",
+              "line": 6,
+              "order": 4,
+              "value": "source discovery|project root|file traversal"
+            },
+            {
+              "key": "invariant",
+              "line": 7,
+              "order": 5,
+              "value": "Selected source paths remain inside the repository and symbolic links are never traversed."
+            },
+            {
+              "key": "rel",
+              "line": 8,
+              "order": 6,
+              "value": "workflow>llmnav.project.scan"
+            },
+            {
+              "key": "stability",
+              "line": 9,
+              "order": 7,
+              "value": "contract"
+            }
+          ],
+          "filePath": "src/files.js",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.source.discover\nrole=Locate ancestor LLMNav roots and collect project-contained source files without following symlinks.\nowns=project root discovery|source traversal|include and exclude filtering\nexcludes=source parsing|generated artifact selection\nsearch=source discovery|project root|file traversal\ninvariant=Selected source paths remain inside the repository and symbolic links are never traversed.\nrel=workflow>llmnav.project.scan\nstability=contract\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "95c3f03efcfea323e39f036117030479886d6f8e9ae3db3bb9cd0fcdd8cb56d7",
+      "declarations": [
+        null
+      ],
       "imports": [
         "./util.js",
         "node:fs/promises",
         "node:path"
       ],
       "path": "src/files.js",
-      "semanticBytes": 0,
-      "sourceBytes": 3323
+      "semanticBytes": 485,
+      "sourceBytes": 3810
     },
     {
-      "blocks": [],
-      "contentHash": "323a3902578d6d85902f9b9b90c80f160c96d5afe6ac44537d5168f8eee00d1d",
-      "declarations": [],
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
+              "semantic validation",
+              "generated cache formatting"
+            ],
+            "id": "llmnav.source.format",
+            "invariant": [
+              "Check mode reports non-canonical files without writing source files."
+            ],
+            "owns": [
+              "source card formatting",
+              "format check mode",
+              "atomic source rewrite"
+            ],
+            "rel": [
+              "workflow>llmnav.syntax.parse"
+            ],
+            "risk": [],
+            "role": "Canonicalize LLMNav source blocks across selected files with atomic writes and check-only reporting.",
+            "scope": "module",
+            "search": [
+              "llmnav format",
+              "canonical comments",
+              "source rewrite"
+            ],
+            "stability": "contract",
+            "unknown": []
+          },
+          "end": 461,
+          "endLine": 10,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.source.format"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Canonicalize LLMNav source blocks across selected files with atomic writes and check-only reporting."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "source card formatting|format check mode|atomic source rewrite"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "semantic validation|generated cache formatting"
+            },
+            {
+              "key": "search",
+              "line": 6,
+              "order": 4,
+              "value": "llmnav format|canonical comments|source rewrite"
+            },
+            {
+              "key": "invariant",
+              "line": 7,
+              "order": 5,
+              "value": "Check mode reports non-canonical files without writing source files."
+            },
+            {
+              "key": "rel",
+              "line": 8,
+              "order": 6,
+              "value": "workflow>llmnav.syntax.parse"
+            },
+            {
+              "key": "stability",
+              "line": 9,
+              "order": 7,
+              "value": "contract"
+            }
+          ],
+          "filePath": "src/formatter.js",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.source.format\nrole=Canonicalize LLMNav source blocks across selected files with atomic writes and check-only reporting.\nowns=source card formatting|format check mode|atomic source rewrite\nexcludes=semantic validation|generated cache formatting\nsearch=llmnav format|canonical comments|source rewrite\ninvariant=Check mode reports non-canonical files without writing source files.\nrel=workflow>llmnav.syntax.parse\nstability=contract\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "3d0cc1bd950e456fb3a479572a2e23dcbdf02208a0f6d430155d9159303b8f2f",
+      "declarations": [
+        null
+      ],
       "imports": [
         "./config.js",
         "./files.js",
@@ -1983,8 +2371,8 @@
         "node:fs/promises"
       ],
       "path": "src/formatter.js",
-      "semanticBytes": 0,
-      "sourceBytes": 1034
+      "semanticBytes": 461,
+      "sourceBytes": 1497
     },
     {
       "blocks": [
@@ -2815,9 +3203,113 @@
       "sourceBytes": 14234
     },
     {
-      "blocks": [],
-      "contentHash": "bc1a7d5698b820651eb553a3a14ee25eaa1f017da9e6c91435bb0fdd7458ae15",
-      "declarations": [],
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
+              "semantic validation",
+              "cache generation"
+            ],
+            "id": "llmnav.project.scan",
+            "invariant": [
+              "Generated paths and structural metadata remain derived data and are never written into source cards."
+            ],
+            "owns": [
+              "project scan",
+              "card record assembly",
+              "source metrics"
+            ],
+            "rel": [
+              "workflow>llmnav.declaration.extract",
+              "workflow>llmnav.syntax.parse"
+            ],
+            "risk": [],
+            "role": "Scan project sources into semantic card and file records with declarations, imports, and content hashes.",
+            "scope": "module",
+            "search": [
+              "project scan",
+              "card records",
+              "source metadata"
+            ],
+            "stability": "architecture",
+            "unknown": []
+          },
+          "end": 510,
+          "endLine": 11,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.project.scan"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Scan project sources into semantic card and file records with declarations, imports, and content hashes."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "project scan|card record assembly|source metrics"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "semantic validation|cache generation"
+            },
+            {
+              "key": "search",
+              "line": 6,
+              "order": 4,
+              "value": "project scan|card records|source metadata"
+            },
+            {
+              "key": "invariant",
+              "line": 7,
+              "order": 5,
+              "value": "Generated paths and structural metadata remain derived data and are never written into source cards."
+            },
+            {
+              "key": "rel",
+              "line": 8,
+              "order": 6,
+              "value": "workflow>llmnav.declaration.extract"
+            },
+            {
+              "key": "rel",
+              "line": 9,
+              "order": 7,
+              "value": "workflow>llmnav.syntax.parse"
+            },
+            {
+              "key": "stability",
+              "line": 10,
+              "order": 8,
+              "value": "architecture"
+            }
+          ],
+          "filePath": "src/project.js",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.project.scan\nrole=Scan project sources into semantic card and file records with declarations, imports, and content hashes.\nowns=project scan|card record assembly|source metrics\nexcludes=semantic validation|cache generation\nsearch=project scan|card records|source metadata\ninvariant=Generated paths and structural metadata remain derived data and are never written into source cards.\nrel=workflow>llmnav.declaration.extract\nrel=workflow>llmnav.syntax.parse\nstability=architecture\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "ef4f636405c1c671b37372dcea66ca9d025de0c08dea2aaf1bec44496273f437",
+      "declarations": [
+        null
+      ],
       "imports": [
         "./config.js",
         "./declaration.js",
@@ -2828,8 +3320,8 @@
         "node:fs/promises"
       ],
       "path": "src/project.js",
-      "semanticBytes": 0,
-      "sourceBytes": 1987
+      "semanticBytes": 510,
+      "sourceBytes": 2499
     },
     {
       "blocks": [
@@ -2951,17 +3443,114 @@
       "sourceBytes": 5101
     },
     {
-      "blocks": [],
-      "contentHash": "4e138202cf57e5cc1c0925dd1101290b2302711a54f6187d1df647dbf9ae184e",
-      "declarations": [],
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
+              "source card parsing",
+              "search ranking"
+            ],
+            "id": "llmnav.registry.ids",
+            "invariant": [
+              "Registry resolution never silently chooses among multiple replacement targets."
+            ],
+            "owns": [
+              "semantic ID registry",
+              "redirect resolution",
+              "replacement lifecycle"
+            ],
+            "rel": [
+              "workflow>llmnav.index.generate"
+            ],
+            "risk": [],
+            "role": "Validate and evolve semantic ID lifecycle records across active, redirect, replaced, and retired states.",
+            "scope": "module",
+            "search": [
+              "semantic id registry",
+              "redirected id",
+              "retired id"
+            ],
+            "stability": "contract",
+            "unknown": []
+          },
+          "end": 462,
+          "endLine": 10,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.registry.ids"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Validate and evolve semantic ID lifecycle records across active, redirect, replaced, and retired states."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "semantic ID registry|redirect resolution|replacement lifecycle"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "source card parsing|search ranking"
+            },
+            {
+              "key": "search",
+              "line": 6,
+              "order": 4,
+              "value": "semantic id registry|redirected id|retired id"
+            },
+            {
+              "key": "invariant",
+              "line": 7,
+              "order": 5,
+              "value": "Registry resolution never silently chooses among multiple replacement targets."
+            },
+            {
+              "key": "rel",
+              "line": 8,
+              "order": 6,
+              "value": "workflow>llmnav.index.generate"
+            },
+            {
+              "key": "stability",
+              "line": 9,
+              "order": 7,
+              "value": "contract"
+            }
+          ],
+          "filePath": "src/registry.js",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.registry.ids\nrole=Validate and evolve semantic ID lifecycle records across active, redirect, replaced, and retired states.\nowns=semantic ID registry|redirect resolution|replacement lifecycle\nexcludes=source card parsing|search ranking\nsearch=semantic id registry|redirected id|retired id\ninvariant=Registry resolution never silently chooses among multiple replacement targets.\nrel=workflow>llmnav.index.generate\nstability=contract\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "aff82ecff78b43965314fa7f423da1d9748718ca6a281da34b02f92b7d404a01",
+      "declarations": [
+        null
+      ],
       "imports": [
         "./spec.js",
         "./util.js",
         "node:path"
       ],
       "path": "src/registry.js",
-      "semanticBytes": 0,
-      "sourceBytes": 4862
+      "semanticBytes": 462,
+      "sourceBytes": 5326
     },
     {
       "blocks": [
@@ -3308,13 +3897,117 @@
       "sourceBytes": 1323
     },
     {
-      "blocks": [],
-      "contentHash": "7f0b287b2addef32e0b46d6e6db922323a72c55fd933e658bac5aad0ae5d02ee",
-      "declarations": [],
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
+              "configuration overrides",
+              "source parsing"
+            ],
+            "id": "llmnav.spec.contract",
+            "invariant": [
+              "Public field, effect, risk, and relation vocabularies remain deterministic and versioned."
+            ],
+            "owns": [
+              "protocol vocabulary",
+              "controlled field values",
+              "default configuration"
+            ],
+            "rel": [
+              "workflow>llmnav.config.load",
+              "workflow>llmnav.rules.validate"
+            ],
+            "risk": [],
+            "role": "Define the public LLMNav/1 vocabulary, limits, relation kinds, and default configuration.",
+            "scope": "module",
+            "search": [
+              "llmnav specification",
+              "protocol constants",
+              "default config"
+            ],
+            "stability": "contract",
+            "unknown": []
+          },
+          "end": 507,
+          "endLine": 11,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.spec.contract"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Define the public LLMNav/1 vocabulary, limits, relation kinds, and default configuration."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "protocol vocabulary|controlled field values|default configuration"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "configuration overrides|source parsing"
+            },
+            {
+              "key": "search",
+              "line": 6,
+              "order": 4,
+              "value": "llmnav specification|protocol constants|default config"
+            },
+            {
+              "key": "invariant",
+              "line": 7,
+              "order": 5,
+              "value": "Public field, effect, risk, and relation vocabularies remain deterministic and versioned."
+            },
+            {
+              "key": "rel",
+              "line": 8,
+              "order": 6,
+              "value": "workflow>llmnav.config.load"
+            },
+            {
+              "key": "rel",
+              "line": 9,
+              "order": 7,
+              "value": "workflow>llmnav.rules.validate"
+            },
+            {
+              "key": "stability",
+              "line": 10,
+              "order": 8,
+              "value": "contract"
+            }
+          ],
+          "filePath": "src/spec.js",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.spec.contract\nrole=Define the public LLMNav/1 vocabulary, limits, relation kinds, and default configuration.\nowns=protocol vocabulary|controlled field values|default configuration\nexcludes=configuration overrides|source parsing\nsearch=llmnav specification|protocol constants|default config\ninvariant=Public field, effect, risk, and relation vocabularies remain deterministic and versioned.\nrel=workflow>llmnav.config.load\nrel=workflow>llmnav.rules.validate\nstability=contract\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "dd50bf46d1ce1bb4853ec4db361341ec99e5135d60297acf8eebee6ae41d4bb3",
+      "declarations": [
+        null
+      ],
       "imports": [],
       "path": "src/spec.js",
-      "semanticBytes": 0,
-      "sourceBytes": 4706
+      "semanticBytes": 507,
+      "sourceBytes": 5215
     },
     {
       "blocks": [

@@ -1,3 +1,14 @@
+/* llmnav/1 module
+id=llmnav.registry.ids
+role=Validate and evolve semantic ID lifecycle records across active, redirect, replaced, and retired states.
+owns=semantic ID registry|redirect resolution|replacement lifecycle
+excludes=source card parsing|search ranking
+search=semantic id registry|redirected id|retired id
+invariant=Registry resolution never silently chooses among multiple replacement targets.
+rel=workflow>llmnav.index.generate
+stability=contract
+*/
+
 import path from "node:path";
 import { ID_PATTERN } from "./spec.js";
 import { atomicWrite, parseJsonLines, readText } from "./util.js";

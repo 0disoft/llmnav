@@ -1,3 +1,14 @@
+/* llmnav/1 module
+id=llmnav.declaration.extract
+role=Attach symbol cards to language declarations and derive structural metadata without executing source.
+owns=declaration attachment|signature extraction|import extraction
+excludes=semantic card parsing|type-system resolution
+search=declaration extraction|symbol attachment|body hash
+invariant=String literals and comments do not create false declarations or imports.
+rel=workflow>llmnav.project.scan
+stability=architecture
+*/
+
 import path from "node:path";
 import { lineAtOffset, normalizeNewlines, sha256 } from "./util.js";
 

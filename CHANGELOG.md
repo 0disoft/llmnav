@@ -10,7 +10,7 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 
 ### Added
 
-* Added a configuration-loading semantic boundary, targeted coverage enforcement, and a retrieval regression query.
+* Added semantic boundaries for configuration, source discovery and formatting, project scanning, declaration extraction, diagnostics, ID lifecycle, and the public protocol specification, with targeted coverage and retrieval regression queries.
 
 ## [0.5.2] — 2026-08-09
 

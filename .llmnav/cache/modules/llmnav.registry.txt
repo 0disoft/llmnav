@@ -1,0 +1,9 @@
+llmnav-catalog/1 repository=llmnav catalog=llmnav.registry
+Read semantic cards before opening source. Resolve current paths and signatures with llmnav query or show.
+
+@llmnav.registry.ids
+role Validate and evolve semantic ID lifecycle records across active, redirect, replaced, and retired states.
+owns semantic ID registry, redirect resolution, replacement lifecycle
+excludes source card parsing, search ranking
+invariant Registry resolution never silently chooses among multiple replacement targets.
+rel workflow>llmnav.index.generate

@@ -1,3 +1,15 @@
+/* llmnav/1 module
+id=llmnav.project.scan
+role=Scan project sources into semantic card and file records with declarations, imports, and content hashes.
+owns=project scan|card record assembly|source metrics
+excludes=semantic validation|cache generation
+search=project scan|card records|source metadata
+invariant=Generated paths and structural metadata remain derived data and are never written into source cards.
+rel=workflow>llmnav.declaration.extract
+rel=workflow>llmnav.syntax.parse
+stability=architecture
+*/
+
 import { readFile } from "node:fs/promises";
 import { loadConfig } from "./config.js";
 import { findAttachedDeclaration, extractImports } from "./declaration.js";

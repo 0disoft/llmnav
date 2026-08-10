@@ -1,3 +1,14 @@
+/* llmnav/1 module
+id=llmnav.source.discover
+role=Locate ancestor LLMNav roots and collect project-contained source files without following symlinks.
+owns=project root discovery|source traversal|include and exclude filtering
+excludes=source parsing|generated artifact selection
+search=source discovery|project root|file traversal
+invariant=Selected source paths remain inside the repository and symbolic links are never traversed.
+rel=workflow>llmnav.project.scan
+stability=contract
+*/
+
 import { lstat, readdir, stat } from "node:fs/promises";
 import path from "node:path";
 import { compareText, matchesAnyGlob, relativePosix, toPosix } from "./util.js";

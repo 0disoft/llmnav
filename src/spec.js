@@ -1,3 +1,15 @@
+/* llmnav/1 module
+id=llmnav.spec.contract
+role=Define the public LLMNav/1 vocabulary, limits, relation kinds, and default configuration.
+owns=protocol vocabulary|controlled field values|default configuration
+excludes=configuration overrides|source parsing
+search=llmnav specification|protocol constants|default config
+invariant=Public field, effect, risk, and relation vocabularies remain deterministic and versioned.
+rel=workflow>llmnav.config.load
+rel=workflow>llmnav.rules.validate
+stability=contract
+*/
+
 export const PACKAGE_VERSION = "0.5.3";
 export const SPEC_VERSION = "1";
 

@@ -7,6 +7,13 @@
 {"query":"install navigation instructions for coding assistants","expected":["llmnav.agent.install"]}
 {"query":"bootstrap a repository with config registry and schema","expected":["llmnav.project.initialize"]}
 {"query":"load merge and validate llmnav repository configuration","expected":["llmnav.config.load"]}
+{"query":"attach semantic cards to language declarations and extract imports signatures visibility body hashes","expected":["llmnav.declaration.extract"]}
+{"query":"diagnose llmnav project health cache integrity generated files and transaction recovery","expected":["llmnav.diagnostics.doctor"]}
+{"query":"discover source files safely and locate ancestor llmnav project root","expected":["llmnav.source.discover"]}
+{"query":"rewrite llmnav source comments into canonical format","expected":["llmnav.source.format"]}
+{"query":"scan repository source into semantic card records and declaration metadata","expected":["llmnav.project.scan"]}
+{"query":"manage semantic id lifecycle redirects replacements retirement and active ids","expected":["llmnav.registry.ids"]}
+{"query":"define llmnav protocol fields scopes effects risks relations and default configuration","expected":["llmnav.spec.contract"]}
 {"query":"measure recall at five for navigation queries","expected":["llmnav.eval.measure"]}
 {"query":"토큰 재사용 공격이 발생하면 세션 패밀리를 폐기","expected":["example.auth.session.rotate"]}
 {"query":"외부 생성 작업 전에 크레딧을 선점","expected":["example.billing.credit.reserve"]}

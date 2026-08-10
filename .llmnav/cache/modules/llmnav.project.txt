@@ -6,3 +6,10 @@ role Create a repository's LLMNav configuration, registry, schemas, agent instru
 owns project bootstrap, configuration templates, initial generation
 excludes package installation, automatic annotation
 rel workflow>llmnav.agent.install, workflow>llmnav.index.generate
+
+@llmnav.project.scan
+role Scan project sources into semantic card and file records with declarations, imports, and content hashes.
+owns project scan, card record assembly, source metrics
+excludes semantic validation, cache generation
+invariant Generated paths and structural metadata remain derived data and are never written into source cards.
+rel workflow>llmnav.declaration.extract, workflow>llmnav.syntax.parse

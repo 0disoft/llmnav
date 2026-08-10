@@ -12,3 +12,10 @@ role Serialize deterministic editor ranges and publish bounded editor task integ
 owns editor diagnostic schema, zero-based ranges, VS Code task configuration
 excludes editor extension runtime, absolute workspace URIs, source mutation
 rel workflow>llmnav.rules.validate
+
+@llmnav.diagnostics.doctor
+role Diagnose project configuration, generated cache integrity, and recoverable generation state.
+owns project health checks, cache integrity checks, release readiness diagnostics
+excludes source formatting, package publication
+invariant Only interrupted generation recovery may mutate state; all other health checks are read-only.
+rel workflow>llmnav.index.generate

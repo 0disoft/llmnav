@@ -30,3 +30,10 @@ llmnav.agent.prompt-bundle
 llmnav.agent.tool-schema
 llmnav.diagnostics.editor
 llmnav.config.load
+llmnav.declaration.extract
+llmnav.diagnostics.doctor
+llmnav.project.scan
+llmnav.registry.ids
+llmnav.source.discover
+llmnav.source.format
+llmnav.spec.contract

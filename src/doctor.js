@@ -1,3 +1,14 @@
+/* llmnav/1 module
+id=llmnav.diagnostics.doctor
+role=Diagnose project configuration, generated cache integrity, and recoverable generation state.
+owns=project health checks|cache integrity checks|release readiness diagnostics
+excludes=source formatting|package publication
+search=llmnav doctor|project health|cache integrity
+invariant=Only interrupted generation recovery may mutate state; all other health checks are read-only.
+rel=workflow>llmnav.index.generate
+stability=contract
+*/
+
 import path from "node:path";
 import { loadConfig } from "./config.js";
 import { generateProject } from "./generator.js";

@@ -11,6 +11,23 @@
         "invariant"
       ],
       "scope": "module"
+    },
+    {
+      "match": [
+        "src/declaration.js",
+        "src/doctor.js",
+        "src/files.js",
+        "src/formatter.js",
+        "src/project.js",
+        "src/registry.js",
+        "src/spec.js"
+      ],
+      "name": "core public module boundaries",
+      "requiredFields": [
+        "owns",
+        "invariant"
+      ],
+      "scope": "module"
     }
   ],
   "evaluation": {
