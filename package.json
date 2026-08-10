@@ -74,6 +74,6 @@
   "types": "./src/index.d.ts",
   "publishConfig": {
     "access": "public",
-    "provenance": true
+    "provenance": false
   }
 }

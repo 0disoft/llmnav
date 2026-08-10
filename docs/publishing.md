@@ -31,12 +31,11 @@ npm run release:check
 
 ## 3. Configure npm authentication
 
-The supplied release workflow uses npm provenance and GitHub's OIDC token. In npm package settings, configure the GitHub repository and `.github/workflows/release.yml` as a trusted publisher.
+The supplied release workflow uses GitHub's OIDC token through npm Trusted Publishers. The GitHub source repository is private, so the workflow explicitly disables provenance; npm accepts provenance only from public source repositories. If the repository becomes public, enable provenance in both `package.json` and the workflow after a successful release check.
 
 The workflow references a GitHub environment named `npm`. Create that environment for release protection, or remove the `environment` line when no environment gate is desired.
 
-A classic or granular access token can be used for a manual first publication. Do not commit `.npmrc` credentials or an npm token.
-Because the package enables provenance by default, a first publication from a developer machine must explicitly disable provenance. npm may still require browser-backed two-factor authentication.
+A classic or granular access token can be used for a manual first publication. Do not commit `.npmrc` credentials or an npm token. npm may still require browser-backed two-factor authentication.
 
 ## 4. Validate the exact package payload
 

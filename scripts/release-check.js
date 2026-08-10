@@ -15,7 +15,7 @@ if (!/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/u.test(packageJson.version)) errors.pu
 if (packageJson.version !== PACKAGE_VERSION) errors.push(`package.json version ${packageJson.version} does not match src/spec.js ${PACKAGE_VERSION}`);
 if (packageLock.name !== packageJson.name || packageLock.version !== packageJson.version) errors.push("package-lock.json name or version is stale");
 if (packageJson.publishConfig?.access !== "public") errors.push("publishConfig.access must be public");
-if (packageJson.publishConfig?.provenance !== true) errors.push("publishConfig.provenance must be true");
+if (packageJson.publishConfig?.provenance !== false) errors.push("publishConfig.provenance must be false for a private source repository");
 
 try {
   await access(new URL(packageJson.bin.llmnav, packageRoot));
