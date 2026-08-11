@@ -18,7 +18,7 @@ LLMNav is not a documentation generator, an embedding database, or a reason to a
 * Machine-readable changed-card, affected-boundary, and affected-catalog output
 * Exported API and effective configuration contract fingerprints
 * TypeScript and Go declaration enrichment with declaration-level body hashes
-* Generated route, event, schema, migration, and command boundaries
+* Generated artifact, route, event, schema, migration, runtime, and command boundaries
 * SARIF 2.1.0 diagnostic output
 * Optional deterministic card-range search shards for very large repositories
 * Strict repository-local imports for generated definition and reference indexes
@@ -250,7 +250,7 @@ Do not annotate trivial getters, generated files, obvious wrappers, every test f
 
 ## Current implementation boundary
 
-Version 0.6 adds a deterministic coverage audit that prioritizes root and nested-package entrypoints, structural boundaries, Rust/Tauri runtime signals, and high fan-in modules while suppressing declaration files, dependency caches, test support code, simple barrels, and broad utilities. It suggests narrow coverage rules but never writes cards or invents semantic roles. Use `llmnav audit --summary --json` for a compact automation result or `llmnav audit --json --output .llmnav/audit.json` to keep the full candidate report out of captured stdout.
+Version 0.6 adds a deterministic coverage audit that prioritizes root and nested-package entrypoints, structural boundaries, persistent artifact filename protocols, versioned schema literals, Rust/Tauri runtime signals, TypeScript Tauri invoke adapters, and high fan-in modules. It suppresses declaration files, dependency caches, test support code, simple barrels, and low-fan-in broad utilities. It suggests narrow coverage rules but never writes cards or invents semantic roles. Use `llmnav audit --summary --json` for a compact automation result or `llmnav audit --json --output .llmnav/audit.json` to keep the full candidate report out of captured stdout.
 
 LLMNav does not discover sibling repositories automatically and does not ship an MCP server, embedding database, hosted service, SCIP generator, or complete language-aware call graph. External tools may export the documented compact graph-input schema. Generated structure never writes derived edges into source cards.
 

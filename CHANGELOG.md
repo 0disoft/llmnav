@@ -6,6 +6,16 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 
 ## [Unreleased]
 
+## [0.6.2] — 2026-08-11
+
+### Added
+
+* Added generated boundary signals for persistent dotted JSON filename protocols, versioned schema literals, and TypeScript Tauri invoke adapters.
+
+### Fixed
+
+* Stopped classifying high-fan-in domain contract hubs as broad utilities solely because they export many declarations.
+
 ## [0.6.1] — 2026-08-10
 
 ### Added

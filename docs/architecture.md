@@ -64,13 +64,13 @@ Each card carries three independent hashes.
 
 Symbol attachment records the detected language, public/exported status, visibility, Go receiver when present, declaration span, and a declaration-level body hash. TypeScript and Go use dedicated deterministic declaration patterns; JavaScript, Rust, Python, and generic C-like declarations retain the compatible fallback patterns.
 
-Generated cards may contain a sorted `boundaries` array. LLMNav detects `route`, `event`, `schema`, `migration`, and `command` boundaries from repository-relative paths and controlled semantic effects or risks. Each record includes `confidence` and explicit evidence such as `path`, `effect`, or `risk`. These hints are generated navigation data and are never copied into source comments.
+Generated cards may contain a sorted `boundaries` array. LLMNav detects `artifact`, `route`, `event`, `schema`, `migration`, `runtime`, and `command` boundaries from repository-relative paths, controlled semantic effects or risks, and narrow source evidence. Source evidence includes persistent dotted JSON filename builders, versioned schema literals, Tauri commands and invoke adapters, and platform lifecycle code. Each record includes `confidence` and explicit evidence. These hints are generated navigation data and are never copied into source comments.
 
 Generation compares the previous and current primary indexes to emit `affectedBoundaries`. The report preserves the card change and hash dimensions while adding module IDs, structural boundary records, outbound relation targets, and reverse semantic dependents. It is returned through the API and `generate --json`; it is not stored in source cards.
 
 ## Annotation coverage audit
 
-The read-only audit combines package entrypoints, public re-export reachability, generated structural boundaries, import fan-in, exported declaration counts, and source size. It lowers the priority of broad utilities, declaration files, non-production support paths, and pure re-export barrels. Every candidate retains its score inputs and deterministic repository-relative path.
+The read-only audit combines package entrypoints, public re-export reachability, generated structural boundaries, import fan-in, exported declaration counts, and source size. It lowers the priority of named utilities and low-fan-in export hubs, declaration files, non-production support paths, and pure re-export barrels. High-fan-in domain contract hubs do not receive the broad-utility penalty merely because they export many declarations. Every candidate retains its score inputs and deterministic repository-relative path.
 
 This analyzer deliberately stops before semantic generation. Structure can identify a file worth inspecting, but it cannot safely invent a durable ID, role, ownership statement, invariant, risk, or relation. Accepted boundaries become explicit source cards, path-specific coverage rules, and retrieval regression queries through normal review.
 

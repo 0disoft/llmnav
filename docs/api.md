@@ -60,7 +60,7 @@ console.log(stats.parsedFiles, stats.reusedFiles);
 
 Stat hints are an optimization, not deterministic output. The returned `fileState` contains only repository-relative generated data.
 
-Attached symbol declarations expose generated `language`, `exported`, `visibility`, optional Go `receiver`, `endOffset`, and declaration `bodyHash` fields. Indexed cards also expose sorted route, event, schema, migration, and command `boundaries` with confidence and evidence.
+Attached symbol declarations expose generated `language`, `exported`, `visibility`, optional Go `receiver`, `endOffset`, and declaration `bodyHash` fields. Indexed cards also expose sorted artifact, route, event, schema, migration, runtime, and command `boundaries` with confidence and evidence.
 
 ## Audit annotation coverage
 

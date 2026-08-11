@@ -103,7 +103,7 @@ excludes semantic version decisions, source mutation
 rel workflow>llmnav.index.generate
 
 @llmnav.structure.boundaries
-role Detect route, event, schema, migration, and command boundaries from generated local evidence.
+role Detect durable artifact, route, event, schema, migration, runtime, and command boundaries from generated local evidence.
 owns boundary kinds, confidence assignment, boundary evidence
 excludes framework execution, source annotations
 rel workflow>llmnav.index.generate

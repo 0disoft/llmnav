@@ -66,7 +66,7 @@ export async function auditProject(root) {
     const reexportBarrel = isReexportBarrel(record.source ?? "", file);
     const basename = path.posix.basename(file, path.posix.extname(file)).toLowerCase();
     const broadUtility = UTILITY_NAME_PATTERN.test(basename) ||
-      (exportedDeclarations >= 10 && !entrypoint && !publicApi && boundaries.length === 0);
+      (exportedDeclarations >= 10 && importers <= 1 && !entrypoint && !publicApi && boundaries.length === 0);
     const nonProduction = NON_PRODUCTION_PATH_PATTERN.test(file);
     const largeSource = record.sourceBytes >= LARGE_SOURCE_BYTES;
     const hasSignal = entrypoint || publicApi || boundaries.length > 0 || importers > 0 || exportedDeclarations > 0 || largeSource;

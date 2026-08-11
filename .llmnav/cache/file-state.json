@@ -1367,7 +1367,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "ce776f72b5e52ba5e951f5310c7465af4a2887a4b24cc957878eef6c797ed1ff",
+      "contentHash": "11d57e4e469406cb556201cf1d2ad569184e580b4b1ae7ff41ee5ca01622f006",
       "declarations": [
         null
       ],
@@ -1379,7 +1379,7 @@
       ],
       "path": "src/audit.js",
       "semanticBytes": 533,
-      "sourceBytes": 13903
+      "sourceBytes": 13921
     },
     {
       "blocks": [
@@ -1401,17 +1401,17 @@
               "workflow>llmnav.index.generate"
             ],
             "risk": [],
-            "role": "Detect route, event, schema, migration, and command boundaries from generated local evidence.",
+            "role": "Detect durable artifact, route, event, schema, migration, runtime, and command boundaries from generated local evidence.",
             "scope": "module",
             "search": [
               "boundary detection",
-              "route schema migration",
-              "command event"
+              "artifact route schema migration",
+              "command event runtime"
             ],
             "stability": "architecture",
             "unknown": []
           },
-          "end": 380,
+          "end": 424,
           "endLine": 9,
           "entries": [
             {
@@ -1424,7 +1424,7 @@
               "key": "role",
               "line": 3,
               "order": 1,
-              "value": "Detect route, event, schema, migration, and command boundaries from generated local evidence."
+              "value": "Detect durable artifact, route, event, schema, migration, runtime, and command boundaries from generated local evidence."
             },
             {
               "key": "owns",
@@ -1442,7 +1442,7 @@
               "key": "search",
               "line": 6,
               "order": 4,
-              "value": "boundary detection|route schema migration|command event"
+              "value": "boundary detection|artifact route schema migration|command event runtime"
             },
             {
               "key": "rel",
@@ -1461,7 +1461,7 @@
           "indent": "",
           "newline": "\n",
           "prefix": null,
-          "raw": "/* llmnav/1 module\nid=llmnav.structure.boundaries\nrole=Detect route, event, schema, migration, and command boundaries from generated local evidence.\nowns=boundary kinds|confidence assignment|boundary evidence\nexcludes=framework execution|source annotations\nsearch=boundary detection|route schema migration|command event\nrel=workflow>llmnav.index.generate\nstability=architecture\n*/",
+          "raw": "/* llmnav/1 module\nid=llmnav.structure.boundaries\nrole=Detect durable artifact, route, event, schema, migration, runtime, and command boundaries from generated local evidence.\nowns=boundary kinds|confidence assignment|boundary evidence\nexcludes=framework execution|source annotations\nsearch=boundary detection|artifact route schema migration|command event runtime\nrel=workflow>llmnav.index.generate\nstability=architecture\n*/",
           "scope": "module",
           "specVersion": "1",
           "start": 0,
@@ -1470,7 +1470,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "99b4a8251771170da4020aa4468b3e3a8802934b6ae9b31d8ae79a18671cccc8",
+      "contentHash": "85b77c0123d1ad0b4f198223b1e9daad7d7be25f98abcb41263c7f846e4f28d2",
       "declarations": [
         null
       ],
@@ -1479,8 +1479,8 @@
         "node:path"
       ],
       "path": "src/boundaries.js",
-      "semanticBytes": 380,
-      "sourceBytes": 2643
+      "semanticBytes": 424,
+      "sourceBytes": 3257
     },
     {
       "blocks": [
@@ -3057,14 +3057,14 @@
     },
     {
       "blocks": [],
-      "contentHash": "dfff8cf51283d53063170c9f3bdee491f0364650825f4062eeff402f2590289e",
+      "contentHash": "6906717db8801849d29c059419b7e999a3c7c9c9ac176692fd9dc7f82fa4d4a6",
       "declarations": [],
       "imports": [
         "./spec.js"
       ],
       "path": "src/index.d.ts",
       "semanticBytes": 0,
-      "sourceBytes": 26663
+      "sourceBytes": 26688
     },
     {
       "blocks": [],
@@ -4218,7 +4218,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "fbc756bcaaa1a7e98460754ffb7ac9aa7b4cab6e19765c7e53760ce2baf83981",
+      "contentHash": "e8572cfda88aeff8dc7fa2af79020542606f7aaff8f6be5e338a10e715fdf560",
       "declarations": [
         null
       ],
@@ -4584,7 +4584,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "5805ed73beb958410e5aaccec226c1208419d09e6536641d8832befbb075a787",
+      "contentHash": "95261d684be0ad4972b0320d1e233c45f125243302615f73b5d61a067782d989",
       "declarations": [],
       "imports": [
         "../src/audit.js",
@@ -4599,7 +4599,7 @@
       ],
       "path": "tests/audit.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 7863
+      "sourceBytes": 10050
     },
     {
       "blocks": [],

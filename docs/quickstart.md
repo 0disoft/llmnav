@@ -19,7 +19,7 @@ Source roots and evaluation files must remain inside the repository. The generat
 npx llmnav audit
 ```
 
-Start with high and medium candidates. The audit explains whether a file is a package entrypoint, public API, generated structural boundary, or high fan-in module. It does not write source or invent card contents. Declaration files and common non-production or utility shapes are suppressed so the result is a review queue, not a demand to annotate every file.
+Start with high and medium candidates. The audit explains whether a file is a package entrypoint, public API, generated structural boundary, or high fan-in module. Narrow source signals also identify versioned schema literals, persistent dotted JSON filename protocols, and Tauri invoke adapters. It does not write source or invent card contents. Declaration files and common non-production or low-fan-in utility shapes are suppressed so the result is a review queue, not a demand to annotate every file.
 
 After accepting a candidate, write its durable meaning by inspecting the source, add a narrow `coverageRules` entry for that exact boundary, and add a real task-language query to `.llmnav/eval/queries.jsonl`. Use `npx llmnav audit --fail-on high` in CI only after the initial review.
 

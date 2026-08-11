@@ -1062,8 +1062,8 @@
         "source annotations"
       ],
       "hashes": {
-        "body": "99b4a8251771170da4020aa4468b3e3a8802934b6ae9b31d8ae79a18671cccc8",
-        "semantic": "edcf0e0f968695b53ccea93a68340028178fbaf8ff25ade7612e288c28eb438b",
+        "body": "85b77c0123d1ad0b4f198223b1e9daad7d7be25f98abcb41263c7f846e4f28d2",
+        "semantic": "05b9a89c21c75a447ec5ccb5e1276cc44e5ef096919c4fa904051730a2f3cfbb",
         "structure": "99e265a2351e72cb35a2d433f0b51d2d691b205e3fdd70de478d69339f8e28ef"
       },
       "id": "llmnav.structure.boundaries",
@@ -1092,12 +1092,12 @@
       "rel": [
         "workflow>llmnav.index.generate"
       ],
-      "role": "Detect route, event, schema, migration, and command boundaries from generated local evidence.",
+      "role": "Detect durable artifact, route, event, schema, migration, runtime, and command boundaries from generated local evidence.",
       "scope": "module",
       "search": [
         "boundary detection",
-        "route schema migration",
-        "command event"
+        "artifact route schema migration",
+        "command event runtime"
       ],
       "stability": "architecture"
     },
@@ -1857,7 +1857,7 @@
         "source parsing"
       ],
       "hashes": {
-        "body": "fbc756bcaaa1a7e98460754ffb7ac9aa7b4cab6e19765c7e53760ce2baf83981",
+        "body": "e8572cfda88aeff8dc7fa2af79020542606f7aaff8f6be5e338a10e715fdf560",
         "semantic": "59aa3e9e793d505ecdf110fec023c201aaee0154d2f6c9cf71afe1bbf71a7be5",
         "structure": "e213e073414c75bc75df1c8669a7045096142b6c0845694191893d90bf23e3c2"
       },
@@ -1953,7 +1953,7 @@
         "semantic role generation"
       ],
       "hashes": {
-        "body": "ce776f72b5e52ba5e951f5310c7465af4a2887a4b24cc957878eef6c797ed1ff",
+        "body": "11d57e4e469406cb556201cf1d2ad569184e580b4b1ae7ff41ee5ca01622f006",
         "semantic": "aac17e46887fb32325f2255731d30aad7671051d5a63d8d39139e169cd16815d",
         "structure": "056af1b92b36055c6fd679fe7a6c29048d740a7750fd3d387502a9abe5edb5c8"
       },
@@ -2008,9 +2008,9 @@
     },
     "schemaVersion": 1
   },
-  "generatedBy": "llmnav@0.6.1",
+  "generatedBy": "llmnav@0.6.2",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "41027b41df559f2928b95cbb34370cba8ac3d0555745def89fc0b2be02447025",
+  "sourceHash": "872dbbca94bf110ec61a22711c53ae412a5da038312aedc4ecca38c038bb5682",
   "specVersion": "1"
 }

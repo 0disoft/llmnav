@@ -42,7 +42,7 @@
     "llmnav.structure.boundaries",
     "llmnav.syntax.parse"
   ],
-  "cardSetHash": "99c69a3016b77400a8c4f15a923712abb8da954b007917158288b6dab45e5e25",
+  "cardSetHash": "ff8fe77c536f968f64f608297df07debb8718827f6fbc834138c6774e9b4bb26",
   "documentCount": 41,
   "documents": [
     [
@@ -527,12 +527,12 @@
       ]
     ],
     [
-      "0baafce6492223fb78cda4c015ab7248207f3d9dbad40c0fbaa628429fc5fb34",
+      "c964dffe4e6442bcb5b251cade0d6644671c09ea6d6e8bc19420b46037506446",
       [
-        "detect route, event, schema, migration, and command boundaries from generated local evidence.",
+        "detect durable artifact, route, event, schema, migration, runtime, and command boundaries from generated local evidence.",
         "boundary detection",
-        "route schema migration",
-        "command event",
+        "artifact route schema migration",
+        "command event runtime",
         "boundary kinds",
         "confidence assignment",
         "boundary evidence"
@@ -1318,6 +1318,15 @@
           4,
           1
         ]
+      ],
+      [
+        39,
+        [
+          1,
+          1,
+          2,
+          1
+        ]
       ]
     ],
     [
@@ -3515,6 +3524,15 @@
     ],
     [
       [
+        39,
+        [
+          1,
+          1
+        ]
+      ]
+    ],
+    [
+      [
         22,
         [
           2,
@@ -9135,6 +9153,15 @@
         19,
         [
           4,
+          1
+        ]
+      ],
+      [
+        39,
+        [
+          1,
+          1,
+          2,
           1
         ]
       ]
@@ -11833,6 +11860,7 @@
     "documents",
     "download",
     "drift",
+    "durable",
     "edge",
     "editor",
     "effect",

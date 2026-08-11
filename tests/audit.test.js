@@ -28,13 +28,34 @@ async function createAuditFixture(context) {
   await writeFile(path.join(root, "src", "cli", "command.js"), "export async function runCommand() {}\n");
   await writeFile(path.join(root, "src", "central.js"), "export function centralContract() {}\n");
   await writeFile(
+    path.join(root, "src", "queue-artifacts.ts"),
+    [
+      "export const WORK_ORDER_SCHEMA = { schemaVersion: 'workduck.queue-work-order/v1' } as const;",
+      ...Array.from({ length: 11 }, (_, index) => `export type QueueContract${index} = { value: string };`),
+    ].join("\n") + "\n",
+  );
+  await writeFile(
+    path.join(root, "src", "queue-artifact-files.ts"),
+    "export function createWorkOrderFileName(id: string) { return `${id}.workduck-work-order.json`; }\n",
+  );
+  await writeFile(
+    path.join(root, "src", "cli-environment.ts"),
+    "const invoke = getTauriInvoke();\nexport async function applyCliEnvironment() { return invoke('apply_cli_environment'); }\n",
+  );
+  await writeFile(
+    path.join(root, "src", "agent-api-snapshot.ts"),
+    "const invoke = getTauriInvoke();\nexport async function getAgentApiSnapshot() { return invoke<unknown>('get_agent_api_snapshot'); }\n",
+  );
+  await writeFile(path.join(root, "src", "persona-prompt.ts"), "export function formatPersonaPromptBlock() { return 'persona'; }\n");
+  await writeFile(path.join(root, "src", "secret-vault-error-messages.ts"), "export function secretVaultErrorMessage() { return 'unavailable'; }\n");
+  await writeFile(
     path.join(root, "src", "util.js"),
     Array.from({ length: 12 }, (_, index) => `export function helper${index}() {}`).join("\n") + "\n",
   );
   for (let index = 0; index < 7; index += 1) {
     await writeFile(
       path.join(root, "src", `consumer-${index}.js`),
-      `import { centralContract } from "./central.js";\nimport { helper0 } from "./util.js";\nexport function consumer${index}() { return centralContract() ?? helper0(); }\n`,
+      `import { centralContract } from "./central.js";\nimport { helper0 } from "./util.js";\nimport { WORK_ORDER_SCHEMA } from "./queue-artifacts.ts";\nexport function consumer${index}() { return centralContract() ?? helper0() ?? WORK_ORDER_SCHEMA; }\n`,
     );
   }
   await writeFile(
@@ -93,6 +114,17 @@ test("audits missing semantic boundaries without modifying source", async (conte
   assert.deepEqual(byPath.get("src/cli/command.js").signals.boundaries, ["command"]);
   assert.equal(byPath.get("src/central.js").priority, "medium");
   assert.equal(byPath.get("src/central.js").signals.importedBy, 7);
+  assert.equal(byPath.get("src/queue-artifacts.ts").priority, "high");
+  assert.equal(byPath.get("src/queue-artifacts.ts").signals.broadUtility, false);
+  assert.deepEqual(byPath.get("src/queue-artifacts.ts").signals.boundaries, ["schema"]);
+  assert.equal(byPath.get("src/queue-artifact-files.ts").priority, "medium");
+  assert.deepEqual(byPath.get("src/queue-artifact-files.ts").signals.boundaries, ["artifact"]);
+  assert.equal(byPath.get("src/cli-environment.ts").priority, "medium");
+  assert.deepEqual(byPath.get("src/cli-environment.ts").signals.boundaries, ["command"]);
+  assert.equal(byPath.get("src/agent-api-snapshot.ts").priority, "medium");
+  assert.deepEqual(byPath.get("src/agent-api-snapshot.ts").signals.boundaries, ["command"]);
+  assert.equal(byPath.get("src/persona-prompt.ts").priority, "low");
+  assert.equal(byPath.get("src/secret-vault-error-messages.ts").priority, "low");
   assert.equal(byPath.get("src/util.js").priority, "low");
   assert.equal(byPath.get("src/util.js").signals.broadUtility, true);
   assert.equal(byPath.has("src/index.js"), false);

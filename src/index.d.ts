@@ -58,7 +58,7 @@ export interface Declaration {
 }
 
 export interface DetectedBoundary {
-  kind: "command" | "event" | "migration" | "route" | "schema";
+  kind: "artifact" | "command" | "event" | "migration" | "route" | "runtime" | "schema";
   confidence: "high" | "medium";
   evidence: string[];
 }

@@ -1,9 +1,9 @@
 /* llmnav/1 module
 id=llmnav.structure.boundaries
-role=Detect route, event, schema, migration, and command boundaries from generated local evidence.
+role=Detect durable artifact, route, event, schema, migration, runtime, and command boundaries from generated local evidence.
 owns=boundary kinds|confidence assignment|boundary evidence
 excludes=framework execution|source annotations
-search=boundary detection|route schema migration|command event
+search=boundary detection|artifact route schema migration|command event runtime
 rel=workflow>llmnav.index.generate
 stability=architecture
 */
@@ -11,7 +11,7 @@ stability=architecture
 import path from "node:path";
 import { compareText, toPosix } from "./util.js";
 
-export const BOUNDARY_KINDS = Object.freeze(["command", "event", "migration", "route", "runtime", "schema"]);
+export const BOUNDARY_KINDS = Object.freeze(["artifact", "command", "event", "migration", "route", "runtime", "schema"]);
 
 export function detectBoundaries(record) {
   const relativePath = toPosix(record.relativePath).toLowerCase();
@@ -40,6 +40,13 @@ export function detectBoundaries(record) {
       /(?:schema\.(?:json|ya?ml)|\.(?:proto|graphql|gql))$/u.test(relativePath)) {
     add("schema", "high", "path");
   }
+  if (/\bschemaVersion\s*:\s*["'][^"'\r\n]+\/v\d+(?:\.\d+)*["']/u.test(source)) {
+    add("schema", "high", "versioned-schema-literal");
+  }
+  if (/\bexport\s+(?:async\s+)?function\s+[A-Za-z_$][\w$]*FileName\b/u.test(source) &&
+      /["'`][^"'`\r\n]*\.[a-z0-9-]+\.json["'`]/iu.test(source)) {
+    add("artifact", "medium", "persistent-json-filename");
+  }
   if (risks.includes("migration") || /(?:^|\/)(?:migrations?|migrate)(?:\/|$)/u.test(relativePath)) {
     add("migration", "high", risks.includes("migration") ? "risk" : "path");
   }
@@ -48,6 +55,11 @@ export function detectBoundaries(record) {
   }
   if (/\.rs$/u.test(relativePath) && /#\[tauri::command\]|tauri::generate_handler!/u.test(source)) {
     add("command", "high", "tauri-command");
+  }
+  if (/\.[cm]?[jt]sx?$/u.test(relativePath) &&
+      /\bgetTauriInvoke\s*\(/u.test(source) &&
+      /\binvoke(?:\s*<[^;\r\n]+?>)?\s*\(/u.test(source)) {
+    add("command", "high", "tauri-invoke");
   }
   if (/\.rs$/u.test(relativePath) &&
       /#\[cfg\((?:windows|unix|target_(?:os|family))/u.test(source) &&

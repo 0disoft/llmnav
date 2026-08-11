@@ -4098,7 +4098,7 @@
           "to": "llmnav/llmnav.index.generate"
         }
       ],
-      "inputHash": "5c5864158d38d363e5aa11d81c009741d064c16d9eed52e0d912243879d51df0",
+      "inputHash": "e484bde047a67cb82e27205eca6b8f74aabe5b3772b02fff43de4d62b170d63a",
       "key": "card:llmnav/llmnav.structure.boundaries",
       "nodes": [
         {
@@ -4128,11 +4128,11 @@
             "visibility": null
           },
           "repositoryId": "llmnav",
-          "role": "Detect route, event, schema, migration, and command boundaries from generated local evidence.",
+          "role": "Detect durable artifact, route, event, schema, migration, runtime, and command boundaries from generated local evidence.",
           "semanticId": "llmnav.structure.boundaries"
         }
       ],
-      "outputHash": "6aa7daef8d4afc031e2cce03a836deaae19d719f42838e11a2fb7a7156900abf"
+      "outputHash": "18127842c2d1eeed493abfcd125d574dffd675059081d223ceccecf4cf42cc98"
     },
     {
       "edges": [

@@ -2,7 +2,7 @@ llmnav-catalog/1 repository=llmnav catalog=llmnav.structure
 Read semantic cards before opening source. Resolve current paths and signatures with llmnav query or show.
 
 @llmnav.structure.boundaries
-role Detect route, event, schema, migration, and command boundaries from generated local evidence.
+role Detect durable artifact, route, event, schema, migration, runtime, and command boundaries from generated local evidence.
 owns boundary kinds, confidence assignment, boundary evidence
 excludes framework execution, source annotations
 rel workflow>llmnav.index.generate
