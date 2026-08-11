@@ -27,16 +27,14 @@
       "root": "../sairon",
       "languages": ["go"],
       "minimumCases": 8,
-      "enabled": false,
-      "holdReason": "awaiting-reviewed-llmnav-adoption"
+      "enabled": true
     },
     {
       "id": "ai-bom-generator",
       "root": "../ai-bom-generator",
       "languages": ["python"],
       "minimumCases": 8,
-      "enabled": false,
-      "holdReason": "awaiting-reviewed-llmnav-adoption"
+      "enabled": true
     }
   ]
 }
