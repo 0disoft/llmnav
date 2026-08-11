@@ -223,6 +223,10 @@ export async function recoverGenerationTransaction(root, options = {}) {
   await assertNoSymlinkTraversal(root, controlDirectory, ".llmnav");
   const journalPath = path.join(controlDirectory, "generation-transaction.json");
   await assertNoSymlinkTraversal(root, journalPath, ".llmnav/generation-transaction.json");
+  if (options.cacheDirectory) {
+    const configuredCacheDirectory = projectRelativePath(options.cacheDirectory, "cacheDirectory");
+    await assertNoSymlinkTraversal(root, path.join(root, configuredCacheDirectory), configuredCacheDirectory);
+  }
   const journal = await readJson(journalPath, null);
   if (!journal) return { recovered: false, action: "none" };
   validateJournal(root, journal, options.cacheDirectory);

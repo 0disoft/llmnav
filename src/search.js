@@ -14,7 +14,7 @@ import path from "node:path";
 import { loadConfig } from "./config.js";
 import { resolveRegistryId, loadRegistry } from "./registry.js";
 import { renderCompactCard } from "./generator.js";
-import { approximateTokens, compareText, readJsonSafe, readText, sha256, toPosix, truncateToTokenBudget } from "./util.js";
+import { assertNoSymlinkTraversal, approximateTokens, compareText, readJsonSafe, readText, sha256, toPosix, truncateToTokenBudget } from "./util.js";
 import {
   buildInvertedIndex,
   isCompatibleSearchIndex,
@@ -33,12 +33,21 @@ export async function loadSearchData(root) {
   const { config } = await loadConfig(root);
   await recoverGenerationTransaction(root, { cacheDirectory: config.generation.cacheDirectory });
   const cacheRoot = path.join(root, config.generation.cacheDirectory);
-  const index = await readJsonSafe(path.join(cacheRoot, "index.json"), null);
+  await assertNoSymlinkTraversal(root, cacheRoot, config.generation.cacheDirectory);
+  const indexPath = path.join(cacheRoot, "index.json");
+  const manifestPath = path.join(cacheRoot, "manifest.json");
+  const graphPath = path.join(cacheRoot, "graph.json");
+  const searchPath = path.join(cacheRoot, "search-index.json");
+  const lexiconPath = path.join(root, ".llmnav", "lexicon.json");
+  for (const managedPath of [indexPath, manifestPath, graphPath, searchPath, lexiconPath]) {
+    await assertNoSymlinkTraversal(root, managedPath, toPosix(path.relative(root, managedPath)));
+  }
+  const index = await readJsonSafe(indexPath, null);
   if (!index) throw new Error("No generated index found. Run `llmnav generate` first.");
-  const lexicon = await readJsonSafe(path.join(root, ".llmnav", "lexicon.json"), { version: 1, aliases: {} });
-  const manifest = await readJsonSafe(path.join(cacheRoot, "manifest.json"), null);
+  const lexicon = await readJsonSafe(lexiconPath, { version: 1, aliases: {} });
+  const manifest = await readJsonSafe(manifestPath, null);
   const graphRelative = `${toPosix(config.generation.cacheDirectory).replace(/\/+$/u, "")}/graph.json`;
-  const graphText = await readText(path.join(cacheRoot, "graph.json"), null);
+  const graphText = await readText(graphPath, null);
   let graph = null;
   if (graphText !== null) {
     try {
@@ -54,7 +63,7 @@ export async function loadSearchData(root) {
   );
   if (!graphMatches) graph = null;
   const searchRelative = `${toPosix(config.generation.cacheDirectory).replace(/\/+$/u, "")}/search-index.json`;
-  const searchText = await readText(path.join(cacheRoot, "search-index.json"), null);
+  const searchText = await readText(searchPath, null);
   let searchIndex = null;
   if (searchText !== null) {
     try {

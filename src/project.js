@@ -12,7 +12,7 @@ stability=architecture
 
 import { readFile } from "node:fs/promises";
 import { loadConfig } from "./config.js";
-import { findAttachedDeclaration, extractImports } from "./declaration.js";
+import { createDeclarationScanContext, findAttachedDeclaration, extractImports } from "./declaration.js";
 import { collectSourceFiles } from "./files.js";
 import { parseLlmnavBlocks } from "./parser.js";
 import { loadRegistry } from "./registry.js";
@@ -34,6 +34,7 @@ export async function scanProject(root, options = {}) {
     sourceBytes += Buffer.byteLength(source);
     semanticBytes += blocks.reduce((sum, block) => sum + Buffer.byteLength(block.raw), 0);
     const imports = extractImports(source, relativePath);
+    const declarationScanContext = createDeclarationScanContext(source);
     const fileRecord = {
       absolutePath,
       relativePath,
@@ -47,7 +48,7 @@ export async function scanProject(root, options = {}) {
     };
     fileRecords.push(fileRecord);
     for (const block of blocks) {
-      const declaration = findAttachedDeclaration(source, block, relativePath);
+      const declaration = findAttachedDeclaration(source, block, relativePath, declarationScanContext);
       records.push({
         root,
         absolutePath,

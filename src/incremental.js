@@ -11,7 +11,7 @@ stability=architecture
 import { readFile, stat } from "node:fs/promises";
 import path from "node:path";
 import { loadConfig } from "./config.js";
-import { findAttachedDeclaration, extractImports } from "./declaration.js";
+import { createDeclarationScanContext, findAttachedDeclaration, extractImports } from "./declaration.js";
 import { collectSourceFiles } from "./files.js";
 import { parseLlmnavBlocks } from "./parser.js";
 import { loadRegistry } from "./registry.js";
@@ -26,15 +26,19 @@ import {
 } from "./util.js";
 
 export const FILE_STATE_SCHEMA_VERSION = 1;
-export const SOURCE_INDEXER_VERSION = 4;
+export const SOURCE_INDEXER_VERSION = 5;
 const STAT_HINTS_SCHEMA_VERSION = 1;
 
 export async function scanProjectIncremental(root, options = {}) {
   const { config, configPath } = await loadConfig(root);
   const files = await collectSourceFiles(root, config, options.paths ?? []);
   const cacheDirectory = path.join(root, config.generation.cacheDirectory);
-  const previousState = options.previousState ?? await readJsonSafe(path.join(cacheDirectory, "file-state.json"), null);
+  await assertNoSymlinkTraversal(root, cacheDirectory, config.generation.cacheDirectory);
+  const fileStatePath = path.join(cacheDirectory, "file-state.json");
+  await assertNoSymlinkTraversal(root, fileStatePath, relativePosix(root, fileStatePath));
+  const previousState = options.previousState ?? await readJsonSafe(fileStatePath, null);
   const hintsPath = path.join(root, ".llmnav", "state", "stat-hints.json");
+  await assertNoSymlinkTraversal(root, hintsPath, relativePosix(root, hintsPath));
   const previousHints = options.useStatHints === false
     ? null
     : await readJsonSafe(hintsPath, null);
@@ -134,8 +138,9 @@ export async function scanProjectIncremental(root, options = {}) {
 export function buildFileStateFromProject(project) {
   const files = project.fileRecords.map((fileRecord) => {
     const source = fileRecord.source ?? "";
+    const declarationScanContext = createDeclarationScanContext(source);
     const declarations = fileRecord.blocks.map((block) =>
-      findAttachedDeclaration(source, block, fileRecord.relativePath),
+      findAttachedDeclaration(source, block, fileRecord.relativePath, declarationScanContext),
     );
     return normalizeStateFile(
       {
@@ -178,6 +183,7 @@ export function usableFileState(value) {
 
 function analyzeFile(relativePath, source) {
   const blocks = parseLlmnavBlocks(source, relativePath);
+  const declarationScanContext = createDeclarationScanContext(source);
   return {
     path: relativePath,
     contentHash: sha256(source),
@@ -185,7 +191,7 @@ function analyzeFile(relativePath, source) {
     semanticBytes: blocks.reduce((sum, block) => sum + Buffer.byteLength(block.raw), 0),
     imports: extractImports(source, relativePath),
     blocks,
-    declarations: blocks.map((block) => findAttachedDeclaration(source, block, relativePath)),
+    declarations: blocks.map((block) => findAttachedDeclaration(source, block, relativePath, declarationScanContext)),
   };
 }
 

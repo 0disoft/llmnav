@@ -11,13 +11,14 @@ stability=contract
 
 import path from "node:path";
 import { ID_PATTERN } from "./spec.js";
-import { atomicWrite, parseJsonLines, readText } from "./util.js";
+import { assertNoSymlinkTraversal, atomicWrite, parseJsonLines, readText } from "./util.js";
 
 const REGISTRY_STATES = new Set(["active", "redirect", "replaced", "retired"]);
 const REGISTRY_KEYS = new Set(["id", "state", "to", "by"]);
 
 export async function loadRegistry(root) {
   const registryPath = path.join(root, ".llmnav", "ids.jsonl");
+  await assertNoSymlinkTraversal(root, registryPath, ".llmnav/ids.jsonl");
   const text = await readText(registryPath, "");
   const parsed = parseJsonLines(text, registryPath);
   const byId = new Map();
@@ -72,8 +73,13 @@ export async function loadRegistry(root) {
 }
 
 export async function ensureActiveIds(root, registry, ids) {
+  const registryPath = path.join(root, ".llmnav", "ids.jsonl");
+  if (path.resolve(registry.registryPath) !== path.resolve(registryPath)) {
+    throw new Error("Registry path does not belong to the requested project root.");
+  }
+  await assertNoSymlinkTraversal(root, registryPath, ".llmnav/ids.jsonl");
   const { records, changed } = mergeActiveIds(registry, ids);
-  if (changed) await atomicWrite(registry.registryPath, renderRegistryRecords(records));
+  if (changed) await atomicWrite(registryPath, renderRegistryRecords(records));
   return { records, changed };
 }
 

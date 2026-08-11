@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { detectBoundaries } from "../src/boundaries.js";
-import { extractImports, findAttachedDeclaration } from "../src/declaration.js";
+import { createDeclarationScanContext, extractImports, findAttachedDeclaration } from "../src/declaration.js";
 import { generateProject } from "../src/generator.js";
 import { initializeProject } from "../src/initializer.js";
 import { parseLlmnavBlocks } from "../src/parser.js";
@@ -92,6 +92,16 @@ test("JavaScript import extraction ignores unrelated string literals and comment
     "./required.cjs",
     "./value.js",
   ]);
+});
+
+test("shared declaration scan contexts cap aggregate malformed-source work", () => {
+  const source = `export function broken() {\n${"x".repeat(100_000)}`;
+  const block = { scope: "symbol", end: 0 };
+  const scanContext = createDeclarationScanContext(source);
+
+  assert.equal(findAttachedDeclaration(source, block, "broken.js", scanContext)?.symbol, "broken");
+  assert.equal(findAttachedDeclaration(source, block, "broken.js", scanContext)?.symbol, "broken");
+  assert.equal(findAttachedDeclaration(source, block, "broken.js", scanContext), null);
 });
 
 function card(id) {

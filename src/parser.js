@@ -15,7 +15,13 @@ import {
   SCOPES,
   SPEC_VERSION,
 } from "./spec.js";
-import { detectNewline, lineAtOffset, normalizeNewlines, splitPipe } from "./util.js";
+import {
+  buildLineStarts,
+  detectNewline,
+  lineAtOffsetFromStarts,
+  normalizeNewlines,
+  splitPipe,
+} from "./util.js";
 
 const BLOCK_PATTERNS = [
   {
@@ -39,6 +45,8 @@ export function parseLlmnavBlocks(source, filePath = "<memory>") {
     throw new Error(`${filePath} exceeds the ${MAX_SOURCE_BYTES}-byte parser byte limit.`);
   }
   const literalMask = buildLiteralMask(source, filePath);
+  const lineStarts = buildLineStarts(source);
+  const blockBudget = { count: 0 };
   const blocks = [];
   for (const definition of BLOCK_PATTERNS) {
     definition.pattern.lastIndex = 0;
@@ -52,9 +60,10 @@ export function parseLlmnavBlocks(source, filePath = "<memory>") {
       const end = matchStart + matchedRaw.length;
       const indent = start === lineStart ? leading : "";
       const raw = source.slice(start, end);
+      reserveBlock(blockBudget, filePath);
       blocks.push(
         createBlock({
-          source,
+          lineStarts,
           filePath,
           raw,
           body: match[2],
@@ -69,11 +78,8 @@ export function parseLlmnavBlocks(source, filePath = "<memory>") {
     }
   }
 
-  blocks.push(...parseLineBlocks(source, filePath, literalMask));
-  blocks.push(...parseUnterminatedBlockComments(source, filePath, blocks, literalMask));
-  if (blocks.length > MAX_BLOCKS_PER_FILE) {
-    throw new Error(`${filePath} exceeds the ${MAX_BLOCKS_PER_FILE}-block parser limit.`);
-  }
+  blocks.push(...parseLineBlocks(source, filePath, literalMask, lineStarts, blockBudget));
+  blocks.push(...parseUnterminatedBlockComments(source, filePath, blocks, literalMask, lineStarts, blockBudget));
   blocks.sort((left, right) => left.start - right.start);
 
   const overlapping = [];
@@ -94,7 +100,7 @@ export function parseLlmnavBlocks(source, filePath = "<memory>") {
   return blocks;
 }
 
-function parseLineBlocks(source, filePath, literalMask) {
+function parseLineBlocks(source, filePath, literalMask, lineStarts, blockBudget) {
   const blocks = [];
   const lines = source.split(/(?<=\n)/u);
   const offsets = [];
@@ -136,8 +142,9 @@ function parseLineBlocks(source, filePath, literalMask) {
     }
 
     const raw = source.slice(start, end);
+    reserveBlock(blockBudget, filePath);
     const block = createBlock({
-      source,
+      lineStarts,
       filePath,
       raw,
       body: bodyLines.join("\n"),
@@ -163,24 +170,28 @@ function parseLineBlocks(source, filePath, literalMask) {
   return blocks;
 }
 
-function parseUnterminatedBlockComments(source, filePath, parsedBlocks, literalMask) {
+function parseUnterminatedBlockComments(source, filePath, parsedBlocks, literalMask, lineStarts, blockBudget) {
   const blocks = [];
+  const parsedIntervals = [...parsedBlocks].sort((left, right) => left.start - right.start);
   for (const definition of BLOCK_PATTERNS) {
+    let intervalIndex = 0;
     definition.opening.lastIndex = 0;
     for (const match of source.matchAll(definition.opening)) {
       const tokenStart = match.index ?? 0;
       if (literalMask[tokenStart] === 1) continue;
-      if (parsedBlocks.some((block) => tokenStart >= block.start && tokenStart < block.end)) continue;
+      while (parsedIntervals[intervalIndex]?.end <= tokenStart) intervalIndex += 1;
+      const interval = parsedIntervals[intervalIndex];
+      if (interval && tokenStart >= interval.start && tokenStart < interval.end) continue;
       const bodyStart = tokenStart + match[0].length;
-      if (source.indexOf(definition.terminator, bodyStart) >= 0) continue;
 
       const lineStart = source.lastIndexOf("\n", tokenStart - 1) + 1;
       const leading = source.slice(lineStart, tokenStart);
       const start = /^\s*$/u.test(leading) ? lineStart : tokenStart;
       const indent = start === lineStart ? leading : "";
       const end = source.length;
+      reserveBlock(blockBudget, filePath);
       const block = createBlock({
-        source,
+        lineStarts,
         filePath,
         raw: source.slice(start, end),
         body: source.slice(bodyStart),
@@ -302,8 +313,15 @@ function looksLikeRustCharacterLiteral(source, offset) {
   return /^'(?:\\.|[^'\\\r\n])'/u.test(source.slice(offset));
 }
 
-function createBlock({ source, filePath, raw, body, scope, style, start, end, indent, prefix }) {
-  const startLine = lineAtOffset(source, start);
+function reserveBlock(blockBudget, filePath) {
+  blockBudget.count += 1;
+  if (blockBudget.count > MAX_BLOCKS_PER_FILE) {
+    throw new Error(`${filePath} exceeds the ${MAX_BLOCKS_PER_FILE}-block parser limit.`);
+  }
+}
+
+function createBlock({ lineStarts, filePath, raw, body, scope, style, start, end, indent, prefix }) {
+  const startLine = lineAtOffsetFromStarts(lineStarts, start);
   const bodyStartLine = style === "line" ? startLine + 1 : startLine;
   const parsed = parseBody(body, bodyStartLine);
   const card = materializeCard(scope, parsed.entries);
@@ -321,7 +339,7 @@ function createBlock({ source, filePath, raw, body, scope, style, start, end, in
     start,
     end,
     startLine,
-    endLine: lineAtOffset(source, Math.max(start, end - 1)),
+    endLine: lineAtOffsetFromStarts(lineStarts, Math.max(start, end - 1)),
     newline: detectNewline(raw),
   };
 }

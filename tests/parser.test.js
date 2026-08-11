@@ -115,3 +115,17 @@ test("rejects source files above the parser byte budget", () => {
   const source = "x".repeat(16 * 1024 * 1024 + 1);
   assert.throws(() => parseLlmnavBlocks(source, "oversized.js"), /parser byte limit/u);
 });
+
+test("enforces the card limit before materializing excess complete blocks", () => {
+  const source = "/* llmnav/1 file\nid=fixture.repeated\nstability=architecture\n*/\n".repeat(10_001);
+  assert.throws(() => parseLlmnavBlocks(source, "dense-blocks.js"), /block parser limit/u);
+});
+
+test("classifies nested HTML marker openings without rescanning parsed intervals", () => {
+  const source = `${"<!-- llmnav/1 file\n".repeat(10_001)}-->\n`;
+  const started = process.hrtime.bigint();
+  const blocks = parseLlmnavBlocks(source, "dense-blocks.html");
+  const elapsedMs = Number(process.hrtime.bigint() - started) / 1_000_000;
+  assert.equal(blocks.length, 1);
+  assert.ok(elapsedMs < 3_000, `nested-marker parse took ${elapsedMs.toFixed(1)}ms`);
+});

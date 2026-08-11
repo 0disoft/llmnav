@@ -10,7 +10,7 @@ stability=architecture
 */
 
 import path from "node:path";
-import { lineAtOffset, normalizeNewlines, sha256 } from "./util.js";
+import { buildLineStarts, lineAtOffsetFromStarts, normalizeNewlines, sha256 } from "./util.js";
 
 const DECLARATION_PATTERNS = {
   javascript: [
@@ -42,8 +42,18 @@ const DECLARATION_PATTERNS = {
     { kind: "function", pattern: /^(?:public\s+|private\s+|protected\s+|internal\s+|static\s+|final\s+|async\s+)*(?:[A-Za-z_][\w<>?\[\],.]*\s+)+([A-Za-z_][A-Za-z0-9_]*)\s*\(/u },
   ],
 };
+const JAVASCRIPT_REGEX_PREFIX_KEYWORDS = new Set([
+  "case", "delete", "do", "else", "in", "instanceof", "new", "return", "throw", "typeof", "void", "yield",
+]);
 
-export function findAttachedDeclaration(source, block, filePath) {
+export function createDeclarationScanContext(source) {
+  return {
+    lineStarts: buildLineStarts(source),
+    remainingScanUnits: Math.max(1, source.length * 2),
+  };
+}
+
+export function findAttachedDeclaration(source, block, filePath, scanContext = createDeclarationScanContext(source)) {
   if (block.scope !== "symbol") return null;
   const window = source.slice(block.end, block.end + 3000);
   const skipped = skipTrivia(window);
@@ -61,11 +71,12 @@ export function findAttachedDeclaration(source, block, filePath) {
     const declarationOffset = block.end + skipped;
     const signature = extractSignature(collapsed);
     const exported = isExportedDeclaration(language, match[1], signature);
-    const endOffset = findDeclarationEnd(source, declarationOffset, family);
+    const endOffset = findDeclarationEnd(source, declarationOffset, family, scanContext);
+    if (endOffset === null) return null;
     return {
       symbol: match[1],
       kind: definition.kind,
-      line: lineAtOffset(source, declarationOffset),
+      line: lineAtOffsetFromStarts(scanContext.lineStarts, declarationOffset),
       signature,
       language,
       exported,
@@ -155,8 +166,8 @@ function extractGoReceiver(candidate) {
   return (parts.at(-1) ?? "").replace(/^\*+/u, "") || null;
 }
 
-function findDeclarationEnd(source, start, family) {
-  if (family === "python") return findPythonDeclarationEnd(source, start);
+function findDeclarationEnd(source, start, family, scanContext) {
+  if (family === "python") return findPythonDeclarationEnd(source, start, scanContext);
   let state = "normal";
   let escaped = false;
   let regexCharacterClass = false;
@@ -166,6 +177,7 @@ function findDeclarationEnd(source, start, family) {
   let openedBody = false;
 
   for (let index = start; index < source.length; index += 1) {
+    if (!consumeDeclarationScan(scanContext)) return null;
     const character = source[index];
     const next = source[index + 1];
     if (state === "line-comment") {
@@ -230,15 +242,16 @@ function findDeclarationEnd(source, start, family) {
     } else if (character === ";" && !openedBody && parentheses === 0 && brackets === 0) {
       return index + 1;
     } else if (character === "\n" && !openedBody && parentheses === 0 && brackets === 0) {
-      const current = source.slice(start, index).trimEnd();
-      const nextCharacter = source.slice(index + 1).match(/^\s*(.)/u)?.[1] ?? "";
-      if (nextCharacter !== "{" && !/(?:=>|[=|&,([{])$/u.test(current)) return index;
+      const continuation = declarationContinuesBefore(source, start, index, scanContext);
+      const next = nextSignificantCharacter(source, index + 1, scanContext);
+      if (continuation === null || next.exhausted) return null;
+      if (next.character !== "{" && !continuation) return index;
     }
   }
   return source.length;
 }
 
-function findPythonDeclarationEnd(source, start) {
+function findPythonDeclarationEnd(source, start, scanContext) {
   const declarationLineStart = source.lastIndexOf("\n", start - 1) + 1;
   const baseIndent = indentationWidth(source.slice(declarationLineStart, start));
   let cursor = source.indexOf("\n", start);
@@ -248,6 +261,7 @@ function findPythonDeclarationEnd(source, start) {
   while (cursor < source.length) {
     const lineEnd = source.indexOf("\n", cursor);
     const end = lineEnd < 0 ? source.length : lineEnd + 1;
+    if (!consumeDeclarationScan(scanContext, Math.max(1, end - cursor))) return null;
     const line = source.slice(cursor, lineEnd < 0 ? source.length : lineEnd);
     if (/^\s*(?:#.*)?$/u.test(line)) {
       cursor = end;
@@ -261,6 +275,15 @@ function findPythonDeclarationEnd(source, start) {
   return source.length;
 }
 
+function consumeDeclarationScan(scanContext, units = 1) {
+  if (scanContext.remainingScanUnits < units) {
+    scanContext.remainingScanUnits = 0;
+    return false;
+  }
+  scanContext.remainingScanUnits -= units;
+  return true;
+}
+
 function indentationWidth(value) {
   let width = 0;
   for (const character of value) width += character === "\t" ? 8 - (width % 8) : 1;
@@ -268,11 +291,36 @@ function indentationWidth(value) {
 }
 
 function canStartJavaScriptRegex(source, start, offset) {
-  const prefix = source.slice(start, offset).trimEnd();
-  if (!prefix) return true;
-  const previous = prefix.at(-1);
+  let cursor = offset - 1;
+  while (cursor >= start && /\s/u.test(source[cursor])) cursor -= 1;
+  if (cursor < start) return true;
+  const previous = source[cursor];
   if (/[=(:,!&|?{};\[]/u.test(previous)) return true;
-  return /(?:^|\W)(?:case|delete|do|else|in|instanceof|new|return|throw|typeof|void|yield)\s*$/u.test(prefix);
+  if (!/[A-Za-z]/u.test(previous)) return false;
+  const wordEnd = cursor + 1;
+  while (cursor >= start && /[A-Za-z]/u.test(source[cursor])) cursor -= 1;
+  return JAVASCRIPT_REGEX_PREFIX_KEYWORDS.has(source.slice(cursor + 1, wordEnd));
+}
+
+function declarationContinuesBefore(source, start, offset, scanContext) {
+  let cursor = offset - 1;
+  while (cursor >= start && /\s/u.test(source[cursor])) {
+    if (!consumeDeclarationScan(scanContext)) return null;
+    cursor -= 1;
+  }
+  if (cursor < start) return false;
+  const character = source[cursor];
+  if (/[=|&,([{]/u.test(character)) return true;
+  return character === ">" && source[cursor - 1] === "=";
+}
+
+function nextSignificantCharacter(source, offset, scanContext) {
+  let cursor = offset;
+  while (cursor < source.length && /\s/u.test(source[cursor])) {
+    if (!consumeDeclarationScan(scanContext)) return { character: "", exhausted: true };
+    cursor += 1;
+  }
+  return { character: source[cursor] ?? "", exhausted: false };
 }
 
 function looksLikeRustCharacterLiteral(source, offset) {

@@ -77,11 +77,26 @@ export function relativePosix(root, absolutePath) {
 }
 
 export function lineAtOffset(source, offset) {
-  let line = 1;
-  for (let index = 0; index < offset; index += 1) {
-    if (source.charCodeAt(index) === 10) line += 1;
+  return lineAtOffsetFromStarts(buildLineStarts(source), offset);
+}
+
+export function buildLineStarts(source) {
+  const starts = [0];
+  for (let index = 0; index < source.length; index += 1) {
+    if (source.charCodeAt(index) === 10) starts.push(index + 1);
   }
-  return line;
+  return starts;
+}
+
+export function lineAtOffsetFromStarts(lineStarts, offset) {
+  let low = 0;
+  let high = lineStarts.length;
+  while (low < high) {
+    const middle = Math.floor((low + high) / 2);
+    if (lineStarts[middle] <= offset) low = middle + 1;
+    else high = middle;
+  }
+  return Math.max(1, low);
 }
 
 export function offsetAtLine(source, targetLine) {
