@@ -758,6 +758,90 @@
     },
     {
       "confidence": 0.85,
+      "from": "llmnav/llmnav.eval.conformance",
+      "id": "07737725791d457fa72c0be244e5138799e9c796dd7386b8aa3a1fec419995ff",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "benchmarks/conformance.js",
+        "source": "benchmarks/conformance.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.audit.coverage"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.eval.conformance",
+      "id": "4ab11f30135a7c4a38d5765125b95bfebf3c46abb161ede28d57f52d9ecb18db",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "benchmarks/conformance.js",
+        "source": "benchmarks/conformance.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.eval.measure"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.eval.conformance",
+      "id": "d15f01929a5f55d94ab153771bb57923cc3acf1650d0ea1619097a8bd22d32c5",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "benchmarks/conformance.js",
+        "source": "benchmarks/conformance.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.eval.measure"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.eval.conformance",
+      "id": "47935271e1ebb4bf8100d2f00b1f48b64c6fbcd38968baa00c3b089a4145b4f3",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "benchmarks/conformance.js",
+        "source": "benchmarks/conformance.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.index.generate"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.eval.conformance",
+      "id": "a74bc26132b3be5ff41082e39a11f921c3f29c0f9d339f57f489acf0585c17e8",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "benchmarks/conformance.js",
+        "source": "benchmarks/conformance.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.project.scan"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.eval.conformance",
+      "id": "e64073431f6d2303c23bbedbb9c90c6c72e0f2ffdb0ecbacf1027988908d7fca",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "benchmarks/conformance.js",
+        "source": "benchmarks/conformance.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.rules.validate"
+    },
+    {
+      "confidence": 0.85,
       "from": "llmnav/llmnav.eval.measure",
       "id": "919ffeb36c1d7edc9d93fbca34d2c1b9da1be952c31339b9626372493394ed90",
       "kind": "imports",
@@ -2431,6 +2515,28 @@
     {
       "definitions": [],
       "external": false,
+      "key": "llmnav/llmnav.eval.conformance",
+      "location": {
+        "declarationLine": null,
+        "endLine": 11,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "benchmarks/conformance.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Measure repository-specific navigation evidence and preserve unmeasured language gaps before stability claims.",
+      "semanticId": "llmnav.eval.conformance",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
       "key": "llmnav/llmnav.eval.measure",
       "location": {
         "declarationLine": null,
@@ -2871,11 +2977,11 @@
   ],
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "c4b7047c02d5eac1b3e2e342b77528b8b4e98d35fe7697ed31528dfe21a21662",
+  "sourceHash": "ee82c0808adbfdea73f0c1f0b4f31a41ad813c351d522a878c1618bc847561c3",
   "stats": {
-    "edgeCount": 136,
+    "edgeCount": 142,
     "importedIndexCount": 0,
-    "nodeCount": 41,
+    "nodeCount": 42,
     "unresolvedNodeCount": 0
   }
 }

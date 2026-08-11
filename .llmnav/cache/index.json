@@ -1857,7 +1857,7 @@
         "source parsing"
       ],
       "hashes": {
-        "body": "59442b11de7ed8c4ac46ba9b0725dbfc3293542efd7f8f3c7466210ab0d8f805",
+        "body": "577d2df12b89d974fc0d53e75644fba19446fe0199f4b54c080b415ce1cd8c6b",
         "semantic": "59aa3e9e793d505ecdf110fec023c201aaee0154d2f6c9cf71afe1bbf71a7be5",
         "structure": "e213e073414c75bc75df1c8669a7045096142b6c0845694191893d90bf23e3c2"
       },
@@ -1996,11 +1996,67 @@
         "coverage suggestions"
       ],
       "stability": "contract"
+    },
+    {
+      "boundaries": [],
+      "excludes": [
+        "source mutation",
+        "cross-repository score averaging"
+      ],
+      "hashes": {
+        "body": "6cb90a8c130bd6876764445820cfc6a199997f5461e80869f931d9721202aae4",
+        "semantic": "29c578f52b7de83497ab57af2c63bc020ce45955ceb80c27b9623651dd1c7358",
+        "structure": "9bd891f39e743857438a60f3c171ed0096c31166b288d89ed5ce58066f54d66a"
+      },
+      "id": "llmnav.eval.conformance",
+      "imports": [
+        "../src/audit.js",
+        "../src/evaluation.js",
+        "../src/generator.js",
+        "../src/project.js",
+        "../src/util.js",
+        "../src/validator.js",
+        "node:fs/promises",
+        "node:path"
+      ],
+      "invariant": [
+        "A passing repository cannot hide a failing repository through aggregate metrics.",
+        "Missing adoption or insufficient reviewed cases remains held rather than passing or failing."
+      ],
+      "location": {
+        "declarationLine": null,
+        "endLine": 11,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "benchmarks/conformance.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "owns": [
+        "conformance matrix validation",
+        "repository verdicts",
+        "language evidence coverage"
+      ],
+      "rel": [
+        "workflow>llmnav.eval.measure"
+      ],
+      "role": "Measure repository-specific navigation evidence and preserve unmeasured language gaps before stability claims.",
+      "scope": "module",
+      "search": [
+        "cross repository conformance",
+        "language coverage matrix",
+        "held evaluation"
+      ],
+      "stability": "architecture"
     }
   ],
   "contractFingerprints": {
     "configuration": {
-      "sha256": "2283b12870e465ee1ba97aafaf7eb79b8ef6a1da89ec7f5ba0f66fb5495363b7"
+      "sha256": "f0cae45f869b3616f7d1f7b52891d899c27b0f109fdd368715a7c4bad7254425"
     },
     "exportedApi": {
       "count": 5,
@@ -2008,9 +2064,9 @@
     },
     "schemaVersion": 1
   },
-  "generatedBy": "llmnav@0.6.4",
+  "generatedBy": "llmnav@0.6.5",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "db59dd7247fcf2dea84670eb8afefa3133710fada176e293c44cc5eb28f02ac8",
+  "sourceHash": "1df8c18df50720722b54c83f8516362d68df3eb1c746ecf643a2a52c1d889af9",
   "specVersion": "1"
 }

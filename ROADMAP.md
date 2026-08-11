@@ -77,6 +77,12 @@ Implemented:
 
 The source grammar and generated formats will be declared stable only after use across multiple TypeScript, Go, Rust, Python, and mixed-language repositories. A 1.0 release requires migration tooling, documented compatibility guarantees, benchmark fixtures with published methodology, sustained Windows and Linux verification, and no unresolved high-severity parser or transaction ambiguity.
 
+In progress:
+
+* A read-only cross-repository conformance matrix measures validation, retrieval, audit, repeatability, and cache freshness without averaging weak repositories away.
+* LLMNav and Workduck provide the first JavaScript, TypeScript, and Rust evidence.
+* Go and Python coverage remains explicitly held until reviewed annotations and task-query datasets exist.
+
 ## Non-goals
 
 LLMNav will not become a general documentation generator, a source-of-truth call graph maintained by comments, an autonomous code modification service, a hosted source-ingestion platform, or a mandatory embedding database.

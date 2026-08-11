@@ -15,6 +15,128 @@
       "sourceBytes": 1808
     },
     {
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
+              "source mutation",
+              "cross-repository score averaging"
+            ],
+            "id": "llmnav.eval.conformance",
+            "invariant": [
+              "A passing repository cannot hide a failing repository through aggregate metrics.",
+              "Missing adoption or insufficient reviewed cases remains held rather than passing or failing."
+            ],
+            "owns": [
+              "conformance matrix validation",
+              "repository verdicts",
+              "language evidence coverage"
+            ],
+            "rel": [
+              "workflow>llmnav.eval.measure"
+            ],
+            "risk": [],
+            "role": "Measure repository-specific navigation evidence and preserve unmeasured language gaps before stability claims.",
+            "scope": "module",
+            "search": [
+              "cross repository conformance",
+              "language coverage matrix",
+              "held evaluation"
+            ],
+            "stability": "architecture",
+            "unknown": []
+          },
+          "end": 631,
+          "endLine": 11,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.eval.conformance"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Measure repository-specific navigation evidence and preserve unmeasured language gaps before stability claims."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "conformance matrix validation|repository verdicts|language evidence coverage"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "source mutation|cross-repository score averaging"
+            },
+            {
+              "key": "search",
+              "line": 6,
+              "order": 4,
+              "value": "cross repository conformance|language coverage matrix|held evaluation"
+            },
+            {
+              "key": "invariant",
+              "line": 7,
+              "order": 5,
+              "value": "A passing repository cannot hide a failing repository through aggregate metrics."
+            },
+            {
+              "key": "invariant",
+              "line": 8,
+              "order": 6,
+              "value": "Missing adoption or insufficient reviewed cases remains held rather than passing or failing."
+            },
+            {
+              "key": "rel",
+              "line": 9,
+              "order": 7,
+              "value": "workflow>llmnav.eval.measure"
+            },
+            {
+              "key": "stability",
+              "line": 10,
+              "order": 8,
+              "value": "architecture"
+            }
+          ],
+          "filePath": "benchmarks/conformance.js",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.eval.conformance\nrole=Measure repository-specific navigation evidence and preserve unmeasured language gaps before stability claims.\nowns=conformance matrix validation|repository verdicts|language evidence coverage\nexcludes=source mutation|cross-repository score averaging\nsearch=cross repository conformance|language coverage matrix|held evaluation\ninvariant=A passing repository cannot hide a failing repository through aggregate metrics.\ninvariant=Missing adoption or insufficient reviewed cases remains held rather than passing or failing.\nrel=workflow>llmnav.eval.measure\nstability=architecture\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "6cb90a8c130bd6876764445820cfc6a199997f5461e80869f931d9721202aae4",
+      "declarations": [
+        null
+      ],
+      "imports": [
+        "../src/audit.js",
+        "../src/evaluation.js",
+        "../src/generator.js",
+        "../src/project.js",
+        "../src/util.js",
+        "../src/validator.js",
+        "node:fs/promises",
+        "node:path"
+      ],
+      "path": "benchmarks/conformance.js",
+      "semanticBytes": 631,
+      "sourceBytes": 8542
+    },
+    {
       "blocks": [],
       "contentHash": "26d72b1b6f0c41b368c25f6b87328275997aa92b4a3c75fa223f38e109a24433",
       "declarations": [],
@@ -25,6 +147,21 @@
       "path": "benchmarks/generation-worker.js",
       "semanticBytes": 0,
       "sourceBytes": 1552
+    },
+    {
+      "blocks": [],
+      "contentHash": "427208feeebd14f681c38c5e0096c33fef3d507f9a622adf7954ab62375880f6",
+      "declarations": [],
+      "imports": [
+        "../src/util.js",
+        "./conformance.js",
+        "node:fs/promises",
+        "node:path",
+        "node:url"
+      ],
+      "path": "benchmarks/run-conformance.js",
+      "semanticBytes": 0,
+      "sourceBytes": 1281
     },
     {
       "blocks": [],
@@ -4221,7 +4358,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "59442b11de7ed8c4ac46ba9b0725dbfc3293542efd7f8f3c7466210ab0d8f805",
+      "contentHash": "577d2df12b89d974fc0d53e75644fba19446fe0199f4b54c080b415ce1cd8c6b",
       "declarations": [
         null
       ],
@@ -4640,6 +4777,23 @@
       "path": "tests/cli.test.js",
       "semanticBytes": 0,
       "sourceBytes": 3004
+    },
+    {
+      "blocks": [],
+      "contentHash": "2298187b3aa356a733afa68e22e1d89c7f7d590561e56e77b004c42aced5bdee",
+      "declarations": [],
+      "imports": [
+        "../benchmarks/conformance.js",
+        "../src/initializer.js",
+        "node:assert/strict",
+        "node:fs/promises",
+        "node:os",
+        "node:path",
+        "node:test"
+      ],
+      "path": "tests/conformance.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 3194
     },
     {
       "blocks": [],

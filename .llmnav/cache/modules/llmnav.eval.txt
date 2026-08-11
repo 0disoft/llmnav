@@ -6,3 +6,10 @@ role Measure whether repository task queries retrieve expected semantic IDs with
 owns search regression tests, recall metrics, evaluation gates
 excludes benchmark task execution, model quality scoring
 rel workflow>llmnav.search.query
+
+@llmnav.eval.conformance
+role Measure repository-specific navigation evidence and preserve unmeasured language gaps before stability claims.
+owns conformance matrix validation, repository verdicts, language evidence coverage
+excludes source mutation, cross-repository score averaging
+invariant A passing repository cannot hide a failing repository through aggregate metrics. Missing adoption or insufficient reviewed cases remains held rather than passing or failing.
+rel workflow>llmnav.eval.measure

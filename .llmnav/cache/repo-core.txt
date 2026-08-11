@@ -145,3 +145,10 @@ owns project scan, card record assembly, source metrics
 excludes semantic validation, cache generation
 invariant Generated paths and structural metadata remain derived data and are never written into source cards.
 rel workflow>llmnav.declaration.extract, workflow>llmnav.syntax.parse
+
+@llmnav.eval.conformance
+role Measure repository-specific navigation evidence and preserve unmeasured language gaps before stability claims.
+owns conformance matrix validation, repository verdicts, language evidence coverage
+excludes source mutation, cross-repository score averaging
+invariant A passing repository cannot hide a failing repository through aggregate metrics. Missing adoption or insufficient reviewed cases remains held rather than passing or failing.
+rel workflow>llmnav.eval.measure

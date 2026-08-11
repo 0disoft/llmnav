@@ -6,6 +6,10 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 
 ## [Unreleased]
 
+### Added
+
+* Added a read-only cross-repository conformance matrix with repository-isolated validation, retrieval, audit, repeatability, cache-freshness, and held-language evidence.
+
 ## [0.6.4] — 2026-08-11
 
 ### Fixed

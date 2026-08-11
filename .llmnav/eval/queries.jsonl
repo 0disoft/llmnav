@@ -20,3 +20,4 @@
 {"query":"개인정보 내보내기 작업에서 object key를 비공개로 유지","expected":["example.privacy.export.prepare"]}
 {"query":"find important source modules that are missing llmnav cards","expected":["llmnav.audit.coverage"]}
 {"query":"bind a trusted repository root to provider neutral agent tools","expected":["llmnav.agent.provider-neutral-host"]}
+{"query":"measure cross repository language coverage without averaging failures away","expected":["llmnav.eval.conformance"]}

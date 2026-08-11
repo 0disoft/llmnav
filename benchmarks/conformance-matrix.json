@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "requiredLanguages": [
+    "javascript",
+    "typescript",
+    "rust",
+    "go",
+    "python"
+  ],
+  "repositories": [
+    {
+      "id": "llmnav",
+      "root": ".",
+      "languages": ["javascript"],
+      "minimumCases": 20,
+      "enabled": true
+    },
+    {
+      "id": "workduck",
+      "root": "../workduck",
+      "languages": ["javascript", "typescript", "rust"],
+      "minimumCases": 8,
+      "enabled": true
+    },
+    {
+      "id": "sairon",
+      "root": "../sairon",
+      "languages": ["go"],
+      "minimumCases": 8,
+      "enabled": false,
+      "holdReason": "awaiting-reviewed-llmnav-adoption"
+    },
+    {
+      "id": "ai-bom-generator",
+      "root": "../ai-bom-generator",
+      "languages": ["python"],
+      "minimumCases": 8,
+      "enabled": false,
+      "holdReason": "awaiting-reviewed-llmnav-adoption"
+    }
+  ]
+}

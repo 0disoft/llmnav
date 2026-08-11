@@ -94,6 +94,26 @@ npx llmnav eval --json
 
 Track at least Recall@1, Recall@5, and mean reciprocal rank. Record every acceptable target ID when a task has multiple valid entry points.
 
+## Cross-repository conformance matrix
+
+Run the checked-in read-only matrix from a workspace that contains the configured sibling repositories:
+
+```sh
+node benchmarks/run-conformance.js
+```
+
+Use `--matrix <path>` to select another checked-in matrix and `--output <path>` to retain a JSON report. The report schema is `benchmarks/conformance-report.schema.json`.
+
+Each repository keeps its own validation counts, retrieval thresholds, Recall@1, Recall@5, MRR, audit summary, repeatability result, and generated-cache freshness result. The harness deliberately does not average retrieval scores across repositories. A large or easy dataset must not hide a failing repository.
+
+Verdicts have asymmetric meaning:
+
+* `pass` requires valid cards, sufficient reviewed queries, repository thresholds, repeatable retrieval, and a source-current generated cache.
+* `fail` requires a reproducible validation, retrieval, repeatability, cache-freshness, or measurement failure.
+* `held` records missing adoption or insufficient reviewed cases without pretending that unmeasured language coverage passed or failed.
+
+The default matrix currently measures LLMNav and Workduck. Go and Python remain held until their candidate repositories receive reviewed cards and task-language query datasets. Matrix output is navigation evidence, not an end-to-end claim about model tokens or coding-task success.
+
 ## End-to-end agent metrics
 
 A successful deployment should reduce exploration cost without reducing task correctness.

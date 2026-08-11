@@ -42,6 +42,17 @@
     },
     {
       "match": [
+        "benchmarks/conformance.js"
+      ],
+      "name": "cross-repository conformance evaluation",
+      "requiredFields": [
+        "owns",
+        "invariant"
+      ],
+      "scope": "module"
+    },
+    {
+      "match": [
         "examples/provider-neutral-host.mjs"
       ],
       "name": "provider-neutral host boundary",

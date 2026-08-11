@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/0disoft/llmnav/benchmarks/conformance-report.schema.json",
+  "title": "LLMNav cross-repository conformance report",
+  "type": "object",
+  "required": ["schemaVersion", "matrixHash", "measuredAt", "verdict", "summary", "languages", "repositories"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "matrixHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "measuredAt": { "type": "string", "format": "date-time" },
+    "verdict": { "enum": ["pass", "fail", "held"] },
+    "summary": { "type": "object" },
+    "languages": { "type": "array" },
+    "repositories": { "type": "array" }
+  }
+}
