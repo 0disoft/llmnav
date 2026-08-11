@@ -6,6 +6,12 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 
 ## [Unreleased]
 
+### Fixed
+
+* Rejected nested symlink and junction traversal before managed cache, state, schema, and prompt-bundle filesystem operations.
+* Replaced per-marker lexical rescans with a bounded single-pass parser classification.
+* Required npm release tags to resolve to commits on the protected `origin/main` lineage.
+
 ## [0.6.2] — 2026-08-11
 
 ### Added

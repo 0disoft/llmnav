@@ -217,7 +217,7 @@ async function generateProjectLocked(root, options) {
 
     if (statHints && hintsPath) {
       try {
-        await persistStatHints(hintsPath, statHints);
+        await persistStatHints(root, hintsPath, statHints);
         statHintsPersisted = true;
       } catch (error) {
         statHintsError = error instanceof Error ? error.message : String(error);

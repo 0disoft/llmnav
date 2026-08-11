@@ -20,9 +20,14 @@ import { assertNoSymlinkTraversal, atomicWrite, readJson, readText, stableString
 const PACKAGE_ROOT = fileURLToPath(new URL("..", import.meta.url));
 
 export async function initializeProject(root, options = {}) {
-  await assertNoSymlinkTraversal(root, path.join(root, ".llmnav"), ".llmnav");
-  await mkdir(path.join(root, ".llmnav", "eval"), { recursive: true });
-  await mkdir(path.join(root, ".llmnav", "schema"), { recursive: true });
+  const controlDirectory = path.join(root, ".llmnav");
+  const evalDirectory = path.join(controlDirectory, "eval");
+  const schemaDirectory = path.join(controlDirectory, "schema");
+  await assertNoSymlinkTraversal(root, controlDirectory, ".llmnav");
+  await assertNoSymlinkTraversal(root, evalDirectory, ".llmnav/eval");
+  await assertNoSymlinkTraversal(root, schemaDirectory, ".llmnav/schema");
+  await mkdir(evalDirectory, { recursive: true });
+  await mkdir(schemaDirectory, { recursive: true });
   const repositoryId = await inferRepositoryId(root);
   const changed = [];
 
@@ -30,6 +35,7 @@ export async function initializeProject(root, options = {}) {
   config.repositoryId = repositoryId;
   config.$schema = "./schema/config.schema.json";
   await writeIfMissingOrForced(
+    root,
     path.join(root, ".llmnav", "config.json"),
     stableStringify(config),
     options.force,
@@ -38,6 +44,7 @@ export async function initializeProject(root, options = {}) {
   );
 
   await writeIfMissingOrForced(
+    root,
     path.join(root, ".llmnav", "lexicon.json"),
     stableStringify({ version: 1, aliases: {} }),
     false,
@@ -45,6 +52,7 @@ export async function initializeProject(root, options = {}) {
     ".llmnav/lexicon.json",
   );
   await writeIfMissingOrForced(
+    root,
     path.join(root, ".llmnav", "ids.jsonl"),
     "",
     false,
@@ -52,6 +60,7 @@ export async function initializeProject(root, options = {}) {
     ".llmnav/ids.jsonl",
   );
   await writeIfMissingOrForced(
+    root,
     path.join(root, ".llmnav", "order.lock"),
     "",
     false,
@@ -59,6 +68,7 @@ export async function initializeProject(root, options = {}) {
     ".llmnav/order.lock",
   );
   await writeIfMissingOrForced(
+    root,
     path.join(root, ".llmnav", "eval", "queries.jsonl"),
     '# One JSON object per line: {"query":"...","expected":["domain.feature.action"]}\n',
     false,
@@ -66,6 +76,7 @@ export async function initializeProject(root, options = {}) {
     ".llmnav/eval/queries.jsonl",
   );
   await writeIfMissingOrForced(
+    root,
     path.join(root, ".llmnav", ".gitignore"),
     "tmp/\nstate/\n.transactions/\ngeneration-transaction.json\ngeneration.lock\ngeneration.lock.release-*\n*.tmp-*\n",
     options.force,
@@ -75,6 +86,7 @@ export async function initializeProject(root, options = {}) {
 
   const schemaSource = path.join(PACKAGE_ROOT, "schema", "config.schema.json");
   const schemaTarget = path.join(root, ".llmnav", "schema", "config.schema.json");
+  await assertNoSymlinkTraversal(root, schemaTarget, ".llmnav/schema/config.schema.json");
   if (options.force || (await readText(schemaTarget, null)) === null) {
     await copyFile(schemaSource, schemaTarget);
     changed.push(".llmnav/schema/config.schema.json");
@@ -106,7 +118,8 @@ async function inferRepositoryId(root) {
   return normalized || "repository";
 }
 
-async function writeIfMissingOrForced(filePath, content, force, changed, displayPath) {
+async function writeIfMissingOrForced(root, filePath, content, force, changed, displayPath) {
+  await assertNoSymlinkTraversal(root, filePath, displayPath);
   const existing = await readText(filePath, null);
   if (existing !== null && !force) return;
   if (existing === content) return;
@@ -116,6 +129,7 @@ async function writeIfMissingOrForced(filePath, content, force, changed, display
 
 async function addPackageScripts(root) {
   const packagePath = path.join(root, "package.json");
+  await assertNoSymlinkTraversal(root, packagePath, "package.json");
   const text = await readText(packagePath, null);
   if (text === null) return false;
   const parsed = JSON.parse(text);

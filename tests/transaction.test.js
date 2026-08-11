@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -224,6 +224,22 @@ test("staging rejects artifact paths that normalize outside the cache", async (c
     /parent-directory traversal/u,
   );
   await assert.rejects(() => readFile(path.join(root, ".llmnav", "outside.txt"), "utf8"), /ENOENT/u);
+});
+
+test("staging rejects a transaction directory junction that escapes the repository", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-transaction-link-root-"));
+  const external = await mkdtemp(path.join(os.tmpdir(), "llmnav-transaction-link-external-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  context.after(() => rm(external, { recursive: true, force: true }));
+  await mkdir(path.join(root, ".llmnav"), { recursive: true });
+  await symlink(external, path.join(root, ".llmnav", ".transactions"), "junction");
+  const artifacts = new Map([[".llmnav/cache/manifest.json", '{"files":{}}\n']]);
+
+  await assert.rejects(
+    () => commitGeneratedCache(root, ".llmnav/cache", artifacts),
+    /traverses symbolic link/u,
+  );
+  assert.deepEqual(await (await import("node:fs/promises")).readdir(external), []);
 });
 
 test("a query waits for the active generator instead of recovering its journal", async (context) => {

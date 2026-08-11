@@ -16,6 +16,7 @@ import { collectSourceFiles } from "./files.js";
 import { parseLlmnavBlocks } from "./parser.js";
 import { loadRegistry } from "./registry.js";
 import {
+  assertNoSymlinkTraversal,
   atomicWrite,
   compareText,
   readJsonSafe,
@@ -157,7 +158,8 @@ export function buildFileStateFromProject(project) {
   };
 }
 
-export async function persistStatHints(hintsPath, statHints) {
+export async function persistStatHints(root, hintsPath, statHints) {
+  await assertNoSymlinkTraversal(root, hintsPath, relativePosix(root, hintsPath));
   await atomicWrite(hintsPath, stableStringify(statHints));
 }
 

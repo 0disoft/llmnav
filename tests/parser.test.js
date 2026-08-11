@@ -100,3 +100,18 @@ test("Rust character literals still hide LLMNav-looking text", () => {
   const source = `const MARKER: char = '/';\nconst TEXT: &str = "/* llmnav/1 symbol\\nid=fake.rust.card\\n*/";\n`;
   assert.deepEqual(parseLlmnavBlocks(source, "borrow.rs"), []);
 });
+
+test("parses marker-dense source with one lexical pass", () => {
+  const fake = "const value = '/* llmnav/1 symbol */';\n".repeat(20_000);
+  const source = `${fake}/* llmnav/1 module\nid=fixture.real\nrole=Own the real fixture boundary.\nstability=architecture\n*/\n`;
+  const started = process.hrtime.bigint();
+  const blocks = parseLlmnavBlocks(source, "fixture.js");
+  const elapsedMs = Number(process.hrtime.bigint() - started) / 1_000_000;
+  assert.deepEqual(blocks.map((block) => block.card.id), ["fixture.real"]);
+  assert.ok(elapsedMs < 2_000, `marker-dense parse took ${elapsedMs.toFixed(1)}ms`);
+});
+
+test("rejects source files above the parser byte budget", () => {
+  const source = "x".repeat(16 * 1024 * 1024 + 1);
+  assert.throws(() => parseLlmnavBlocks(source, "oversized.js"), /parser byte limit/u);
+});

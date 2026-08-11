@@ -351,6 +351,10 @@ For repositories with at least 50,000 scanned source bytes, LLMNav comments SHOU
 
 These are anti-bloat limits, not targets.
 
+The reference parser also rejects a single source file larger than 16 MiB and more than 10,000
+LLMNav blocks in one file. These resource budgets keep repository-controlled input from causing
+unbounded parser memory or CPU work; they do not change the `llmnav/1` comment grammar.
+
 ## Canonicalization
 
 A canonical formatter MUST refuse to erase malformed lines, unknown fields, overlapping blocks, or duplicate scalar values. Unsafe cards remain unchanged until the checker-reported issue is fixed.

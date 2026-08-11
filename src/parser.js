@@ -31,15 +31,21 @@ const BLOCK_PATTERNS = [
     terminator: "-->",
   },
 ];
+const MAX_SOURCE_BYTES = 16 * 1024 * 1024;
+const MAX_BLOCKS_PER_FILE = 10_000;
 
 export function parseLlmnavBlocks(source, filePath = "<memory>") {
+  if (Buffer.byteLength(source) > MAX_SOURCE_BYTES) {
+    throw new Error(`${filePath} exceeds the ${MAX_SOURCE_BYTES}-byte parser byte limit.`);
+  }
+  const literalMask = buildLiteralMask(source, filePath);
   const blocks = [];
   for (const definition of BLOCK_PATTERNS) {
     definition.pattern.lastIndex = 0;
     for (const match of source.matchAll(definition.pattern)) {
       const matchedRaw = match[0];
       const matchStart = match.index ?? 0;
-      if (isInsideStringLiteral(source, matchStart, filePath)) continue;
+      if (literalMask[matchStart] === 1) continue;
       const lineStart = source.lastIndexOf("\n", matchStart - 1) + 1;
       const leading = source.slice(lineStart, matchStart);
       const start = /^\s*$/u.test(leading) ? lineStart : matchStart;
@@ -63,8 +69,11 @@ export function parseLlmnavBlocks(source, filePath = "<memory>") {
     }
   }
 
-  blocks.push(...parseLineBlocks(source, filePath));
-  blocks.push(...parseUnterminatedBlockComments(source, filePath, blocks));
+  blocks.push(...parseLineBlocks(source, filePath, literalMask));
+  blocks.push(...parseUnterminatedBlockComments(source, filePath, blocks, literalMask));
+  if (blocks.length > MAX_BLOCKS_PER_FILE) {
+    throw new Error(`${filePath} exceeds the ${MAX_BLOCKS_PER_FILE}-block parser limit.`);
+  }
   blocks.sort((left, right) => left.start - right.start);
 
   const overlapping = [];
@@ -85,7 +94,7 @@ export function parseLlmnavBlocks(source, filePath = "<memory>") {
   return blocks;
 }
 
-function parseLineBlocks(source, filePath) {
+function parseLineBlocks(source, filePath, literalMask) {
   const blocks = [];
   const lines = source.split(/(?<=\n)/u);
   const offsets = [];
@@ -101,7 +110,7 @@ function parseLineBlocks(source, filePath) {
     if (!header) continue;
 
     const start = offsets[index];
-    if (isInsideStringLiteral(source, start, filePath)) continue;
+    if (literalMask[start] === 1) continue;
     const indent = header[1];
     const prefix = header[2];
     const scope = header[3].toLowerCase();
@@ -154,13 +163,13 @@ function parseLineBlocks(source, filePath) {
   return blocks;
 }
 
-function parseUnterminatedBlockComments(source, filePath, parsedBlocks) {
+function parseUnterminatedBlockComments(source, filePath, parsedBlocks, literalMask) {
   const blocks = [];
   for (const definition of BLOCK_PATTERNS) {
     definition.opening.lastIndex = 0;
     for (const match of source.matchAll(definition.opening)) {
       const tokenStart = match.index ?? 0;
-      if (isInsideStringLiteral(source, tokenStart, filePath)) continue;
+      if (literalMask[tokenStart] === 1) continue;
       if (parsedBlocks.some((block) => tokenStart >= block.start && tokenStart < block.end)) continue;
       const bodyStart = tokenStart + match[0].length;
       if (source.indexOf(definition.terminator, bodyStart) >= 0) continue;
@@ -192,15 +201,17 @@ function parseUnterminatedBlockComments(source, filePath, parsedBlocks) {
   return blocks;
 }
 
-function isInsideStringLiteral(source, targetOffset, filePath) {
+function buildLiteralMask(source, filePath) {
   const extension = filePath.toLowerCase().match(/\.[a-z0-9]+$/u)?.[0] ?? "";
   const hashComments = [".py", ".rb", ".sh", ".bash", ".zsh"].includes(extension);
   const dashComments = extension === ".sql";
   const tripleQuotes = extension === ".py";
   let state = "normal";
   let escaped = false;
+  const mask = new Uint8Array(source.length);
 
-  for (let index = 0; index < targetOffset; index += 1) {
+  for (let index = 0; index < source.length; index += 1) {
+    mask[index] = state === "normal" ? 0 : 1;
     const character = source[index];
     const next = source[index + 1];
     const nextTwo = source.slice(index, index + 3);
@@ -284,7 +295,7 @@ function isInsideStringLiteral(source, targetOffset, filePath) {
     }
   }
 
-  return state !== "normal";
+  return mask;
 }
 
 function looksLikeRustCharacterLiteral(source, offset) {

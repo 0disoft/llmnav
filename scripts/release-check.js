@@ -19,6 +19,8 @@ if (packageJson.publishConfig?.access !== "public") errors.push("publishConfig.a
 if (packageJson.publishConfig?.provenance !== false) errors.push("publishConfig.provenance must be false for a private source repository");
 if (!/^\s*contents:\s*write\s*$/mu.test(releaseWorkflow)) errors.push("release workflow must grant contents: write for GitHub Release creation");
 if (!/^\s*id-token:\s*write\s*$/mu.test(releaseWorkflow)) errors.push("release workflow must retain id-token: write for npm Trusted Publishing");
+if (!/^\s*fetch-depth:\s*0\s*$/mu.test(releaseWorkflow)) errors.push("release workflow must fetch full history for protected main lineage verification");
+if (!/LLMNAV_RELEASE_BRANCH:\s*origin\/main/u.test(releaseWorkflow)) errors.push("release workflow must verify tags against origin/main");
 if (!/\bgh api\b[\s\S]*\breleases\/tags\//u.test(releaseWorkflow)) errors.push("release workflow must check for an existing GitHub Release by tag");
 if (!/\bgh release create\b/u.test(releaseWorkflow)) errors.push("release workflow must create a GitHub Release after npm publication");
 if (!/GH_TOKEN:\s*\$\{\{\s*github\.token\s*\}\}/u.test(releaseWorkflow)) errors.push("release workflow must bind GitHub's scoped token explicitly");

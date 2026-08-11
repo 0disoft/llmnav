@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
@@ -81,4 +81,21 @@ export const fixture = true;
   const content = await readFile(bundlePath, "utf8");
   await writeFile(bundlePath, `${content.trimEnd()}  \n`);
   await assert.rejects(() => loadPromptPrefixBundle(root), /does not match manifest/u);
+});
+
+test("rejects a prompt cache junction that escapes the repository", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-prompt-link-root-"));
+  const external = await mkdtemp(path.join(os.tmpdir(), "llmnav-prompt-link-external-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  context.after(() => rm(external, { recursive: true, force: true }));
+  await writeFile(path.join(root, "package.json"), '{"name":"prompt-link-fixture"}\n');
+  await mkdir(path.join(root, ".llmnav"), { recursive: true });
+  await writeFile(path.join(root, ".llmnav", "config.json"), JSON.stringify({
+    repositoryId: "prompt-link-fixture",
+    generation: { cacheDirectory: ".llmnav/cache" },
+  }));
+  await symlink(external, path.join(root, ".llmnav", "cache"), "junction");
+  await writeFile(path.join(external, "prompt-prefix.json"), "external secret\n");
+
+  await assert.rejects(() => loadPromptPrefixBundle(root), /traverses symbolic link/u);
 });

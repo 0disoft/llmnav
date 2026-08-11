@@ -509,7 +509,7 @@
         "agent search decisions"
       ],
       "hashes": {
-        "body": "71b8734216caf8dc232f385a9ef8c30cbdeebd1bcd6b927c33bef37dcc101b82",
+        "body": "89f593a06a30bb73ffb9b3fd91460a69ec38648823df673e63c9ecb13f1d8781",
         "semantic": "7052622c9732ab29e37c3ab87f848188e931f601684e811e7bb8adef31fbfe85",
         "structure": "9e2888cf59a38a89a022ac7c3564ca169dc9a16d8aa4902928f30fde5a01233a"
       },
@@ -577,7 +577,7 @@
         "automatic annotation"
       ],
       "hashes": {
-        "body": "4797249ef453fa02afff5119d0803189e9d024e8faf3eb8ee07a03942bd4f7ec",
+        "body": "31053d6acd6eb6e5248a53296158bfc68ceccaf4cbf849341d719bc228a20daa",
         "semantic": "32b959f42c7911d86ba137ce781e1b28f71b1d6f089e5ad0533bfe7e6a7e5956",
         "structure": "abe92e87f0692370a352bfd2b4227d079aa8e1c55f8bd08f60e815d202cd259b"
       },
@@ -735,7 +735,7 @@
         "repository search"
       ],
       "hashes": {
-        "body": "7851609eece2fac89b83a571e558590e2b08f30114fd86ec6d4c1afc0b520fb5",
+        "body": "9389827d0b4d41ff51d75bf4fbde7340fa9cf8fb15c075d820dcceb210f0b131",
         "semantic": "6fe19b8340b0f5a5ba89cf953692dfd02bb937b04718dfc19ea14b936de5fb80",
         "structure": "976d8125d028a5788c1f5b74b77a43ba06dcd0b54702a2ddf99c64b436c7896d"
       },
@@ -825,7 +825,7 @@
         "cache directory commit"
       ],
       "hashes": {
-        "body": "2495c7a3918da1364d498e08ed36fe9efb5070a1ce8f31ff533c472319008c05",
+        "body": "572247d10f12968b8972b3e30a8986f4361011ea9cfc7b99abbc0f74c17b3c29",
         "semantic": "26e0abf92c39ff07a7eb622d795d5ecbc83c7704b7c1ed09cd3ad339e3c04865",
         "structure": "cb4cf2b5526a51212f9549bcb2f66aee1929b4303528fc8c5bd4ff5e94273a40"
       },
@@ -924,7 +924,7 @@
         "source indexing"
       ],
       "hashes": {
-        "body": "44516b7d5ca52c2d72efbcec9a6f8152e92f04cc463294addc6ee2cac7a79d95",
+        "body": "2040349e787b6483f8e4f103e559dd9740b8112d50afd0e9bbdb82dc8393a4b4",
         "semantic": "ce2cf8943f71d053f8cba914886bae20316e5b6106857f52abc4d8a59afb1ef1",
         "structure": "4757e9c563d3e3df79c0ab74a51d13e30ab74a72e266eb5ac3d2f1aaa54396d5"
       },
@@ -1354,7 +1354,7 @@
         "source discovery"
       ],
       "hashes": {
-        "body": "5e4154811522805c7a4fb44a2dc52a33dacd4c28472d2bf8c09d5693866f2664",
+        "body": "2abf520313d8b847a217445d5a4cbd4108a1e0f3fd55bdc3014657bd93331f7c",
         "semantic": "017f482c228aa90c44fa6dc5c28dc170cd578730c84d09de7b1d13b2616f065a",
         "structure": "5c48a37ebcabf7c03bdc14cd543f0f689c40c663b3f519f7eac9ed83bda231d6"
       },
@@ -1857,7 +1857,7 @@
         "source parsing"
       ],
       "hashes": {
-        "body": "e8572cfda88aeff8dc7fa2af79020542606f7aaff8f6be5e338a10e715fdf560",
+        "body": "d0eea8cec45027b89c1f73306222521d5b7c8ff816b1f7c7aa8398ed2890b07e",
         "semantic": "59aa3e9e793d505ecdf110fec023c201aaee0154d2f6c9cf71afe1bbf71a7be5",
         "structure": "e213e073414c75bc75df1c8669a7045096142b6c0845694191893d90bf23e3c2"
       },
@@ -2008,9 +2008,9 @@
     },
     "schemaVersion": 1
   },
-  "generatedBy": "llmnav@0.6.2",
+  "generatedBy": "llmnav@0.6.3",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "872dbbca94bf110ec61a22711c53ae412a5da038312aedc4ecca38c038bb5682",
+  "sourceHash": "b4fa2dbd8ba21a0482eab521e0a22d33583d91d6f636d9ebb97db0ec18da4b5f",
   "specVersion": "1"
 }

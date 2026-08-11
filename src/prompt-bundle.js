@@ -12,7 +12,7 @@ stability=architecture
 
 import path from "node:path";
 import { loadConfig } from "./config.js";
-import { approximateTokens, compareText, readText, sha256, stableJson, stableStringify, toPosix } from "./util.js";
+import { approximateTokens, assertNoSymlinkTraversal, compareText, readText, sha256, stableJson, stableStringify, toPosix } from "./util.js";
 
 export const PROMPT_BUNDLE_SCHEMA_VERSION = 1;
 
@@ -62,7 +62,11 @@ export function isCompatiblePromptPrefixBundle(bundle, repositoryId = undefined)
 export async function loadPromptPrefixBundle(root) {
   const { config } = await loadConfig(root);
   const relativePath = `${toPosix(config.generation.cacheDirectory).replace(/\/+$/u, "")}/prompt-prefix.json`;
-  const content = await readText(path.join(root, relativePath), "");
+  const bundlePath = path.join(root, relativePath);
+  const manifestPath = path.join(root, config.generation.cacheDirectory, "manifest.json");
+  await assertNoSymlinkTraversal(root, bundlePath, relativePath);
+  await assertNoSymlinkTraversal(root, manifestPath, `${config.generation.cacheDirectory}/manifest.json`);
+  const content = await readText(bundlePath, "");
   if (!content) throw new Error(`Missing generated prompt bundle ${relativePath}.`);
   let bundle;
   try {
@@ -73,7 +77,7 @@ export async function loadPromptPrefixBundle(root) {
   if (!isCompatiblePromptPrefixBundle(bundle, config.repositoryId)) {
     throw new Error(`Incompatible generated prompt bundle ${relativePath}.`);
   }
-  const manifestContent = await readText(path.join(root, config.generation.cacheDirectory, "manifest.json"), "");
+  const manifestContent = await readText(manifestPath, "");
   const manifest = manifestContent ? JSON.parse(manifestContent) : null;
   if (manifest?.files?.[relativePath] !== sha256(content)) throw new Error(`Prompt bundle hash does not match manifest.json.`);
   return bundle;

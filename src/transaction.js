@@ -47,6 +47,7 @@ export async function acquireGenerationLock(root, options = {}) {
   const controlDirectory = path.join(root, ".llmnav");
   const lockPath = path.join(controlDirectory, "generation.lock");
   await assertNoSymlinkTraversal(root, controlDirectory, ".llmnav");
+  await assertNoSymlinkTraversal(root, lockPath, ".llmnav/generation.lock");
   await mkdir(controlDirectory, { recursive: true });
   const ownerId = options.ownerId ?? createTransactionId();
   const timeoutMs = options.timeoutMs ?? DEFAULT_LOCK_TIMEOUT_MS;
@@ -95,6 +96,8 @@ export async function commitGeneratedCache(root, cacheDirectory, artifacts, opti
   const transactionsDirectory = path.join(controlDirectory, ".transactions");
   const journalPath = path.join(controlDirectory, "generation-transaction.json");
   await assertNoSymlinkTraversal(root, controlDirectory, ".llmnav");
+  await assertNoSymlinkTraversal(root, transactionsDirectory, ".llmnav/.transactions");
+  await assertNoSymlinkTraversal(root, journalPath, ".llmnav/generation-transaction.json");
   await assertNoSymlinkTraversal(root, cachePath, cacheRelative);
   const recovery = await recoverGenerationTransaction(root, {
     cacheDirectory: cacheRelative,
@@ -106,6 +109,7 @@ export async function commitGeneratedCache(root, cacheDirectory, artifacts, opti
   const transactionPath = path.join(transactionsDirectory, transactionId);
   const stagePath = path.join(transactionPath, "stage");
   const backupPath = path.join(transactionPath, "backup");
+  await assertNoSymlinkTraversal(root, transactionPath, relativePosix(root, transactionPath));
   const hadExistingCacheAtStart = await pathExists(cachePath);
   let controlRecords = [];
   await mkdir(stagePath, { recursive: true });
@@ -218,6 +222,7 @@ export async function recoverGenerationTransaction(root, options = {}) {
   const controlDirectory = path.join(root, ".llmnav");
   await assertNoSymlinkTraversal(root, controlDirectory, ".llmnav");
   const journalPath = path.join(controlDirectory, "generation-transaction.json");
+  await assertNoSymlinkTraversal(root, journalPath, ".llmnav/generation-transaction.json");
   const journal = await readJson(journalPath, null);
   if (!journal) return { recovered: false, action: "none" };
   validateJournal(root, journal, options.cacheDirectory);
