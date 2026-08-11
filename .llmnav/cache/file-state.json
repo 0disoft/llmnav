@@ -935,7 +935,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "6fbac217252aa7eeff5517801e02fcd754abf577b5c697514c01363522ec9dd0",
+      "contentHash": "a67d616458b02896f1762986a6e9a588169762d1a8c286c449e34ac1b5bd146e",
       "declarations": [],
       "imports": [
         "../src/spec.js",
@@ -943,7 +943,7 @@
       ],
       "path": "scripts/release-check.js",
       "semanticBytes": 0,
-      "sourceBytes": 1892
+      "sourceBytes": 2722
     },
     {
       "blocks": [],

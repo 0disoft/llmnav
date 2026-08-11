@@ -31,7 +31,7 @@ npm run release:check
 
 ## 3. Configure npm authentication
 
-The supplied release workflow uses GitHub's OIDC token through npm Trusted Publishers. The GitHub source repository is private, so the workflow explicitly disables provenance; npm accepts provenance only from public source repositories. If the repository becomes public, enable provenance in both `package.json` and the workflow after a successful release check.
+The supplied release workflow uses GitHub's OIDC token through npm Trusted Publishers. The GitHub source repository is private, so the workflow explicitly disables provenance; npm accepts provenance only from public source repositories. If the repository becomes public, enable provenance in both `package.json` and the workflow after a successful release check. The same tag workflow creates an idempotent GitHub Release only after the npm registry check or publication succeeds.
 
 The workflow references a GitHub environment named `npm`. Create that environment for release protection, or remove the `environment` line when no environment gate is desired.
 
@@ -65,7 +65,7 @@ git tag v0.6.0
 git push origin v0.6.0
 ```
 
-The release workflow rejects a tag that does not match `package.json`. If the exact version is already present in npm, the workflow succeeds only when the registry tarball integrity matches the tagged package; a mismatched package fails closed.
+The release workflow rejects a tag that does not match `package.json`. If the exact version is already present in npm, the workflow succeeds only when the registry tarball integrity matches the tagged package; a mismatched package fails closed. It then reuses an existing GitHub Release for the tag or creates one with generated release notes. Registry, GitHub API, and Release creation errors other than an expected missing Release fail the workflow.
 
 ## 6. Verify from a clean directory
 

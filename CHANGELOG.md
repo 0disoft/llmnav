@@ -15,6 +15,7 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 ### Fixed
 
 * Stopped classifying high-fan-in domain contract hubs as broad utilities solely because they export many declarations.
+* Made tag-driven publication create an idempotent GitHub Release after npm integrity verification or publication succeeds.
 
 ## [0.6.1] — 2026-08-10
 
