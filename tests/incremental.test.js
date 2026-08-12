@@ -1,9 +1,10 @@
 import assert from "node:assert/strict";
-import { mkdtemp, readFile, rm, utimes } from "node:fs/promises";
+import { mkdtemp, readFile, rm, utimes, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { generateProject } from "../src/generator.js";
+import { SOURCE_INDEXER_VERSION } from "../src/incremental.js";
 import { changeSyntheticCard, createSyntheticProject } from "./helpers/synthetic.js";
 
 
@@ -60,4 +61,30 @@ test("file and card indexes update incrementally without changing deterministic 
   assert.equal(await readFile(path.join(root, ".llmnav", "cache", "search-index.json"), "utf8"), incrementalSearch);
   assert.equal(fullCheck.artifacts.get(".llmnav/cache/graph.json"), incrementalGraph);
   assert.equal(fullCheck.artifacts.get(".llmnav/cache/graph-state.json"), incrementalGraphState);
+});
+
+test("incremental generation discards file state from an older source indexer", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-incremental-version-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  const fixture = await createSyntheticProject(root, { fileCount: 4, cardsPerFile: 2 });
+
+  const first = await generateProject(root);
+  assert.equal(first.ok, true);
+
+  const statePath = path.join(root, ".llmnav", "cache", "file-state.json");
+  const state = JSON.parse(await readFile(statePath, "utf8"));
+  state.indexerVersion = SOURCE_INDEXER_VERSION - 1;
+  await writeFile(statePath, `${JSON.stringify(state, null, 2)}\n`);
+
+  const rebuilt = await generateProject(root);
+  assert.equal(rebuilt.ok, true);
+  assert.equal(rebuilt.incremental.files.parsedFiles, fixture.fileCount);
+  assert.equal(rebuilt.incremental.files.reusedFiles, 0);
+  assert.equal(rebuilt.incremental.files.cardsParsed, fixture.cardCount);
+
+  const persisted = JSON.parse(await readFile(statePath, "utf8"));
+  assert.equal(persisted.indexerVersion, SOURCE_INDEXER_VERSION);
+  const fullCheck = await generateProject(root, { incremental: false, check: true });
+  assert.equal(fullCheck.ok, true, fullCheck.changedFiles.join(", "));
+  assert.equal(fullCheck.index.sourceHash, rebuilt.index.sourceHash);
 });
