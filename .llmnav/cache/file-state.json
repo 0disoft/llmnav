@@ -3177,7 +3177,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "275bc40168df0f7691de79bd650570fc1b82887f589b82c193f56a780faee8aa",
+      "contentHash": "bd4be96c8fea74090e5aaf5962c47cbe00fd94c438cc104f685578a4dfe8c4a3",
       "declarations": [
         null
       ],
@@ -4358,7 +4358,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "577d2df12b89d974fc0d53e75644fba19446fe0199f4b54c080b415ce1cd8c6b",
+      "contentHash": "984e5321984c5037767451372acde3b62d3aaf8e08f8fb8c941f7374593b4d9a",
       "declarations": [
         null
       ],
@@ -4977,10 +4977,11 @@
     },
     {
       "blocks": [],
-      "contentHash": "734844792909e7817912a75bc8993c04bf9e9df465114c6ce721782651461335",
+      "contentHash": "41cbb0fd5c370a2486d1599632e3264d0484bf88acd621c4127920509b74166e",
       "declarations": [],
       "imports": [
         "../src/generator.js",
+        "../src/incremental.js",
         "./helpers/synthetic.js",
         "node:assert/strict",
         "node:fs/promises",
@@ -4990,7 +4991,7 @@
       ],
       "path": "tests/incremental.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 3780
+      "sourceBytes": 5191
     },
     {
       "blocks": [],
@@ -5220,6 +5221,6 @@
       "sourceBytes": 10231
     }
   ],
-  "indexerVersion": 5,
+  "indexerVersion": 6,
   "schemaVersion": 1
 }

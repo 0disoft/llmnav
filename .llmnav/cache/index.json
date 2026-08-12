@@ -825,7 +825,7 @@
         "cache directory commit"
       ],
       "hashes": {
-        "body": "275bc40168df0f7691de79bd650570fc1b82887f589b82c193f56a780faee8aa",
+        "body": "bd4be96c8fea74090e5aaf5962c47cbe00fd94c438cc104f685578a4dfe8c4a3",
         "semantic": "26e0abf92c39ff07a7eb622d795d5ecbc83c7704b7c1ed09cd3ad339e3c04865",
         "structure": "cb4cf2b5526a51212f9549bcb2f66aee1929b4303528fc8c5bd4ff5e94273a40"
       },
@@ -1857,7 +1857,7 @@
         "source parsing"
       ],
       "hashes": {
-        "body": "577d2df12b89d974fc0d53e75644fba19446fe0199f4b54c080b415ce1cd8c6b",
+        "body": "984e5321984c5037767451372acde3b62d3aaf8e08f8fb8c941f7374593b4d9a",
         "semantic": "59aa3e9e793d505ecdf110fec023c201aaee0154d2f6c9cf71afe1bbf71a7be5",
         "structure": "e213e073414c75bc75df1c8669a7045096142b6c0845694191893d90bf23e3c2"
       },
@@ -2064,9 +2064,9 @@
     },
     "schemaVersion": 1
   },
-  "generatedBy": "llmnav@0.6.5",
+  "generatedBy": "llmnav@0.6.6",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "1df8c18df50720722b54c83f8516362d68df3eb1c746ecf643a2a52c1d889af9",
+  "sourceHash": "e4c64e8d92cd29bef9c1ab6b2b425d37084550712b976d8ee533e59009883782",
   "specVersion": "1"
 }
