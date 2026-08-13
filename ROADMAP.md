@@ -89,7 +89,7 @@ The source grammar and generated formats will be declared stable only after use 
 
 In progress:
 
-* Generated-format migration tooling is implemented for the current public formats; compatibility guarantees still need a documented support and deprecation policy.
+* Generated-format migration tooling and the public support and deprecation policy are implemented for the current formats.
 * A read-only cross-repository conformance matrix measures validation, retrieval, audit, repeatability, and cache freshness without averaging weak repositories away.
 * LLMNav, Workduck, Sairon, and AI BOM Generator currently pass repository-isolated conformance checks across JavaScript, TypeScript, Rust, Go, and Python.
 * The current evidence covers 4 repositories and 5 required languages with no held or failed repository, while 1.0 still requires sustained Windows and Linux verification and published benchmark methodology.

@@ -306,3 +306,5 @@ The typed `llmnav/examples/provider-neutral-host.mjs` export composes these APIs
 ## Compatibility boundary
 
 The public API follows package semantic versioning. `index.json` schemaVersion 1 and `llmnav/1` source syntax remain compatible. Contract fingerprints are optional additive index fields. `search-index.json`, `file-state.json`, `graph-state.json`, transaction journals, and performance metrics retain their own schema or implementation versions.
+
+See [Compatibility and deprecation policy](compatibility.md) for the pre-1.0 stability classes, removal window, migration guarantees, and security exception.
