@@ -6,6 +6,13 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 
 ## [Unreleased]
 
+## [0.7.0] — 2026-08-13
+
+### Added
+
+* Added `llmnav migrate --check/--write` and `migrateProject` to report generated-format compatibility and apply full transactional upgrades from canonical source.
+* Added migration regression coverage for read-only planning, idempotent writes, validation blocking, and transaction rollback.
+
 ## [0.6.6] — 2026-08-12
 
 ### Added

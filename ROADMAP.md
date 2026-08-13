@@ -73,12 +73,23 @@ Implemented:
 * path-specific coverage-rule suggestions without automatic source annotation
 * audit guidance in generated agent instructions and package scripts
 
+## 0.7 — generated-format migration
+
+Implemented:
+
+* read-only compatibility reports for the primary index and generated accelerators
+* full migration plans reconstructed from canonical repository source
+* explicit transactional writes with staging verification, rollback, and interrupted-process recovery
+* validation blocking before mutation and idempotent repeated writes
+* public CLI, ESM API, TypeScript declarations, and migration documentation
+
 ## 1.0 criteria
 
 The source grammar and generated formats will be declared stable only after use across multiple TypeScript, Go, Rust, Python, and mixed-language repositories. A 1.0 release requires migration tooling, documented compatibility guarantees, benchmark fixtures with published methodology, sustained Windows and Linux verification, and no unresolved high-severity parser or transaction ambiguity.
 
 In progress:
 
+* Generated-format migration tooling is implemented for the current public formats; compatibility guarantees still need a documented support and deprecation policy.
 * A read-only cross-repository conformance matrix measures validation, retrieval, audit, repeatability, and cache freshness without averaging weak repositories away.
 * LLMNav, Workduck, Sairon, and AI BOM Generator currently pass repository-isolated conformance checks across JavaScript, TypeScript, Rust, Go, and Python.
 * The current evidence covers 4 repositories and 5 required languages with no held or failed repository, while 1.0 still requires sustained Windows and Linux verification and published benchmark methodology.

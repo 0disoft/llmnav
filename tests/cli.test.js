@@ -20,6 +20,10 @@ test("rejects values attached to boolean flags", async () => {
   await assert.rejects(() => runCli(["generate", "--check=true"]), /Flag --check does not accept a value/u);
 });
 
+test("rejects unknown migration options", async () => {
+  await assert.rejects(() => runCli(["migrate", "--force"]), /Unknown option --force for command migrate/u);
+});
+
 
 test("CLI process uses exit status 2 for usage errors", () => {
   const result = spawnSync(process.execPath, ["bin/llmnav.js", "query", "task", "--tp", "5"], {

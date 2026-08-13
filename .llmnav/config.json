@@ -18,6 +18,7 @@
         "src/doctor.js",
         "src/files.js",
         "src/formatter.js",
+        "src/migration.js",
         "src/project.js",
         "src/registry.js",
         "src/spec.js"

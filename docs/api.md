@@ -229,6 +229,7 @@ The package exports versioned generated-format constants:
 import {
   CONTRACT_FINGERPRINT_SCHEMA_VERSION,
   FILE_STATE_SCHEMA_VERSION,
+  MIGRATION_REPORT_SCHEMA_VERSION,
   SEARCH_INDEX_ENCODING,
   SEARCH_INDEX_SCHEMA_VERSION,
   SEARCH_SHARD_ENCODING,
@@ -239,6 +240,8 @@ import {
   SARIF_VERSION,
 } from "llmnav";
 ```
+
+`migrateProject(root, { write: false })` returns a schemaVersion 1 compatibility report and a full-regeneration plan without committing generated artifacts. With `{ write: true }`, it applies a required upgrade through the same generation lock and recoverable transaction used by `generateProject`. Source validation errors stop the operation before mutation, and successful repeated writes are no-ops.
 
 `diagnosticsToSarif(diagnostics)` maps existing diagnostics to a deterministic SARIF 2.1.0 object without discovering or mutating diagnostics.
 

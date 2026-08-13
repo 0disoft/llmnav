@@ -13,3 +13,10 @@ owns project scan, card record assembly, source metrics
 excludes semantic validation, cache generation
 invariant Generated paths and structural metadata remain derived data and are never written into source cards.
 rel workflow>llmnav.declaration.extract, workflow>llmnav.syntax.parse
+
+@llmnav.project.migrate
+role Plan and apply safe generated-format upgrades from canonical repository source.
+owns migration planning, format compatibility reporting, full transactional regeneration
+excludes source-card rewriting, semantic ID reassignment
+invariant Check mode never commits generated artifacts. Write mode stops before mutation when canonical source validation fails.
+rel workflow>llmnav.index.generate, workflow>llmnav.index.transaction

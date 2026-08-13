@@ -1,23 +1,24 @@
 # Gradual migration
 
-## Upgrade to 0.5
+## Upgrade to 0.7
 
 No source-card migration is required. Keep every `llmnav/1` comment and the existing `.llmnav/cache/index.json` consumer contract.
 
 Upgrade and regenerate:
 
 ```sh
-npm install --save-dev llmnav@^0.6.0
+npm install --save-dev llmnav@^0.7.0
 npx llmnav init --agents all
-npx llmnav generate
+npx llmnav migrate --check
+npx llmnav migrate --write
 npx llmnav doctor
 ```
 
-The regeneration preserves the schemaVersion 1 primary index and existing graph artifacts, then adds deterministic `prompt-prefix.json`. Initialization refreshes the managed agent protocol so structured-tool hosts learn the trusted-root boundary. Volatile `state/`, `.transactions/`, and `generation-transaction.json` remain ignored.
+The migration planner preserves the `llmnav/1` source comments and schemaVersion 1 primary-index contract. It reports incompatible or missing generated formats before applying a full transactional regeneration from canonical source. Initialization refreshes the managed agent protocol so structured-tool hosts learn the trusted-root boundary. Volatile `state/`, `.transactions/`, and `generation-transaction.json` remain ignored.
 
-Review `generate --json` during the first upgrade. Existing cards are reported as added only when no previous compatible primary index exists. The prompt-prefix artifact appears in affected catalogs when its bytes change. `LNV009` remains a non-failing contract-fingerprint review signal.
+Review `migrate --check --json` during the first upgrade. Exit status 1 means generated formats need migration or source validation prevents a safe write. `migrate --write` stages and verifies a complete replacement before swapping the cache, and a repeated write is a no-op. Existing cards are reported as added only when no previous compatible primary index exists. `LNV009` remains a non-failing contract-fingerprint review signal.
 
-Do not delete `index.json`, rewrite semantic IDs, or copy generated paths or graph edges into comments. v0.5 tool schemas, prompt partitions, editor diagnostics, and host examples are additive; no source-card migration is required.
+Do not delete `index.json`, rewrite semantic IDs, or copy generated paths or graph edges into comments. The migration command never edits source cards or the semantic ID registry; it upgrades disposable generated formats from their canonical inputs.
 
 ## Do not annotate the whole repository
 

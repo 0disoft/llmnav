@@ -39,6 +39,7 @@ import { getAgentToolDefinitions } from "./agent-protocol.js";
 import { loadPromptPrefixBundle } from "./prompt-bundle.js";
 import { diagnosticsToEditor, getEditorIntegration } from "./editor.js";
 import { AUDIT_PRIORITIES, auditHasFindings, auditProject } from "./audit.js";
+import { migrateProject } from "./migration.js";
 
 const VALUE_OPTIONS = new Set(["--root", "--format", "--top", "--depth", "--budget", "--max-edges", "--agents", "--file", "--fail-on", "--output"]);
 
@@ -53,6 +54,7 @@ const COMMAND_OPTIONS = Object.freeze({
   context: new Set(["--depth", "--budget", "--max-edges", "--root", "--json"]),
   eval: new Set(["--file", "--top", "--root", "--json"]),
   doctor: new Set(["--root", "--json"]),
+  migrate: new Set(["--check", "--write", "--root", "--json"]),
   audit: new Set(["--root", "--json", "--summary", "--fail-on", "--output"]),
   spec: new Set(["--root", "--json"]),
   tools: new Set(["--json"]),
@@ -100,6 +102,8 @@ export async function runCli(argv) {
       return runEval(root, args, json);
     case "doctor":
       return runDoctor(root, json);
+    case "migrate":
+      return runMigrate(root, args, json);
     case "audit":
       return runAudit(root, args, json);
     case "spec":
@@ -291,6 +295,26 @@ async function runDoctor(root, json) {
   if (json) console.log(JSON.stringify(result, null, 2));
   else {
     for (const check of result.checks) console.log(`${check.ok ? "ok" : "fail"} ${check.name}: ${check.message}`);
+  }
+  return result.ok ? 0 : 1;
+}
+
+async function runMigrate(root, args, json) {
+  if (hasFlag(args, "--check") && hasFlag(args, "--write")) {
+    throw usageError("migrate accepts either --check or --write, not both.");
+  }
+  const result = await migrateProject(root, { write: hasFlag(args, "--write") });
+  if (json) {
+    console.log(JSON.stringify(result, null, 2));
+  } else {
+    for (const format of result.formats) {
+      console.log(`${format.status} ${format.id}: ${format.path}${format.detail ? ` (${format.detail})` : ""}`);
+    }
+    if (result.diagnostics.length > 0) printDiagnostics(result.diagnostics, "text");
+    if (result.ok && result.applied) console.log(`Migrated ${result.changedFiles.length} generated file(s) transactionally.`);
+    else if (result.ok) console.log("Generated LLMNav formats are current.");
+    else if (result.required && result.mode === "check") console.log("Migration is required. Run llmnav migrate --write after reviewing this plan.");
+    else if (result.required) console.error("Migration was not applied because source validation failed.");
   }
   return result.ok ? 0 : 1;
 }
@@ -492,6 +516,7 @@ Usage
   llmnav context <semantic-id> [--depth 1] [--budget 2500] [--max-edges 24]
   llmnav eval [--file path] [--top 5]
   llmnav doctor
+  llmnav migrate [--check|--write]
   llmnav audit [--summary] [--output path] [--fail-on none|high|medium|low]
   llmnav spec
   llmnav tools [--json]

@@ -1,4 +1,4 @@
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -64,6 +64,17 @@ if (!result.ok || result.data[0]?.id !== "auth.session.rotate") process.exit(1);
   }
   run(process.execPath, [cli, "check", "--root", project], project);
   run(process.execPath, [cli, "generate", "--check", "--root", project], project);
+  const fileStatePath = path.join(project, ".llmnav", "cache", "file-state.json");
+  const fileState = JSON.parse(await readFile(fileStatePath, "utf8"));
+  fileState.indexerVersion -= 1;
+  await writeFile(fileStatePath, `${JSON.stringify(fileState, null, 2)}\n`);
+  const migrationCheck = runStatus(process.execPath, [cli, "migrate", "--check", "--root", project, "--json"], project);
+  if (migrationCheck.status !== 1 || JSON.parse(migrationCheck.stdout).required !== true) {
+    throw new Error(`Installed migration check did not report the stale file state: ${migrationCheck.stdout}${migrationCheck.stderr}`);
+  }
+  const migration = JSON.parse(run(process.execPath, [cli, "migrate", "--write", "--root", project, "--json"], project));
+  if (!migration.ok || !migration.applied) throw new Error(`Installed migration failed: ${JSON.stringify(migration)}`);
+  run(process.execPath, [cli, "migrate", "--check", "--root", project], project);
   run(process.execPath, [cli, "doctor", "--root", project, "--json"], project);
 
   console.log(JSON.stringify({
@@ -90,4 +101,14 @@ function run(command, args, cwd) {
 
 function runNpm(args, cwd) {
   return run(process.execPath, [npmCli, ...args], cwd);
+}
+
+function runStatus(command, args, cwd) {
+  return spawnSync(command, args, {
+    cwd,
+    encoding: "utf8",
+    maxBuffer: 64 * 1024 * 1024,
+    env: { ...process.env, npm_config_update_notifier: "false" },
+    stdio: ["ignore", "pipe", "pipe"],
+  });
 }

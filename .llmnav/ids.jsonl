@@ -40,3 +40,4 @@
 {"id":"llmnav.agent.provider-neutral-host","state":"active"}
 {"id":"llmnav.audit.coverage","state":"active"}
 {"id":"llmnav.eval.conformance","state":"active"}
+{"id":"llmnav.project.migrate","state":"active"}

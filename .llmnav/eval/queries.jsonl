@@ -21,3 +21,4 @@
 {"query":"find important source modules that are missing llmnav cards","expected":["llmnav.audit.coverage"]}
 {"query":"bind a trusted repository root to provider neutral agent tools","expected":["llmnav.agent.provider-neutral-host"]}
 {"query":"measure cross repository language coverage without averaging failures away","expected":["llmnav.eval.conformance"]}
+{"query":"check and transactionally upgrade incompatible generated cache formats","expected":["llmnav.project.migrate"]}

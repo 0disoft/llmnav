@@ -49,6 +49,7 @@ export {
 } from "./contracts.js";
 export { findAttachedDeclaration, extractImports } from "./declaration.js";
 export { doctorProject } from "./doctor.js";
+export { MIGRATION_REPORT_SCHEMA_VERSION, migrateProject } from "./migration.js";
 export { evaluateProject } from "./evaluation.js";
 export { collectSourceFiles, findProjectRoot } from "./files.js";
 export { formatProject } from "./formatter.js";

@@ -465,6 +465,20 @@
     {
       "confidence": 0.85,
       "from": "llmnav/llmnav.cli.dispatch",
+      "id": "f861a2c587e34a04a3c01ec686a070a3fa841310ced8f831448646fb2843d75a",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/cli.js",
+        "source": "src/cli.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.project.migrate"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.cli.dispatch",
       "id": "d210fce81eccc67f6e3588265fc217010bab18a93f7cab6a8e1bbf707b4d08e6",
       "kind": "imports",
       "provenance": {
@@ -1525,6 +1539,132 @@
         "type": "local-import"
       },
       "to": "llmnav/llmnav.spec.contract"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.project.migrate",
+      "id": "177ce702fc7fa61f036b2317be30d53c08cf6279cf1b2ea2e71acffbd4021267",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/migration.js",
+        "source": "src/migration.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.agent.prompt-bundle"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.project.migrate",
+      "id": "a9b3296c462ce968f183445c0581c1a356daf22d954e8657bd387fb976ae12c9",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/migration.js",
+        "source": "src/migration.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.config.load"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.project.migrate",
+      "id": "2ffde6b53a393f0e998c26a264519e7c12025e02f0f97aafafd6a4a2164af32b",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/migration.js",
+        "source": "src/migration.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.graph.generate"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.project.migrate",
+      "id": "a9ef4e1b76215ecad423396c98fb7dc9c9139af27dba582a873b1af2eb21e305",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/migration.js",
+        "source": "src/migration.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.index.generate"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.project.migrate",
+      "id": "27dd108995899b78aefd9a147cd0f40cd73e29ccacc763ee78791da305ef7bd6",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/migration.js",
+        "source": "src/migration.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.index.generate"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.project.migrate",
+      "id": "5a805d4051ab55023008fca970d1241d6a00a5fae8c0732d544526945bb1baea",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/migration.js",
+        "source": "src/migration.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.index.incremental"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.project.migrate",
+      "id": "586662851484237b3e2142e4186a8e868340d18be352a48dd2d9dcaeb40f7825",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/migration.js",
+        "source": "src/migration.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.index.inverted"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.project.migrate",
+      "id": "a5d8d4dc5a229e6e7436425e1b7e3ee92efa7c13764dda7801cc12484a0dfcf7",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/migration.js",
+        "source": "src/migration.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.index.search-shards"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.project.migrate",
+      "id": "38677fcb72c0b099da14d39817fa07779a6a8bafa28b770f7af0da308ac45fe8",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/migration.js",
+        "source": "src/migration.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.index.transaction"
     },
     {
       "confidence": 0.85,
@@ -2757,6 +2897,28 @@
     {
       "definitions": [],
       "external": false,
+      "key": "llmnav/llmnav.project.migrate",
+      "location": {
+        "declarationLine": null,
+        "endLine": 12,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/migration.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Plan and apply safe generated-format upgrades from canonical repository source.",
+      "semanticId": "llmnav.project.migrate",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
       "key": "llmnav/llmnav.project.scan",
       "location": {
         "declarationLine": null,
@@ -2977,11 +3139,11 @@
   ],
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "ee82c0808adbfdea73f0c1f0b4f31a41ad813c351d522a878c1618bc847561c3",
+  "sourceHash": "e51e0443a03ebb92dfe4d3d7c3cd86b9acab6934d3b545181d630bc47e75a20a",
   "stats": {
-    "edgeCount": 142,
+    "edgeCount": 152,
     "importedIndexCount": 0,
-    "nodeCount": 42,
+    "nodeCount": 43,
     "unresolvedNodeCount": 0
   }
 }

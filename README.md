@@ -179,6 +179,7 @@ Line-comment cards require an explicit terminator and work with `//`, `#`, and `
 | `llmnav context` | Build a bounded context bundle around one ID |
 | `llmnav eval` | Run repository-specific search regression queries |
 | `llmnav doctor` | Verify installation, cache integrity, transaction recovery, and drift |
+| `llmnav migrate` | Check or transactionally apply generated-format upgrades from canonical source |
 | `llmnav spec` | Print source-spec vocabularies and key order |
 | `llmnav tools` | Print stable provider-neutral agent tool schemas |
 | `llmnav bundle` | Inspect the generated prompt-prefix cache partitions |
@@ -291,7 +292,7 @@ The project uses the Node.js standard library and built-in test runner. There is
 
 ## Status
 
-LLMNav is an experimental protocol and a usable v0.6 CLI. The source format remains `llmnav/1`; npm package changes and source-grammar changes are versioned independently.
+LLMNav is an experimental protocol and a usable v0.7 CLI. The source format remains `llmnav/1`; npm package changes and source-grammar changes are versioned independently.
 
 ## License
 

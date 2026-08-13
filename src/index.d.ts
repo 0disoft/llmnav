@@ -561,6 +561,27 @@ export interface GenerationResult {
   transaction: TransactionResult;
 }
 
+export interface MigrationFormatRecord {
+  id: string;
+  path: string;
+  status: "current" | "missing" | "incompatible";
+  expected: string;
+  detail: string | null;
+}
+
+export interface MigrationResult {
+  schemaVersion: 1;
+  ok: boolean;
+  mode: "check" | "write";
+  required: boolean;
+  applied: boolean;
+  changedFiles: string[];
+  formats: MigrationFormatRecord[];
+  previousFormats?: MigrationFormatRecord[];
+  diagnostics: Diagnostic[];
+  transaction: TransactionResult;
+}
+
 export interface EvaluationResult {
   ok: boolean;
   errors: string[];
@@ -588,6 +609,7 @@ export const AGENT_OPERATION_SCHEMA_VERSION: 1;
 export const AGENT_TOOL_SCHEMA_VERSION: 1;
 export const BOUNDARY_KINDS: readonly DetectedBoundary["kind"][];
 export const GRAPH_INPUT_SCHEMA_VERSION: 1;
+export const MIGRATION_REPORT_SCHEMA_VERSION: 1;
 export const EDITOR_DIAGNOSTIC_SCHEMA_VERSION: 1;
 export const EDITOR_INTEGRATION_SCHEMA_VERSION: 1;
 export const GRAPH_SCHEMA_VERSION: 1;
@@ -663,6 +685,7 @@ export function auditHasFindings(result: AuditResult, minimumPriority?: AuditPri
 export function findAttachedDeclaration(source: string, block: LlmnavBlock, filePath: string): Declaration | null;
 export function extractImports(source: string, filePath: string): string[];
 export function doctorProject(root: string): Promise<{ ok: boolean; checks: Array<{ name: string; ok: boolean; message: string }> }>;
+export function migrateProject(root: string, options?: { write?: boolean; failpoint?: string; renameOptions?: Record<string, unknown>; lockOptions?: Record<string, unknown>; onTransactionPhase?: (phase: string) => void | Promise<void> }): Promise<MigrationResult>;
 export function evaluateProject(root: string, options?: { top?: number; file?: string }): Promise<EvaluationResult>;
 export function collectSourceFiles(root: string, config: LlmnavConfig, requestedPaths?: string[]): Promise<string[]>;
 export function findProjectRoot(start?: string): Promise<string>;

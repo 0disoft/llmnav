@@ -212,6 +212,19 @@ Checks:
 
 `doctor` may perform transaction recovery, but it does not regenerate stale cache content.
 
+## `llmnav migrate`
+
+```sh
+llmnav migrate [--check] [--json]
+llmnav migrate --write [--json]
+```
+
+The default and `--check` modes inspect the primary index, search accelerator, file state, graph, graph state, prompt-prefix bundle, and manifest against the formats supported by the installed LLMNav version. They also perform a full source reconstruction in check mode. No generated artifacts are committed. Exit status 1 means migration is required or source validation blocks a safe migration.
+
+`--write` first builds the same plan from canonical source. If source validation succeeds and migration is required, it performs a full regeneration through the normal generation lock, staging verification, directory transaction, rollback, and interrupted-process recovery boundaries. It never rewrites source cards or reassigns semantic IDs. Repeating `--write` after a successful migration makes no changes and exits successfully.
+
+`--check` and `--write` are mutually exclusive. Review JSON `formats`, `changedFiles`, and `diagnostics` before applying an upgrade in automation.
+
 ## `llmnav spec`
 
 ```sh

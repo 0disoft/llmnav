@@ -394,9 +394,9 @@
         "index persistence format"
       ],
       "hashes": {
-        "body": "86b3a62841176a386eb15a87cc7c7ad2a3c44a909b4476dbf616950413b6033b",
+        "body": "119fbc69035c51c051b8d7ae17f2aabdb792f5780159426684051a42385a5c5e",
         "semantic": "f4671d61fc8164fc24498faa91ba84f777e28a7f325750991908542867a69b6e",
-        "structure": "29495abcc3dcefadd2c8eb6cc2514f01eed0f6a893658809b567a2def19117b3"
+        "structure": "d07095544a74a9bf34d1256f116457d0d9ca43cf06a4beb579eabf9df6471424"
       },
       "id": "llmnav.cli.dispatch",
       "imports": [
@@ -411,6 +411,7 @@
         "./graph-input.js",
         "./graph.js",
         "./initializer.js",
+        "./migration.js",
         "./project.js",
         "./prompt-bundle.js",
         "./sarif.js",
@@ -1857,7 +1858,7 @@
         "source parsing"
       ],
       "hashes": {
-        "body": "984e5321984c5037767451372acde3b62d3aaf8e08f8fb8c941f7374593b4d9a",
+        "body": "28db9cb81d2941756b5216bf4fc22fbd7c9cf21eb7a0d03a6431f9b601874ee8",
         "semantic": "59aa3e9e793d505ecdf110fec023c201aaee0154d2f6c9cf71afe1bbf71a7be5",
         "structure": "e213e073414c75bc75df1c8669a7045096142b6c0845694191893d90bf23e3c2"
       },
@@ -2052,11 +2053,69 @@
         "held evaluation"
       ],
       "stability": "architecture"
+    },
+    {
+      "boundaries": [],
+      "excludes": [
+        "source-card rewriting",
+        "semantic ID reassignment"
+      ],
+      "hashes": {
+        "body": "65e755e8e1c5ddcba744df9bac7dc6d452b14e7ab723517450e3b22f2d0989ce",
+        "semantic": "494a51c075eee00a0da948bbc268d3ca4af5485d1a6739fd415fec556ed2af82",
+        "structure": "1f0740f8cce65a89e82be3ea0f8b91121413c9dab6ed23ade2c1bd717d37781d"
+      },
+      "id": "llmnav.project.migrate",
+      "imports": [
+        "./config.js",
+        "./generator.js",
+        "./graph.js",
+        "./incremental.js",
+        "./inverted-index.js",
+        "./prompt-bundle.js",
+        "./search-shards.js",
+        "./util.js",
+        "node:path"
+      ],
+      "invariant": [
+        "Check mode never commits generated artifacts.",
+        "Write mode stops before mutation when canonical source validation fails."
+      ],
+      "location": {
+        "declarationLine": null,
+        "endLine": 12,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/migration.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "owns": [
+        "migration planning",
+        "format compatibility reporting",
+        "full transactional regeneration"
+      ],
+      "rel": [
+        "workflow>llmnav.index.generate",
+        "workflow>llmnav.index.transaction"
+      ],
+      "role": "Plan and apply safe generated-format upgrades from canonical repository source.",
+      "scope": "module",
+      "search": [
+        "llmnav migrate",
+        "cache format upgrade",
+        "migration dry run"
+      ],
+      "stability": "contract"
     }
   ],
   "contractFingerprints": {
     "configuration": {
-      "sha256": "f0cae45f869b3616f7d1f7b52891d899c27b0f109fdd368715a7c4bad7254425"
+      "sha256": "e0ebcd5be3695b839a6b2dcd98c5764adc2c804a245c4ec63e691c82928cd708"
     },
     "exportedApi": {
       "count": 5,
@@ -2064,9 +2123,9 @@
     },
     "schemaVersion": 1
   },
-  "generatedBy": "llmnav@0.6.6",
+  "generatedBy": "llmnav@0.7.0",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "e4c64e8d92cd29bef9c1ab6b2b425d37084550712b976d8ee533e59009883782",
+  "sourceHash": "3845c9348223ca57aa638c483f209b3e6050cdf1610f1489783ca2c66b0efeff",
   "specVersion": "1"
 }

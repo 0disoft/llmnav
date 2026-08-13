@@ -30,7 +30,7 @@
     ],
     "volatileContextAfter": true
   },
-  "bundleHash": "543256611ac716b03dd0c544fd6e4884a849973b88edb72addbac05b388f9a2a",
+  "bundleHash": "a4be6c4f5359b112c5b9e5ca5557b2da7ada3d1baa004bce71194d217c08dd5d",
   "partitions": [
     {
       "cacheBoundaryAfter": true,
@@ -179,10 +179,10 @@
     {
       "cacheBoundaryAfter": true,
       "cacheScope": "module",
-      "content": "llmnav-catalog/1 repository=llmnav catalog=llmnav.project\nRead semantic cards before opening source. Resolve current paths and signatures with llmnav query or show.\n\n@llmnav.project.initialize\nrole Create a repository's LLMNav configuration, registry, schemas, agent instructions, and initial index.\nowns project bootstrap, configuration templates, initial generation\nexcludes package installation, automatic annotation\nrel workflow>llmnav.agent.install, workflow>llmnav.index.generate\n\n@llmnav.project.scan\nrole Scan project sources into semantic card and file records with declarations, imports, and content hashes.\nowns project scan, card record assembly, source metrics\nexcludes semantic validation, cache generation\ninvariant Generated paths and structural metadata remain derived data and are never written into source cards.\nrel workflow>llmnav.declaration.extract, workflow>llmnav.syntax.parse\n",
-      "contentHash": "f79d86e06b87a237c3a58d060d0fdb5b2306b2c05506453bee6e5b9af2c8a9a7",
+      "content": "llmnav-catalog/1 repository=llmnav catalog=llmnav.project\nRead semantic cards before opening source. Resolve current paths and signatures with llmnav query or show.\n\n@llmnav.project.initialize\nrole Create a repository's LLMNav configuration, registry, schemas, agent instructions, and initial index.\nowns project bootstrap, configuration templates, initial generation\nexcludes package installation, automatic annotation\nrel workflow>llmnav.agent.install, workflow>llmnav.index.generate\n\n@llmnav.project.scan\nrole Scan project sources into semantic card and file records with declarations, imports, and content hashes.\nowns project scan, card record assembly, source metrics\nexcludes semantic validation, cache generation\ninvariant Generated paths and structural metadata remain derived data and are never written into source cards.\nrel workflow>llmnav.declaration.extract, workflow>llmnav.syntax.parse\n\n@llmnav.project.migrate\nrole Plan and apply safe generated-format upgrades from canonical repository source.\nowns migration planning, format compatibility reporting, full transactional regeneration\nexcludes source-card rewriting, semantic ID reassignment\ninvariant Check mode never commits generated artifacts. Write mode stops before mutation when canonical source validation fails.\nrel workflow>llmnav.index.generate, workflow>llmnav.index.transaction\n",
+      "contentHash": "649356718de76413b388cb123996f4996916c1d179a37295012ec389928e71ea",
       "contentType": "text/plain",
-      "estimatedTokens": 226,
+      "estimatedTokens": 340,
       "id": "module:llmnav.project"
     },
     {
