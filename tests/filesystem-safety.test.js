@@ -1,9 +1,10 @@
 import assert from "node:assert/strict";
-import { mkdir, mkdtemp, readdir, rename, rm, symlink, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, readdir, rename, rm, symlink, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { persistStatHints } from "../src/incremental.js";
+import { formatProject } from "../src/formatter.js";
 import { initializeProject } from "../src/initializer.js";
 import { ensureActiveIds, loadRegistry } from "../src/registry.js";
 import { loadSearchData } from "../src/search.js";
@@ -67,4 +68,33 @@ test("registry APIs reject junctions and caller-supplied paths outside the repos
     /does not belong to the requested project root/u,
   );
   assert.deepEqual(await readdir(linkedExternal), []);
+});
+
+test("formatter rejects a parent-directory junction swap before committing source", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-format-race-root-"));
+  const external = await mkdtemp(path.join(os.tmpdir(), "llmnav-format-race-external-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  context.after(() => rm(external, { recursive: true, force: true }));
+  await writeFile(path.join(root, "package.json"), '{"name":"format-race"}\n');
+  await mkdir(path.join(root, "src"), { recursive: true });
+  await writeFile(
+    path.join(root, "src", "source.js"),
+    "/* llmnav/1 symbol\nsearch=cache migration|format race\nid=format.race\nrole=Reject directory replacement before formatting source.\nstability=contract\n*/\nexport function source() {}\n",
+  );
+  await initializeProject(root, { agents: ["none"] });
+  const originalDirectory = path.join(root, "src-original");
+
+  await assert.rejects(
+    () => formatProject(root, {
+      atomicWriteOptions: {
+        beforeCommit: async () => {
+          await rename(path.join(root, "src"), originalDirectory);
+          await symlink(external, path.join(root, "src"), "junction");
+        },
+      },
+    }),
+    /traverses symbolic link|parent directory changed/u,
+  );
+  assert.deepEqual(await readdir(external), []);
+  assert.match(await readFile(path.join(originalDirectory, "source.js"), "utf8"), /search=cache migration\|format race\nid=format\.race/u);
 });

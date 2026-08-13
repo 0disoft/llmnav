@@ -123,7 +123,7 @@ async function writeIfMissingOrForced(root, filePath, content, force, changed, d
   const existing = await readText(filePath, null);
   if (existing !== null && !force) return;
   if (existing === content) return;
-  await atomicWrite(filePath, content);
+  await atomicWrite(root, filePath, content);
   changed.push(displayPath);
 }
 
@@ -147,6 +147,6 @@ async function addPackageScripts(root) {
     parsed.scripts[name] = command;
     changed = true;
   }
-  if (changed) await atomicWrite(packagePath, `${JSON.stringify(parsed, null, 2)}\n`);
+  if (changed) await atomicWrite(root, packagePath, `${JSON.stringify(parsed, null, 2)}\n`);
   return changed;
 }

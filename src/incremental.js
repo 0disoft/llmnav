@@ -165,7 +165,7 @@ export function buildFileStateFromProject(project) {
 
 export async function persistStatHints(root, hintsPath, statHints) {
   await assertNoSymlinkTraversal(root, hintsPath, relativePosix(root, hintsPath));
-  await atomicWrite(hintsPath, stableStringify(statHints));
+  await atomicWrite(root, hintsPath, stableStringify(statHints));
 }
 
 export function renderFileState(fileState) {

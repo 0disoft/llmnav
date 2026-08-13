@@ -152,7 +152,7 @@ export async function commitGeneratedCache(root, cacheDirectory, artifacts, opti
       controlArtifacts: controlRecords,
       phase: "prepared",
     };
-    await atomicWrite(journalPath, stableStringify(journal));
+    await atomicWrite(root, journalPath, stableStringify(journal));
     await invokeFailpoint("after-journal", options);
 
     if (hadExistingCache) {
@@ -160,19 +160,19 @@ export async function commitGeneratedCache(root, cacheDirectory, artifacts, opti
     }
     await moveControlArtifactsToBackup(root, controlRecords, options.renameOptions);
     journal = { ...journal, phase: "old-moved" };
-    await atomicWrite(journalPath, stableStringify(journal));
+    await atomicWrite(root, journalPath, stableStringify(journal));
     await invokeFailpoint("after-cache-moved", options);
 
     await renameWithRetry(stagePath, cachePath, options.renameOptions);
     await installControlArtifacts(root, controlRecords, options.renameOptions);
     journal = { ...journal, phase: "new-installed" };
-    await atomicWrite(journalPath, stableStringify(journal));
+    await atomicWrite(root, journalPath, stableStringify(journal));
     await verifyCommittedCache(cachePath, cacheRelative);
     await verifyControlArtifacts(root, controlRecords);
     await invokeFailpoint("after-new-installed", options);
 
     journal = { ...journal, phase: "committed" };
-    await atomicWrite(journalPath, stableStringify(journal));
+    await atomicWrite(root, journalPath, stableStringify(journal));
     if (hadExistingCache) await removeWithRetry(backupPath, options.renameOptions);
     await removeWithRetry(transactionPath, options.renameOptions);
     await removeWithRetry(journalPath, options.renameOptions);

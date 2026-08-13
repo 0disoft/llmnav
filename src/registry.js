@@ -79,7 +79,7 @@ export async function ensureActiveIds(root, registry, ids) {
   }
   await assertNoSymlinkTraversal(root, registryPath, ".llmnav/ids.jsonl");
   const { records, changed } = mergeActiveIds(registry, ids);
-  if (changed) await atomicWrite(registryPath, renderRegistryRecords(records));
+  if (changed) await atomicWrite(root, registryPath, renderRegistryRecords(records));
   return { records, changed };
 }
 

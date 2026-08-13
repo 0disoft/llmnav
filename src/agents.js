@@ -42,19 +42,19 @@ export async function installAgentInstructions(root, adapters = ["agents"]) {
     if (adapter === "agents") {
       const target = path.join(root, "AGENTS.md");
       await assertNoSymlinkTraversal(root, target, "AGENTS.md");
-      if (await upsertMarkdown(target, "# Repository instructions", AGENT_PROTOCOL)) {
+      if (await upsertMarkdown(root, target, "# Repository instructions", AGENT_PROTOCOL)) {
         changed.push("AGENTS.md");
       }
     } else if (adapter === "claude") {
       const target = path.join(root, "CLAUDE.md");
       await assertNoSymlinkTraversal(root, target, "CLAUDE.md");
-      if (await upsertMarkdown(target, "# Claude Code instructions", AGENT_PROTOCOL)) {
+      if (await upsertMarkdown(root, target, "# Claude Code instructions", AGENT_PROTOCOL)) {
         changed.push("CLAUDE.md");
       }
     } else if (adapter === "copilot") {
       const target = path.join(root, ".github", "copilot-instructions.md");
       await assertNoSymlinkTraversal(root, target, ".github/copilot-instructions.md");
-      if (await upsertMarkdown(target, "# GitHub Copilot instructions", AGENT_PROTOCOL)) {
+      if (await upsertMarkdown(root, target, "# GitHub Copilot instructions", AGENT_PROTOCOL)) {
         changed.push(".github/copilot-instructions.md");
       }
     } else if (adapter === "cursor") {
@@ -63,7 +63,7 @@ export async function installAgentInstructions(root, adapters = ["agents"]) {
       const content = `---\ndescription: Use LLMNav before broad codebase exploration\nalwaysApply: true\n---\n\n${AGENT_PROTOCOL}\n`;
       const existing = await readText(target, "");
       if (existing !== content) {
-        await atomicWrite(target, content);
+        await atomicWrite(root, target, content);
         changed.push(".cursor/rules/llmnav.mdc");
       }
     }
@@ -73,7 +73,7 @@ export async function installAgentInstructions(root, adapters = ["agents"]) {
   await assertNoSymlinkTraversal(root, canonicalPath, ".llmnav/AGENT_INSTRUCTIONS.md");
   const canonical = `# LLMNav agent protocol\n\n${AGENT_PROTOCOL}\n`;
   if ((await readText(canonicalPath, "")) !== canonical) {
-    await atomicWrite(canonicalPath, canonical);
+    await atomicWrite(root, canonicalPath, canonical);
     changed.push(".llmnav/AGENT_INSTRUCTIONS.md");
   }
   return changed;
@@ -102,7 +102,7 @@ function adapterUsageError(message) {
   return error;
 }
 
-async function upsertMarkdown(filePath, title, block) {
+async function upsertMarkdown(root, filePath, title, block) {
   await mkdir(path.dirname(filePath), { recursive: true });
   const existing = await readText(filePath, "");
   let next;
@@ -124,6 +124,6 @@ async function upsertMarkdown(filePath, title, block) {
     next = `${existing.trimEnd()}\n\n${block}\n`;
   }
   if (next === existing) return false;
-  await atomicWrite(filePath, next);
+  await atomicWrite(root, filePath, next);
   return true;
 }

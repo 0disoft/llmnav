@@ -27,7 +27,7 @@ export async function formatProject(root, options = {}) {
     errors.push(...result.errors.map((error) => ({ file: relativePath, ...error })));
     if (!result.changed) continue;
     changedFiles.push(relativePath);
-    if (!options.check) await atomicWrite(filePath, result.source);
+    if (!options.check) await atomicWrite(root, filePath, result.source, options.atomicWriteOptions);
   }
   const ok = errors.length === 0 && (options.check ? changedFiles.length === 0 : true);
   return { ok, changedFiles, errors };

@@ -6,6 +6,12 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 
 ## [Unreleased]
 
+## [0.7.1] — 2026-08-13
+
+### Fixed
+
+* Revalidated managed-write parent identity and symbolic-link traversal immediately before atomic replacement, preventing a concurrent directory swap from redirecting source formatting or control-file writes outside the repository.
+
 ## [0.7.0] — 2026-08-13
 
 ### Added

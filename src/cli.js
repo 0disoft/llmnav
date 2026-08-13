@@ -339,7 +339,7 @@ async function runAudit(root, args, json) {
     ? { schemaVersion: result.schemaVersion, repositoryId: result.repositoryId, summary: result.summary, failOn }
     : report;
   if (outputPath) {
-    await atomicWrite(outputPath, `${JSON.stringify(selectedReport, null, 2)}\n`);
+    await atomicWrite(root, outputPath, `${JSON.stringify(selectedReport, null, 2)}\n`);
   }
   if (json) {
     console.log(JSON.stringify(outputPath

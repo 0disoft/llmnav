@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { lstat, mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
+import { lstat, mkdir, readFile, realpath, rename, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 export function normalizeNewlines(value) {
@@ -137,15 +137,38 @@ export async function readJsonSafe(filePath, fallback = null) {
   }
 }
 
-export async function atomicWrite(filePath, content) {
-  await mkdir(path.dirname(filePath), { recursive: true });
+export async function atomicWrite(root, filePath, content, options = {}) {
+  const parent = path.dirname(filePath);
+  const label = options.label ?? relativePosix(root, filePath);
+  await assertNoSymlinkTraversal(root, filePath, label);
+  await mkdir(parent, { recursive: true });
+  const parentIdentity = await directoryIdentity(root, parent, label);
   const temporaryPath = `${filePath}.tmp-${process.pid}-${Math.random().toString(16).slice(2)}`;
-  await writeFile(temporaryPath, content, "utf8");
+  await writeFile(temporaryPath, content, { encoding: "utf8", flag: "wx" });
   try {
+    await options.beforeCommit?.({ filePath, temporaryPath });
+    await assertNoSymlinkTraversal(root, filePath, label);
+    const currentIdentity = await directoryIdentity(root, parent, label);
+    if (currentIdentity !== parentIdentity) throw new Error(`${label} parent directory changed during atomic write.`);
     await rename(temporaryPath, filePath);
   } catch (error) {
-    await rm(temporaryPath, { force: true });
+    if (await parentHasIdentity(root, parent, parentIdentity)) await rm(temporaryPath, { force: true });
     throw error;
+  }
+}
+
+async function directoryIdentity(root, directory, label) {
+  await assertNoSymlinkTraversal(root, directory, label);
+  const [details, canonical] = await Promise.all([lstat(directory), realpath(directory)]);
+  if (!details.isDirectory()) throw new Error(`${label} parent is not a directory.`);
+  return `${details.dev}:${details.ino}:${path.normalize(canonical)}`;
+}
+
+async function parentHasIdentity(root, parent, expected) {
+  try {
+    return (await directoryIdentity(root, parent, parent)) === expected;
+  } catch {
+    return false;
   }
 }
 
