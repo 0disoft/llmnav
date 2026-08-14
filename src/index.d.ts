@@ -371,6 +371,11 @@ export interface ProjectRecord {
   declaration: Declaration | null;
 }
 
+export interface ModuleResolution {
+  schemaVersion: 1;
+  goModules: Array<{ directory: string; modulePath: string }>;
+}
+
 export interface ScannedProject {
   root: string;
   config: LlmnavConfig;
@@ -381,6 +386,7 @@ export interface ScannedProject {
   registry: Registry;
   sourceBytes: number;
   semanticBytes: number;
+  moduleResolution?: ModuleResolution;
   graphInputs?: GraphInputIndex[];
 }
 

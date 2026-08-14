@@ -16,6 +16,7 @@ import { createDeclarationScanContext, findAttachedDeclaration, extractImports }
 import { collectSourceFiles } from "./files.js";
 import { parseLlmnavBlocks } from "./parser.js";
 import { loadRegistry } from "./registry.js";
+import { loadModuleResolution } from "./module-resolution.js";
 import { relativePosix, sha256 } from "./util.js";
 
 export async function scanProject(root, options = {}) {
@@ -64,6 +65,7 @@ export async function scanProject(root, options = {}) {
   }
 
   const registry = await loadRegistry(root);
+  const moduleResolution = await loadModuleResolution(root, fileRecords);
   return {
     root,
     config,
@@ -72,6 +74,7 @@ export async function scanProject(root, options = {}) {
     fileRecords,
     records,
     registry,
+    moduleResolution,
     sourceBytes,
     semanticBytes,
   };

@@ -6,6 +6,12 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 
 ## [Unreleased]
 
+## [0.7.3] — 2026-08-14
+
+### Fixed
+
+* Resolved repository-local Go module imports for annotation audit fan-in and repository graph edges, grouped Go audit candidates by package, recognized `cmd/*/main.go` entrypoints, suppressed `_test.go` support files, and invalidated graph partitions when module resolution changes.
+
 ## [0.7.2] — 2026-08-13
 
 ### Added

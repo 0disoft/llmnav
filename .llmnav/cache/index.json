@@ -826,15 +826,16 @@
         "cache directory commit"
       ],
       "hashes": {
-        "body": "ad2f1f1c60dc064f3c13b48c4ddc69e221150e80619c5ecea81bb1434ace684c",
+        "body": "a09084d98d4fb6046f03487131ab36efb153dc850b1d68ca1a8bdb1f917a50b9",
         "semantic": "26e0abf92c39ff07a7eb622d795d5ecbc83c7704b7c1ed09cd3ad339e3c04865",
-        "structure": "cb4cf2b5526a51212f9549bcb2f66aee1929b4303528fc8c5bd4ff5e94273a40"
+        "structure": "f99d4a0e388f36d5ad8435fe295befb0e0f0e13b96109fd0af76f55791605104"
       },
       "id": "llmnav.index.incremental",
       "imports": [
         "./config.js",
         "./declaration.js",
         "./files.js",
+        "./module-resolution.js",
         "./parser.js",
         "./registry.js",
         "./util.js",
@@ -1063,7 +1064,7 @@
         "source annotations"
       ],
       "hashes": {
-        "body": "85b77c0123d1ad0b4f198223b1e9daad7d7be25f98abcb41263c7f846e4f28d2",
+        "body": "6a44422eff84c612d54acc480e0c83deb7d05da9cc733abac84476e935f88e75",
         "semantic": "05b9a89c21c75a447ec5ccb5e1276cc44e5ef096919c4fa904051730a2f3cfbb",
         "structure": "99e265a2351e72cb35a2d433f0b51d2d691b205e3fdd70de478d69339f8e28ef"
       },
@@ -1250,12 +1251,13 @@
         "workspace file discovery"
       ],
       "hashes": {
-        "body": "d31b5c6af0a4e070e0f2dd5d7c3a201dd1be0ce67d6838d1c138ba7ae6547660",
+        "body": "35a71c6ad87bfe7ca340d0ca8909a2d7dd1b8efbc25d45e06ac740371f0f3f82",
         "semantic": "bb6801e1103867969a01e5e720cb08620729878eb217d100aa9241187c7b64f3",
-        "structure": "5727708db742e90ac4d89ceffc8b13070c5d14dc3157a60380de83de814c1d80"
+        "structure": "e0239b242c94a7dcd9b023d0115600dae25a5b35028dec461a1dcb5ce6f1f23a"
       },
       "id": "llmnav.graph.generate",
       "imports": [
+        "./module-resolution.js",
         "./util.js",
         "node:path"
       ],
@@ -1651,15 +1653,16 @@
         "cache generation"
       ],
       "hashes": {
-        "body": "921ca7967ba0a91bd7aeeb36f71655cdae4a47a8b1ad28e08a020485ebf9bf25",
+        "body": "4d977b144b43cc041e53364f82a49bae32b40c3f0f1ed156b4e0edbac8bb5405",
         "semantic": "c7cfa511ec9a14754b58e0f03bae113bd850ef9c716034a56d82449368d41af2",
-        "structure": "37799232756be192540532a9a5b2529da30a762b6c095f55c7dbdc41d89f737a"
+        "structure": "319c51444edb1fd99265dacf4aa5fb1ec7060819fa6180dfef1da0ae9c608bd4"
       },
       "id": "llmnav.project.scan",
       "imports": [
         "./config.js",
         "./declaration.js",
         "./files.js",
+        "./module-resolution.js",
         "./parser.js",
         "./registry.js",
         "./util.js",
@@ -1858,7 +1861,7 @@
         "source parsing"
       ],
       "hashes": {
-        "body": "e49b4aed5c12b1bbbdf284733218c965050ed7c309b4883eee1ed0efe9091d2a",
+        "body": "132453a524efb8caee1de97423eeee2979169fd8bd49907e0a1ef82cc562cae2",
         "semantic": "59aa3e9e793d505ecdf110fec023c201aaee0154d2f6c9cf71afe1bbf71a7be5",
         "structure": "e213e073414c75bc75df1c8669a7045096142b6c0845694191893d90bf23e3c2"
       },
@@ -1954,13 +1957,14 @@
         "semantic role generation"
       ],
       "hashes": {
-        "body": "11d57e4e469406cb556201cf1d2ad569184e580b4b1ae7ff41ee5ca01622f006",
+        "body": "793ec905a1daeec6927134b20b8561e1b117b95940e0cb48bf4e88a0fd364604",
         "semantic": "aac17e46887fb32325f2255731d30aad7671051d5a63d8d39139e169cd16815d",
-        "structure": "056af1b92b36055c6fd679fe7a6c29048d740a7750fd3d387502a9abe5edb5c8"
+        "structure": "477878b800393949f73e344b829c26c77c664a47c89a60ac535d2b83da8aa187"
       },
       "id": "llmnav.audit.coverage",
       "imports": [
         "./boundaries.js",
+        "./module-resolution.js",
         "./project.js",
         "./util.js",
         "node:path"
@@ -2111,6 +2115,58 @@
         "migration dry run"
       ],
       "stability": "contract"
+    },
+    {
+      "boundaries": [],
+      "excludes": [
+        "dependency installation",
+        "external module lookup",
+        "semantic card generation"
+      ],
+      "hashes": {
+        "body": "0083c1c167e2e588868661b38e7b8f175a42f6706be3b27456dae5576228b403",
+        "semantic": "98dd8a524ca973c2bb5cb1bcb0a442fbfffa3f5bceb5556a796c1411f1a22272",
+        "structure": "920841a19639da5b84d897845c266296dc50e4f80c60052ef0b1e2fad9750715"
+      },
+      "id": "llmnav.structure.modules",
+      "imports": [
+        "./util.js",
+        "node:fs/promises",
+        "node:path"
+      ],
+      "invariant": [
+        "Module resolution reads only regular repository-contained metadata files and never executes a language toolchain."
+      ],
+      "location": {
+        "declarationLine": null,
+        "endLine": 11,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/module-resolution.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "owns": [
+        "language module identity",
+        "Go module discovery",
+        "Go package import resolution"
+      ],
+      "rel": [
+        "workflow>llmnav.project.scan",
+        "workflow>llmnav.graph.generate"
+      ],
+      "role": "Resolve repository-contained language modules without executing project toolchains or following metadata symlinks.",
+      "scope": "module",
+      "search": [
+        "Go module import",
+        "package boundary",
+        "local module resolution"
+      ],
+      "stability": "architecture"
     }
   ],
   "contractFingerprints": {
@@ -2123,9 +2179,9 @@
     },
     "schemaVersion": 1
   },
-  "generatedBy": "llmnav@0.7.2",
+  "generatedBy": "llmnav@0.7.3",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "d077fbb1a738618d04a4077623f07323ef31e826a5adfe16bade631ddb1f88c1",
+  "sourceHash": "8916ad758a730bc57566a5cdb0cd7f3b592af9336365a756abca71ca4b006841",
   "specVersion": "1"
 }

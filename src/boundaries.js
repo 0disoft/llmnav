@@ -50,7 +50,8 @@ export function detectBoundaries(record) {
   if (risks.includes("migration") || /(?:^|\/)(?:migrations?|migrate)(?:\/|$)/u.test(relativePath)) {
     add("migration", "high", risks.includes("migration") ? "risk" : "path");
   }
-  if (/(?:^|\/)(?:commands?|cli|bin)(?:\/|$)/u.test(relativePath) || /(?:command|cmd)\.[^.]+$/u.test(basename)) {
+  if (/(?:^|\/)(?:cmd|commands?|cli|bin)(?:\/|$)/u.test(relativePath) || /(?:command|cmd)\.[^.]+$/u.test(basename) ||
+      (basename === "main.go" && /^\s*package\s+main\b/mu.test(source))) {
     add("command", "high", "path");
   }
   if (/\.rs$/u.test(relativePath) && /#\[tauri::command\]|tauri::generate_handler!/u.test(source)) {

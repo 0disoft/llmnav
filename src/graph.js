@@ -10,6 +10,12 @@ stability=architecture
 */
 
 import path from "node:path";
+import {
+  compatibleModuleResolution,
+  MODULE_RESOLVER_VERSION,
+  moduleKeyForFile,
+  resolveGoImportModule,
+} from "./module-resolution.js";
 import { compareText, sha256, stableJson, stableStringify, toPosix } from "./util.js";
 
 export const GRAPH_SCHEMA_VERSION = 1;
@@ -23,11 +29,15 @@ export function buildRepositoryGraph(project, index) {
 export function buildRepositoryGraphIncremental(project, index, previousState = null) {
   const repositoryId = index.repositoryId;
   const cardsByPath = groupCardsByPath(index.cards);
-  const resolutionHash = sha256(stableJson(
-    [...cardsByPath.entries()]
+  const cardsByModule = groupCardsByModule(index.cards);
+  const moduleResolution = compatibleModuleResolution(project.moduleResolution);
+  const resolutionHash = sha256(stableJson({
+    resolverVersion: MODULE_RESOLVER_VERSION,
+    moduleResolution,
+    cardsByPath: [...cardsByPath.entries()]
       .sort(([left], [right]) => compareText(left, right))
       .map(([file, cards]) => [file, cards.map((card) => card.id).sort(compareText)]),
-  ));
+  }));
   const previousPartitions = compatibleGraphState(previousState, repositoryId)
     ? new Map(previousState.partitions.map((partition) => [partition.key, partition]))
     : new Map();
@@ -50,7 +60,7 @@ export function buildRepositoryGraphIncremental(project, index, previousState = 
       partitions.push(previous);
       reusedPartitions += 1;
     } else {
-      partitions.push(buildCardPartition(key, inputHash, card, repositoryId, cardsByPath));
+      partitions.push(buildCardPartition(key, inputHash, card, repositoryId, cardsByPath, cardsByModule, moduleResolution));
       rebuiltPartitions += 1;
     }
   }
@@ -196,7 +206,7 @@ export function renderGraphNode(node) {
   return lines.join("\n");
 }
 
-function buildCardPartition(partitionKey, inputHash, card, repositoryId, cardsByPath) {
+function buildCardPartition(partitionKey, inputHash, card, repositoryId, cardsByPath, cardsByModule, moduleResolution) {
   const nodes = new Map();
   const edges = new Map();
   const key = qualifyId(card.id, repositoryId);
@@ -231,7 +241,7 @@ function buildCardPartition(partitionKey, inputHash, card, repositoryId, cardsBy
   }
 
   for (const specifier of card.imports ?? []) {
-    for (const target of resolveLocalImport(card.location.path, specifier, cardsByPath)) {
+    for (const target of resolveLocalImport(card.location.path, specifier, cardsByPath, cardsByModule, moduleResolution)) {
       addEdge(edges, nodes, {
         from: key,
         to: qualifyId(target.id, repositoryId),
@@ -378,7 +388,25 @@ function groupCardsByPath(cards) {
   return output;
 }
 
-function resolveLocalImport(sourcePath, specifier, cardsByPath) {
+function groupCardsByModule(cards) {
+  const output = new Map();
+  for (const card of cards) {
+    const key = moduleKeyForFile(card.location.path);
+    const records = output.get(key) ?? [];
+    records.push(card);
+    output.set(key, records);
+  }
+  for (const records of output.values()) records.sort((left, right) => compareText(left.id, right.id));
+  return output;
+}
+
+function resolveLocalImport(sourcePath, specifier, cardsByPath, cardsByModule, moduleResolution) {
+  const goTarget = resolveGoImportModule(sourcePath, specifier, moduleResolution, new Set(cardsByModule.keys()));
+  if (goTarget) {
+    const cards = cardsByModule.get(goTarget) ?? [];
+    const moduleCards = cards.filter((card) => card.scope === "module");
+    return moduleCards.length > 0 ? moduleCards : cards;
+  }
   if (!specifier.startsWith(".")) return [];
   const base = path.posix.normalize(path.posix.join(path.posix.dirname(toPosix(sourcePath)), specifier));
   if (base.startsWith("../")) return [];

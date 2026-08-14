@@ -59,6 +59,21 @@ test("rejects malformed graph state instead of reusing it", () => {
   assert.equal(buildRepositoryGraphIncremental(project, index, malformed).stats.rebuiltPartitions, 3);
 });
 
+test("rebuilds card partitions when local module resolution changes", () => {
+  const project = fixtureProject();
+  const index = fixtureIndex();
+  const first = buildRepositoryGraphIncremental(project, index);
+  const changed = buildRepositoryGraphIncremental({
+    ...project,
+    moduleResolution: {
+      schemaVersion: 1,
+      goModules: [{ directory: "", modulePath: "example.com/fixture" }],
+    },
+  }, index, first.state);
+  assert.equal(changed.stats.rebuiltPartitions, 2);
+  assert.equal(changed.stats.reusedPartitions, 1);
+});
+
 function fixtureIndex() {
   return {
     repositoryId: "llmnav-fixture",

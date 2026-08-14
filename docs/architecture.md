@@ -72,6 +72,8 @@ Generation compares the previous and current primary indexes to emit `affectedBo
 
 The read-only audit combines package entrypoints, public re-export reachability, generated structural boundaries, import fan-in, exported declaration counts, and source size. It lowers the priority of named utilities and low-fan-in export hubs, declaration files, non-production support paths, and pure re-export barrels. High-fan-in domain contract hubs do not receive the broad-utility penalty merely because they export many declarations. Every candidate retains its score inputs and deterministic repository-relative path.
 
+Go source is audited by package rather than by individual file. LLMNav reads repository-contained `go.mod` files without executing the Go toolchain, resolves matching full module imports, counts importing packages, treats `cmd/*/main.go` and other `package main` entrypoints as commands, and excludes `_test.go` files from production signals. One reviewed `module` card covers its Go package for audit purposes; a `file` card remains file-specific. An uncovered package produces one deterministic representative path instead of one candidate per file. The schema-version 1 summary counters continue to report exact annotated file placement, while the candidate list reports these package-level omissions.
+
 This analyzer deliberately stops before semantic generation. Structure can identify a file worth inspecting, but it cannot safely invent a durable ID, role, ownership statement, invariant, risk, or relation. Accepted boundaries become explicit source cards, path-specific coverage rules, and retrieval regression queries through normal review.
 
 ## Deterministic inverted index
@@ -106,6 +108,8 @@ Unresolved targets are preserved as placeholder nodes. This allows later workspa
 Search treats lexical results as seeds and applies only a confidence-scaled one-hop graph bonus. Context traversal is breadth-first and bounded by depth, token budget, and edge count. Invalid or manifest-mismatched graph data is not used for ranking; search falls back to the compatible lexical and source-relation behavior.
 
 The graph is also the explicit workspace resolution surface. Qualified IDs resolve by exact node key. Unqualified IDs prefer the local repository and resolve externally only when the semantic ID is unique across imported repositories. No directory discovery or network lookup occurs during resolution.
+
+For Go cards, repository-local full module imports resolve to cards in the imported package. Module cards are preferred when present so a package import does not create arbitrary symbol-level fan-out. The module resolver version and discovered module map participate in the graph resolution hash, so an upgraded resolver or changed `go.mod` rebuilds affected card partitions instead of reusing stale zero-edge state.
 
 `.llmnav/cache/graph-state.json` is a disposable schemaVersion 1 acceleration artifact. Content-addressed partitions isolate local cards and imported indexes. Partition keys and hashes include every graph-relevant dimension, and local path resolution changes invalidate all affected local-import decisions. Incompatible or malformed state is never partially trusted: generation rebuilds it from the current primary index and validated graph inputs.
 

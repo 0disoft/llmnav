@@ -66,10 +66,36 @@ test("resolves qualified and unique workspace IDs while rejecting ambiguity", ()
   assert.equal(resolveGraphNode(graph, "billing.capture.run", "local").state, "ambiguous");
 });
 
-function card(id, file, rel = [], imports = []) {
+test("resolves full Go module imports to cards in the imported package", () => {
+  const cards = [
+    card("gateway.process", "cmd/gatewayd/main.go", [], ["example.com/relay/internal/auth"], {
+      language: "go",
+      scope: "module",
+    }),
+    card("auth.boundary", "internal/auth/authenticator.go", [], [], {
+      language: "go",
+      scope: "module",
+    }),
+  ];
+  const project = {
+    graphInputs: [],
+    moduleResolution: {
+      schemaVersion: 1,
+      goModules: [{ directory: "", modulePath: "example.com/relay" }],
+    },
+  };
+  const graph = buildRepositoryGraph(project, { repositoryId: "go-fixture", cards });
+  const edge = graph.edges.find((item) => item.kind === "imports");
+  assert.equal(edge.from, "go-fixture/gateway.process");
+  assert.equal(edge.to, "go-fixture/auth.boundary");
+  assert.equal(edge.provenance.type, "local-import");
+});
+
+function card(id, file, rel = [], imports = [], options = {}) {
   return {
     id,
     role: `Own ${id}.`,
+    scope: options.scope ?? "symbol",
     rel,
     imports,
     location: {
@@ -80,7 +106,7 @@ function card(id, file, rel = [], imports = []) {
       kind: "function",
       declarationLine: 8,
       signature: "export function fixture()",
-      language: "typescript",
+      language: options.language ?? "typescript",
       exported: true,
       visibility: "public",
       receiver: null,

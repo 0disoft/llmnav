@@ -268,6 +268,20 @@
     },
     {
       "confidence": 0.85,
+      "from": "llmnav/llmnav.audit.coverage",
+      "id": "18a25abc0b15cc456c1f4a6fd3a91850c4a68689409b59cb5358350a2b1cd068",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/audit.js",
+        "source": "src/audit.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.structure.modules"
+    },
+    {
+      "confidence": 0.85,
       "from": "llmnav/llmnav.cli.dispatch",
       "id": "14b6f6b9cf3abc63c3a3800f980e11b915137f517c0a64497e54c073ea4018b4",
       "kind": "imports",
@@ -925,6 +939,20 @@
       "to": "llmnav/llmnav.index.generate"
     },
     {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.graph.generate",
+      "id": "4dc798ad6d267807c096e417c787a187a15dd6967e0d9080e1b86af3a6c1372e",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/graph.js",
+        "source": "src/graph.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.structure.modules"
+    },
+    {
       "confidence": 1,
       "from": "llmnav/llmnav.graph.import",
       "id": "7fc1827e21f2cf8793d76bb79f11c04453d48cf183cdac4d8b3a0973cca1d3e5",
@@ -1361,6 +1389,20 @@
     {
       "confidence": 0.85,
       "from": "llmnav/llmnav.index.incremental",
+      "id": "d8b5dfef7c9175a45b22d456f0ded104e03b5fd62453151a79774f214ab311b4",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/incremental.js",
+        "source": "src/incremental.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.structure.modules"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.index.incremental",
       "id": "ec846714e8b1df18ec82c4f99f741e3a758003ad2494949a3a8ce5cb6f2c7135",
       "kind": "imports",
       "provenance": {
@@ -1739,6 +1781,20 @@
     {
       "confidence": 0.85,
       "from": "llmnav/llmnav.project.scan",
+      "id": "1f089d37d2716887736f7a0488e040dd2d76be7ee40b4bd1c5e79da2d33a9163",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/project.js",
+        "source": "src/project.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.structure.modules"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.project.scan",
       "id": "abd5074665c983c6a436efaf1df7bcc65834974507395109b3d1be74e9dd2f4d",
       "kind": "imports",
       "provenance": {
@@ -2113,6 +2169,34 @@
         "type": "source-card"
       },
       "to": "llmnav/llmnav.index.generate"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.structure.modules",
+      "id": "6166df8fbd970d83f504a7a0d4d871fe66a1c6fa0ad4def71fd26ec4ef6b0f5e",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/module-resolution.js",
+        "source": "src/module-resolution.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.graph.generate"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.structure.modules",
+      "id": "44d277dd485f7f8e709bfae2b840399414fac880f97d673041c6061393e80d9e",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/module-resolution.js",
+        "source": "src/module-resolution.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.project.scan"
     },
     {
       "confidence": 0.85,
@@ -3117,6 +3201,28 @@
     {
       "definitions": [],
       "external": false,
+      "key": "llmnav/llmnav.structure.modules",
+      "location": {
+        "declarationLine": null,
+        "endLine": 11,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/module-resolution.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Resolve repository-contained language modules without executing project toolchains or following metadata symlinks.",
+      "semanticId": "llmnav.structure.modules",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
       "key": "llmnav/llmnav.syntax.parse",
       "location": {
         "declarationLine": null,
@@ -3139,11 +3245,11 @@
   ],
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "e51e0443a03ebb92dfe4d3d7c3cd86b9acab6934d3b545181d630bc47e75a20a",
+  "sourceHash": "89ede706f49a16bdcef44b5a8be38283e95606249ebc8bea9fe06b8ee6d750bd",
   "stats": {
-    "edgeCount": 152,
+    "edgeCount": 158,
     "importedIndexCount": 0,
-    "nodeCount": 43,
+    "nodeCount": 44,
     "unresolvedNodeCount": 0
   }
 }

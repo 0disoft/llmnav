@@ -152,3 +152,10 @@ owns conformance matrix validation, repository verdicts, language evidence cover
 excludes source mutation, cross-repository score averaging
 invariant A passing repository cannot hide a failing repository through aggregate metrics. Missing adoption or insufficient reviewed cases remains held rather than passing or failing.
 rel workflow>llmnav.eval.measure
+
+@llmnav.structure.modules
+role Resolve repository-contained language modules without executing project toolchains or following metadata symlinks.
+owns language module identity, Go module discovery, Go package import resolution
+excludes dependency installation, external module lookup, semantic card generation
+invariant Module resolution reads only regular repository-contained metadata files and never executes a language toolchain.
+rel workflow>llmnav.project.scan, workflow>llmnav.graph.generate

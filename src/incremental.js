@@ -15,6 +15,7 @@ import { createDeclarationScanContext, findAttachedDeclaration, extractImports }
 import { collectSourceFiles } from "./files.js";
 import { parseLlmnavBlocks } from "./parser.js";
 import { loadRegistry } from "./registry.js";
+import { loadModuleResolution } from "./module-resolution.js";
 import {
   assertNoSymlinkTraversal,
   atomicWrite,
@@ -119,6 +120,7 @@ export async function scanProjectIncremental(root, options = {}) {
     files: Object.fromEntries(Object.entries(nextHintFiles).sort(([left], [right]) => compareText(left, right))),
   };
   const registry = await loadRegistry(root);
+  const moduleResolution = await loadModuleResolution(root, fileRecords);
   const project = {
     root,
     config,
@@ -127,6 +129,7 @@ export async function scanProjectIncremental(root, options = {}) {
     fileRecords,
     records,
     registry,
+    moduleResolution,
     sourceBytes,
     semanticBytes,
     incremental: stats,

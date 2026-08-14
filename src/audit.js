@@ -11,6 +11,7 @@ stability=contract
 
 import path from "node:path";
 import { detectBoundaries } from "./boundaries.js";
+import { moduleKeyForFile, resolveGoImportModule } from "./module-resolution.js";
 import { scanProject } from "./project.js";
 import { compareText, readJsonSafe, toPosix } from "./util.js";
 
@@ -23,7 +24,7 @@ const SOURCE_EXTENSIONS = Object.freeze([
   ".ts", ".tsx", ".vue",
 ]);
 const UTILITY_NAME_PATTERN = /^(?:common|helpers?|shared|utils?)$/u;
-const NON_PRODUCTION_PATH_PATTERN = /(?:^|\/)(?:__tests__|benchmarks?|fixtures?|tests?)(?:\/|$)|\.(?:spec|test)\.[^/]+$/u;
+const NON_PRODUCTION_PATH_PATTERN = /(?:^|\/)(?:__tests__|benchmarks?|fixtures?|testdata|tests?)(?:\/|$)|\.(?:spec|test)\.[^/]+$|_test\.go$/u;
 const LARGE_SOURCE_BYTES = 12_000;
 
 export async function auditProject(root) {
@@ -31,44 +32,68 @@ export async function auditProject(root) {
   const fileByPath = new Map(
     project.fileRecords.map((record) => [toPosix(record.relativePath), record]),
   );
-  const moduleCardPaths = new Set(
+  const cardedFilePaths = new Set(
     project.records
       .filter((record) => record.card.scope === "file" || record.card.scope === "module")
       .map((record) => toPosix(record.relativePath)),
   );
-  const importsByPath = new Map();
-  const importedBy = new Map([...fileByPath.keys()].map((file) => [file, new Set()]));
-  for (const [file, record] of fileByPath) {
-    const resolved = record.imports
-      .map((specifier) => resolveLocalSpecifier(file, specifier, fileByPath))
-      .filter(Boolean);
-    const unique = [...new Set(resolved)].sort(compareText);
-    importsByPath.set(file, unique);
-    for (const target of unique) importedBy.get(target)?.add(file);
+  const exactCardPaths = new Set(
+    project.records
+      .filter((record) => record.card.scope === "file")
+      .map((record) => toPosix(record.relativePath)),
+  );
+  const coveredModules = new Set(
+    project.records
+      .filter((record) => record.card.scope === "module")
+      .map((record) => moduleKeyForFile(record.relativePath)),
+  );
+  const filesByModule = groupFilesByModule(fileByPath);
+  const moduleKeys = new Set(filesByModule.keys());
+  const importedBy = new Map([...moduleKeys].map((key) => [key, new Set()]));
+  for (const [sourceKey, files] of filesByModule) {
+    const targets = new Set();
+    for (const [file, record] of files) {
+      for (const specifier of record.imports) {
+        const target = resolveImportedModule(file, specifier, fileByPath, project.moduleResolution, moduleKeys);
+        if (target) targets.add(target);
+      }
+    }
+    for (const target of targets) importedBy.get(target)?.add(sourceKey);
   }
 
   const entrypoints = await collectWorkspacePackageEntrypoints(root, fileByPath);
+  collectGoEntrypoints(fileByPath, entrypoints);
   const publicApiPaths = collectPublicApiPaths(entrypoints, fileByPath);
   const candidates = [];
 
-  for (const [file, record] of [...fileByPath.entries()].sort(([left], [right]) => compareText(left, right))) {
-    if (moduleCardPaths.has(file)) continue;
-    if (/\.d\.[cm]?ts$/u.test(file)) continue;
-    const boundaries = detectBoundaries({
-      relativePath: file,
+  for (const [moduleKey, files] of [...filesByModule.entries()].sort(([left], [right]) => compareText(left, right))) {
+    if (coveredModules.has(moduleKey)) continue;
+    const selectableFiles = files.filter(([file]) => !exactCardPaths.has(file) && !/\.d\.[cm]?ts$/u.test(file));
+    if (selectableFiles.length === 0) continue;
+    const productionFiles = selectableFiles.filter(([file]) => !NON_PRODUCTION_PATH_PATTERN.test(file));
+    const analyzedFiles = productionFiles.length > 0 ? productionFiles : selectableFiles;
+    const file = selectRepresentativeFile(analyzedFiles, entrypoints);
+    const record = fileByPath.get(file);
+    const boundaries = [...new Set(analyzedFiles.flatMap(([candidate, item]) => detectBoundaries({
+      relativePath: candidate,
       card: { effect: [], risk: [] },
-      source: record.source ?? "",
-    }).map((boundary) => boundary.kind);
-    const exportedDeclarations = countExportedDeclarations(record.source ?? "", file);
-    const entrypoint = entrypoints.has(file);
-    const publicApi = publicApiPaths.has(file) && !entrypoint;
-    const importers = importedBy.get(file)?.size ?? 0;
-    const reexportBarrel = isReexportBarrel(record.source ?? "", file);
-    const basename = path.posix.basename(file, path.posix.extname(file)).toLowerCase();
+      source: item.source ?? "",
+    }).map((boundary) => boundary.kind)))].sort(compareText);
+    const exportedDeclarations = analyzedFiles.reduce(
+      (sum, [candidate, item]) => sum + countExportedDeclarations(item.source ?? "", candidate),
+      0,
+    );
+    const entrypoint = analyzedFiles.some(([candidate]) => entrypoints.has(candidate));
+    const publicApi = analyzedFiles.some(([candidate]) => publicApiPaths.has(candidate) && !entrypoints.has(candidate));
+    const importers = importedBy.get(moduleKey)?.size ?? 0;
+    const reexportBarrel = analyzedFiles.length === 1 && isReexportBarrel(record.source ?? "", file);
+    const isGoModule = moduleKey.startsWith("go:");
+    const moduleName = isGoModule ? moduleKey.slice(3) : file;
+    const basename = path.posix.basename(moduleName, path.posix.extname(moduleName)).toLowerCase();
     const broadUtility = UTILITY_NAME_PATTERN.test(basename) ||
-      (exportedDeclarations >= 10 && importers <= 1 && !entrypoint && !publicApi && boundaries.length === 0);
-    const nonProduction = NON_PRODUCTION_PATH_PATTERN.test(file);
-    const largeSource = record.sourceBytes >= LARGE_SOURCE_BYTES;
+      (!isGoModule && exportedDeclarations >= 10 && importers <= 1 && !entrypoint && !publicApi && boundaries.length === 0);
+    const nonProduction = productionFiles.length === 0;
+    const largeSource = analyzedFiles.reduce((sum, [, item]) => sum + item.sourceBytes, 0) >= LARGE_SOURCE_BYTES;
     const hasSignal = entrypoint || publicApi || boundaries.length > 0 || importers > 0 || exportedDeclarations > 0 || largeSource;
     if (!hasSignal) continue;
 
@@ -139,8 +164,8 @@ export async function auditProject(root) {
     compareText(left.path, right.path));
   const summary = {
     analyzedFiles: fileByPath.size,
-    cardedFiles: moduleCardPaths.size,
-    filesWithoutModuleCards: fileByPath.size - moduleCardPaths.size,
+    cardedFiles: cardedFilePaths.size,
+    filesWithoutModuleCards: fileByPath.size - cardedFilePaths.size,
     candidates: candidates.length,
     high: candidates.filter((candidate) => candidate.priority === "high").length,
     medium: candidates.filter((candidate) => candidate.priority === "medium").length,
@@ -153,6 +178,46 @@ export async function auditProject(root) {
     summary,
     candidates,
   };
+}
+
+function groupFilesByModule(fileByPath) {
+  const output = new Map();
+  for (const [file, record] of fileByPath) {
+    const key = moduleKeyForFile(file);
+    const files = output.get(key) ?? [];
+    files.push([file, record]);
+    output.set(key, files);
+  }
+  for (const files of output.values()) files.sort(([left], [right]) => compareText(left, right));
+  return output;
+}
+
+function resolveImportedModule(file, specifier, fileByPath, moduleResolution, moduleKeys) {
+  const goTarget = resolveGoImportModule(file, specifier, moduleResolution, moduleKeys);
+  if (goTarget) return goTarget;
+  const target = resolveLocalSpecifier(file, specifier, fileByPath);
+  return target ? moduleKeyForFile(target) : null;
+}
+
+function collectGoEntrypoints(fileByPath, entrypoints) {
+  for (const [file, record] of fileByPath) {
+    if (!file.endsWith(".go") || path.posix.basename(file) !== "main.go") continue;
+    if (/^\s*package\s+main\b/mu.test(record.source ?? "")) entrypoints.add(file);
+  }
+}
+
+function selectRepresentativeFile(files, entrypoints) {
+  return [...files].sort(([leftPath, left], [rightPath, right]) =>
+    representativeScore(rightPath, right, entrypoints) - representativeScore(leftPath, left, entrypoints) ||
+    compareText(leftPath, rightPath))[0][0];
+}
+
+function representativeScore(file, record, entrypoints) {
+  let score = entrypoints.has(file) ? 100_000 : 0;
+  if (path.posix.basename(file) === "doc.go") score += 50_000;
+  score += countExportedDeclarations(record.source ?? "", file) * 1_000;
+  score += Math.min(999, Math.floor(record.sourceBytes / 100));
+  return score;
 }
 
 export function auditHasFindings(result, minimumPriority = "none") {

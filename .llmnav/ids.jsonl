@@ -41,3 +41,4 @@
 {"id":"llmnav.audit.coverage","state":"active"}
 {"id":"llmnav.eval.conformance","state":"active"}
 {"id":"llmnav.project.migrate","state":"active"}
+{"id":"llmnav.structure.modules","state":"active"}

@@ -6,3 +6,10 @@ role Detect durable artifact, route, event, schema, migration, runtime, and comm
 owns boundary kinds, confidence assignment, boundary evidence
 excludes framework execution, source annotations
 rel workflow>llmnav.index.generate
+
+@llmnav.structure.modules
+role Resolve repository-contained language modules without executing project toolchains or following metadata symlinks.
+owns language module identity, Go module discovery, Go package import resolution
+excludes dependency installation, external module lookup, semantic card generation
+invariant Module resolution reads only regular repository-contained metadata files and never executes a language toolchain.
+rel workflow>llmnav.project.scan, workflow>llmnav.graph.generate

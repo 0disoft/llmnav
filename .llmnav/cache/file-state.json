@@ -1507,19 +1507,20 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "11d57e4e469406cb556201cf1d2ad569184e580b4b1ae7ff41ee5ca01622f006",
+      "contentHash": "793ec905a1daeec6927134b20b8561e1b117b95940e0cb48bf4e88a0fd364604",
       "declarations": [
         null
       ],
       "imports": [
         "./boundaries.js",
+        "./module-resolution.js",
         "./project.js",
         "./util.js",
         "node:path"
       ],
       "path": "src/audit.js",
       "semanticBytes": 533,
-      "sourceBytes": 13921
+      "sourceBytes": 17059
     },
     {
       "blocks": [
@@ -1610,7 +1611,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "85b77c0123d1ad0b4f198223b1e9daad7d7be25f98abcb41263c7f846e4f28d2",
+      "contentHash": "6a44422eff84c612d54acc480e0c83deb7d05da9cc733abac84476e935f88e75",
       "declarations": [
         null
       ],
@@ -1620,7 +1621,7 @@
       ],
       "path": "src/boundaries.js",
       "semanticBytes": 424,
-      "sourceBytes": 3257
+      "sourceBytes": 3336
     },
     {
       "blocks": [
@@ -3077,17 +3078,18 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "d31b5c6af0a4e070e0f2dd5d7c3a201dd1be0ce67d6838d1c138ba7ae6547660",
+      "contentHash": "35a71c6ad87bfe7ca340d0ca8909a2d7dd1b8efbc25d45e06ac740371f0f3f82",
       "declarations": [
         null
       ],
       "imports": [
+        "./module-resolution.js",
         "./util.js",
         "node:path"
       ],
       "path": "src/graph.js",
       "semanticBytes": 548,
-      "sourceBytes": 14751
+      "sourceBytes": 15941
     },
     {
       "blocks": [
@@ -3178,7 +3180,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "ad2f1f1c60dc064f3c13b48c4ddc69e221150e80619c5ecea81bb1434ace684c",
+      "contentHash": "a09084d98d4fb6046f03487131ab36efb153dc850b1d68ca1a8bdb1f917a50b9",
       "declarations": [
         null
       ],
@@ -3186,6 +3188,7 @@
         "./config.js",
         "./declaration.js",
         "./files.js",
+        "./module-resolution.js",
         "./parser.js",
         "./registry.js",
         "./util.js",
@@ -3194,18 +3197,18 @@
       ],
       "path": "src/incremental.js",
       "semanticBytes": 381,
-      "sourceBytes": 9044
+      "sourceBytes": 9203
     },
     {
       "blocks": [],
-      "contentHash": "740e7d4b49659540a45de038f79e28b48cef0a993ebfddbf4e44636b1387e59e",
+      "contentHash": "f3c0745d5b8d6b1e2c8edb83ebaeb1c10c3b467db24a8ecc778054a6e5fd3dc5",
       "declarations": [],
       "imports": [
         "./spec.js"
       ],
       "path": "src/index.d.ts",
       "semanticBytes": 0,
-      "sourceBytes": 27482
+      "sourceBytes": 27643
     },
     {
       "blocks": [],
@@ -3605,6 +3608,124 @@
           "card": {
             "effect": [],
             "excludes": [
+              "dependency installation",
+              "external module lookup",
+              "semantic card generation"
+            ],
+            "id": "llmnav.structure.modules",
+            "invariant": [
+              "Module resolution reads only regular repository-contained metadata files and never executes a language toolchain."
+            ],
+            "owns": [
+              "language module identity",
+              "Go module discovery",
+              "Go package import resolution"
+            ],
+            "rel": [
+              "workflow>llmnav.project.scan",
+              "workflow>llmnav.graph.generate"
+            ],
+            "risk": [],
+            "role": "Resolve repository-contained language modules without executing project toolchains or following metadata symlinks.",
+            "scope": "module",
+            "search": [
+              "Go module import",
+              "package boundary",
+              "local module resolution"
+            ],
+            "stability": "architecture",
+            "unknown": []
+          },
+          "end": 609,
+          "endLine": 11,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.structure.modules"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Resolve repository-contained language modules without executing project toolchains or following metadata symlinks."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "language module identity|Go module discovery|Go package import resolution"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "dependency installation|external module lookup|semantic card generation"
+            },
+            {
+              "key": "search",
+              "line": 6,
+              "order": 4,
+              "value": "Go module import|package boundary|local module resolution"
+            },
+            {
+              "key": "invariant",
+              "line": 7,
+              "order": 5,
+              "value": "Module resolution reads only regular repository-contained metadata files and never executes a language toolchain."
+            },
+            {
+              "key": "rel",
+              "line": 8,
+              "order": 6,
+              "value": "workflow>llmnav.project.scan"
+            },
+            {
+              "key": "rel",
+              "line": 9,
+              "order": 7,
+              "value": "workflow>llmnav.graph.generate"
+            },
+            {
+              "key": "stability",
+              "line": 10,
+              "order": 8,
+              "value": "architecture"
+            }
+          ],
+          "filePath": "src/module-resolution.js",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.structure.modules\nrole=Resolve repository-contained language modules without executing project toolchains or following metadata symlinks.\nowns=language module identity|Go module discovery|Go package import resolution\nexcludes=dependency installation|external module lookup|semantic card generation\nsearch=Go module import|package boundary|local module resolution\ninvariant=Module resolution reads only regular repository-contained metadata files and never executes a language toolchain.\nrel=workflow>llmnav.project.scan\nrel=workflow>llmnav.graph.generate\nstability=architecture\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "0083c1c167e2e588868661b38e7b8f175a42f6706be3b27456dae5576228b403",
+      "declarations": [
+        null
+      ],
+      "imports": [
+        "./util.js",
+        "node:fs/promises",
+        "node:path"
+      ],
+      "path": "src/module-resolution.js",
+      "semanticBytes": 609,
+      "sourceBytes": 4857
+    },
+    {
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
               "semantic validation",
               "repository search"
             ],
@@ -3796,7 +3917,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "921ca7967ba0a91bd7aeeb36f71655cdae4a47a8b1ad28e08a020485ebf9bf25",
+      "contentHash": "4d977b144b43cc041e53364f82a49bae32b40c3f0f1ed156b4e0edbac8bb5405",
       "declarations": [
         null
       ],
@@ -3804,6 +3925,7 @@
         "./config.js",
         "./declaration.js",
         "./files.js",
+        "./module-resolution.js",
         "./parser.js",
         "./registry.js",
         "./util.js",
@@ -3811,7 +3933,7 @@
       ],
       "path": "src/project.js",
       "semanticBytes": 510,
-      "sourceBytes": 2626
+      "sourceBytes": 2785
     },
     {
       "blocks": [
@@ -4490,7 +4612,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "e49b4aed5c12b1bbbdf284733218c965050ed7c309b4883eee1ed0efe9091d2a",
+      "contentHash": "132453a524efb8caee1de97423eeee2979169fd8bd49907e0a1ef82cc562cae2",
       "declarations": [
         null
       ],
@@ -4856,7 +4978,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "95261d684be0ad4972b0320d1e233c45f125243302615f73b5d61a067782d989",
+      "contentHash": "eece13965b38a67d3495ecf9c75e15c07a8ad783f03b80d336fe9c553f23d2f1",
       "declarations": [],
       "imports": [
         "../src/audit.js",
@@ -4871,7 +4993,7 @@
       ],
       "path": "tests/audit.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 10050
+      "sourceBytes": 12531
     },
     {
       "blocks": [],
@@ -5020,7 +5142,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "544ca58d485040ff0458ac34f3adabe0db42c92f60ee84810f831374b0efd09b",
+      "contentHash": "61e6fbf2aaa5ab3c2177ab0efdf4857edd8f6ef1eee0afce8f7b097b73f91fd5",
       "declarations": [],
       "imports": [
         "../src/graph.js",
@@ -5029,7 +5151,7 @@
       ],
       "path": "tests/graph-incremental.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 4183
+      "sourceBytes": 4724
     },
     {
       "blocks": [],
@@ -5069,7 +5191,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "f874b08e54b7a990352878ecafd53e04caa3a99c0e7ff37f6678d88aed3e6cbf",
+      "contentHash": "0cb572a4f1813f6f74444e3c7320fbb1768de32c4f832c08cf0c5fb635e52099",
       "declarations": [],
       "imports": [
         "../src/graph.js",
@@ -5078,7 +5200,7 @@
       ],
       "path": "tests/graph.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 3568
+      "sourceBytes": 4510
     },
     {
       "blocks": [],

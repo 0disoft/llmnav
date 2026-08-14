@@ -41,3 +41,4 @@ llmnav.agent.provider-neutral-host
 llmnav.audit.coverage
 llmnav.eval.conformance
 llmnav.project.migrate
+llmnav.structure.modules

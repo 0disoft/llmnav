@@ -14,6 +14,9 @@ async function createAuditFixture(context) {
   await mkdir(path.join(root, "packages", "nested", "src"), { recursive: true });
   await mkdir(path.join(root, "src-tauri", "src"), { recursive: true });
   await mkdir(path.join(root, "tests", "helpers"), { recursive: true });
+  await mkdir(path.join(root, "cmd", "gatewayd"), { recursive: true });
+  await mkdir(path.join(root, "internal", "auth", "controlaccess"), { recursive: true });
+  await mkdir(path.join(root, "internal", "runtime"), { recursive: true });
   await writeFile(
     path.join(root, "package.json"),
     `${JSON.stringify({
@@ -85,6 +88,52 @@ export function carded() {}
     path.join(root, "src-tauri", "src", "process_tree.rs"),
     "#[cfg(windows)]\npub(crate) fn shutdown_all_process_trees() {}\nimpl Drop for ProcessTree { fn drop(&mut self) {} }\nstruct ProcessTree;\n",
   );
+  await writeFile(path.join(root, "go.mod"), "module example.com/audit-fixture\n\ngo 1.24\n");
+  await writeFile(
+    path.join(root, "cmd", "gatewayd", "main.go"),
+    'package main\n\nimport _ "example.com/audit-fixture/internal/auth/controlaccess"\n\nfunc main() {}\n',
+  );
+  await writeFile(
+    path.join(root, "internal", "auth", "controlaccess", "authenticator.go"),
+    "package controlaccess\n\ntype Authenticator struct{}\n",
+  );
+  await writeFile(
+    path.join(root, "internal", "auth", "controlaccess", "oidc.go"),
+    `package controlaccess
+
+${Array.from({ length: 12 }, (_, index) => `type OIDCContract${index} struct{}`).join("\n")}
+`,
+  );
+  await writeFile(
+    path.join(root, "internal", "auth", "controlaccess", "oidc_test.go"),
+    "package controlaccess\n\nfunc TestOIDCContract() {}\n",
+  );
+  for (let index = 0; index < 4; index += 1) {
+    const directory = path.join(root, "internal", `consumer${index}`);
+    await mkdir(directory, { recursive: true });
+    await writeFile(
+      path.join(directory, "consumer.go"),
+      `package consumer${index}\n\nimport _ "example.com/audit-fixture/internal/auth/controlaccess"\n`,
+    );
+  }
+  await writeFile(
+    path.join(root, "internal", "runtime", "run.go"),
+    `package runtime
+
+/* llmnav/1 module
+id=audit.fixture.go-runtime
+role=Represent one covered Go package boundary in the audit fixture.
+owns=covered Go package boundary
+search=covered Go package|Go module annotation
+stability=architecture
+*/
+func Run() {}
+`,
+  );
+  await writeFile(
+    path.join(root, "internal", "runtime", "journal.go"),
+    "package runtime\n\nfunc OpenJournal() {}\n",
+  );
   await initializeProject(root, { agents: ["none"] });
   return root;
 }
@@ -135,6 +184,13 @@ test("audits missing semantic boundaries without modifying source", async (conte
   assert.equal(byPath.get("src-tauri/src/lib.rs").signals.boundaries.includes("command"), true);
   assert.equal(byPath.get("src-tauri/src/process_tree.rs").signals.importedBy, 1);
   assert.equal(byPath.get("src-tauri/src/process_tree.rs").signals.boundaries.includes("runtime"), true);
+  assert.equal(byPath.get("cmd/gatewayd/main.go").priority, "high");
+  assert.deepEqual(byPath.get("cmd/gatewayd/main.go").signals.boundaries, ["command"]);
+  assert.equal(byPath.get("internal/auth/controlaccess/oidc.go").priority, "medium");
+  assert.equal(byPath.get("internal/auth/controlaccess/oidc.go").signals.importedBy, 5);
+  assert.equal(byPath.get("internal/auth/controlaccess/oidc.go").signals.broadUtility, false);
+  assert.equal([...byPath.keys()].some((file) => file.startsWith("internal/runtime/")), false);
+  assert.equal([...byPath.keys()].some((file) => file.endsWith("_test.go")), false);
   assert.deepEqual(byPath.get("src/public-api.js").suggestedCoverageRule, {
     name: "public-api module boundary",
     match: ["src/public-api.js"],
