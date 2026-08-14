@@ -16,7 +16,7 @@ if (!/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/u.test(packageJson.version)) errors.pu
 if (packageJson.version !== PACKAGE_VERSION) errors.push(`package.json version ${packageJson.version} does not match src/spec.js ${PACKAGE_VERSION}`);
 if (packageLock.name !== packageJson.name || packageLock.version !== packageJson.version) errors.push("package-lock.json name or version is stale");
 if (packageJson.publishConfig?.access !== "public") errors.push("publishConfig.access must be public");
-if (packageJson.publishConfig?.provenance !== false) errors.push("publishConfig.provenance must be false for a private source repository");
+if (packageJson.publishConfig?.provenance !== true) errors.push("publishConfig.provenance must enable npm provenance");
 if (!/^\s*contents:\s*write\s*$/mu.test(releaseWorkflow)) errors.push("release workflow must grant contents: write for GitHub Release creation");
 if (!/^\s*id-token:\s*write\s*$/mu.test(releaseWorkflow)) errors.push("release workflow must retain id-token: write for npm Trusted Publishing");
 if (!/^\s*fetch-depth:\s*0\s*$/mu.test(releaseWorkflow)) errors.push("release workflow must fetch full history for protected main lineage verification");
@@ -24,6 +24,8 @@ if (!/LLMNAV_RELEASE_BRANCH:\s*origin\/main/u.test(releaseWorkflow)) errors.push
 if (!/\bgh api\b[\s\S]*\breleases\/tags\//u.test(releaseWorkflow)) errors.push("release workflow must check for an existing GitHub Release by tag");
 if (!/\bgh release create\b/u.test(releaseWorkflow)) errors.push("release workflow must create a GitHub Release after npm publication");
 if (!/GH_TOKEN:\s*\$\{\{\s*github\.token\s*\}\}/u.test(releaseWorkflow)) errors.push("release workflow must bind GitHub's scoped token explicitly");
+if (!/\bnpm publish\b[^\n]*--provenance(?:\s|$)/u.test(releaseWorkflow)) errors.push("release workflow must publish with npm provenance");
+if (/\bnpm publish\b[^\n]*--provenance=false\b/u.test(releaseWorkflow)) errors.push("release workflow must not disable npm provenance");
 
 try {
   await access(new URL(packageJson.bin.llmnav, packageRoot));

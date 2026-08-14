@@ -6,6 +6,12 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 
 ## [Unreleased]
 
+## [0.7.4] — 2026-08-14
+
+### Fixed
+
+* Required npm provenance in package metadata, release validation, and the tag publication workflow so public Trusted Publisher releases fail closed if provenance is disabled.
+
 ## [0.7.3] — 2026-08-14
 
 ### Fixed

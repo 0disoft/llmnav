@@ -1072,7 +1072,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "a7d611ea963a20e792c712a4ccade798c59e6abe4cb680983ff6fe7c3c4e2860",
+      "contentHash": "ed39fe45bede6989ba17cb558d55ef1241ba36c489e6f569ad5aa985837eea91",
       "declarations": [],
       "imports": [
         "../src/spec.js",
@@ -1080,7 +1080,7 @@
       ],
       "path": "scripts/release-check.js",
       "semanticBytes": 0,
-      "sourceBytes": 3015
+      "sourceBytes": 3271
     },
     {
       "blocks": [],
@@ -4612,7 +4612,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "132453a524efb8caee1de97423eeee2979169fd8bd49907e0a1ef82cc562cae2",
+      "contentHash": "706e51ec7f638b5344497cf55ed8c398a53fc269298959323e726ce70dcc1b54",
       "declarations": [
         null
       ],
@@ -5381,6 +5381,19 @@
       "path": "tests/registry-resolution.test.js",
       "semanticBytes": 0,
       "sourceBytes": 1778
+    },
+    {
+      "blocks": [],
+      "contentHash": "19d01b6fe965915f433041ebaa2e322c971049242139e7b1f1adba9d75c9b97b",
+      "declarations": [],
+      "imports": [
+        "node:assert/strict",
+        "node:fs/promises",
+        "node:test"
+      ],
+      "path": "tests/release-metadata.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 706
     },
     {
       "blocks": [],
