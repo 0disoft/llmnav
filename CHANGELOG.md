@@ -6,6 +6,8 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 
 ## [Unreleased]
 
+## [0.9.0] — 2026-08-15
+
 ### Added
 
 * Added `llmnav explain <file>` and `explainProjectFile` to report one file's navigation cards, module coverage, audit score evidence, reviewed disposition, and bounded next action without modifying source.
