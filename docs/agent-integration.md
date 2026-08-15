@@ -49,7 +49,7 @@ The generated instruction tells an agent to:
 10. Run format, check, and generation after semantic changes.
 11. Fall back to broad search when no credible card is returned.
 
-When a host supports structured tool calls, `llmnav tools --json` returns four stable provider-neutral definitions in fixed order: `llmnav_query`, `llmnav_show`, `llmnav_context`, and `llmnav_check`. The schemas reject unknown fields and omit the repository root so the trusted host binds scope outside model-generated input.
+When a host supports structured tool calls, `llmnav tools --json` returns five stable provider-neutral definitions in fixed order: `llmnav_query`, `llmnav_show`, `llmnav_context`, `llmnav_check`, and `llmnav_explain`. The new definition is appended so the existing stable tool prefix keeps its order. The schemas reject unknown fields and omit the repository root so the trusted host binds scope outside model-generated input.
 
 The protocol does not order an agent to trust a card over source code. It uses the card to choose what source to inspect.
 
@@ -99,7 +99,7 @@ Suggested contract:
 ```json
 {
   "schemaVersion": 1,
-  "operations": ["llmnav_query", "llmnav_show", "llmnav_context", "llmnav_check"]
+  "operations": ["llmnav_query", "llmnav_show", "llmnav_context", "llmnav_check", "llmnav_explain"]
 }
 ```
 

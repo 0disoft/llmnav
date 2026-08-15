@@ -47,7 +47,7 @@ npx llmnav init --agents all --package-scripts
 
 Initialization is explicit. LLMNav never edits a consumer repository from an npm `postinstall` script. Use `--agents none` when only the machine-readable control directory is desired.
 
-Before writing cards, run `npx llmnav audit`. It ranks likely architectural boundaries and explains each score. The command never edits source and remains advisory unless `--fail-on high`, `medium`, or `low` is selected. Review the candidates: a high score is evidence to inspect a file, not permission to generate semantic meaning automatically. For a reviewed false positive or implementation detail, add its exact path and a concrete reason to `audit.dispositions`; stale decisions remain visible instead of becoming permanent hidden ignores.
+Before writing cards, run `npx llmnav audit`. It ranks likely architectural boundaries and explains each score. Use `npx llmnav explain <file>` when you need to know why one file is carded, covered by another module card, ranked as a candidate, suppressed by a reviewed disposition, or omitted from the candidate list. Neither command edits source. Review the evidence: a high score is a reason to inspect a file, not permission to generate semantic meaning automatically. For a reviewed false positive or implementation detail, add its exact path and a concrete reason to `audit.dispositions`; stale decisions remain visible instead of becoming permanent hidden ignores.
 
 ## Add the first card
 
@@ -172,6 +172,7 @@ Line-comment cards require an explicit terminator and work with `//`, `#`, and `
 | --- | --- |
 | `llmnav init` | Create configuration, registry, schemas, agent instructions, and the initial cache |
 | `llmnav audit` | Rank unannotated architectural boundary candidates, with compact or file-backed output |
+| `llmnav explain` | Explain one file's card coverage, audit score, disposition, and recommended next action |
 | `llmnav check` | Validate cards, relations, coverage rules, and registry state |
 | `llmnav format` | Rewrite safe cards into canonical order and spacing |
 | `llmnav generate` | Incrementally compile and transactionally commit generated artifacts |

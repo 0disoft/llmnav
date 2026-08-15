@@ -348,7 +348,7 @@
         "agent execution"
       ],
       "hashes": {
-        "body": "4a942317d95703968830f665e5e203d669e42dd5d44ddb86c24cca1f856375da",
+        "body": "6f23a6f4d201881db6cd241d650001f2987991c3fb7ea12f44d4f383f2dbbc08",
         "semantic": "7258d93062db7c24d1bdf4076e99802a3fcc413f4012e0aca49148a9fe1dedaa",
         "structure": "62e268ed9d2dd21c68421c28b2731d9a84ff0f7a1b1bcd17b9bde4f90f1e7cc1"
       },
@@ -394,7 +394,7 @@
         "index persistence format"
       ],
       "hashes": {
-        "body": "da4b9b0fb6408907c3c761de3c32aadd932ee2ba4751790a2d9c99c51e14f3a3",
+        "body": "d04eaafea84598ba8849f7808fc700f580883a6b4aa2f29421ac5476c510399e",
         "semantic": "f4671d61fc8164fc24498faa91ba84f777e28a7f325750991908542867a69b6e",
         "structure": "d07095544a74a9bf34d1256f116457d0d9ca43cf06a4beb579eabf9df6471424"
       },
@@ -1305,13 +1305,14 @@
         "source mutation"
       ],
       "hashes": {
-        "body": "c4f7c35e8e920831b34749d5239fd1bbb4ccab9d41f1f5c65b189774a7830204",
-        "semantic": "60d7079d5dfab698ddadc4e91887758f29b061be2a05467e29fa2ac54182921d",
-        "structure": "f4b95c81f5e047473d3e501523e33bcd4e9e4076b8be6e73fbd8b41f02c6a9eb"
+        "body": "c6360f8b7f1dbb0f9102b20c644a0865b34e10333ca1b3f0bb72023c97bbac28",
+        "semantic": "3476901cdb633f3bc0fbcfdff78aa789b36c8d885a6137bf5cab66f763ca9486",
+        "structure": "1eab4986ebf8d007ec438c149e335af5ecd4c98c661f2e3a7d17b825ac389a4b"
       },
       "id": "llmnav.agent.protocol",
       "imports": [
         "./agent-tools.js",
+        "./audit.js",
         "./graph-input.js",
         "./project.js",
         "./search.js",
@@ -1319,7 +1320,7 @@
       ],
       "location": {
         "declarationLine": null,
-        "endLine": 10,
+        "endLine": 11,
         "exported": null,
         "kind": null,
         "language": null,
@@ -1337,7 +1338,8 @@
       ],
       "rel": [
         "workflow>llmnav.search.query",
-        "workflow>llmnav.rules.validate"
+        "workflow>llmnav.rules.validate",
+        "workflow>llmnav.audit.coverage"
       ],
       "role": "Execute bounded repository navigation operations through one provider-neutral result envelope.",
       "scope": "module",
@@ -1409,7 +1411,7 @@
         "repository scope"
       ],
       "hashes": {
-        "body": "4965472a6aa3816473078dcd747bb5621437d6a74234257c60fc5e73057fa1d1",
+        "body": "61b5d17aee67bf3bfbd7cc5ad690b729eb1c1e57ea8d4f3f951ad7a5072eea9b",
         "semantic": "d1de5aa0a4d4ade41371bd255707d45ec8ba04edd4d99f9d49242cd766df1f4a",
         "structure": "01cefd4f7b9d4d7a8a90ececba902900b7ba139ca93ba7554b6763626ea6a22e"
       },
@@ -1861,7 +1863,7 @@
         "source parsing"
       ],
       "hashes": {
-        "body": "e06ce3381c51c926d7310cdc8c9a11954e13df8c162fa2cb838603ceccfffccf",
+        "body": "d0a4a5d1f41b4b9e56784e07aa4e3aa0157ee40493763aa20aad2dfa60c9d5d1",
         "semantic": "59aa3e9e793d505ecdf110fec023c201aaee0154d2f6c9cf71afe1bbf71a7be5",
         "structure": "e213e073414c75bc75df1c8669a7045096142b6c0845694191893d90bf23e3c2"
       },
@@ -1957,8 +1959,8 @@
         "semantic role generation"
       ],
       "hashes": {
-        "body": "56e6f867e44146096319f52c2ac8ba6c6c4240400d11c71042d884dc9c7d8ff7",
-        "semantic": "aac17e46887fb32325f2255731d30aad7671051d5a63d8d39139e169cd16815d",
+        "body": "c78f19b9ba9caf3828147a9a9938593a1b7d99ea2118589616b6fd63e17cedbd",
+        "semantic": "47c79f36d71a39ad0b795700686fce0f12733568534f1a69dca05cc3cc8348c7",
         "structure": "477878b800393949f73e344b829c26c77c664a47c89a60ac535d2b83da8aa187"
       },
       "id": "llmnav.audit.coverage",
@@ -1988,6 +1990,7 @@
       "owns": [
         "annotation coverage audit",
         "candidate prioritization",
+        "file explanation",
         "coverage rule suggestions"
       ],
       "rel": [
@@ -1998,6 +2001,7 @@
       "search": [
         "llmnav audit",
         "missing module cards",
+        "explain missing annotation",
         "coverage suggestions"
       ],
       "stability": "contract"
@@ -2171,7 +2175,7 @@
   ],
   "contractFingerprints": {
     "configuration": {
-      "sha256": "4d89c3cf1af2722cfaadbc2bf236a1a1c3e911bd996acc64549a2b86bf59e867"
+      "sha256": "9dea81dac9c5c873b5ae7f41c351ddc9251a70aa5482ba5e02561b2be4b6722a"
     },
     "exportedApi": {
       "count": 5,
@@ -2179,9 +2183,9 @@
     },
     "schemaVersion": 1
   },
-  "generatedBy": "llmnav@0.8.0",
+  "generatedBy": "llmnav@0.9.0",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "72c063712ea562a7d02f13c4dade994dacd18dc4812644ea10becf475eba84f7",
+  "sourceHash": "426debe30de8042fdbcc15fcd11353000bfc636a2f0e74d2b433b2221085579e",
   "specVersion": "1"
 }

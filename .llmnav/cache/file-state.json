@@ -1057,7 +1057,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "0f9426897f1961ce39f8e5f3770ad2931eb7b3b3de4a626be0bedb00e949128d",
+      "contentHash": "9c3e69559f539e02b52f9a98e7617abac1551417962586a81421e859e296f8aa",
       "declarations": [],
       "imports": [
         "node:child_process",
@@ -1068,7 +1068,7 @@
       ],
       "path": "scripts/pack-smoke.js",
       "semanticBytes": 0,
-      "sourceBytes": 5528
+      "sourceBytes": 6186
     },
     {
       "blocks": [],
@@ -1115,7 +1115,8 @@
             ],
             "rel": [
               "workflow>llmnav.search.query",
-              "workflow>llmnav.rules.validate"
+              "workflow>llmnav.rules.validate",
+              "workflow>llmnav.audit.coverage"
             ],
             "risk": [],
             "role": "Execute bounded repository navigation operations through one provider-neutral result envelope.",
@@ -1129,8 +1130,8 @@
             "stability": "contract",
             "unknown": []
           },
-          "end": 469,
-          "endLine": 10,
+          "end": 504,
+          "endLine": 11,
           "entries": [
             {
               "key": "id",
@@ -1175,9 +1176,15 @@
               "value": "workflow>llmnav.rules.validate"
             },
             {
-              "key": "stability",
+              "key": "rel",
               "line": 9,
               "order": 7,
+              "value": "workflow>llmnav.audit.coverage"
+            },
+            {
+              "key": "stability",
+              "line": 10,
+              "order": 8,
               "value": "contract"
             }
           ],
@@ -1185,7 +1192,7 @@
           "indent": "",
           "newline": "\n",
           "prefix": null,
-          "raw": "/* llmnav/1 module\nid=llmnav.agent.protocol\nrole=Execute bounded repository navigation operations through one provider-neutral result envelope.\nowns=operation validation|operation dispatch|provider-neutral result envelope\nexcludes=provider SDK transport|repository discovery|source mutation\nsearch=agent tool schema|provider neutral tools|tool dispatcher|agent operation protocol\nrel=workflow>llmnav.search.query\nrel=workflow>llmnav.rules.validate\nstability=contract\n*/",
+          "raw": "/* llmnav/1 module\nid=llmnav.agent.protocol\nrole=Execute bounded repository navigation operations through one provider-neutral result envelope.\nowns=operation validation|operation dispatch|provider-neutral result envelope\nexcludes=provider SDK transport|repository discovery|source mutation\nsearch=agent tool schema|provider neutral tools|tool dispatcher|agent operation protocol\nrel=workflow>llmnav.search.query\nrel=workflow>llmnav.rules.validate\nrel=workflow>llmnav.audit.coverage\nstability=contract\n*/",
           "scope": "module",
           "specVersion": "1",
           "start": 0,
@@ -1194,20 +1201,21 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "c4f7c35e8e920831b34749d5239fd1bbb4ccab9d41f1f5c65b189774a7830204",
+      "contentHash": "c6360f8b7f1dbb0f9102b20c644a0865b34e10333ca1b3f0bb72023c97bbac28",
       "declarations": [
         null
       ],
       "imports": [
         "./agent-tools.js",
+        "./audit.js",
         "./graph-input.js",
         "./project.js",
         "./search.js",
         "./validator.js"
       ],
       "path": "src/agent-protocol.js",
-      "semanticBytes": 469,
-      "sourceBytes": 5215
+      "semanticBytes": 504,
+      "sourceBytes": 5457
     },
     {
       "blocks": [
@@ -1300,14 +1308,14 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "4965472a6aa3816473078dcd747bb5621437d6a74234257c60fc5e73057fa1d1",
+      "contentHash": "61b5d17aee67bf3bfbd7cc5ad690b729eb1c1e57ea8d4f3f951ad7a5072eea9b",
       "declarations": [
         null
       ],
       "imports": [],
       "path": "src/agent-tools.js",
       "semanticBytes": 411,
-      "sourceBytes": 2177
+      "sourceBytes": 2408
     },
     {
       "blocks": [
@@ -1397,7 +1405,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "4a942317d95703968830f665e5e203d669e42dd5d44ddb86c24cca1f856375da",
+      "contentHash": "6f23a6f4d201881db6cd241d650001f2987991c3fb7ea12f44d4f383f2dbbc08",
       "declarations": [
         null
       ],
@@ -1408,7 +1416,7 @@
       ],
       "path": "src/agents.js",
       "semanticBytes": 374,
-      "sourceBytes": 6716
+      "sourceBytes": 6949
     },
     {
       "blocks": [
@@ -1426,6 +1434,7 @@
             "owns": [
               "annotation coverage audit",
               "candidate prioritization",
+              "file explanation",
               "coverage rule suggestions"
             ],
             "rel": [
@@ -1437,12 +1446,13 @@
             "search": [
               "llmnav audit",
               "missing module cards",
+              "explain missing annotation",
               "coverage suggestions"
             ],
             "stability": "contract",
             "unknown": []
           },
-          "end": 533,
+          "end": 577,
           "endLine": 10,
           "entries": [
             {
@@ -1461,7 +1471,7 @@
               "key": "owns",
               "line": 4,
               "order": 2,
-              "value": "annotation coverage audit|candidate prioritization|coverage rule suggestions"
+              "value": "annotation coverage audit|candidate prioritization|file explanation|coverage rule suggestions"
             },
             {
               "key": "excludes",
@@ -1473,7 +1483,7 @@
               "key": "search",
               "line": 6,
               "order": 4,
-              "value": "llmnav audit|missing module cards|coverage suggestions"
+              "value": "llmnav audit|missing module cards|explain missing annotation|coverage suggestions"
             },
             {
               "key": "invariant",
@@ -1498,7 +1508,7 @@
           "indent": "",
           "newline": "\n",
           "prefix": null,
-          "raw": "/* llmnav/1 module\nid=llmnav.audit.coverage\nrole=Identify high-value source modules that lack semantic navigation boundaries without modifying source.\nowns=annotation coverage audit|candidate prioritization|coverage rule suggestions\nexcludes=automatic source annotation|semantic role generation\nsearch=llmnav audit|missing module cards|coverage suggestions\ninvariant=Audit output is deterministic, repository-relative, and advisory unless an explicit fail threshold is selected.\nrel=workflow>llmnav.project.scan\nstability=contract\n*/",
+          "raw": "/* llmnav/1 module\nid=llmnav.audit.coverage\nrole=Identify high-value source modules that lack semantic navigation boundaries without modifying source.\nowns=annotation coverage audit|candidate prioritization|file explanation|coverage rule suggestions\nexcludes=automatic source annotation|semantic role generation\nsearch=llmnav audit|missing module cards|explain missing annotation|coverage suggestions\ninvariant=Audit output is deterministic, repository-relative, and advisory unless an explicit fail threshold is selected.\nrel=workflow>llmnav.project.scan\nstability=contract\n*/",
           "scope": "module",
           "specVersion": "1",
           "start": 0,
@@ -1507,7 +1517,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "56e6f867e44146096319f52c2ac8ba6c6c4240400d11c71042d884dc9c7d8ff7",
+      "contentHash": "c78f19b9ba9caf3828147a9a9938593a1b7d99ea2118589616b6fd63e17cedbd",
       "declarations": [
         null
       ],
@@ -1519,8 +1529,8 @@
         "node:path"
       ],
       "path": "src/audit.js",
-      "semanticBytes": 533,
-      "sourceBytes": 18539
+      "semanticBytes": 577,
+      "sourceBytes": 23763
     },
     {
       "blocks": [
@@ -1842,7 +1852,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "da4b9b0fb6408907c3c761de3c32aadd932ee2ba4751790a2d9c99c51e14f3a3",
+      "contentHash": "d04eaafea84598ba8849f7808fc700f580883a6b4aa2f29421ac5476c510399e",
       "declarations": [
         null
       ],
@@ -1870,7 +1880,7 @@
       ],
       "path": "src/cli.js",
       "semanticBytes": 508,
-      "sourceBytes": 20492
+      "sourceBytes": 22467
     },
     {
       "blocks": [
@@ -3201,18 +3211,18 @@
     },
     {
       "blocks": [],
-      "contentHash": "d21fec2b38e747cedae702aef27499b2628fed62af2ed7145d17414922d7bf85",
+      "contentHash": "c1fba29a634a4ad78fafc5ea791f11aaa10d8333884ebf52a96295a6c59ae174",
       "declarations": [],
       "imports": [
         "./spec.js"
       ],
       "path": "src/index.d.ts",
       "semanticBytes": 0,
-      "sourceBytes": 28111
+      "sourceBytes": 29104
     },
     {
       "blocks": [],
-      "contentHash": "14a273bc1ffc0f53b3c859765c115a81ca2cd22c09f91ed108209302464d254c",
+      "contentHash": "96e7fe113252ecb62a76c467b660ad9a2cd407987b2133f465a50a5875983cf8",
       "declarations": [],
       "imports": [
         "./agent-protocol.js",
@@ -3249,7 +3259,7 @@
       ],
       "path": "src/index.js",
       "semanticBytes": 0,
-      "sourceBytes": 3588
+      "sourceBytes": 3654
     },
     {
       "blocks": [
@@ -4612,7 +4622,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "e06ce3381c51c926d7310cdc8c9a11954e13df8c162fa2cb838603ceccfffccf",
+      "contentHash": "d0a4a5d1f41b4b9e56784e07aa4e3aa0157ee40493763aa20aad2dfa60c9d5d1",
       "declarations": [
         null
       ],
@@ -4961,7 +4971,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "a4b48da68cbab6fe36188d0624162c9c9cbc40367e14398f17e4c5e79a69ae06",
+      "contentHash": "f393eb90f0e8935650a494152bef7d486210036341458a8a8da38b684af19818",
       "declarations": [],
       "imports": [
         "../src/agent-protocol.js",
@@ -4974,11 +4984,11 @@
       ],
       "path": "tests/agent-protocol.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 3795
+      "sourceBytes": 4131
     },
     {
       "blocks": [],
-      "contentHash": "136121ce975fd6514a56252e5dbb1d8ab7490946eeef79b07218d48d56e4eaa6",
+      "contentHash": "fd20526c4dc6b4d8bddf7d057480ca4c0ad88aa4f67d7959c87fa2fc5ffdcda9",
       "declarations": [],
       "imports": [
         "../src/audit.js",
@@ -4993,7 +5003,7 @@
       ],
       "path": "tests/audit.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 14650
+      "sourceBytes": 18127
     },
     {
       "blocks": [],
@@ -5015,7 +5025,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "60dc92511600fe7c28ca0425be1b7cd59adf0f0b672ec504cd75a90767d6b9e9",
+      "contentHash": "a1dc66e4a19ced618264ba52bf2aee3f67096c554d35b048d7a0138fe8e75183",
       "declarations": [],
       "imports": [
         "../src/cli.js",
@@ -5030,7 +5040,7 @@
       ],
       "path": "tests/cli.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 3174
+      "sourceBytes": 3196
     },
     {
       "blocks": [],
@@ -5353,7 +5363,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "f4b220e114a3c0d54ad75d94c6656f5d2aad1a765703140e53573df2e8a98f1b",
+      "contentHash": "758cb12636b00d0531fd49d754180da6e1251b7323718fbe541fdcf7c9de2dd6",
       "declarations": [],
       "imports": [
         "../examples/provider-neutral-host.mjs",
@@ -5367,7 +5377,7 @@
       ],
       "path": "tests/provider-neutral-example.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 2568
+      "sourceBytes": 2590
     },
     {
       "blocks": [],

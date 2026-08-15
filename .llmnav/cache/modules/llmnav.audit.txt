@@ -3,7 +3,7 @@ Read semantic cards before opening source. Resolve current paths and signatures 
 
 @llmnav.audit.coverage
 role Identify high-value source modules that lack semantic navigation boundaries without modifying source.
-owns annotation coverage audit, candidate prioritization, coverage rule suggestions
+owns annotation coverage audit, candidate prioritization, file explanation, coverage rule suggestions
 excludes automatic source annotation, semantic role generation
 invariant Audit output is deterministic, repository-relative, and advisory unless an explicit fail threshold is selected.
 rel workflow>llmnav.project.scan

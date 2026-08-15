@@ -41,6 +41,16 @@ The command never modifies source, configuration, registries, or generated cache
 
 JSON output uses schemaVersion 1, repository-relative paths, deterministic ordering, explainable `reasons` and `signals`, and a path-specific `suggestedCoverageRule` for high and medium candidates. Reviewed `audit.dispositions` appear separately as `suppressed` or `stale`; only active candidates participate in `--fail-on`. Stale reasons are `file-not-scanned`, `already-carded`, or `not-a-candidate`. `--summary` omits candidate and disposition details but retains their counters. `--output <path>` writes the selected report inside the repository and emits only a compact confirmation envelope to stdout; escaping paths and symbolic-link traversal are rejected. Suggestions require human or agent review: LLMNav cannot infer a durable role, ownership boundary, invariant, or semantic ID from structure alone.
 
+## `llmnav explain`
+
+```sh
+llmnav explain <file> [--json]
+```
+
+Explains one repository-relative or repository-contained absolute file path without modifying the repository. The result distinguishes active candidates, reviewed suppressions, direct cards, package-level module coverage, files with no ranked audit signal, files excluded from the scanned source set, and stale dispositions. Candidate results retain the audit's representative path, priority, score, reasons, signals, and suggested coverage rule; this matters for Go packages, where the requested file and representative candidate can differ.
+
+The recommendation is deliberately bounded. It may ask for card review, disposition review, stale-disposition cleanup, or no action, but it never invents a semantic ID or writes a source comment. A file outside the repository or an invalid positional argument exits with status 2. A valid path that is not in the scanned source set returns its explanation and exits with status 1.
+
 ## `llmnav check`
 
 ```sh

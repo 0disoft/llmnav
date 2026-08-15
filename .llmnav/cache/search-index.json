@@ -45,7 +45,7 @@
     "llmnav.structure.modules",
     "llmnav.syntax.parse"
   ],
-  "cardSetHash": "8017ffd027f198cf2d233571d87d8e61646a059717830437cfa3b2f169d97ae8",
+  "cardSetHash": "a6c00c81c768922a75048c7f1846179152ecc22b73cc1c8d5fe21b8243d750bd",
   "documentCount": 44,
   "documents": [
     [
@@ -199,15 +199,17 @@
       ]
     ],
     [
-      "a0075f519488941b56ed6074226c7a8d9e1bfde30cd06c28b9edeb2301ba030c",
+      "7388a59079ccd10864e5eb914530954642b020325f4c9e681a57e993736831cf",
       [
         "identify high-value source modules that lack semantic navigation boundaries without modifying source.",
         "llmnav audit",
         "missing module cards",
+        "explain missing annotation",
         "coverage suggestions",
         "audit output is deterministic, repository-relative, and advisory unless an explicit fail threshold is selected.",
         "annotation coverage audit",
         "candidate prioritization",
+        "file explanation",
         "coverage rule suggestions"
       ]
     ],
@@ -1312,6 +1314,8 @@
       [
         13,
         [
+          2,
+          1,
           3,
           1,
           4,
@@ -4324,6 +4328,24 @@
     ],
     [
       [
+        13,
+        [
+          2,
+          1
+        ]
+      ]
+    ],
+    [
+      [
+        13,
+        [
+          3,
+          1
+        ]
+      ]
+    ],
+    [
+      [
         9,
         [
           1,
@@ -4576,6 +4598,13 @@
       ]
     ],
     [
+      [
+        13,
+        [
+          3,
+          1
+        ]
+      ],
       [
         15,
         [
@@ -7187,7 +7216,7 @@
         13,
         [
           2,
-          1
+          2
         ]
       ],
       [
@@ -13046,6 +13075,8 @@
     "expected",
     "expires",
     "expiry",
+    "explain",
+    "explanation",
     "explicit",
     "export",
     "exportjob",

@@ -32,6 +32,9 @@ const DEFINITIONS = [
       default: [],
     },
   }),
+  tool("llmnav_explain", "Explain one file's card coverage, audit evidence, disposition, and recommended next action.", {
+    file: stringProperty("Repository-relative or repository-contained absolute file path."),
+  }, ["file"]),
 ];
 
 export function getAgentToolDefinitions() {

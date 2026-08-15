@@ -38,7 +38,7 @@ import { renderGraphNode } from "./graph.js";
 import { getAgentToolDefinitions } from "./agent-protocol.js";
 import { loadPromptPrefixBundle } from "./prompt-bundle.js";
 import { diagnosticsToEditor, getEditorIntegration } from "./editor.js";
-import { AUDIT_PRIORITIES, auditHasFindings, auditProject } from "./audit.js";
+import { AUDIT_PRIORITIES, auditHasFindings, auditProject, explainProjectFile } from "./audit.js";
 import { migrateProject } from "./migration.js";
 
 const VALUE_OPTIONS = new Set(["--root", "--format", "--top", "--depth", "--budget", "--max-edges", "--agents", "--file", "--fail-on", "--output"]);
@@ -56,6 +56,7 @@ const COMMAND_OPTIONS = Object.freeze({
   doctor: new Set(["--root", "--json"]),
   migrate: new Set(["--check", "--write", "--root", "--json"]),
   audit: new Set(["--root", "--json", "--summary", "--fail-on", "--output"]),
+  explain: new Set(["--root", "--json"]),
   spec: new Set(["--root", "--json"]),
   tools: new Set(["--json"]),
   bundle: new Set(["--root", "--json"]),
@@ -106,6 +107,8 @@ export async function runCli(argv) {
       return runMigrate(root, args, json);
     case "audit":
       return runAudit(root, args, json);
+    case "explain":
+      return runExplain(root, args, json);
     case "spec":
       return runSpec(json);
     case "bundle":
@@ -364,6 +367,44 @@ async function runAudit(root, args, json) {
   return auditHasFindings(result, failOn) ? 1 : 0;
 }
 
+async function runExplain(root, args, json) {
+  const files = getPositionals(args);
+  if (files.length !== 1) throw usageError("explain requires exactly one file path.");
+  let result;
+  try {
+    result = await explainProjectFile(root, files[0]);
+  } catch (error) {
+    if ((error instanceof TypeError || error instanceof RangeError) && /^explain (?:requires|path)/u.test(error.message)) {
+      throw usageError(error.message);
+    }
+    throw error;
+  }
+  if (json) {
+    console.log(JSON.stringify(result, null, 2));
+  } else {
+    console.log(`file ${result.path}`);
+    console.log(`status ${result.status}`);
+    if (result.moduleKey) console.log(`module ${result.moduleKey}`);
+    for (const card of result.navigationCards) console.log(`card ${card.scope} @${card.id} ${card.path}`);
+    for (const card of result.coverageCards) {
+      if (!result.navigationCards.some((item) => item.id === card.id && item.path === card.path)) {
+        console.log(`coverage ${card.scope} @${card.id} ${card.path}`);
+      }
+    }
+    if (result.candidate) {
+      console.log(`candidate ${result.candidate.priority} ${result.candidate.path} score=${result.candidate.score}`);
+      console.log(`why ${result.candidate.reasons.join(",")}`);
+      const signals = Object.entries(result.candidate.signals)
+        .filter(([, value]) => Array.isArray(value) ? value.length > 0 : Boolean(value))
+        .map(([name, value]) => `${name}=${Array.isArray(value) ? value.join("|") : value}`);
+      if (signals.length > 0) console.log(`signals ${signals.join(",")}`);
+    }
+    if (result.disposition) console.log(`disposition ${result.disposition.status}: ${result.disposition.reason}`);
+    console.log(`next ${result.recommendation.action}: ${result.recommendation.message}`);
+  }
+  return result.status === "not-scanned" ? 1 : 0;
+}
+
 function runSpec(json) {
   const spec = {
     specVersion: SPEC_VERSION,
@@ -522,6 +563,7 @@ Usage
   llmnav doctor
   llmnav migrate [--check|--write]
   llmnav audit [--summary] [--output path] [--fail-on none|high|medium|low]
+  llmnav explain <file>
   llmnav spec
   llmnav tools [--json]
   llmnav bundle [--json]

@@ -11,7 +11,7 @@ rel workflow>llmnav.search.query
 role Execute bounded repository navigation operations through one provider-neutral result envelope.
 owns operation validation, operation dispatch, provider-neutral result envelope
 excludes provider SDK transport, repository discovery, source mutation
-rel workflow>llmnav.search.query, workflow>llmnav.rules.validate
+rel workflow>llmnav.search.query, workflow>llmnav.rules.validate, workflow>llmnav.audit.coverage
 
 @llmnav.agent.prompt-bundle
 role Assemble deterministic prompt-prefix partitions with explicit cache scope and integrity hashes.

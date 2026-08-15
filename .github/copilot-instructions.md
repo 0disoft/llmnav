@@ -17,5 +17,7 @@ Do not add hand-maintained `calls`, `imports`, `references`, `implements`, `expo
 
 After initialization and whenever public entrypoints, commands, routes, schemas, migrations, or high fan-in modules change, run `npm exec -- llmnav audit`. Review high and medium candidates; never add cards automatically. Add a module card only after confirming a durable responsibility, then encode the accepted boundary in a path-specific `coverageRules` entry and add a representative retrieval query. When a reviewed candidate has no durable navigation responsibility, record its exact path and a concrete reason in `audit.dispositions`; never use a glob or broad directory suppression.
 
+When deciding whether one specific file needs a card, run `npm exec -- llmnav explain <file>`. Use its coverage, score, and disposition evidence to guide review, but never turn its recommendation into automatic source annotation.
+
 After semantic changes, run `npm exec -- llmnav format`, `npm exec -- llmnav check`, and `npm exec -- llmnav generate`. Use broad text search only when LLMNav returns no credible candidate.
 <!-- llmnav:end -->

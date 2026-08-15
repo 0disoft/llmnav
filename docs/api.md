@@ -65,7 +65,7 @@ Attached symbol declarations expose generated `language`, `exported`, `visibilit
 ## Audit annotation coverage
 
 ```js
-import { auditHasFindings, auditProject } from "llmnav";
+import { auditHasFindings, auditProject, explainProjectFile } from "llmnav";
 
 const result = await auditProject(process.cwd());
 for (const candidate of result.candidates) {
@@ -73,9 +73,12 @@ for (const candidate of result.candidates) {
 }
 
 if (auditHasFindings(result, "high")) process.exitCode = 1;
+
+const explanation = await explainProjectFile(process.cwd(), "src/runtime.ts");
+console.log(explanation.status, explanation.candidate?.score, explanation.recommendation.action);
 ```
 
-`auditProject` is read-only and returns schemaVersion 1 data with repository-relative paths and deterministic ordering. Candidate signals are structural heuristics, not generated semantic meaning. Exact reviewed decisions from `audit.dispositions` are returned separately with `suppressed` or `stale` status; `auditHasFindings` considers only active candidates. Consumers should review high and medium candidates before adding a card and should never turn the suggested coverage rule into automatic source annotation.
+`auditProject` is read-only and returns schemaVersion 1 data with repository-relative paths and deterministic ordering. Candidate signals are structural heuristics, not generated semantic meaning. Exact reviewed decisions from `audit.dispositions` are returned separately with `suppressed` or `stale` status; `auditHasFindings` considers only active candidates. `explainProjectFile` applies the same analysis to one path, preserving candidate score evidence and package-level coverage without mutating source. Consumers should review high and medium candidates before adding a card and should never turn a suggested coverage rule or recommendation into automatic source annotation.
 
 ## Generate incrementally and transactionally
 

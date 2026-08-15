@@ -115,6 +115,34 @@
     {
       "confidence": 0.85,
       "from": "llmnav/llmnav.agent.protocol",
+      "id": "99db71e0211a2f3e4dac818ad3e2ca804da9de448338c0e53254a62b4633d1ab",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/agent-protocol.js",
+        "source": "src/agent-protocol.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.audit.coverage"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.agent.protocol",
+      "id": "c37ae560c7732058837fa693478a16825fe600f7cb84a70eedfd2be796f30198",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/agent-protocol.js",
+        "source": "src/agent-protocol.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.audit.coverage"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.agent.protocol",
       "id": "4a8b99e65fd35f1e9af502d233e4cc143cbe58d5cf5beb5b2b4fd60167b76de8",
       "kind": "imports",
       "provenance": {
@@ -2500,7 +2528,7 @@
       "key": "llmnav/llmnav.agent.protocol",
       "location": {
         "declarationLine": null,
-        "endLine": 10,
+        "endLine": 11,
         "exported": null,
         "kind": null,
         "language": null,
@@ -3245,9 +3273,9 @@
   ],
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "89ede706f49a16bdcef44b5a8be38283e95606249ebc8bea9fe06b8ee6d750bd",
+  "sourceHash": "705d3b64bcb7e94a7341d2d0b35424d83a95f0d09a3f149b7227800f443d1d02",
   "stats": {
-    "edgeCount": 158,
+    "edgeCount": 160,
     "importedIndexCount": 0,
     "nodeCount": 44,
     "unresolvedNodeCount": 0

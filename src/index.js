@@ -14,7 +14,14 @@ export {
 } from "./prompt-bundle.js";
 export { compareCardIndexes, describeAffectedBoundaries, describeAffectedCatalogs } from "./changes.js";
 export { loadConfig, validateConfig } from "./config.js";
-export { AUDIT_PRIORITIES, AUDIT_SCHEMA_VERSION, auditHasFindings, auditProject } from "./audit.js";
+export {
+  AUDIT_PRIORITIES,
+  AUDIT_SCHEMA_VERSION,
+  FILE_EXPLANATION_SCHEMA_VERSION,
+  auditHasFindings,
+  auditProject,
+  explainProjectFile,
+} from "./audit.js";
 export { BOUNDARY_KINDS, detectBoundaries } from "./boundaries.js";
 export {
   diagnosticsToEditor,

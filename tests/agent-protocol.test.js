@@ -13,6 +13,7 @@ test("publishes stable provider-neutral tool definitions", () => {
     "llmnav_show",
     "llmnav_context",
     "llmnav_check",
+    "llmnav_explain",
   ]);
   assert.ok(definitions.every((item) => item.schemaVersion === 1));
   assert.ok(definitions.every((item) => item.inputSchema.additionalProperties === false));
@@ -49,6 +50,12 @@ test("executes bounded operations through one deterministic envelope", async (co
   assert.equal(checked.ok, true);
   assert.equal(checked.data.counts.error, 0);
   assert.equal(checked.data.cardCount, 1);
+
+  const explained = await executeAgentOperation(root, "llmnav_explain", { file: "src/rotate.ts" });
+  assert.equal(explained.ok, true);
+  assert.equal(explained.operation, "explain");
+  assert.equal(explained.data.status, "candidate");
+  assert.equal(explained.data.navigationCards[0].id, "auth.session.rotate");
 });
 
 test("returns stable protocol failures for invalid input and missing IDs", async (context) => {

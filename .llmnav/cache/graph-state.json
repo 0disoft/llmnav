@@ -534,6 +534,34 @@
         {
           "confidence": 0.85,
           "from": "llmnav/llmnav.agent.protocol",
+          "id": "99db71e0211a2f3e4dac818ad3e2ca804da9de448338c0e53254a62b4633d1ab",
+          "kind": "imports",
+          "provenance": {
+            "generator": "llmnav",
+            "line": null,
+            "path": "src/agent-protocol.js",
+            "source": "src/agent-protocol.js",
+            "type": "local-import"
+          },
+          "to": "llmnav/llmnav.audit.coverage"
+        },
+        {
+          "confidence": 1,
+          "from": "llmnav/llmnav.agent.protocol",
+          "id": "c37ae560c7732058837fa693478a16825fe600f7cb84a70eedfd2be796f30198",
+          "kind": "workflow",
+          "provenance": {
+            "generator": null,
+            "line": 1,
+            "path": "src/agent-protocol.js",
+            "source": "src/agent-protocol.js",
+            "type": "source-card"
+          },
+          "to": "llmnav/llmnav.audit.coverage"
+        },
+        {
+          "confidence": 0.85,
+          "from": "llmnav/llmnav.agent.protocol",
           "id": "4a8b99e65fd35f1e9af502d233e4cc143cbe58d5cf5beb5b2b4fd60167b76de8",
           "kind": "imports",
           "provenance": {
@@ -616,7 +644,7 @@
           "to": "llmnav/llmnav.search.query"
         }
       ],
-      "inputHash": "bb74c59d4e19b51d7503f33a14ce47479e73a4ae1d1e78f8da4bb68d36066d4d",
+      "inputHash": "6cdd88aab73156ebd167282415a3bf991760b4d7be97aa751361b74413c75bb3",
       "key": "card:llmnav/llmnav.agent.protocol",
       "nodes": [
         {
@@ -625,7 +653,7 @@
           "key": "llmnav/llmnav.agent.protocol",
           "location": {
             "declarationLine": null,
-            "endLine": 10,
+            "endLine": 11,
             "exported": null,
             "kind": null,
             "language": null,
@@ -648,6 +676,15 @@
           "repositoryId": "llmnav",
           "role": null,
           "semanticId": "llmnav.agent.tool-schema"
+        },
+        {
+          "definitions": [],
+          "external": false,
+          "key": "llmnav/llmnav.audit.coverage",
+          "location": null,
+          "repositoryId": "llmnav",
+          "role": null,
+          "semanticId": "llmnav.audit.coverage"
         },
         {
           "definitions": [],
@@ -686,7 +723,7 @@
           "semanticId": "llmnav.search.query"
         }
       ],
-      "outputHash": "49e861dbfcba179d79c0317ccec8e060814223cb393b755e7da0948a6227f3fd"
+      "outputHash": "dd7d8060ab48e62aea7710252b42a15ba8de95a598832f7a1f3f759a2af86f6c"
     },
     {
       "edges": [

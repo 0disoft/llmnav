@@ -33,8 +33,8 @@ try {
     [
       "--input-type=module",
       "--eval",
-      `import { PACKAGE_VERSION, SEARCH_INDEX_ENCODING, SEARCH_INDEX_SCHEMA_VERSION } from "llmnav";
-if (PACKAGE_VERSION !== ${JSON.stringify(installedPackage.version)} || SEARCH_INDEX_SCHEMA_VERSION !== 2 || SEARCH_INDEX_ENCODING !== "compact-v1") process.exit(1);`,
+      `import { PACKAGE_VERSION, SEARCH_INDEX_ENCODING, SEARCH_INDEX_SCHEMA_VERSION, explainProjectFile } from "llmnav";
+if (PACKAGE_VERSION !== ${JSON.stringify(installedPackage.version)} || SEARCH_INDEX_SCHEMA_VERSION !== 2 || SEARCH_INDEX_ENCODING !== "compact-v1" || typeof explainProjectFile !== "function") process.exit(1);`,
     ],
     project,
   );
@@ -54,13 +54,18 @@ if (PACKAGE_VERSION !== ${JSON.stringify(installedPackage.version)} || SEARCH_IN
       `import { createLlmnavHost } from "llmnav/examples/provider-neutral-host.mjs";
 const host = await createLlmnavHost(process.cwd());
 const result = await host.execute({ name: "llmnav_query", input: { task: "replayed refresh token" } });
-if (!result.ok || result.data[0]?.id !== "auth.session.rotate") process.exit(1);`,
+const explanation = await host.execute({ name: "llmnav_explain", input: { file: "src/rotate.ts" } });
+if (!result.ok || result.data[0]?.id !== "auth.session.rotate" || !explanation.ok || explanation.data.status !== "candidate") process.exit(1);`,
     ],
     project,
   );
   const results = JSON.parse(run(process.execPath, [cli, "query", "replayed refresh token", "--root", project, "--json"], project));
   if (results[0]?.id !== "auth.session.rotate") {
     throw new Error(`Installed query returned ${results[0]?.id ?? "no result"}.`);
+  }
+  const explanation = JSON.parse(run(process.execPath, [cli, "explain", "src/rotate.ts", "--root", project, "--json"], project));
+  if (explanation.status !== "candidate" || explanation.candidate?.priority !== "low" || explanation.navigationCards[0]?.id !== "auth.session.rotate") {
+    throw new Error(`Installed explain returned an unexpected result: ${JSON.stringify(explanation)}`);
   }
   run(process.execPath, [cli, "check", "--root", project], project);
   run(process.execPath, [cli, "generate", "--check", "--root", project], project);
@@ -85,6 +90,7 @@ if (!result.ok || result.data[0]?.id !== "auth.session.rotate") process.exit(1);
     unpackedBytes: packed?.unpackedSize ?? null,
     runtimeDependencies: 0,
     queryResult: results[0].id,
+    explainStatus: explanation.status,
   }, null, 2));
 } finally {
   await rm(temp, { recursive: true, force: true });

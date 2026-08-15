@@ -6,6 +6,7 @@ excludes=provider SDK transport|repository discovery|source mutation
 search=agent tool schema|provider neutral tools|tool dispatcher|agent operation protocol
 rel=workflow>llmnav.search.query
 rel=workflow>llmnav.rules.validate
+rel=workflow>llmnav.audit.coverage
 stability=contract
 */
 
@@ -14,6 +15,7 @@ import { scanProject } from "./project.js";
 import { buildContext, queryProject, showProjectCard } from "./search.js";
 import { countDiagnostics, validateProject } from "./validator.js";
 import { getAgentToolDefinitions } from "./agent-tools.js";
+import { explainProjectFile } from "./audit.js";
 
 export { AGENT_TOOL_SCHEMA_VERSION, getAgentToolDefinitions } from "./agent-tools.js";
 export const AGENT_OPERATION_SCHEMA_VERSION = 1;
@@ -25,6 +27,7 @@ const OPERATIONS = new Map([
   ["llmnav_show", "show"],
   ["llmnav_context", "context"],
   ["llmnav_check", "check"],
+  ["llmnav_explain", "explain"],
 ]);
 
 export async function executeAgentOperation(root, name, input = {}, options = {}) {
@@ -57,6 +60,9 @@ export async function executeAgentOperation(root, name, input = {}, options = {}
       return success(operation, options.session
         ? options.session.context(input.id.trim(), contextOptions)
         : await buildContext(root, input.id.trim(), contextOptions));
+    }
+    if (operation === "explain") {
+      return success(operation, await explainProjectFile(root, input.file.trim()));
     }
     const project = await scanProject(root, { paths: input.paths ?? [] });
     const graphInputs = await loadGraphInputs(root, project.config);

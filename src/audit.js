@@ -1,9 +1,9 @@
 /* llmnav/1 module
 id=llmnav.audit.coverage
 role=Identify high-value source modules that lack semantic navigation boundaries without modifying source.
-owns=annotation coverage audit|candidate prioritization|coverage rule suggestions
+owns=annotation coverage audit|candidate prioritization|file explanation|coverage rule suggestions
 excludes=automatic source annotation|semantic role generation
-search=llmnav audit|missing module cards|coverage suggestions
+search=llmnav audit|missing module cards|explain missing annotation|coverage suggestions
 invariant=Audit output is deterministic, repository-relative, and advisory unless an explicit fail threshold is selected.
 rel=workflow>llmnav.project.scan
 stability=contract
@@ -17,6 +17,7 @@ import { compareText, readJsonSafe, toPosix } from "./util.js";
 
 export const AUDIT_SCHEMA_VERSION = 1;
 export const AUDIT_PRIORITIES = Object.freeze(["high", "medium", "low"]);
+export const FILE_EXPLANATION_SCHEMA_VERSION = 1;
 
 const SOURCE_EXTENSIONS = Object.freeze([
   ".astro", ".c", ".cc", ".cjs", ".cpp", ".cs", ".cts", ".dart", ".go", ".h", ".hpp", ".java",
@@ -28,6 +29,65 @@ const NON_PRODUCTION_PATH_PATTERN = /(?:^|\/)(?:__tests__|benchmarks?|fixtures?|
 const LARGE_SOURCE_BYTES = 12_000;
 
 export async function auditProject(root) {
+  return (await analyzeAuditProject(root)).result;
+}
+
+export async function explainProjectFile(root, inputPath) {
+  const file = normalizeExplanationPath(root, inputPath);
+  const analysis = await analyzeAuditProject(root);
+  const { project, fileByPath, candidates, result } = analysis;
+  const moduleKey = fileByPath.has(file) ? moduleKeyForFile(file) : null;
+  const navigationCards = project.records
+    .filter((record) => toPosix(record.relativePath) === file)
+    .map((record) => ({ id: record.card.id, scope: record.card.scope, path: file }))
+    .sort((left, right) => compareText(left.id, right.id));
+  const coverageCards = moduleKey === null ? [] : project.records
+    .filter((record) => {
+      const cardPath = toPosix(record.relativePath);
+      if (record.card.scope === "file") return cardPath === file;
+      return record.card.scope === "module" && moduleKeyForFile(cardPath) === moduleKey;
+    })
+    .map((record) => ({ id: record.card.id, scope: record.card.scope, path: toPosix(record.relativePath) }))
+    .sort((left, right) => compareText(left.id, right.id));
+  const candidate = moduleKey === null ? null : candidates.find((item) => moduleKeyForFile(item.path) === moduleKey) ?? null;
+  const dispositionPath = candidate?.path ?? file;
+  const disposition = result.dispositions.find((item) => item.path === dispositionPath) ??
+    result.dispositions.find((item) => item.path === file) ?? null;
+
+  if (disposition?.status === "stale") {
+    return buildFileExplanation(result.repositoryId, file, moduleKey, "stale-disposition", navigationCards, coverageCards, candidate, disposition, [
+      `stale-disposition:${disposition.staleReason}`,
+    ], "remove-or-review-disposition", "Remove or update the stale exact-path disposition after reviewing the current file state.");
+  }
+  if (!fileByPath.has(file)) {
+    return buildFileExplanation(result.repositoryId, file, null, "not-scanned", [], [], null, disposition, ["file-not-scanned"],
+      "check-scan-configuration", "Check that the file exists under a source root and is not excluded by extension, directory, or file rules.");
+  }
+  if (coverageCards.length > 0) {
+    const status = coverageCards.some((card) => card.path === file) ? "carded" : "covered";
+    return buildFileExplanation(result.repositoryId, file, moduleKey, status, navigationCards, coverageCards, null, disposition,
+      [status === "carded" ? "file-has-coverage-card" : "module-covered-by-card"],
+      "keep-current-coverage", "No additional file or module card is needed unless this file gains a separate durable responsibility.");
+  }
+  if (candidate && disposition?.status === "suppressed") {
+    return buildFileExplanation(result.repositoryId, file, moduleKey, "suppressed", navigationCards, coverageCards, candidate, disposition,
+      ["reviewed-exact-path-disposition", ...candidate.reasons], "keep-or-review-disposition",
+      "Keep the disposition while its reason remains true; remove it if the file gains a durable navigation responsibility.");
+  }
+  if (candidate) {
+    const action = candidate.priority === "low" ? "review-or-disposition" : "review-card";
+    const message = candidate.priority === "low"
+      ? "Review the low-priority signal, but do not add a card unless the file owns a durable navigation responsibility."
+      : "Review the candidate and either add one durable card with exact coverage or record an exact-path disposition with a concrete reason.";
+    return buildFileExplanation(result.repositoryId, file, moduleKey, "candidate", navigationCards, coverageCards, candidate, null,
+      candidate.reasons, action, message);
+  }
+  const reasons = /\.d\.[cm]?ts$/u.test(file) ? ["declaration-file"] : ["no-ranked-audit-signal"];
+  return buildFileExplanation(result.repositoryId, file, moduleKey, "not-candidate", navigationCards, coverageCards, null, disposition, reasons,
+    "no-card-needed", "Do not add a card solely for coverage; revisit only if the file gains a durable responsibility or stronger structural signals.");
+}
+
+async function analyzeAuditProject(root) {
   const project = await scanProject(root);
   const fileByPath = new Map(
     project.fileRecords.map((record) => [toPosix(record.relativePath), record]),
@@ -197,12 +257,40 @@ export async function auditProject(root) {
     suppressedCandidates: dispositions.filter((disposition) => disposition.status === "suppressed").length,
     staleDispositions: dispositions.filter((disposition) => disposition.status === "stale").length,
   };
-  return {
+  const result = {
     schemaVersion: AUDIT_SCHEMA_VERSION,
     repositoryId: project.config.repositoryId,
     summary,
     candidates: activeCandidates,
     dispositions,
+  };
+  return { project, fileByPath, candidates, result };
+}
+
+function normalizeExplanationPath(root, inputPath) {
+  if (typeof inputPath !== "string" || inputPath.trim() === "") throw new TypeError("explain requires one file path.");
+  const rootPath = path.resolve(root);
+  const absolutePath = path.resolve(rootPath, inputPath);
+  const relativePath = path.relative(rootPath, absolutePath);
+  if (relativePath === "" || relativePath === ".." || relativePath.startsWith(`..${path.sep}`) || path.isAbsolute(relativePath)) {
+    throw new RangeError("explain path must name one file inside the repository root.");
+  }
+  return toPosix(relativePath);
+}
+
+function buildFileExplanation(repositoryId, file, moduleKey, status, navigationCards, coverageCards, candidate, disposition, reasons, action, message) {
+  return {
+    schemaVersion: FILE_EXPLANATION_SCHEMA_VERSION,
+    repositoryId,
+    path: file,
+    moduleKey,
+    status,
+    navigationCards,
+    coverageCards,
+    candidate,
+    disposition,
+    reasons,
+    recommendation: { action, message },
   };
 }
 

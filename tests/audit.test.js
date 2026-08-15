@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
-import { auditHasFindings, auditProject } from "../src/audit.js";
+import { auditHasFindings, auditProject, explainProjectFile } from "../src/audit.js";
 import { initializeProject } from "../src/initializer.js";
 
 async function createAuditFixture(context) {
@@ -251,6 +251,47 @@ test("suppresses exact reviewed candidates and reports stale dispositions", asyn
       staleReason: "not-a-candidate",
     },
   ]);
+
+  const suppressed = await explainProjectFile(root, "src/central.js");
+  assert.equal(suppressed.status, "suppressed");
+  assert.equal(suppressed.candidate.score, 40);
+  assert.equal(suppressed.disposition.status, "suppressed");
+
+  const stale = await explainProjectFile(root, "src/index.js");
+  assert.equal(stale.status, "stale-disposition");
+  assert.deepEqual(stale.reasons, ["stale-disposition:not-a-candidate"]);
+});
+
+test("explains card coverage, audit scores, omissions, and unscanned files", async (context) => {
+  const root = await createAuditFixture(context);
+
+  const candidate = await explainProjectFile(root, "src/central.js");
+  assert.equal(candidate.schemaVersion, 1);
+  assert.equal(candidate.status, "candidate");
+  assert.equal(candidate.candidate.path, "src/central.js");
+  assert.equal(candidate.candidate.score, 40);
+  assert.equal(candidate.candidate.signals.importedBy, 7);
+  assert.equal(candidate.recommendation.action, "review-card");
+  assert.deepEqual(await explainProjectFile(root, path.join(root, "src", "central.js")), candidate);
+
+  const carded = await explainProjectFile(root, "src/carded.js");
+  assert.equal(carded.status, "carded");
+  assert.deepEqual(carded.coverageCards, [{ id: "audit.fixture.carded", scope: "module", path: "src/carded.js" }]);
+  assert.equal(carded.candidate, null);
+
+  const covered = await explainProjectFile(root, "internal/runtime/journal.go");
+  assert.equal(covered.status, "covered");
+  assert.deepEqual(covered.coverageCards, [{ id: "audit.fixture.go-runtime", scope: "module", path: "internal/runtime/run.go" }]);
+
+  const omitted = await explainProjectFile(root, "src/index.js");
+  assert.equal(omitted.status, "not-candidate");
+  assert.deepEqual(omitted.reasons, ["no-ranked-audit-signal"]);
+  assert.equal(omitted.recommendation.action, "no-card-needed");
+
+  const missing = await explainProjectFile(root, "missing/module.js");
+  assert.equal(missing.status, "not-scanned");
+  assert.equal(missing.moduleKey, null);
+  await assert.rejects(() => explainProjectFile(root, "../outside.js"), /inside the repository root/u);
 });
 
 test("audit CLI emits stable JSON and supports fail-on thresholds", async (context) => {
@@ -284,4 +325,25 @@ test("audit CLI emits stable JSON and supports fail-on thresholds", async (conte
   const escaped = spawnSync(process.execPath, [cli, "audit", "--root", root, "--output", "../audit.json"], { encoding: "utf8" });
   assert.equal(escaped.status, 2);
   assert.match(escaped.stderr, /audit output file escapes the repository root/u);
+
+  const explained = spawnSync(process.execPath, [cli, "explain", "src/central.js", "--root", root, "--json"], { encoding: "utf8" });
+  assert.equal(explained.status, 0, explained.stderr);
+  assert.equal(JSON.parse(explained.stdout).candidate.score, 40);
+
+  const explainedText = spawnSync(process.execPath, [cli, "explain", "src/util.js", "--root", root], { encoding: "utf8" });
+  assert.equal(explainedText.status, 0, explainedText.stderr);
+  assert.match(explainedText.stdout, /candidate low src\/util\.js score=0|candidate low src\/util\.js score=10/u);
+  assert.match(explainedText.stdout, /broadUtility=true/u);
+
+  const cardedText = spawnSync(process.execPath, [cli, "explain", "src/carded.js", "--root", root], { encoding: "utf8" });
+  assert.equal(cardedText.status, 0, cardedText.stderr);
+  assert.match(cardedText.stdout, /card module @audit\.fixture\.carded src\/carded\.js/u);
+
+  const missing = spawnSync(process.execPath, [cli, "explain", "missing/module.js", "--root", root, "--json"], { encoding: "utf8" });
+  assert.equal(missing.status, 1, missing.stderr);
+  assert.equal(JSON.parse(missing.stdout).status, "not-scanned");
+
+  const outside = spawnSync(process.execPath, [cli, "explain", "../outside.js", "--root", root], { encoding: "utf8" });
+  assert.equal(outside.status, 2);
+  assert.match(outside.stderr, /inside the repository root/u);
 });

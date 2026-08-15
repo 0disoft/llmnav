@@ -1,7 +1,12 @@
 {
   "$schema": "./schema/config.schema.json",
   "audit": {
-    "dispositions": []
+    "dispositions": [
+      {
+        "path": "tests/audit.test.js",
+        "reason": "This non-production module embeds multi-language artifact, command, and schema fixtures but owns no runtime navigation responsibility."
+      }
+    ]
   },
   "coverageRules": [
     {

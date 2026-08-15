@@ -3,6 +3,7 @@ export type LlmnavStability = "architecture" | "contract" | "implementation";
 export type DiagnosticSeverity = "error" | "warning" | "info";
 export type AuditPriority = "high" | "medium" | "low";
 export type AuditDispositionStaleReason = "file-not-scanned" | "already-carded" | "not-a-candidate";
+export type FileExplanationStatus = "candidate" | "suppressed" | "carded" | "covered" | "not-candidate" | "not-scanned" | "stale-disposition";
 
 export interface LlmnavCard {
   scope: LlmnavScope;
@@ -117,6 +118,23 @@ export interface AuditResult {
     | { path: string; reason: string; status: "suppressed"; priority: AuditPriority; score: number }
     | { path: string; reason: string; status: "stale"; staleReason: AuditDispositionStaleReason }
   >;
+}
+
+export interface FileExplanationResult {
+  schemaVersion: 1;
+  repositoryId: string;
+  path: string;
+  moduleKey: string | null;
+  status: FileExplanationStatus;
+  navigationCards: Array<{ id: string; scope: LlmnavScope; path: string }>;
+  coverageCards: Array<{ id: string; scope: "file" | "module"; path: string }>;
+  candidate: AuditCandidate | null;
+  disposition: AuditResult["dispositions"][number] | null;
+  reasons: string[];
+  recommendation: {
+    action: "review-card" | "review-or-disposition" | "keep-or-review-disposition" | "keep-current-coverage" | "no-card-needed" | "check-scan-configuration" | "remove-or-review-disposition";
+    message: string;
+  };
 }
 
 export interface IndexedLocation {
@@ -297,7 +315,7 @@ export interface LlmnavConfig {
 
 export interface AgentToolDefinition {
   schemaVersion: 1;
-  name: "llmnav_query" | "llmnav_show" | "llmnav_context" | "llmnav_check";
+  name: "llmnav_query" | "llmnav_show" | "llmnav_context" | "llmnav_check" | "llmnav_explain";
   description: string;
   inputSchema: {
     type: "object";
@@ -309,7 +327,7 @@ export interface AgentToolDefinition {
 
 export interface AgentOperationResult<T = unknown> {
   schemaVersion: 1;
-  operation: "query" | "show" | "context" | "check" | "unknown";
+  operation: "query" | "show" | "context" | "check" | "explain" | "unknown";
   ok: boolean;
   data: T | null;
   error: { code: string; message: string } | null;
@@ -621,6 +639,7 @@ export interface EvaluationResult {
 export const AGENT_PROTOCOL: string;
 export const AUDIT_PRIORITIES: readonly AuditPriority[];
 export const AUDIT_SCHEMA_VERSION: 1;
+export const FILE_EXPLANATION_SCHEMA_VERSION: 1;
 export const AGENT_OPERATION_SCHEMA_VERSION: 1;
 export const AGENT_TOOL_SCHEMA_VERSION: 1;
 export const BOUNDARY_KINDS: readonly DetectedBoundary["kind"][];
@@ -698,6 +717,7 @@ export function loadConfig(root: string): Promise<{ config: LlmnavConfig; config
 export function validateConfig(config: LlmnavConfig, configPath?: string): void;
 export function auditProject(root: string): Promise<AuditResult>;
 export function auditHasFindings(result: AuditResult, minimumPriority?: AuditPriority | "none"): boolean;
+export function explainProjectFile(root: string, file: string): Promise<FileExplanationResult>;
 export function findAttachedDeclaration(source: string, block: LlmnavBlock, filePath: string): Declaration | null;
 export function extractImports(source: string, filePath: string): string[];
 export function doctorProject(root: string): Promise<{ ok: boolean; checks: Array<{ name: string; ok: boolean; message: string }> }>;
