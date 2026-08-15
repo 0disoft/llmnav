@@ -14,6 +14,9 @@
   "excludeDirectories": ["node_modules", "dist", "target"],
   "excludeFiles": ["*.generated.*", "*.gen.*"],
   "coverageRules": [],
+  "audit": {
+    "dispositions": []
+  },
   "graph": {
     "indexFiles": []
   },
@@ -89,6 +92,25 @@ Coverage is opt-in and path-specific.
 A coverage rule checks files already selected by `sourceRoots` and extension filters. Its fields are closed and `requiredFields` must name valid LLMNav keys. It should target a real architectural boundary, never an entire source tree.
 
 Run `llmnav audit` to obtain path-specific candidate rules. A suggestion is not applied automatically and should be accepted only after the file's durable responsibility is confirmed. This separation prevents structural heuristics from creating vague or stale semantic cards.
+
+## Audit dispositions
+
+When a candidate has been reviewed and intentionally does not need a semantic card, record that decision instead of repeatedly ignoring it:
+
+```json
+{
+  "audit": {
+    "dispositions": [
+      {
+        "path": "src/adapters/local-cache.ts",
+        "reason": "This private adapter mirrors its carded module contract and owns no durable policy."
+      }
+    ]
+  }
+}
+```
+
+Each disposition targets one exact normalized repository-relative path. Globs, trailing slashes, backslashes, duplicate paths, and reasons shorter than 12 characters are rejected. A matching candidate is omitted from the active queue and reported as `suppressed`. If the file disappears, gains card coverage, or stops qualifying as a candidate, the disposition is reported as `stale` with a machine-readable reason so obsolete decisions remain visible.
 
 ## Lint profile
 

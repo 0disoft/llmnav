@@ -10,7 +10,7 @@ rel=workflow>llmnav.rules.validate
 stability=contract
 */
 
-export const PACKAGE_VERSION = "0.7.4";
+export const PACKAGE_VERSION = "0.8.0";
 export const SPEC_VERSION = "1";
 
 export const SCOPES = Object.freeze(["file", "module", "symbol"]);
@@ -208,6 +208,9 @@ export const DEFAULT_CONFIG = Object.freeze({
   excludeDirectories: [...DEFAULT_EXCLUDED_DIRECTORIES],
   excludeFiles: ["*.min.js", "*.bundle.js", "*.generated.*", "*.gen.*"],
   coverageRules: [],
+  audit: {
+    dispositions: [],
+  },
   graph: {
     indexFiles: [],
   },

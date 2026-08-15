@@ -206,6 +206,53 @@ test("audits missing semantic boundaries without modifying source", async (conte
   for (const [file, source] of before) assert.equal(await readFile(path.join(root, file), "utf8"), source);
 });
 
+test("suppresses exact reviewed candidates and reports stale dispositions", async (context) => {
+  const root = await createAuditFixture(context);
+  const baseline = await auditProject(root);
+  const configPath = path.join(root, ".llmnav", "config.json");
+  const config = JSON.parse(await readFile(configPath, "utf8"));
+  config.audit.dispositions = [
+    { path: "src/index.js", reason: "The file is only a re-export barrel with no durable responsibility." },
+    { path: "missing/module.js", reason: "The reviewed file was removed and this record should be cleaned up." },
+    { path: "src/central.js", reason: "This helper coordinates local fixture data but owns no durable contract." },
+    { path: "src/carded.js", reason: "The file now has a reviewed module card and no longer needs suppression." },
+  ];
+  await writeFile(configPath, `${JSON.stringify(config, null, 2)}\n`);
+
+  const result = await auditProject(root);
+  assert.equal(result.candidates.some((candidate) => candidate.path === "src/central.js"), false);
+  assert.equal(result.summary.candidates, baseline.summary.candidates - 1);
+  assert.equal(result.summary.suppressedCandidates, 1);
+  assert.equal(result.summary.staleDispositions, 3);
+  assert.deepEqual(result.dispositions, [
+    {
+      path: "missing/module.js",
+      reason: "The reviewed file was removed and this record should be cleaned up.",
+      status: "stale",
+      staleReason: "file-not-scanned",
+    },
+    {
+      path: "src/carded.js",
+      reason: "The file now has a reviewed module card and no longer needs suppression.",
+      status: "stale",
+      staleReason: "already-carded",
+    },
+    {
+      path: "src/central.js",
+      reason: "This helper coordinates local fixture data but owns no durable contract.",
+      status: "suppressed",
+      priority: "medium",
+      score: 40,
+    },
+    {
+      path: "src/index.js",
+      reason: "The file is only a re-export barrel with no durable responsibility.",
+      status: "stale",
+      staleReason: "not-a-candidate",
+    },
+  ]);
+});
+
 test("audit CLI emits stable JSON and supports fail-on thresholds", async (context) => {
   const root = await createAuditFixture(context);
   const cli = fileURLToPath(new URL("../bin/llmnav.js", import.meta.url));
@@ -213,6 +260,7 @@ test("audit CLI emits stable JSON and supports fail-on thresholds", async (conte
   const advisory = spawnSync(process.execPath, [cli, "audit", "--root", root, "--json"], { encoding: "utf8" });
   assert.equal(advisory.status, 0, advisory.stderr);
   assert.equal(JSON.parse(advisory.stdout).summary.high >= 2, true);
+  assert.equal(Array.isArray(JSON.parse(advisory.stdout).dispositions), true);
 
   const gated = spawnSync(process.execPath, [cli, "audit", "--root", root, "--fail-on", "high", "--json"], { encoding: "utf8" });
   assert.equal(gated.status, 1, gated.stderr);

@@ -116,6 +116,27 @@ test("rejects unknown configuration and coverage properties", async (context) =>
   );
 });
 
+test("rejects broad, ambiguous, and unexplained audit dispositions", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-bad-audit-dispositions-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await writeFile(path.join(root, "package.json"), '{"name":"fixture"}\n');
+  await initializeProject(root, { agents: ["none"] });
+  const configPath = path.join(root, ".llmnav", "config.json");
+  const config = JSON.parse(await (await import("node:fs/promises")).readFile(configPath, "utf8"));
+  config.audit.ignored = [];
+  config.audit.dispositions = [
+    { path: "src/**/*.js", reason: "This broad glob would hide future files without review." },
+    { path: "src\\adapter.js", reason: "too short" },
+    { path: "src/adapter.js", reason: "This exact adapter owns no durable navigation boundary." },
+    { path: "SRC/ADAPTER.JS", reason: "This spelling duplicates the preceding path across platforms." },
+  ];
+  await writeFile(configPath, `${JSON.stringify(config, null, 2)}\n`);
+  await assert.rejects(
+    () => scanProject(root),
+    /audit contains unknown property "ignored"[\s\S]*without glob syntax[\s\S]*must use forward slashes[\s\S]*at least 12 characters[\s\S]*duplicates an earlier disposition/u,
+  );
+});
+
 test("rejects cache directories that overlap LLMNav control state", async (context) => {
   const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-cache-control-overlap-"));
   context.after(() => rm(root, { recursive: true, force: true }));

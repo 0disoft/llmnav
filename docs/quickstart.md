@@ -23,7 +23,7 @@ Start with high and medium candidates. The audit explains whether a file is a pa
 
 In Go repositories, candidates represent packages. Full imports below a repository-contained `go.mod` contribute package fan-in, `cmd/*/main.go` is treated as a command entrypoint, and `_test.go` files do not create separate production candidates. Put one `module` card on a durable package representative; do not repeat the same package role on every Go file.
 
-After accepting a candidate, write its durable meaning by inspecting the source, add a narrow `coverageRules` entry for that exact boundary, and add a real task-language query to `.llmnav/eval/queries.jsonl`. Use `npx llmnav audit --fail-on high` in CI only after the initial review.
+After accepting a candidate, write its durable meaning by inspecting the source, add a narrow `coverageRules` entry for that exact boundary, and add a real task-language query to `.llmnav/eval/queries.jsonl`. If review confirms that a candidate owns no durable navigation responsibility, add its exact path and a concrete reason to `audit.dispositions`. Never use a glob to dismiss a directory. The audit suppresses the reviewed candidate but reports the entry as stale when the file or its classification changes. Use `npx llmnav audit --fail-on high` in CI only after the initial review.
 
 ## Annotate a module boundary
 

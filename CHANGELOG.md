@@ -6,6 +6,10 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 
 ## [Unreleased]
 
+### Added
+
+* Added exact-path audit dispositions with mandatory review reasons, deterministic suppression, and stale-decision reporting so intentional non-cards do not reappear without becoming hidden permanent ignores.
+
 ## [0.7.4] — 2026-08-14
 
 ### Fixed

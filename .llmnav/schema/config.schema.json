@@ -101,6 +101,34 @@
         }
       }
     },
+    "audit": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "dispositions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "path",
+              "reason"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "path": {
+                "type": "string",
+                "pattern": "^(?!/|[A-Za-z]:|.*(?:^|/)\\.\\.(?:/|$)|.*[\\\\*?\\[\\]{}])[^/]+(?:/[^/]+)*$"
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 12,
+                "maxLength": 280
+              }
+            }
+          }
+        }
+      }
+    },
     "graph": {
       "type": "object",
       "additionalProperties": false,

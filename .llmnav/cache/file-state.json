@@ -1397,7 +1397,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "d4a37c3ef57f23be50f87232bb51c57f45b6af020fc40e166cf65e580c7a73b0",
+      "contentHash": "4a942317d95703968830f665e5e203d669e42dd5d44ddb86c24cca1f856375da",
       "declarations": [
         null
       ],
@@ -1408,7 +1408,7 @@
       ],
       "path": "src/agents.js",
       "semanticBytes": 374,
-      "sourceBytes": 6528
+      "sourceBytes": 6716
     },
     {
       "blocks": [
@@ -1507,7 +1507,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "793ec905a1daeec6927134b20b8561e1b117b95940e0cb48bf4e88a0fd364604",
+      "contentHash": "56e6f867e44146096319f52c2ac8ba6c6c4240400d11c71042d884dc9c7d8ff7",
       "declarations": [
         null
       ],
@@ -1520,7 +1520,7 @@
       ],
       "path": "src/audit.js",
       "semanticBytes": 533,
-      "sourceBytes": 17059
+      "sourceBytes": 18539
     },
     {
       "blocks": [
@@ -1842,7 +1842,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "17b735a1b91fb29d59435af25cb61400c0751e62cc95243a0f4d2a9c7188d0eb",
+      "contentHash": "da4b9b0fb6408907c3c761de3c32aadd932ee2ba4751790a2d9c99c51e14f3a3",
       "declarations": [
         null
       ],
@@ -1870,7 +1870,7 @@
       ],
       "path": "src/cli.js",
       "semanticBytes": 508,
-      "sourceBytes": 20191
+      "sourceBytes": 20492
     },
     {
       "blocks": [
@@ -1969,7 +1969,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "079d3585ec59d2c0aa85317690d174683b4cabe356745b19510db19187bc75e0",
+      "contentHash": "e0ec79379b7b4a56e64cdfaf23c147c59719c25b2ca6d5fc149a2f4e8e0dff82",
       "declarations": [
         null
       ],
@@ -1980,7 +1980,7 @@
       ],
       "path": "src/config.js",
       "semanticBytes": 476,
-      "sourceBytes": 13794
+      "sourceBytes": 15630
     },
     {
       "blocks": [
@@ -3201,14 +3201,14 @@
     },
     {
       "blocks": [],
-      "contentHash": "f3c0745d5b8d6b1e2c8edb83ebaeb1c10c3b467db24a8ecc778054a6e5fd3dc5",
+      "contentHash": "d21fec2b38e747cedae702aef27499b2628fed62af2ed7145d17414922d7bf85",
       "declarations": [],
       "imports": [
         "./spec.js"
       ],
       "path": "src/index.d.ts",
       "semanticBytes": 0,
-      "sourceBytes": 27643
+      "sourceBytes": 28111
     },
     {
       "blocks": [],
@@ -4612,14 +4612,14 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "706e51ec7f638b5344497cf55ed8c398a53fc269298959323e726ce70dcc1b54",
+      "contentHash": "e06ce3381c51c926d7310cdc8c9a11954e13df8c162fa2cb838603ceccfffccf",
       "declarations": [
         null
       ],
       "imports": [],
       "path": "src/spec.js",
       "semanticBytes": 507,
-      "sourceBytes": 5248
+      "sourceBytes": 5286
     },
     {
       "blocks": [
@@ -4978,7 +4978,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "eece13965b38a67d3495ecf9c75e15c07a8ad783f03b80d336fe9c553f23d2f1",
+      "contentHash": "136121ce975fd6514a56252e5dbb1d8ab7490946eeef79b07218d48d56e4eaa6",
       "declarations": [],
       "imports": [
         "../src/audit.js",
@@ -4993,7 +4993,7 @@
       ],
       "path": "tests/audit.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 12531
+      "sourceBytes": 14650
     },
     {
       "blocks": [],
@@ -5250,7 +5250,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "5fc2e87b34aa4899ea674c38339126cebcbe7d892b4c27f54926e8a61fe3cb83",
+      "contentHash": "10e08b6ecba64bd7e30b5e1463103c0934bf5427cf96ad9a01c3422efb216f3a",
       "declarations": [],
       "imports": [
         "../src/agents.js",
@@ -5268,7 +5268,7 @@
       ],
       "path": "tests/integration.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 11048
+      "sourceBytes": 11104
     },
     {
       "blocks": [],
@@ -5491,7 +5491,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "5a90460db3ca5900a999ba6f19987cd5bca2f82a7b19000c6baa4654419a1e75",
+      "contentHash": "b0cfd413fe148b8959d15cc30dab6733b6eb6712cb818a44682edb390f28d747",
       "declarations": [],
       "imports": [
         "../src/initializer.js",
@@ -5505,7 +5505,7 @@
       ],
       "path": "tests/validator.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 10231
+      "sourceBytes": 11501
     }
   ],
   "indexerVersion": 6,

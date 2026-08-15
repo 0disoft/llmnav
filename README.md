@@ -47,7 +47,7 @@ npx llmnav init --agents all --package-scripts
 
 Initialization is explicit. LLMNav never edits a consumer repository from an npm `postinstall` script. Use `--agents none` when only the machine-readable control directory is desired.
 
-Before writing cards, run `npx llmnav audit`. It ranks likely architectural boundaries and explains each score. The command never edits source and remains advisory unless `--fail-on high`, `medium`, or `low` is selected. Review the candidates: a high score is evidence to inspect a file, not permission to generate semantic meaning automatically.
+Before writing cards, run `npx llmnav audit`. It ranks likely architectural boundaries and explains each score. The command never edits source and remains advisory unless `--fail-on high`, `medium`, or `low` is selected. Review the candidates: a high score is evidence to inspect a file, not permission to generate semantic meaning automatically. For a reviewed false positive or implementation detail, add its exact path and a concrete reason to `audit.dispositions`; stale decisions remain visible instead of becoming permanent hidden ignores.
 
 ## Add the first card
 
@@ -253,7 +253,7 @@ Do not annotate trivial getters, generated files, obvious wrappers, every test f
 
 ## Current implementation boundary
 
-Version 0.6 adds a deterministic coverage audit that prioritizes root and nested-package entrypoints, structural boundaries, persistent artifact filename protocols, versioned schema literals, Rust/Tauri runtime signals, TypeScript Tauri invoke adapters, and high fan-in modules. It suppresses declaration files, dependency caches, test support code, simple barrels, and low-fan-in broad utilities. It suggests narrow coverage rules but never writes cards or invents semantic roles. Use `llmnav audit --summary --json` for a compact automation result or `llmnav audit --json --output .llmnav/audit.json` to keep the full candidate report out of captured stdout.
+The deterministic coverage audit prioritizes root and nested-package entrypoints, structural boundaries, persistent artifact filename protocols, versioned schema literals, Rust/Tauri runtime signals, TypeScript Tauri invoke adapters, and high fan-in modules. It suppresses declaration files, dependency caches, test support code, simple barrels, and low-fan-in broad utilities. It suggests narrow coverage rules but never writes cards or invents semantic roles. Exact reviewed dispositions suppress known non-boundaries while stale dispositions expose obsolete decisions. Use `llmnav audit --summary --json` for a compact automation result or `llmnav audit --json --output .llmnav/audit.json` to keep the full candidate report out of captured stdout.
 
 LLMNav does not discover sibling repositories automatically and does not ship an MCP server, embedding database, hosted service, SCIP generator, or complete language-aware call graph. External tools may export the documented compact graph-input schema. Generated structure never writes derived edges into source cards.
 
@@ -294,7 +294,7 @@ The project uses the Node.js standard library and built-in test runner. There is
 
 ## Status
 
-LLMNav is an experimental protocol and a usable v0.7 CLI. The source format remains `llmnav/1`; npm package changes and source-grammar changes are versioned independently.
+LLMNav is an experimental protocol and a usable v0.8 CLI. The source format remains `llmnav/1`; npm package changes and source-grammar changes are versioned independently.
 
 ## License
 

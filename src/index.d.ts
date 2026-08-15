@@ -2,6 +2,7 @@ export type LlmnavScope = "file" | "module" | "symbol";
 export type LlmnavStability = "architecture" | "contract" | "implementation";
 export type DiagnosticSeverity = "error" | "warning" | "info";
 export type AuditPriority = "high" | "medium" | "low";
+export type AuditDispositionStaleReason = "file-not-scanned" | "already-carded" | "not-a-candidate";
 
 export interface LlmnavCard {
   scope: LlmnavScope;
@@ -108,8 +109,14 @@ export interface AuditResult {
     medium: number;
     low: number;
     coverageSuggestions: number;
+    suppressedCandidates: number;
+    staleDispositions: number;
   };
   candidates: AuditCandidate[];
+  dispositions: Array<
+    | { path: string; reason: string; status: "suppressed"; priority: AuditPriority; score: number }
+    | { path: string; reason: string; status: "stale"; staleReason: AuditDispositionStaleReason }
+  >;
 }
 
 export interface IndexedLocation {
@@ -247,6 +254,9 @@ export interface LlmnavConfig {
   excludeDirectories: string[];
   excludeFiles: string[];
   coverageRules: Array<Record<string, unknown>>;
+  audit: {
+    dispositions: Array<{ path: string; reason: string }>;
+  };
   graph: {
     indexFiles: string[];
   };

@@ -162,22 +162,54 @@ export async function auditProject(root) {
     priorityRank(left.priority) - priorityRank(right.priority) ||
     right.score - left.score ||
     compareText(left.path, right.path));
+  const candidateByPath = new Map(candidates.map((candidate) => [candidate.path, candidate]));
+  const dispositions = [...project.config.audit.dispositions]
+    .sort((left, right) => compareText(left.path, right.path))
+    .map((disposition) => {
+      const candidate = candidateByPath.get(disposition.path);
+      if (candidate) {
+        candidateByPath.delete(disposition.path);
+        return {
+          path: disposition.path,
+          reason: disposition.reason,
+          status: "suppressed",
+          priority: candidate.priority,
+          score: candidate.score,
+        };
+      }
+      return {
+        path: disposition.path,
+        reason: disposition.reason,
+        status: "stale",
+        staleReason: classifyStaleDisposition(disposition.path, fileByPath, exactCardPaths, coveredModules),
+      };
+    });
+  const activeCandidates = candidates.filter((candidate) => candidateByPath.has(candidate.path));
   const summary = {
     analyzedFiles: fileByPath.size,
     cardedFiles: cardedFilePaths.size,
     filesWithoutModuleCards: fileByPath.size - cardedFilePaths.size,
-    candidates: candidates.length,
-    high: candidates.filter((candidate) => candidate.priority === "high").length,
-    medium: candidates.filter((candidate) => candidate.priority === "medium").length,
-    low: candidates.filter((candidate) => candidate.priority === "low").length,
-    coverageSuggestions: candidates.filter((candidate) => candidate.suggestedCoverageRule !== null).length,
+    candidates: activeCandidates.length,
+    high: activeCandidates.filter((candidate) => candidate.priority === "high").length,
+    medium: activeCandidates.filter((candidate) => candidate.priority === "medium").length,
+    low: activeCandidates.filter((candidate) => candidate.priority === "low").length,
+    coverageSuggestions: activeCandidates.filter((candidate) => candidate.suggestedCoverageRule !== null).length,
+    suppressedCandidates: dispositions.filter((disposition) => disposition.status === "suppressed").length,
+    staleDispositions: dispositions.filter((disposition) => disposition.status === "stale").length,
   };
   return {
     schemaVersion: AUDIT_SCHEMA_VERSION,
     repositoryId: project.config.repositoryId,
     summary,
-    candidates,
+    candidates: activeCandidates,
+    dispositions,
   };
+}
+
+function classifyStaleDisposition(file, fileByPath, exactCardPaths, coveredModules) {
+  if (!fileByPath.has(file)) return "file-not-scanned";
+  if (exactCardPaths.has(file) || coveredModules.has(moduleKeyForFile(file))) return "already-carded";
+  return "not-a-candidate";
 }
 
 function groupFilesByModule(fileByPath) {

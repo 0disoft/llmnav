@@ -349,12 +349,16 @@ async function runAudit(root, args, json) {
     const { summary } = result;
     console.log(
       `audit files=${summary.analyzedFiles} carded=${summary.cardedFiles} candidates=${summary.candidates} ` +
-      `high=${summary.high} medium=${summary.medium} low=${summary.low}`,
+      `high=${summary.high} medium=${summary.medium} low=${summary.low} ` +
+      `suppressed=${summary.suppressedCandidates} stale-dispositions=${summary.staleDispositions}`,
     );
     for (const candidate of result.candidates.filter((item) => item.priority !== "low")) {
       console.log(`${candidate.priority} ${candidate.path} score=${candidate.score} ${candidate.reasons.join(",")}`);
     }
     if (summary.low > 0) console.log(`${summary.low} low-priority candidate(s) are available in --json output.`);
+    for (const disposition of result.dispositions.filter((item) => item.status === "stale")) {
+      console.log(`stale ${disposition.path} ${disposition.staleReason}: ${disposition.reason}`);
+    }
     if (outputPath) console.log(`wrote ${relativePosix(root, outputPath)}`);
   }
   return auditHasFindings(result, failOn) ? 1 : 0;

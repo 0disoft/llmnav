@@ -348,7 +348,7 @@
         "agent execution"
       ],
       "hashes": {
-        "body": "d4a37c3ef57f23be50f87232bb51c57f45b6af020fc40e166cf65e580c7a73b0",
+        "body": "4a942317d95703968830f665e5e203d669e42dd5d44ddb86c24cca1f856375da",
         "semantic": "7258d93062db7c24d1bdf4076e99802a3fcc413f4012e0aca49148a9fe1dedaa",
         "structure": "62e268ed9d2dd21c68421c28b2731d9a84ff0f7a1b1bcd17b9bde4f90f1e7cc1"
       },
@@ -394,7 +394,7 @@
         "index persistence format"
       ],
       "hashes": {
-        "body": "17b735a1b91fb29d59435af25cb61400c0751e62cc95243a0f4d2a9c7188d0eb",
+        "body": "da4b9b0fb6408907c3c761de3c32aadd932ee2ba4751790a2d9c99c51e14f3a3",
         "semantic": "f4671d61fc8164fc24498faa91ba84f777e28a7f325750991908542867a69b6e",
         "structure": "d07095544a74a9bf34d1256f116457d0d9ca43cf06a4beb579eabf9df6471424"
       },
@@ -1500,7 +1500,7 @@
         "schema file generation"
       ],
       "hashes": {
-        "body": "079d3585ec59d2c0aa85317690d174683b4cabe356745b19510db19187bc75e0",
+        "body": "e0ec79379b7b4a56e64cdfaf23c147c59719c25b2ca6d5fc149a2f4e8e0dff82",
         "semantic": "69fbf9f22cc16fc3ef97d64bd1d5f4a3792793713c22a3ec717129048bd4c3f9",
         "structure": "bda327c68be34af716f65dc6a472dbac9d47af8c9436c253cbad210a336bd167"
       },
@@ -1861,7 +1861,7 @@
         "source parsing"
       ],
       "hashes": {
-        "body": "706e51ec7f638b5344497cf55ed8c398a53fc269298959323e726ce70dcc1b54",
+        "body": "e06ce3381c51c926d7310cdc8c9a11954e13df8c162fa2cb838603ceccfffccf",
         "semantic": "59aa3e9e793d505ecdf110fec023c201aaee0154d2f6c9cf71afe1bbf71a7be5",
         "structure": "e213e073414c75bc75df1c8669a7045096142b6c0845694191893d90bf23e3c2"
       },
@@ -1957,7 +1957,7 @@
         "semantic role generation"
       ],
       "hashes": {
-        "body": "793ec905a1daeec6927134b20b8561e1b117b95940e0cb48bf4e88a0fd364604",
+        "body": "56e6f867e44146096319f52c2ac8ba6c6c4240400d11c71042d884dc9c7d8ff7",
         "semantic": "aac17e46887fb32325f2255731d30aad7671051d5a63d8d39139e169cd16815d",
         "structure": "477878b800393949f73e344b829c26c77c664a47c89a60ac535d2b83da8aa187"
       },
@@ -2171,7 +2171,7 @@
   ],
   "contractFingerprints": {
     "configuration": {
-      "sha256": "e0ebcd5be3695b839a6b2dcd98c5764adc2c804a245c4ec63e691c82928cd708"
+      "sha256": "4d89c3cf1af2722cfaadbc2bf236a1a1c3e911bd996acc64549a2b86bf59e867"
     },
     "exportedApi": {
       "count": 5,
@@ -2179,9 +2179,9 @@
     },
     "schemaVersion": 1
   },
-  "generatedBy": "llmnav@0.7.4",
+  "generatedBy": "llmnav@0.8.0",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "57fd25321451e36ad3de3609e2a4e2ac35799c29a7ad0061e1268e3e1661a7d8",
+  "sourceHash": "72c063712ea562a7d02f13c4dade994dacd18dc4812644ea10becf475eba84f7",
   "specVersion": "1"
 }

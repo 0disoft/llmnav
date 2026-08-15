@@ -30,7 +30,9 @@ const LINT_KEYS = new Set(Object.keys(DEFAULT_CONFIG.lint));
 const GENERATION_KEYS = new Set(Object.keys(DEFAULT_CONFIG.generation));
 const EVALUATION_KEYS = new Set(Object.keys(DEFAULT_CONFIG.evaluation));
 const GRAPH_KEYS = new Set(Object.keys(DEFAULT_CONFIG.graph));
+const AUDIT_KEYS = new Set(Object.keys(DEFAULT_CONFIG.audit));
 const COVERAGE_KEYS = new Set(["name", "match", "scope", "requiredFields"]);
+const AUDIT_DISPOSITION_KEYS = new Set(["path", "reason"]);
 
 export async function loadConfig(root) {
   const configPath = path.join(root, ".llmnav", "config.json");
@@ -72,6 +74,7 @@ export function validateConfig(config, configPath = ".llmnav/config.json") {
   validateStringArray(config.excludeDirectories, "excludeDirectories", problems, { unique: true });
   validateStringArray(config.excludeFiles, "excludeFiles", problems, { unique: true });
   validateCoverageRules(config.coverageRules, problems);
+  validateAudit(config.audit, problems);
   validateGraph(config.graph, problems);
 
   validateLint(config.lint, problems);
@@ -80,6 +83,44 @@ export function validateConfig(config, configPath = ".llmnav/config.json") {
 
   if (problems.length > 0) {
     throw new Error(`${configPath}:\n${problems.map((problem) => `  ${problem}`).join("\n")}`);
+  }
+}
+
+function validateAudit(audit, problems) {
+  if (!isObject(audit)) {
+    problems.push("audit must be an object");
+    return;
+  }
+  validateObjectKeys(audit, AUDIT_KEYS, "audit", problems);
+  if (!Array.isArray(audit.dispositions)) {
+    problems.push("audit.dispositions must be an array");
+    return;
+  }
+  const seenPaths = new Set();
+  for (const [index, disposition] of audit.dispositions.entries()) {
+    const name = `audit.dispositions[${index}]`;
+    if (!isObject(disposition)) {
+      problems.push(`${name} must be an object`);
+      continue;
+    }
+    validateObjectKeys(disposition, AUDIT_DISPOSITION_KEYS, name, problems);
+    const pathProblem = validateProjectRelativePath(disposition.path);
+    if (pathProblem) {
+      problems.push(`${name}.path ${pathProblem}`);
+    } else {
+      const normalizedPath = path.posix.normalize(disposition.path);
+      if (normalizedPath !== disposition.path || disposition.path.endsWith("/") || /[*?[\]{}]/u.test(disposition.path)) {
+        problems.push(`${name}.path must be one exact normalized repository-relative path without glob syntax`);
+      }
+      const comparisonPath = normalizedPath.normalize("NFKC").toLocaleLowerCase("en-US");
+      if (seenPaths.has(comparisonPath)) problems.push(`${name}.path duplicates an earlier disposition`);
+      seenPaths.add(comparisonPath);
+    }
+    if (typeof disposition.reason !== "string" || disposition.reason.trim().length < 12) {
+      problems.push(`${name}.reason must explain the review decision in at least 12 characters`);
+    } else if (disposition.reason.length > 280) {
+      problems.push(`${name}.reason must not exceed 280 characters`);
+    }
   }
 }
 

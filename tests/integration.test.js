@@ -37,6 +37,7 @@ test("initializes, generates, verifies, and searches a project", async (context)
     const instructions = await readFile(path.join(root, instructionPath), "utf8");
     assert.match(instructions, /npm exec -- llmnav query/u);
     assert.match(instructions, /npm exec -- llmnav audit/u);
+    assert.match(instructions, /audit\.dispositions/u);
     assert.match(instructions, /npm exec -- llmnav check/u);
   }
   const packageJson = JSON.parse(await readFile(path.join(root, "package.json"), "utf8"));
