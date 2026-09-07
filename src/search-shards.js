@@ -24,20 +24,26 @@ export function buildSearchShards(index, searchIndex, shardSize) {
   const cardsById = new Map(index.cards.map((card) => [card.id, card]));
   const shards = new Map();
   const records = [];
+  const partitions = Array.from({ length: Math.ceil(searchIndex.cardIds.length / shardSize) }, () => ({ tokens: [], postings: [] }));
+  for (const [tokenIndex, token] of searchIndex.tokens.entries()) {
+    const selectedByShard = new Map();
+    for (const [cardIndex, vector] of searchIndex.postings[tokenIndex] ?? []) {
+      if (!(cardIndex >= 0 && cardIndex < searchIndex.cardIds.length)) continue;
+      const ordinal = Math.floor(cardIndex / shardSize);
+      const selected = selectedByShard.get(ordinal) ?? [];
+      selected.push([cardIndex - ordinal * shardSize, vector]);
+      selectedByShard.set(ordinal, selected);
+    }
+    for (const [ordinal, selected] of selectedByShard) {
+      partitions[ordinal].tokens.push(token);
+      partitions[ordinal].postings.push(selected);
+    }
+  }
   for (let start = 0, ordinal = 0; start < searchIndex.cardIds.length; start += shardSize, ordinal += 1) {
     const end = Math.min(start + shardSize, searchIndex.cardIds.length);
     const cardIds = searchIndex.cardIds.slice(start, end);
     const cards = cardIds.map((id) => cardsById.get(id)).filter(Boolean);
-    const tokens = [];
-    const postings = [];
-    for (const [tokenIndex, token] of searchIndex.tokens.entries()) {
-      const selected = (searchIndex.postings[tokenIndex] ?? [])
-        .filter(([cardIndex]) => cardIndex >= start && cardIndex < end)
-        .map(([cardIndex, vector]) => [cardIndex - start, vector]);
-      if (selected.length === 0) continue;
-      tokens.push(token);
-      postings.push(selected);
-    }
+    const { tokens, postings } = partitions[ordinal];
     const shard = {
       ...searchIndex,
       cardSetHash: searchCardSetHash(cards),
@@ -49,6 +55,7 @@ export function buildSearchShards(index, searchIndex, shardSize) {
     };
     const file = `search-shards/${String(ordinal).padStart(4, "0")}.json`;
     const content = stableStringify(shard);
+    partitions[ordinal] = null;
     shards.set(file, content);
     records.push({
       file,

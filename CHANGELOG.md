@@ -19,6 +19,7 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 
 ### Performance
 
+* Distribute search postings to card-range shards in one pass while preserving byte-identical manifests and artifacts.
 * Prepare card lookups, normalized IDs and aliases, and graph validation once per session snapshot; detach query and show results to protect cached state from caller mutation.
 * Measure fresh-process session startup, graph-aware query and context latency, and refresh separately, with result parity checks against direct navigation APIs.
 * Reuse graph adjacency and traversal ordering within project sessions; refresh rebuilds that state while direct query APIs continue to accept mutable graph inputs.

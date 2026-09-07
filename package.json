@@ -49,6 +49,7 @@
     "test:performance": "node --test tests/performance.test.js",
     "benchmark:v0.2": "node ./benchmarks/run-v0.2.js",
     "benchmark:navigation": "node ./benchmarks/navigation.js",
+    "benchmark:shards": "node ./benchmarks/search-shards.js",
     "smoke:pack": "node ./scripts/pack-smoke.js"
   },
   "keywords": [

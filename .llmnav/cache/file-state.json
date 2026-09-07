@@ -204,6 +204,24 @@
       "sourceBytes": 12754
     },
     {
+      "blocks": [],
+      "contentHash": "61bbd331da62269059cf7dba8fd32196c5df35bb76c229ace37e3bd900460171",
+      "declarations": [],
+      "imports": [
+        "../src/inverted-index.js",
+        "../src/search-shards.js",
+        "../src/util.js",
+        "../tests/helpers/synthetic.js",
+        "node:assert/strict",
+        "node:path",
+        "node:perf_hooks",
+        "node:url"
+      ],
+      "path": "benchmarks/search-shards.js",
+      "semanticBytes": 0,
+      "sourceBytes": 3882
+    },
+    {
       "blocks": [
         {
           "card": {
@@ -4393,7 +4411,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "6ed0cc5936e2bae4abaa945d8ff69422686fe0fb99a31bcbfe00c0924ec367a5",
+      "contentHash": "f18798df830a6c51604b2d437148f449231449aea18f25b1bdad4f0bcbb1c071",
       "declarations": [
         null
       ],
@@ -4403,7 +4421,7 @@
       ],
       "path": "src/search-shards.js",
       "semanticBytes": 424,
-      "sourceBytes": 2707
+      "sourceBytes": 3163
     },
     {
       "blocks": [
@@ -5468,9 +5486,10 @@
     },
     {
       "blocks": [],
-      "contentHash": "68acac045cd34949e42de4538b53ce786aa2db76954564c1cb2788ad1cb9a9a6",
+      "contentHash": "929027f572739d2081573346f6c988e9027f67da72dae38534876bbe9459df6b",
       "declarations": [],
       "imports": [
+        "../benchmarks/search-shards.js",
         "../src/generator.js",
         "../src/initializer.js",
         "../src/inverted-index.js",
@@ -5484,7 +5503,7 @@
       ],
       "path": "tests/search-shards.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 3730
+      "sourceBytes": 4660
     },
     {
       "blocks": [],

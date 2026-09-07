@@ -98,6 +98,20 @@ On the same fixture and environment, one local run after session metadata prepar
 
 Initial loading was 159.667 ms, first query 21.485 ms, refresh 114.610 ms, context median/p95 3.617/8.979 ms, and direct-query median 102.542 ms. Preparation shifts work to loading/refresh and result detachment adds copying. These single-run timings include local load variation; they establish neither a startup improvement nor a production speed guarantee.
 
+## Card-range shard generation
+
+`npm run benchmark:shards` compares one-pass distribution with the pre-optimization per-shard filtering implementation on 2,000 cards and 44,286 postings. It checks exact manifest and artifact bytes. A separate regression instruments posting reads and requires one visit per posting, independent of shard count; the reference visits every posting once per shard.
+
+One Windows x64 / Node v24.18.0 run on 2026-09-07, including serialization but excluding index construction:
+
+| Shard count | Reference (ms) | One pass (ms) |
+| --- | ---: | ---: |
+| 100 | 503.116 | 169.912 |
+| 20 | 247.831 | 170.843 |
+| 4 | 157.325 | 191.673 |
+
+These are single in-process samples, with the reference first, not production guarantees. Few shards can be slower because distribution adds bookkeeping. Posting distribution changes from shard-count multiplied scans to one pass, but serialization still costs the output size. Partitioned posting pairs temporarily occupy memory alongside serialized shards; completed partitions are released as serialization progresses. This benchmark does not measure peak memory. Sharding remains disabled by default.
+
 ## Measurement integrity
 
 A benchmark result is accepted only after these checks pass:

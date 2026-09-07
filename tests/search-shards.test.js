@@ -8,6 +8,22 @@ import { initializeProject } from "../src/initializer.js";
 import { buildInvertedIndex, verifySearchIndex } from "../src/inverted-index.js";
 import { buildSearchShards } from "../src/search-shards.js";
 import { buildSyntheticIndex } from "./helpers/synthetic.js";
+import { buildReferenceShards, measureShardVisits } from "../benchmarks/search-shards.js";
+
+test("one-pass sharding preserves reference bytes and visits each posting once", () => {
+  const index = buildSyntheticIndex(23);
+  const searchIndex = buildInvertedIndex(index).searchIndex;
+  const original = JSON.stringify(searchIndex);
+  const postingCount = searchIndex.postings.reduce((sum, entries) => sum + entries.length, 0);
+  for (const size of [1, 3, 10, 22]) {
+    const optimized = measureShardVisits(searchIndex, (input) => buildSearchShards(index, input, size));
+    const reference = measureShardVisits(searchIndex, (input) => buildReferenceShards(index, input, size));
+    assert.deepEqual(optimized.result, reference.result);
+    assert.equal(optimized.visits, postingCount);
+    assert.equal(reference.visits, postingCount * reference.result.shards.size);
+  }
+  assert.equal(JSON.stringify(searchIndex), original);
+});
 
 test("builds deterministic compatible card-range search shards", () => {
   const index = buildSyntheticIndex(7);
