@@ -1,20 +1,115 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from "node:fs/promises";
+import fs, { mkdir, mkdtemp, open, readFile, readdir, rm, symlink, writeFile } from "node:fs/promises";
+import { syncBuiltinESMExports } from "node:module";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
 import { generateProject } from "../src/generator.js";
 import { initializeProject } from "../src/initializer.js";
-import { queryProject } from "../src/search.js";
+import { createProjectSession, queryProject } from "../src/search.js";
 import {
   commitGeneratedCache,
   recoverGenerationTransaction,
   removeWithRetry,
   renameWithRetry,
   TRANSACTION_ABORT_EXIT_CODE,
+  acquireGenerationLock,
+  releaseGenerationLock,
 } from "../src/transaction.js";
+
+test("a failed owner write leaves no authoritative lock or candidate", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-lock-write-failure-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await assert.rejects(() => acquireGenerationLock(root, {
+    openImpl: async (...args) => {
+      const handle = await open(...args);
+      return {
+        writeFile: async () => { throw Object.assign(new Error("disk full"), { code: "ENOSPC" }); },
+        close: () => handle.close(),
+      };
+    },
+  }), /disk full/u);
+  assert.deepEqual(await readdir(path.join(root, ".llmnav")), []);
+  await releaseGenerationLock(await acquireGenerationLock(root));
+});
+
+test("owner preparation does not publish a partial lock", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-lock-publication-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  const prepared = Promise.withResolvers();
+  const resume = Promise.withResolvers();
+  const pending = acquireGenerationLock(root, {
+    openImpl: async (...args) => {
+      const handle = await open(...args);
+      return {
+        writeFile: async (content) => {
+          prepared.resolve();
+          await resume.promise;
+          return handle.writeFile(content);
+        },
+        sync: () => handle.sync(),
+        close: () => handle.close(),
+      };
+    },
+  });
+  await prepared.promise;
+  try {
+    const other = await acquireGenerationLock(root, { delays: [0] });
+    await releaseGenerationLock(other);
+  } finally {
+    resume.resolve();
+    await releaseGenerationLock(await pending);
+  }
+});
+
+test("an unidentifiable legacy lock reports repair guidance without stealing it", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-lock-legacy-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await mkdir(path.join(root, ".llmnav"));
+  const lockPath = path.join(root, ".llmnav", "generation.lock");
+  await writeFile(lockPath, "");
+  await assert.rejects(() => acquireGenerationLock(root, { delays: [0] }), /no valid owner record/u);
+  assert.equal(await readFile(lockPath, "utf8"), "");
+});
+
+test("a session holds its read lock through the registry snapshot", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-reader-snapshot-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await createProject(root);
+  const sourcePath = path.join(root, "src", "reserve.ts");
+  const before = await readFile(sourcePath, "utf8");
+  await writeFile(sourcePath, before.replace("Reserve credits", "Atomically reserve credits"));
+  const originalRead = fs.readFile;
+  const reached = Promise.withResolvers();
+  const resume = Promise.withResolvers();
+  let pause = true;
+  const mock = context.mock.method(fs, "readFile", async (file, ...args) => {
+    if (pause && String(file) === path.join(root, ".llmnav", "ids.jsonl")) {
+      pause = false;
+      reached.resolve();
+      await resume.promise;
+    }
+    return originalRead(file, ...args);
+  });
+  syncBuiltinESMExports();
+  const reading = createProjectSession(root);
+  try {
+    await reached.promise;
+    await assert.rejects(() => acquireGenerationLock(root, { delays: [0] }), /Timed out/u);
+  } finally {
+    resume.resolve();
+    await reading;
+    mock.mock.restore();
+    syncBuiltinESMExports();
+  }
+  const session = await reading;
+  assert.equal(session.show("billing.credit.reserve").card.role, "Reserve credits before a generation job starts.");
+  assert.equal((await generateProject(root)).ok, true);
+  await session.refresh();
+  assert.match(session.show("billing.credit.reserve").card.role, /^Atomically/u);
+});
 
 async function createProject(root) {
   await writeFile(path.join(root, "package.json"), '{"name":"transaction-fixture"}\n');

@@ -95,6 +95,29 @@ function indexedCard(id, role) {
   };
 }
 
+test("legacy context respects edge limits when the graph is missing or malformed", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-legacy-context-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await writeFile(path.join(root, "package.json"), '{"name":"legacy-context"}\n');
+  await mkdir(path.join(root, "src"));
+  const cards = [
+    sourceCard("auth.session.rotate", "rotateSession").replace("stability=contract", "rel=workflow>auth.session.revoke\nrel=test>auth.session.verify\nstability=contract"),
+    sourceCard("auth.session.revoke", "revokeSession"),
+    sourceCard("auth.session.verify", "verifySession"),
+  ];
+  await writeFile(path.join(root, "src", "auth.ts"), cards.join("\n"));
+  assert.equal((await initializeProject(root, { agents: ["none"] })).ok, true);
+  const graphPath = path.join(root, ".llmnav", "cache", "graph.json");
+  for (const malformed of [false, true]) {
+    if (malformed) await writeFile(graphPath, "{");
+    else await rm(graphPath);
+    assert.deepEqual((await buildContext(root, "auth.session.rotate", { depth: 8, maxEdges: 0 })).included, ["auth.session.rotate"]);
+    assert.equal((await buildContext(root, "auth.session.rotate", { depth: 8, maxEdges: 1 })).included.length, 2);
+    assert.deepEqual((await buildContext(root, "auth.session.revoke", { depth: 8, maxEdges: 0 })).included, ["auth.session.revoke"]);
+    assert.equal((await buildContext(root, "auth.session.revoke", { depth: 8, maxEdges: 1 })).included.length, 2);
+  }
+});
+
 function sourceCard(id, symbol) {
   return `/* llmnav/1 symbol\nid=${id}\nrole=Execute ${id} deterministically.\nsearch=${id.replaceAll(".", " ")}|session contract\nstability=contract\n*/\nexport function ${symbol}(): void {}`;
 }

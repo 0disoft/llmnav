@@ -197,6 +197,10 @@ Generation never mutates the live cache file by file. It builds a complete repla
 
 The complete source scan and cache commit are serialized by `.llmnav/generation.lock`. The lock records a process and opaque owner ID. A reader waits for a live owner to finish and only then evaluates recovery, while an abandoned lock from a dead process can be removed without granting another process authority over an active journal.
 
+Readers hold that lock until all snapshot artifacts, including the ID registry for sessions, show, and context, have been read. Lock ownership is published with an exclusive hard link to a fully written, synced, and closed candidate file in the same directory; the filesystem must support hard links. Failed preparation cannot leave an empty authoritative lock. Unused candidate files confer no ownership. An unreadable lock left by an older version is not automatically stolen: stop all LLMNav processes, remove `.llmnav/generation.lock`, then retry. A valid abandoned transaction is still recovered normally.
+
+When no compatible graph is available, context falls back to semantic relations and still limits traversal with `maxEdges`, including zero. The token budget separately bounds rendered output.
+
 ```text
 write every staged artifact
 verify exact staged bytes

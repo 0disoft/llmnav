@@ -4488,7 +4488,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "c23cf9869c5a25bfdba0e2317f22acb808de9944fbaefd140f0844097cacdce0",
+      "contentHash": "00ab77b4cf93ee22f4837d7864b55c143b8b66b58cba1b1a239a86506854bd2d",
       "declarations": [
         null
       ],
@@ -4505,7 +4505,7 @@
       ],
       "path": "src/search.js",
       "semanticBytes": 464,
-      "sourceBytes": 25256
+      "sourceBytes": 25727
     },
     {
       "blocks": [],
@@ -4818,7 +4818,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "1e13d1dff4759df0930d1e405369a2793ee3393b1c5678cc1e114af0f26ec040",
+      "contentHash": "19d63188035fe78582d8fb99d3fd2e868674f2d383b06344196f59b22f743044",
       "declarations": [
         null
       ],
@@ -4831,7 +4831,7 @@
       ],
       "path": "src/transaction.js",
       "semanticBytes": 393,
-      "sourceBytes": 25724
+      "sourceBytes": 26583
     },
     {
       "blocks": [],
@@ -5182,7 +5182,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "762461c27602ec8dcf6622328d3b814e6cebc0782c8019db99e7b43d7788db64",
+      "contentHash": "7be231037c6a82b2a62024459c231ae7c298dd4003a15e6e2fe99fb2f21f9c03",
       "declarations": [],
       "imports": [
         "../src/generator.js",
@@ -5197,7 +5197,7 @@
       ],
       "path": "tests/graph-search.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 4885
+      "sourceBytes": 6420
     },
     {
       "blocks": [],
@@ -5466,7 +5466,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "a41392c2d1d645d9a40493fe01b2c365b03dd24728e6534a8240c0d2f959f5b4",
+      "contentHash": "14db755bfe033b6c0b404616da5d3f57e0a92c9df0d27e88580170f1418b128b",
       "declarations": [],
       "imports": [
         "../src/generator.js",
@@ -5476,6 +5476,7 @@
         "node:assert/strict",
         "node:child_process",
         "node:fs/promises",
+        "node:module",
         "node:os",
         "node:path",
         "node:test",
@@ -5483,7 +5484,7 @@
       ],
       "path": "tests/transaction.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 14013
+      "sourceBytes": 17885
     },
     {
       "blocks": [],

@@ -23,15 +23,19 @@ import {
   verifySearchIndex,
 } from "./inverted-index.js";
 import { normalizeSearchText, tokenize } from "./tokenizer.js";
-import { recoverGenerationTransaction } from "./transaction.js";
+import { recoverGenerationTransaction, withGenerationLock } from "./transaction.js";
 import { isCompatibleRepositoryGraph, renderGraphNode, resolveGraphNode } from "./graph.js";
 
 const preparedIndexCache = new WeakMap();
 const preparedSearchIndexCache = new WeakMap();
 
 export async function loadSearchData(root) {
+  return withGenerationLock(root, (lock) => loadSearchDataLocked(root, lock));
+}
+
+async function loadSearchDataLocked(root, lock) {
   const { config } = await loadConfig(root);
-  await recoverGenerationTransaction(root, { cacheDirectory: config.generation.cacheDirectory });
+  await recoverGenerationTransaction(root, { cacheDirectory: config.generation.cacheDirectory, lockOwnerId: lock.ownerId });
   const cacheRoot = path.join(root, config.generation.cacheDirectory);
   await assertNoSymlinkTraversal(root, cacheRoot, config.generation.cacheDirectory);
   const indexPath = path.join(cacheRoot, "index.json");
@@ -116,9 +120,11 @@ export async function createProjectSession(root) {
 }
 
 async function loadProjectSnapshot(root) {
-  const { index, lexicon, searchIndex, graph } = await loadSearchData(root);
-  const registry = await loadRegistry(root);
-  return { index, lexicon, searchIndex, graph, registry };
+  return withGenerationLock(root, async (lock) => {
+    const { index, lexicon, searchIndex, graph } = await loadSearchDataLocked(root, lock);
+    const registry = await loadRegistry(root);
+    return { index, lexicon, searchIndex, graph, registry };
+  });
 }
 
 export function queryIndex(index, query, options = {}) {
@@ -491,8 +497,9 @@ function buildLegacyContext(index, rootId, options) {
   const queue = [{ id: rootId, depth: 0 }];
   const visited = new Set();
   const selected = [];
-  while (queue.length > 0) {
-    const current = queue.shift();
+  let traversedEdges = 0;
+  for (let cursor = 0; cursor < queue.length; cursor += 1) {
+    const current = queue[cursor];
     if (!current || visited.has(current.id)) continue;
     visited.add(current.id);
     const card = byId.get(current.id);
@@ -500,10 +507,16 @@ function buildLegacyContext(index, rootId, options) {
     selected.push(card);
     if (current.depth >= depth) continue;
     for (const relation of card.rel ?? []) {
+      if (traversedEdges >= maxEdges) break;
       const target = relation.slice(relation.indexOf(">") + 1);
       queue.push({ id: target, depth: current.depth + 1 });
+      traversedEdges += 1;
     }
-    for (const source of reverse.get(card.id) ?? []) queue.push({ id: source, depth: current.depth + 1 });
+    for (const source of reverse.get(card.id) ?? []) {
+      if (traversedEdges >= maxEdges) break;
+      queue.push({ id: source, depth: current.depth + 1 });
+      traversedEdges += 1;
+    }
   }
 
   const header = `llmnav-context/1 root=${rootId} depth=${depth}\n`;

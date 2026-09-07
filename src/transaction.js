@@ -9,7 +9,7 @@ stability=architecture
 */
 
 import { randomBytes } from "node:crypto";
-import { lstat, mkdir, open, readFile, readdir, rename, rm, stat, writeFile } from "node:fs/promises";
+import { link, lstat, mkdir, open, readFile, readdir, rename, rm, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
 import {
@@ -55,27 +55,42 @@ export async function acquireGenerationLock(root, options = {}) {
   const delays = options.delays ?? [0, ...Array.from({ length: Math.ceil(timeoutMs / pollMs) }, () => pollMs)];
   const openImpl = options.openImpl ?? open;
   const sleepImpl = options.sleepImpl ?? sleep;
-
-  for (const delay of delays) {
-    if (delay > 0) await sleepImpl(delay);
+  const candidatePath = `${lockPath}.tmp-${process.pid}-${randomBytes(8).toString("hex")}`;
+  // Publish only a closed, complete owner record. A crash before publication
+  // leaves an unused candidate, never an unreadable authoritative lock.
+  let candidateCreated = false;
+  try {
+    const handle = await openImpl(candidatePath, "wx");
+    candidateCreated = true;
     try {
-      const handle = await openImpl(lockPath, "wx");
+      await handle.writeFile(stableStringify({ schemaVersion: 1, ownerId, pid: process.pid }));
+      await handle.sync();
+    } finally {
+      await handle.close();
+    }
+
+    for (const delay of delays) {
+      if (delay > 0) await sleepImpl(delay);
       try {
-        await handle.writeFile(stableStringify({ schemaVersion: 1, ownerId, pid: process.pid }));
-        await handle.sync();
-      } finally {
-        await handle.close();
-      }
-      return { root, lockPath, ownerId };
-    } catch (error) {
-      if (!error || typeof error !== "object" || error.code !== "EEXIST") throw error;
-      const existing = await readJsonSafe(lockPath, null);
-      if (existing && Number.isInteger(existing.pid) && !isProcessAlive(existing.pid)) {
-        await removeOwnedLock(lockPath, existing.ownerId);
+        await link(candidatePath, lockPath);
+        return { root, lockPath, ownerId };
+      } catch (error) {
+        if (!error || typeof error !== "object" || error.code !== "EEXIST") throw error;
+        const existing = await readJsonSafe(lockPath, null);
+        if (existing && Number.isInteger(existing.pid) && !isProcessAlive(existing.pid)) {
+          await removeOwnedLock(lockPath, existing.ownerId);
+        }
       }
     }
+    const existing = await readJsonSafe(lockPath, null);
+    if (!existing || !Number.isInteger(existing.pid) || !existing.ownerId) {
+      throw new Error("The LLMNav generation lock has no valid owner record. After stopping all LLMNav processes, remove .llmnav/generation.lock and retry.");
+    }
+    throw new Error("Timed out waiting for the LLMNav generation lock.");
+  } finally {
+    // Candidate cleanup must not turn successful acquisition into a leaked lock.
+    if (candidateCreated) await removeWithRetry(candidatePath).catch(() => {});
   }
-  throw new Error("Timed out waiting for the LLMNav generation lock.");
 }
 
 export async function releaseGenerationLock(lock) {

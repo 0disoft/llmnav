@@ -6,6 +6,14 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 
 ## [Unreleased]
 
+## [0.9.1] — 2026-09-07
+
+### Fixed
+
+* Publish complete generation lock records atomically, clean up failed preparation, and explain repair of unreadable legacy locks.
+* Hold the generation lock throughout search and registry snapshot reads.
+* Apply context edge limits when falling back to semantic relations without a usable graph.
+
 ## [0.9.0] — 2026-08-15
 
 ### Added
