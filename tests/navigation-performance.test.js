@@ -13,6 +13,9 @@ test("graph-aware navigation measures isolated phases without changing results",
   assert.equal(report.correctness.refreshStable, true);
   assert.ok(report.sessionQuery.work.graphEdgesVisited > 0);
   assert.equal(report.sessionQuery.work.documentTokenizations, 0);
+  assert.equal(report.sessionQuery.work.idNormalizations, 0);
+  assert.equal(report.sessionQuery.work.lookupBuilds, 0);
+  assert.equal(report.sessionQuery.work.graphValidations, 0);
   for (const duration of [report.initialSessionMs, report.firstQueryMs, report.refreshMs, report.sessionQuery.p95Ms, report.sessionContext.p95Ms]) {
     assert.ok(Number.isFinite(duration) && duration >= 0);
   }

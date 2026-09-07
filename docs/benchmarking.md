@@ -92,6 +92,12 @@ query   d7545f3781f705eb2fdb5c7deb14004c7d74f1b9fc81fb21314e00f3f276e272
 context 051db2dc2b802eca7a5b3a04a08c38b447ba95659ebc2a8eef2e9b6fb0e1207b
 ```
 
+### Local session metadata result
+
+On the same fixture and environment, one local run after session metadata preparation measured query median/p95 at 2.883/5.796 ms, with identical query and context digests above. Across 50 queries, ID normalizations, lookup-table builds, and graph validations were all zero; ID and phrase scans remain 50,000 each. The optimization does not narrow substring candidates or change ranking.
+
+Initial loading was 159.667 ms, first query 21.485 ms, refresh 114.610 ms, context median/p95 3.617/8.979 ms, and direct-query median 102.542 ms. Preparation shifts work to loading/refresh and result detachment adds copying. These single-run timings include local load variation; they establish neither a startup improvement nor a production speed guarantee.
+
 ## Measurement integrity
 
 A benchmark result is accepted only after these checks pass:

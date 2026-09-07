@@ -3233,14 +3233,14 @@
     },
     {
       "blocks": [],
-      "contentHash": "c1fba29a634a4ad78fafc5ea791f11aaa10d8333884ebf52a96295a6c59ae174",
+      "contentHash": "34e396bde2b42fccd7898d357f51db408a4423fa222c93034947bb4ec78a1ea0",
       "declarations": [],
       "imports": [
         "./spec.js"
       ],
       "path": "src/index.d.ts",
       "semanticBytes": 0,
-      "sourceBytes": 29104
+      "sourceBytes": 29212
     },
     {
       "blocks": [],
@@ -4510,7 +4510,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "6adcb775431342a8c2e0c2be0c3ed3157f8603e88c2ce50f9d4b913ca7ff11f8",
+      "contentHash": "82011bdacad7637d437d593801de8037e10d1a95f343049bf0a25e328027f072",
       "declarations": [
         null
       ],
@@ -4527,7 +4527,7 @@
       ],
       "path": "src/search.js",
       "semanticBytes": 464,
-      "sourceBytes": 26165
+      "sourceBytes": 26996
     },
     {
       "blocks": [],
@@ -5204,7 +5204,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "c4ad5a76cf3d0c81e2069063f991426fe5157c5b8bb5c2d340526d03183cc363",
+      "contentHash": "106c4b1dd5c5c2b786dcc48d30dcea1dab3e79b4f128cf3559acc351110b574e",
       "declarations": [],
       "imports": [
         "../src/generator.js",
@@ -5219,7 +5219,7 @@
       ],
       "path": "tests/graph-search.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 8932
+      "sourceBytes": 9254
     },
     {
       "blocks": [],
@@ -5338,7 +5338,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "49b4d6d5067e633d67e576aff126aae6b80b3e2f2969c025560dc084bd91d728",
+      "contentHash": "84f0fe87831a21cf1f83ca632dbcf04898969ae720a37a378a2576945f41a02f",
       "declarations": [],
       "imports": [
         "../benchmarks/navigation.js",
@@ -5347,7 +5347,7 @@
       ],
       "path": "tests/navigation-performance.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 1148
+      "sourceBytes": 1330
     },
     {
       "blocks": [],

@@ -71,6 +71,11 @@ test("sessions sort graph edges once per snapshot and refresh neighbor results",
     assert.equal(graphSorts, 1);
     const first = session.query("auth.session.rotate");
     assert.deepEqual(session.query("auth.session.rotate"), first);
+    first[0].card.id = "caller.modified";
+    first[0].card.rel.length = 0;
+    session.show("auth.session.rotate").card.id = "caller.modified.again";
+    assert.equal(session.query("auth.session.rotate")[0].id, "auth.session.rotate");
+    assert.equal(session.show("auth.session.rotate").card.id, "auth.session.rotate");
     assert.deepEqual(session.context("auth.session.rotate", { maxEdges: 1 }).included, ["auth.session.rotate", "auth.session.revoke"]);
     session.context("auth.session.rotate", { maxEdges: 1 });
     assert.equal(graphSorts, 1);

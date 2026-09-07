@@ -231,6 +231,9 @@ export interface SearchMetrics {
   phraseDocumentsScanned?: number;
   idDocumentsScanned?: number;
   graphEdgesVisited?: number;
+  idNormalizations?: number;
+  lookupBuilds?: number;
+  graphValidations?: number;
 }
 
 export interface SearchResult {
@@ -244,7 +247,7 @@ export interface SearchResult {
 
 export interface ProjectSession {
   root: string;
-  query(query: string, options?: { top?: number }): SearchResult[];
+  query(query: string, options?: { top?: number; metrics?: SearchMetrics }): SearchResult[];
   show(id: string): { card: IndexedCard | null; node: GraphNode | null; resolvedFrom: unknown };
   context(id: string, options?: { depth?: number; budget?: number; maxEdges?: number }): { id: string; depth: number; budget: number; maxEdges: number; included: string[]; includedEdges: string[]; text: string };
   refresh(): Promise<ProjectSession>;
