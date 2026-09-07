@@ -63,6 +63,35 @@ LLMNAV_BENCH_FILES=500 LLMNAV_BENCH_QUERY_RUNS=5 npm run benchmark:v0.2
 
 Published repository results use the defaults. The report states that each query starts a fresh Node.js process and that the operating-system filesystem cache is not flushed. That distinction prevents a warm page cache from being mislabeled as cold disk I/O.
 
+## Graph-aware session lifecycle
+
+`npm run benchmark:navigation` generates a temporary 100-file repository with 1,000 cards and three outgoing semantic relations per card. A fresh worker process measures initial session loading, the first query, 50 repeated queries, 50 bounded graph-context requests, and refresh with unchanged source. Three direct `queryProject` calls provide a filesystem-loading comparison. The report includes medians, p95, memory, operation counters, fixture sizes, and result digests.
+
+The operating-system filesystem cache is not flushed. Module import and process launch costs are excluded from `initialSessionMs` but included in the total `workerWallMs`, which also includes reference checks. Fixture generation is outside both measurements. Query scores and reasons must match the direct graph-aware index path; context must include the requested root and graph evidence within its edge and token limits. CI uses a 100-card fixture to validate these contracts without imposing a machine-specific timing threshold.
+
+
+### Local baseline before session metadata preparation
+
+Measured on 2026-09-07 with runtime source based on `5b0d837`: Windows x64, Node v24.18.0, AMD Ryzen 5 7430U with Radeon Graphics. This is one local run with an unflushed filesystem cache, not a production latency guarantee.
+
+| Phase | Median or single sample (ms) | p95 (ms) |
+| --- | ---: | ---: |
+| Initial session load | 141.335 | — |
+| First query | 11.113 | — |
+| Repeated session query (50) | 3.859 | 7.833 |
+| Repeated session context (50) | 2.870 | 5.484 |
+| Refresh unchanged source | 70.303 | — |
+| Direct query with disk loading (3) | 90.443 | 120.859 |
+
+All 50 query rankings, scores and reasons matched the direct index path. All 50 contexts met the graph and token bounds. Query work still included 50,000 ID scans and 50,000 phrase-document scans; caching adjacency does not eliminate those passes.
+
+Result digests for comparison with subsequent optimization:
+
+```text
+query   d7545f3781f705eb2fdb5c7deb14004c7d74f1b9fc81fb21314e00f3f276e272
+context 051db2dc2b802eca7a5b3a04a08c38b447ba95659ebc2a8eef2e9b6fb0e1207b
+```
+
 ## Measurement integrity
 
 A benchmark result is accepted only after these checks pass:

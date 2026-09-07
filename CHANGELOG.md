@@ -19,6 +19,7 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 
 ### Performance
 
+* Measure fresh-process session startup, graph-aware query and context latency, and refresh separately, with result parity checks against direct navigation APIs.
 * Reuse graph adjacency and traversal ordering within project sessions; refresh rebuilds that state while direct query APIs continue to accept mutable graph inputs.
 * Count removed graph partitions with keyed membership instead of scanning all current partitions for each previous key.
 

@@ -150,6 +150,28 @@
     },
     {
       "blocks": [],
+      "contentHash": "8cf4ec27b14aa45dc57cefdcfad68d8c02d55e40e7d87a8c1326af2c7492fcde",
+      "declarations": [],
+      "imports": [
+        "../src/generator.js",
+        "../src/search.js",
+        "../src/spec.js",
+        "../src/util.js",
+        "../tests/helpers/synthetic.js",
+        "node:assert/strict",
+        "node:child_process",
+        "node:fs/promises",
+        "node:os",
+        "node:path",
+        "node:perf_hooks",
+        "node:url"
+      ],
+      "path": "benchmarks/navigation.js",
+      "semanticBytes": 0,
+      "sourceBytes": 7139
+    },
+    {
+      "blocks": [],
       "contentHash": "427208feeebd14f681c38c5e0096c33fef3d507f9a622adf7954ab62375880f6",
       "declarations": [],
       "imports": [
@@ -5228,7 +5250,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "34e5bb84dd4dc5eb9f13e36b0a8dc6e9e62e318e72b8a82bd4b0efddbdfcdc8f",
+      "contentHash": "ab2be6ce91242516ba4d60ae3ed05f32914890b313e20020ccc02ee851c21cde",
       "declarations": [],
       "imports": [
         "../../src/spec.js",
@@ -5238,7 +5260,7 @@
       ],
       "path": "tests/helpers/synthetic.js",
       "semanticBytes": 0,
-      "sourceBytes": 5357
+      "sourceBytes": 5872
     },
     {
       "blocks": [],
@@ -5313,6 +5335,19 @@
       "path": "tests/migration.test.js",
       "semanticBytes": 0,
       "sourceBytes": 5428
+    },
+    {
+      "blocks": [],
+      "contentHash": "49b4d6d5067e633d67e576aff126aae6b80b3e2f2969c025560dc084bd91d728",
+      "declarations": [],
+      "imports": [
+        "../benchmarks/navigation.js",
+        "node:assert/strict",
+        "node:test"
+      ],
+      "path": "tests/navigation-performance.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 1148
     },
     {
       "blocks": [],

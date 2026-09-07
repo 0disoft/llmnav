@@ -31,6 +31,10 @@ export function syntheticQueries(cardCount, queryCount = 100) {
 export async function createSyntheticProject(root, options = {}) {
   const fileCount = options.fileCount ?? 100;
   const cardsPerFile = options.cardsPerFile ?? 5;
+  const relationsPerCard = options.relationsPerCard ?? 0;
+  if (!Number.isInteger(relationsPerCard) || relationsPerCard < 0 || relationsPerCard > 6) {
+    throw new Error("relationsPerCard must be an integer from 0 to 6.");
+  }
   await mkdir(path.join(root, ".llmnav", "eval"), { recursive: true });
   await mkdir(path.join(root, "src"), { recursive: true });
   await writeFile(path.join(root, "package.json"), `${JSON.stringify({ name: "synthetic-project", type: "module" }, null, 2)}\n`);
@@ -60,7 +64,7 @@ export async function createSyntheticProject(root, options = {}) {
     const source = [];
     for (let offset = 0; offset < cardsPerFile; offset += 1) {
       const cardIndex = start + offset;
-      source.push(renderSourceCard(cardIndex));
+      source.push(renderSourceCard(cardIndex, fileCount * cardsPerFile, relationsPerCard));
     }
     writes.push(writeFile(path.join(root, "src", `fixture-${pad(fileIndex)}.ts`), `${source.join("\n")}\n`));
     if (writes.length >= 64) {
@@ -121,14 +125,16 @@ function syntheticIndexedCard(index) {
   };
 }
 
-function renderSourceCard(index) {
+function renderSourceCard(index, cardCount, relationsPerCard) {
+  const relations = Array.from({ length: Math.min(relationsPerCard, Math.max(0, cardCount - 1)) },
+    (_, offset) => `rel=workflow>${syntheticId((index + offset + 1) % cardCount)}\n`).sort().join("");
   return `/* llmnav/1 symbol
 id=${syntheticId(index)}
 role=${syntheticRole(index)}
 owns=operation code${pad(index)}
 search=operation code${pad(index)}|tenant shard${pad(index)}
 invariant=Operation code${pad(index)} is applied at most once.
-stability=contract
+${relations}stability=contract
 */
 export function operation${pad(index)}(): number { return ${index}; }`;
 }
