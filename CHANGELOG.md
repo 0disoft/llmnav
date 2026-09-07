@@ -14,6 +14,11 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 * Hold the generation lock throughout search and registry snapshot reads.
 * Apply context edge limits when falling back to semantic relations without a usable graph.
 
+### Performance
+
+* Reuse graph adjacency and traversal ordering within project sessions; refresh rebuilds that state while direct query APIs continue to accept mutable graph inputs.
+* Count removed graph partitions with keyed membership instead of scanning all current partitions for each previous key.
+
 ## [0.9.0] — 2026-08-15
 
 ### Added

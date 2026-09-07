@@ -28,6 +28,7 @@ import { isCompatibleRepositoryGraph, renderGraphNode, resolveGraphNode } from "
 
 const preparedIndexCache = new WeakMap();
 const preparedSearchIndexCache = new WeakMap();
+const sessionGraphAdjacencyCache = new WeakMap();
 
 export async function loadSearchData(root) {
   return withGenerationLock(root, (lock) => loadSearchDataLocked(root, lock));
@@ -95,7 +96,7 @@ export async function queryProject(root, query, options = {}) {
 }
 
 export async function createProjectSession(root) {
-  let snapshot = await loadProjectSnapshot(root);
+  let snapshot = await loadSessionSnapshot(root);
   const session = {
     root,
     query(query, options = {}) {
@@ -112,11 +113,18 @@ export async function createProjectSession(root) {
       return buildSnapshotContext(snapshot, id, options);
     },
     async refresh() {
-      snapshot = await loadProjectSnapshot(root);
+      snapshot = await loadSessionSnapshot(root);
       return session;
     },
   };
   return session;
+}
+
+async function loadSessionSnapshot(root) {
+  const snapshot = await loadProjectSnapshot(root);
+  // Only session-owned graphs are cached: public query inputs may be mutable.
+  if (snapshot.graph) sessionGraphAdjacencyCache.set(snapshot.graph, buildGraphAdjacency(snapshot.graph));
+  return snapshot;
 }
 
 async function loadProjectSnapshot(root) {
@@ -588,6 +596,8 @@ function applyLegacyRelationBonuses(seeds, byId, resultsById) {
 }
 
 function buildGraphAdjacency(graph) {
+  const cached = sessionGraphAdjacencyCache.get(graph);
+  if (cached) return cached;
   const adjacency = new Map();
   for (const edge of [...graph.edges].sort(compareGraphEdgesForTraversal)) {
     appendGraphNeighbor(adjacency, edge.from, { neighbor: edge.to, direction: "out", edge });

@@ -6,7 +6,7 @@ import test from "node:test";
 import { generateProject } from "../src/generator.js";
 import { initializeProject } from "../src/initializer.js";
 import { buildInvertedIndex } from "../src/inverted-index.js";
-import { buildContext, queryPreparedIndex, showProjectCard } from "../src/search.js";
+import { buildContext, createProjectSession, queryPreparedIndex, showProjectCard } from "../src/search.js";
 
 test("adds confidence-weighted graph neighbors without replacing lexical seeds", () => {
   const index = {
@@ -39,6 +39,49 @@ test("adds confidence-weighted graph neighbors without replacing lexical seeds",
   assert.equal(withGraph[0].id, "auth.session.rotate");
   assert.ok(withGraph.some((item) => item.id === "auth.session.revoke" && item.reasons.includes("graph-out:calls@0.75")));
   assert.equal(metrics.graphEdgesVisited, 1);
+  graph.edges[0].confidence = 0;
+  const changedGraph = queryPreparedIndex(index, searchIndex, "rotate refresh credential", { top: 5, graph });
+  assert.equal(changedGraph.some((item) => item.id === "auth.session.revoke"), false);
+});
+
+test("sessions sort graph edges once per snapshot and refresh neighbor results", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-session-graph-reuse-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await writeFile(path.join(root, "package.json"), '{"name":"session-graph"}\n');
+  await mkdir(path.join(root, "src"));
+  const sourcePath = path.join(root, "src", "auth.ts");
+  const source = [
+    sourceCard("auth.session.rotate", "rotateSession").replace("stability=contract", "rel=workflow>auth.session.revoke\nstability=contract"),
+    sourceCard("auth.session.revoke", "revokeSession"),
+    sourceCard("auth.session.verify", "verifySession"),
+  ].join("\n");
+  await writeFile(sourcePath, source);
+  assert.equal((await initializeProject(root, { agents: ["none"] })).ok, true);
+  const originalSort = Array.prototype.sort;
+  let graphSorts = 0;
+  // Node's mock.method rejects array targets, including Array.prototype.
+  // This file runs tests serially; restore instrumentation before the next test.
+  Array.prototype.sort = function (compare) {
+    if (this.length && typeof this[0]?.from === "string" && typeof this[0]?.to === "string") graphSorts += 1;
+    return originalSort.call(this, compare);
+  };
+  let session;
+  try {
+    session = await createProjectSession(root);
+    assert.equal(graphSorts, 1);
+    const first = session.query("auth.session.rotate");
+    assert.deepEqual(session.query("auth.session.rotate"), first);
+    assert.deepEqual(session.context("auth.session.rotate", { maxEdges: 1 }).included, ["auth.session.rotate", "auth.session.revoke"]);
+    session.context("auth.session.rotate", { maxEdges: 1 });
+    assert.equal(graphSorts, 1);
+  } finally {
+    Array.prototype.sort = originalSort;
+  }
+  await writeFile(sourcePath, source.replace("rel=workflow>auth.session.revoke", "rel=workflow>auth.session.verify"));
+  assert.equal((await generateProject(root)).ok, true);
+  assert.deepEqual(session.context("auth.session.rotate", { maxEdges: 1 }).included, ["auth.session.rotate", "auth.session.revoke"]);
+  await session.refresh();
+  assert.deepEqual(session.context("auth.session.rotate", { maxEdges: 1 }).included, ["auth.session.rotate", "auth.session.verify"]);
 });
 
 test("packs graph neighbors and edge evidence within explicit bounds", async (context) => {

@@ -79,6 +79,7 @@ export function buildRepositoryGraphIncremental(project, index, previousState = 
   }
 
   partitions.sort((left, right) => compareText(left.key, right.key));
+  const partitionKeys = new Set(partitions.map((partition) => partition.key));
   const nodes = new Map();
   const edges = new Map();
   for (const partition of partitions) {
@@ -115,7 +116,7 @@ export function buildRepositoryGraphIncremental(project, index, previousState = 
       totalPartitions: partitions.length,
       reusedPartitions,
       rebuiltPartitions,
-      removedPartitions: [...previousPartitions.keys()].filter((key) => !partitions.some((item) => item.key === key)).length,
+      removedPartitions: [...previousPartitions.keys()].filter((key) => !partitionKeys.has(key)).length,
     },
   };
 }
