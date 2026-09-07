@@ -55,7 +55,11 @@ if (PACKAGE_VERSION !== ${JSON.stringify(installedPackage.version)} || SEARCH_IN
 const host = await createLlmnavHost(process.cwd());
 const result = await host.execute({ name: "llmnav_query", input: { task: "replayed refresh token" } });
 const explanation = await host.execute({ name: "llmnav_explain", input: { file: "src/rotate.ts" } });
-if (!result.ok || result.data[0]?.id !== "auth.session.rotate" || !explanation.ok || explanation.data.status !== "candidate") process.exit(1);`,
+const shown = await host.execute({ name: "llmnav_show", input: { id: "auth.session.rotate" } });
+const context = await host.execute({ name: "llmnav_context", input: { id: "auth.session.rotate", maxEdges: 0 } });
+await host.refresh();
+const refreshed = await host.execute({ name: "llmnav_query", input: { task: "replayed refresh token" } });
+if (!result.ok || result.data[0]?.id !== "auth.session.rotate" || !explanation.ok || explanation.data.status !== "candidate" || !shown.ok || shown.data.card?.id !== "auth.session.rotate" || !context.ok || context.data.included.length !== 1 || !refreshed.ok || refreshed.data[0]?.id !== "auth.session.rotate") process.exit(1);`,
     ],
     project,
   );
@@ -96,17 +100,21 @@ if (!result.ok || result.data[0]?.id !== "auth.session.rotate" || !explanation.o
   await rm(temp, { recursive: true, force: true });
 }
 
-function run(command, args, cwd) {
+function run(command, args, cwd, env = process.env) {
   return execFileSync(command, args, {
     cwd,
     encoding: "utf8",
     maxBuffer: 64 * 1024 * 1024,
-    env: { ...process.env, npm_config_update_notifier: "false" },
+    env: { ...env, npm_config_update_notifier: "false" },
   });
 }
 
 function runNpm(args, cwd) {
-  return run(process.execPath, [npmCli, ...args], cwd);
+  // npm run can export .npmrc policy as an environment override, which newer
+  // npm rejects for project installs. The install still uses --ignore-scripts.
+  const env = Object.fromEntries(Object.entries(process.env)
+    .filter(([key]) => key.toLowerCase() !== "npm_config_allow_scripts"));
+  return run(process.execPath, [npmCli, ...args], cwd, env);
 }
 
 function runStatus(command, args, cwd) {

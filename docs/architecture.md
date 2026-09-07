@@ -199,6 +199,8 @@ The complete source scan and cache commit are serialized by `.llmnav/generation.
 
 Readers hold that lock until all snapshot artifacts, including the ID registry for sessions, show, and context, have been read. Lock ownership is published with an exclusive hard link to a fully written, synced, and closed candidate file in the same directory; the filesystem must support hard links. Failed preparation cannot leave an empty authoritative lock. Unused candidate files confer no ownership. An unreadable lock left by an older version is not automatically stolen: stop all LLMNav processes, remove `.llmnav/generation.lock`, then retry. A valid abandoned transaction is still recovered normally.
 
+If hard-link publication fails with `ENOSYS`, `ENOTSUP`, `EOPNOTSUPP`, `EPERM`, or `EXDEV`, the error explains the filesystem and permission requirements and retains the original cause. The unpublished candidate is cleaned up; the lock is not downgraded to a non-atomic write. `EPERM` can indicate a permission restriction, not only a filesystem capability gap.
+
 When no compatible graph is available, context falls back to semantic relations and still limits traversal with `maxEdges`, including zero. The token budget separately bounds rendered output.
 
 ```text

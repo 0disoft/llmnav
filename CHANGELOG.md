@@ -10,6 +10,9 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 
 ### Fixed
 
+* Explain unsupported or disallowed hard-link lock publication, preserve its filesystem error, and verify installed host show, bounded context, and refresh operations.
+* Prevent inherited npm `allow-scripts` environment policy from breaking isolated package installation smoke checks; installation lifecycle scripts remain disabled.
+* Synchronize the public package-version constant with 0.9.1 and check both npm manifests in the normal test suite.
 * Publish complete generation lock records atomically, clean up failed preparation, and explain repair of unreadable legacy locks.
 * Hold the generation lock throughout search and registry snapshot reads.
 * Apply context edge limits when falling back to semantic relations without a usable graph.

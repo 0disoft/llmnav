@@ -32,6 +32,7 @@ const DEFAULT_RETRY_DELAYS = Object.freeze([0, 8, 16, 32, 64, 128, 256, 512]);
 const JOURNAL_PHASES = new Set(["prepared", "old-moved", "new-installed", "committed"]);
 const DEFAULT_LOCK_TIMEOUT_MS = 30_000;
 const DEFAULT_LOCK_POLL_MS = 50;
+const LOCK_LINK_CAPABILITY_ERRORS = new Set(["ENOSYS", "ENOTSUP", "EOPNOTSUPP", "EPERM", "EXDEV"]);
 const CONTROL_ARTIFACT_PATHS = new Set([".llmnav/ids.jsonl", ".llmnav/order.lock"]);
 
 export async function withGenerationLock(root, callback, options = {}) {
@@ -54,6 +55,7 @@ export async function acquireGenerationLock(root, options = {}) {
   const pollMs = options.pollMs ?? DEFAULT_LOCK_POLL_MS;
   const delays = options.delays ?? [0, ...Array.from({ length: Math.ceil(timeoutMs / pollMs) }, () => pollMs)];
   const openImpl = options.openImpl ?? open;
+  const linkImpl = options.linkImpl ?? link;
   const sleepImpl = options.sleepImpl ?? sleep;
   const candidatePath = `${lockPath}.tmp-${process.pid}-${randomBytes(8).toString("hex")}`;
   // Publish only a closed, complete owner record. A crash before publication
@@ -72,9 +74,15 @@ export async function acquireGenerationLock(root, options = {}) {
     for (const delay of delays) {
       if (delay > 0) await sleepImpl(delay);
       try {
-        await link(candidatePath, lockPath);
+        await linkImpl(candidatePath, lockPath);
         return { root, lockPath, ownerId };
       } catch (error) {
+        if (error && typeof error === "object" && LOCK_LINK_CAPABILITY_ERRORS.has(error.code)) {
+          throw new Error(
+            `Cannot publish the LLMNav generation lock (${error.code}). The repository filesystem must support hard links and permit their creation. Check filesystem permissions or move the repository to a filesystem with hard-link support.`,
+            { cause: error },
+          );
+        }
         if (!error || typeof error !== "object" || error.code !== "EEXIST") throw error;
         const existing = await readJsonSafe(lockPath, null);
         if (existing && Number.isInteger(existing.pid) && !isProcessAlive(existing.pid)) {

@@ -1057,7 +1057,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "9c3e69559f539e02b52f9a98e7617abac1551417962586a81421e859e296f8aa",
+      "contentHash": "a063891eaebf45b969f39f4ab3f531b2bd22c2c3eae7d197d04e51e93d59247d",
       "declarations": [],
       "imports": [
         "node:child_process",
@@ -1068,7 +1068,7 @@
       ],
       "path": "scripts/pack-smoke.js",
       "semanticBytes": 0,
-      "sourceBytes": 6186
+      "sourceBytes": 7020
     },
     {
       "blocks": [],
@@ -4622,7 +4622,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "d0a4a5d1f41b4b9e56784e07aa4e3aa0157ee40493763aa20aad2dfa60c9d5d1",
+      "contentHash": "75668032ee913aa9a88604c7ff58e89aa3c4ff432958550f5532a1ae04f63571",
       "declarations": [
         null
       ],
@@ -4818,7 +4818,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "19d63188035fe78582d8fb99d3fd2e868674f2d383b06344196f59b22f743044",
+      "contentHash": "4117324e0f3deec21db62975f3f1a7229e5bbe1ee32079adb512453fd7aaeca1",
       "declarations": [
         null
       ],
@@ -4831,7 +4831,7 @@
       ],
       "path": "src/transaction.js",
       "semanticBytes": 393,
-      "sourceBytes": 26583
+      "sourceBytes": 27152
     },
     {
       "blocks": [],
@@ -5466,7 +5466,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "14db755bfe033b6c0b404616da5d3f57e0a92c9df0d27e88580170f1418b128b",
+      "contentHash": "87a10cf40668b69fafa6f66a87d0059ea8237b634ec7e644063607e0023ee343",
       "declarations": [],
       "imports": [
         "../src/generator.js",
@@ -5484,11 +5484,11 @@
       ],
       "path": "tests/transaction.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 17885
+      "sourceBytes": 19050
     },
     {
       "blocks": [],
-      "contentHash": "696f109848ae0e166a1587471baf0854d9d0520aff9ebaf3c4e1f04ba69db83d",
+      "contentHash": "caf402faed3c93f653ff848a2ce3af5a4fa3c75746d8e591583d7bb1dd217bbb",
       "declarations": [],
       "imports": [
         "../src/index.js",
@@ -5498,7 +5498,7 @@
       ],
       "path": "tests/type-surface.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 1012
+      "sourceBytes": 1487
     },
     {
       "blocks": [],

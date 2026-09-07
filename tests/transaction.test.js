@@ -64,6 +64,29 @@ test("owner preparation does not publish a partial lock", async (context) => {
   }
 });
 
+test("unsupported lock publication explains hard-link requirements and cleans its candidate", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-lock-capability-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  for (const code of ["ENOSYS", "ENOTSUP", "EOPNOTSUPP", "EPERM", "EXDEV"]) {
+    const cause = Object.assign(new Error("hard link unavailable"), { code });
+    await assert.rejects(() => acquireGenerationLock(root, {
+      linkImpl: async () => { throw cause; },
+    }), (error) => {
+      assert.equal(error.cause, cause);
+      assert.match(error.message, /filesystem must support hard links/u);
+      assert.ok(error.message.includes(code));
+      return true;
+    });
+    assert.deepEqual(await readdir(path.join(root, ".llmnav")), []);
+  }
+  const ioError = Object.assign(new Error("I/O failure"), { code: "EIO" });
+  await assert.rejects(() => acquireGenerationLock(root, {
+    linkImpl: async () => { throw ioError; },
+  }), (error) => error === ioError);
+  assert.deepEqual(await readdir(path.join(root, ".llmnav")), []);
+  await releaseGenerationLock(await acquireGenerationLock(root));
+});
+
 test("an unidentifiable legacy lock reports repair guidance without stealing it", async (context) => {
   const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-lock-legacy-"));
   context.after(() => rm(root, { recursive: true, force: true }));
