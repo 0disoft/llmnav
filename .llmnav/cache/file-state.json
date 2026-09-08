@@ -1114,7 +1114,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "a063891eaebf45b969f39f4ab3f531b2bd22c2c3eae7d197d04e51e93d59247d",
+      "contentHash": "faabab57f9738971673b8e81eafad4bb8b540659855a15b044615fafea0e6836",
       "declarations": [],
       "imports": [
         "node:child_process",
@@ -1125,7 +1125,7 @@
       ],
       "path": "scripts/pack-smoke.js",
       "semanticBytes": 0,
-      "sourceBytes": 7020
+      "sourceBytes": 7663
     },
     {
       "blocks": [],

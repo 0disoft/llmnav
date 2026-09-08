@@ -5,25 +5,36 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
+const npmCli = process.env.npm_execpath;
+if (!npmCli) throw new Error("Run the packed-install smoke through `npm run smoke:pack`.");
+const args = process.argv.slice(2);
+if (args.length > 1 || (args.length === 1 && !/^--published=\d+\.\d+\.\d+$/u.test(args[0]))) {
+  throw new Error("Expected no arguments or --published=X.Y.Z.");
+}
+const publishedVersion = args[0]?.slice("--published=".length) ?? null;
 const temp = await mkdtemp(path.join(os.tmpdir(), "llmnav-pack-smoke-"));
 const packDirectory = path.join(temp, "pack");
 const project = path.join(temp, "project");
-const npmCli = process.env.npm_execpath;
-if (!npmCli) throw new Error("Run the packed-install smoke through `npm run smoke:pack`.");
 
 try {
   await mkdir(packDirectory, { recursive: true });
   await mkdir(path.join(project, "src"), { recursive: true });
-  const packedOutput = JSON.parse(runNpm(["pack", "--json", "--pack-destination", packDirectory], root));
-  const packed = Array.isArray(packedOutput) ? packedOutput[0] : Object.values(packedOutput)[0];
-  const filename = packed?.filename;
-  if (!filename) throw new Error(`npm pack did not return a filename: ${JSON.stringify(packedOutput)}`);
-  const tarball = path.join(packDirectory, filename);
+  let installSource = publishedVersion ? `llmnav@${publishedVersion}` : null;
+  let packed = null;
+  let filename = null;
+  if (!installSource) {
+    const packedOutput = JSON.parse(runNpm(["pack", "--json", "--pack-destination", packDirectory], root));
+    packed = Array.isArray(packedOutput) ? packedOutput[0] : Object.values(packedOutput)[0];
+    filename = packed?.filename;
+    if (!filename) throw new Error(`npm pack did not return a filename: ${JSON.stringify(packedOutput)}`);
+    installSource = path.join(packDirectory, filename);
+  }
 
   await writeFile(path.join(project, "package.json"), `${JSON.stringify({ name: "llmnav-pack-smoke", private: true }, null, 2)}\n`);
-  runNpm(["install", "--ignore-scripts", "--no-audit", "--no-fund", tarball], project);
+  runNpm(["install", "--ignore-scripts", "--no-audit", "--no-fund", installSource], project);
 
   const installedPackage = JSON.parse(await readFile(path.join(project, "node_modules", "llmnav", "package.json"), "utf8"));
+  if (publishedVersion && installedPackage.version !== publishedVersion) throw new Error("Installed version does not match the requested publication.");
   if (Object.keys(installedPackage.dependencies ?? {}).length !== 0) {
     throw new Error("The packed package has runtime dependencies.");
   }
@@ -89,6 +100,7 @@ if (!result.ok || result.data[0]?.id !== "auth.session.rotate" || !explanation.o
   console.log(JSON.stringify({
     ok: true,
     package: `${installedPackage.name}@${installedPackage.version}`,
+    source: publishedVersion ? "npm-registry" : "local-tarball",
     tarball: filename,
     packageBytes: packed?.size ?? null,
     unpackedBytes: packed?.unpackedSize ?? null,

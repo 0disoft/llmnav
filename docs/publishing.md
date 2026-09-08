@@ -1,18 +1,41 @@
 # Publishing `llmnav` to npm
 
-The repository is release-ready except for owner-specific metadata and npm account configuration.
+Maintainers publish this repository through the existing tag-triggered GitHub Actions workflow. Initial repository and npm account setup belongs to the separate bootstrap section below; it is not part of every release.
 
-## 1. Claim the names
+## Routine release
 
-Create the GitHub repository named `llmnav`, then check the npm registry immediately before the first release:
+1. Confirm the intended version agrees across `package.json`, `package-lock.json`, `src/spec.js`, and the changelog. Review the exact diff and keep unrelated changes out of the release.
+2. Check the remote tag and npm version before creating anything. Authentication or network errors mean unknown state, not an unpublished version. Never move an existing release tag or overwrite a published version.
+3. Validate the exact payload using the commands below. Reuse passing checks only while their relevant inputs remain unchanged.
+4. Commit and push the release changes to `main`. Require successful Windows/Linux and package CI for that exact commit, not a previous commit.
+5. Create an annotated version tag on the verified commit and push only that tag. The workflow handles npm publication and GitHub Release creation.
+6. Verify the tag commit, release workflow, npm version and integrity, provenance, GitHub Release, and an installation of the published package. Publication success and branch CI are separate checks.
 
 ```sh
-npm view llmnav
+npm run check
+npm run release:check
+npm run smoke:pack
+npm pack --dry-run
 ```
 
-An `E404` means no public package is visible through the registry you queried at that moment. It is not a reservation. The name remains claimable by someone else until publication succeeds.
+If dependencies are missing or the lockfile changed, install them through the approved dependency workflow before these checks. The package intentionally includes the CLI, source API, type declarations, schema, templates, documentation, the typed provider-neutral host example, README, changelog, roadmap, and license. Tests, benchmarks, and development scripts remain in GitHub rather than the installed package.
 
-## 2. Replace release metadata
+After choosing the version, replace the placeholder in both tag commands:
+
+```sh
+git tag -a vX.Y.Z -m "llmnav vX.Y.Z"
+git push origin refs/tags/vX.Y.Z
+```
+
+The workflow rejects a tag that does not match `package.json` or the protected `origin/main` lineage. If the version already exists in npm, it succeeds only when the registry integrity matches the tagged payload. A mismatch fails closed and requires a new version, not a forced tag. GitHub Release creation runs only after publication or matching-integrity verification succeeds.
+
+If publication is interrupted, inspect the existing tag, registry artifact, and workflow result before retrying. Preserve the version and tag when they already identify the intended artifact; do not assume a failed workflow means nothing was published.
+
+## One-time bootstrap for a new repository or publisher
+
+### Claim names and set owner metadata
+
+Before a first publication, create the GitHub repository and check npm name availability. An `E404` means no public package is visible at that moment, not that the name is reserved. Do not repeat owner replacement for routine releases of this configured repository.
 
 Update only the owner-specific URLs in `package.json` and `.github/ISSUE_TEMPLATE/config.yml`.
 Do not run a repository-wide replacement: the release checker and doctor intentionally keep the literal `OWNER` sentinel in source code.
@@ -29,27 +52,15 @@ Then replace `OWNER` only in `.github/ISSUE_TEMPLATE/config.yml` and run:
 npm run release:check
 ```
 
-## 3. Configure npm authentication
+### Configure npm authentication
 
 The supplied release workflow uses GitHub's OIDC token through npm Trusted Publishers. The public GitHub source repository enables provenance in both `package.json` and the workflow, and the release check fails if either surface disables it. The same tag workflow creates an idempotent GitHub Release only after the npm registry check or publication succeeds.
 
-The workflow references a GitHub environment named `npm`. Create that environment for release protection, or remove the `environment` line when no environment gate is desired.
+The workflow references a GitHub environment named `npm`. Configure that environment and its protection rules as part of bootstrap. Do not remove an existing approval gate merely to unblock a release.
 
 A classic or granular access token can be used for a manual first publication. Do not commit `.npmrc` credentials or an npm token. npm may still require browser-backed two-factor authentication.
 
-## 4. Validate the exact package payload
-
-```sh
-npm ci
-npm run check
-npm run release:check
-npm run smoke:pack
-npm pack --dry-run
-```
-
-Inspect the tarball list. The package intentionally includes the CLI, source API, type declarations, schema, templates, documentation, the typed provider-neutral host example, README, changelog, roadmap, and license. Tests, benchmark harnesses, and development scripts remain in GitHub but are not installed into consumer projects. `npm run smoke:pack` verifies the exact tarball and example export in a clean temporary project.
-
-## 5. Publish the first release
+### Manual first publication, only when required
 
 Manual publication:
 
@@ -58,22 +69,17 @@ npm login
 npm publish --provenance --access public
 ```
 
-Automated publication:
+## Verify a published version from a clean directory
 
-```sh
-git tag vX.Y.Z
-git push origin vX.Y.Z
-```
+Use an explicit published version instead of the moving default tag. The temporary project must be outside the source repository. Do not commit installed files or credentials.
 
-The release workflow rejects a tag that does not match `package.json`. If the exact version is already present in npm, the workflow succeeds only when the registry tarball integrity matches the tagged package; a mismatched package fails closed. It then reuses an existing GitHub Release for the tag or creates one with generated release notes. Registry, GitHub API, and Release creation errors other than an expected missing Release fail the workflow.
-
-## 6. Verify from a clean directory
+From a source checkout, `npm run smoke:pack -- --published=X.Y.Z` runs the existing CLI/API/host assertions against that exact npm version in a temporary project with lifecycle scripts disabled. Without the option, it tests a locally packed tarball instead.
 
 ```sh
 mkdir llmnav-smoke
 cd llmnav-smoke
 npm init -y
-npm install --save-dev llmnav
+npm install --save-dev --ignore-scripts llmnav@X.Y.Z
 npx llmnav --version
 npx llmnav init --agents all --package-scripts
 npx llmnav doctor
