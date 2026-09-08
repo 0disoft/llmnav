@@ -150,6 +150,23 @@
     },
     {
       "blocks": [],
+      "contentHash": "706834dc4a0faf0b5111f11dc854d929f5c84a4b6757542bd3a98041d0b47f33",
+      "declarations": [],
+      "imports": [
+        "../src/search.js",
+        "../src/util.js",
+        "node:assert/strict",
+        "node:child_process",
+        "node:fs/promises",
+        "node:path",
+        "node:url"
+      ],
+      "path": "benchmarks/navigation-replay.js",
+      "semanticBytes": 0,
+      "sourceBytes": 6087
+    },
+    {
+      "blocks": [],
       "contentHash": "8cf4ec27b14aa45dc57cefdcfad68d8c02d55e40e7d87a8c1326af2c7492fcde",
       "declarations": [],
       "imports": [
@@ -5366,6 +5383,19 @@
       "path": "tests/navigation-performance.test.js",
       "semanticBytes": 0,
       "sourceBytes": 1330
+    },
+    {
+      "blocks": [],
+      "contentHash": "ccc2094e2ec0f826ac8f8cd5acc3e92c86e09951615e9cbbdf4e4df85a34a371",
+      "declarations": [],
+      "imports": [
+        "../benchmarks/navigation-replay.js",
+        "node:assert/strict",
+        "node:test"
+      ],
+      "path": "tests/navigation-replay.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 673
     },
     {
       "blocks": [],

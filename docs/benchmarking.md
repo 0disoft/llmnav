@@ -128,6 +128,8 @@ Wall-clock speed is reported exactly as measured. It is not used to invent a spe
 
 ## Repository search evaluation
 
+The [historical navigation replay pilot](navigation-replay.md) compares six fixed task paraphrases with regex file discovery. It reports candidate ranks and explicit unmeasured agent metrics; it is not a substitute for end-to-end trials.
+
 Add real task descriptions to `.llmnav/eval/queries.jsonl`.
 
 ```jsonl
