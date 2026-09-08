@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "status": "completed-real-maintenance-task",
+  "taskReference": "design-system trailing module card omission",
+  "repositoryCommit": "ad4efcf2b7652502722749141755d283ac4aba49",
+  "resultCommit": "9439d2d",
+  "condition": "llmnav",
+  "modelAndSettings": null,
+  "searchCalls": 9,
+  "searchBreakdown": [
+    { "kind": "semantic-query", "purpose": "Locate comment parser responsibility", "count": 1 },
+    { "kind": "file-discovery", "purpose": "Locate existing parser tests", "count": 1 },
+    { "kind": "text-search", "purpose": "Locate normative comment and module rules", "count": 1 },
+    { "kind": "text-search", "purpose": "Find quote-bearing regex in the consumer fixture", "count": 1 },
+    { "kind": "failed-text-search", "purpose": "Globbed source paths rejected by Windows rg", "count": 1 },
+    { "kind": "text-search", "purpose": "Find existing regex handling in declaration extraction", "count": 1 },
+    { "kind": "text-search", "purpose": "Find incremental indexer-version regression coverage", "count": 1 },
+    { "kind": "text-search", "purpose": "Check version literals in docs, examples and tests", "count": 1 },
+    { "kind": "text-search", "purpose": "Inspect declaration regex-prefix keyword definition", "count": 1 }
+  ],
+  "showCalls": 1,
+  "contextCalls": 0,
+  "semanticFirstResult": "llmnav.syntax.parse",
+  "distinctSourceFilesOpened": 6,
+  "sourceFilesOpened": [
+    "src/parser.js",
+    "src/declaration.js",
+    "src/incremental.js",
+    "src/spec.js",
+    "tests/parser.test.js",
+    "tests/incremental.test.js"
+  ],
+  "sourceReadCountingRule": "Distinct LLMNav source/test files opened after the initial semantic query. Excludes command contracts, generated metadata, manifests, docs and the consumer file read by the reproduction command.",
+  "wrongSourceFilesOpened": 0,
+  "timeToFirstCorrectSourceSeconds": null,
+  "taskCompleted": true,
+  "verificationReference": "9439d2d: related parser/incremental tests 19/19, repository check 145/145, npm pack dry run; original consumer reproduction changed from header=1/tail=0 to header=1/tail=1.",
+  "uncachedInputTokens": null,
+  "measurementSource": "Manual ledger of visible task-specific query, show, search and source-read tool invocations.",
+  "limitations": [
+    "This was an actual omission discovered during design-system adoption, not an invented favorable task.",
+    "The symptom and broad parser responsibility were already suspected; this was not a blind or fresh-context trial.",
+    "Search counts include the failed Windows lookup and supporting test, contract and version searches, but exclude workspace command-authority orientation.",
+    "The consumer input was inspected previously and is excluded from the six-file LLMNav source-read count.",
+    "No baseline condition, timing instrumentation or token telemetry was available; no efficiency percentage can be inferred.",
+    "The repaired version is committed locally but is not an npm publication claim."
+  ]
+}
