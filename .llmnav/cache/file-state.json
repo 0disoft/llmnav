@@ -3247,7 +3247,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "a09084d98d4fb6046f03487131ab36efb153dc850b1d68ca1a8bdb1f917a50b9",
+      "contentHash": "949f9ce790f1a74fcd990fccfb4fbeec6dbbbf45f5df2e5c5e75a0ce9c540d13",
       "declarations": [
         null
       ],
@@ -3868,7 +3868,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "240215f0f795ca6adfbdb85d0e12d5e513e50e275baa363f106083c8d1061f09",
+      "contentHash": "b29ff911ff7a3a96a417e640f3fc7ab2c6c55ecd2e4d250967aa54c1986ef8f2",
       "declarations": [
         null
       ],
@@ -3878,7 +3878,7 @@
       ],
       "path": "src/parser.js",
       "semanticBytes": 336,
-      "sourceBytes": 15350
+      "sourceBytes": 18292
     },
     {
       "blocks": [
@@ -4679,7 +4679,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "75668032ee913aa9a88604c7ff58e89aa3c4ff432958550f5532a1ae04f63571",
+      "contentHash": "85bff90ed5505a08c6635e585e42e61d5e8b0eaca5d3a0a7f5e1a8a25ab5e97d",
       "declarations": [
         null
       ],
@@ -5399,17 +5399,18 @@
     },
     {
       "blocks": [],
-      "contentHash": "fa52fcdb2b643ae4ca29501095686cc79603bc61fb8cc017fc12b591f57247f9",
+      "contentHash": "140db86f9410454ecc372f91f0e4c8abd08e1a76217f985ac72bfed35fc9b1e5",
       "declarations": [],
       "imports": [
         "../src/declaration.js",
         "../src/parser.js",
         "node:assert/strict",
-        "node:test"
+        "node:test",
+        "node:vm"
       ],
       "path": "tests/parser.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 7332
+      "sourceBytes": 9160
     },
     {
       "blocks": [],
@@ -5603,6 +5604,6 @@
       "sourceBytes": 11501
     }
   ],
-  "indexerVersion": 6,
+  "indexerVersion": 7,
   "schemaVersion": 1
 }

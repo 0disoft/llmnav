@@ -6,6 +6,13 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 
 ## [Unreleased]
 
+## [0.9.2] — Unreleased
+
+### Fixed
+
+* Recognize JavaScript/TypeScript regular-expression literals while masking source strings, so quotes and comment-like text inside regexes do not hide later cards or create false cards. Preserve division expressions and ordinary JSX closing tags.
+* Invalidate older parsed-file caches so unchanged consumer files receive the corrected parsing behavior.
+
 ## [0.9.1] — 2026-09-07
 
 ### Fixed

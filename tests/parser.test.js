@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { Script } from "node:vm";
 import { canonicalizeSource, formatLlmnavBlock, parseLlmnavBlocks } from "../src/parser.js";
 import { findAttachedDeclaration } from "../src/declaration.js";
 
@@ -43,6 +44,41 @@ test("ignores LLMNav-looking comments inside source string literals", () => {
     "const lineFixture = `# llmnav/1 symbol\\n# id=fixture.line.card\\n# /llmnav`;",
   ].join("\\n");
   assert.deepEqual(parseLlmnavBlocks(source, "fixture.test.js"), []);
+});
+
+test("JavaScript regex quotes do not hide later cards or expose regex contents", () => {
+  const card = "/* llmnav/1 module\nid=regex.real\nrole=Own the real boundary.\nstability=architecture\n*/";
+  const prefixes = [
+    "const expression = /'/;",
+    "const expression = /[\"'`]/;",
+    "const expression = /='([^']*)'/g;",
+    "const expression = /[/'`]/;",
+    String.raw`const expression = /'\/'/g;`,
+    "function expression() { return /'/; }",
+    "const expression = (/* ordinary comment */ /'/);",
+    "if (true) /'/ .test('value');",
+    "const expression = 12 / 3 / 2;",
+    "const expression = {value: 1} / 2;",
+  ];
+  // Syntax validation is independent of the navigation parser under test.
+  for (const prefix of prefixes) {
+    const source = `${prefix}\n${card}\n`;
+    assert.doesNotThrow(() => new Script(source), prefix);
+    for (const extension of ["js", "ts", "mjs", "cjs", "jsx", "tsx"]) {
+      assert.deepEqual(parseLlmnavBlocks(source, `fixture.${extension}`).map((block) => block.card.id), ["regex.real"], prefix);
+    }
+  }
+  const fake = "const expression = /[<!-- llmnav/1 file -->]/;";
+  assert.doesNotThrow(() => new Script(fake));
+  assert.deepEqual(parseLlmnavBlocks(fake, "fixture.js"), []);
+  for (const prefix of ["const value = object.return /", "const of = 4; const value = of /", "const value = {a: 1} /"]) {
+    const source = `${prefix} ${card} 2;`;
+    assert.doesNotThrow(() => new Script(source));
+    assert.deepEqual(parseLlmnavBlocks(source, "fixture.js").map((block) => block.card.id), ["regex.real"]);
+  }
+  for (const prefix of ["const view = <div></div>;", "const view = <div />;", "const view = <></>;"]) {
+    assert.deepEqual(parseLlmnavBlocks(`${prefix}\n${card}`, "fixture.tsx").map((block) => block.card.id), ["regex.real"]);
+  }
 });
 
 test("line-card formatting preserves the newline before the declaration", () => {

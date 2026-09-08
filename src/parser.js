@@ -39,6 +39,11 @@ const BLOCK_PATTERNS = [
 ];
 const MAX_SOURCE_BYTES = 16 * 1024 * 1024;
 const MAX_BLOCKS_PER_FILE = 10_000;
+const JAVASCRIPT_EXTENSIONS = new Set([".js", ".mjs", ".cjs", ".jsx", ".ts", ".tsx"]);
+const REGEX_PREFIX_KEYWORDS = new Set([
+  "await", "case", "delete", "do", "else", "in", "instanceof", "new", "return", "throw", "typeof", "void", "yield",
+]);
+const CONTROL_PAREN_KEYWORDS = new Set(["if", "while", "for", "with", "switch", "catch"]);
 
 export function parseLlmnavBlocks(source, filePath = "<memory>") {
   if (Buffer.byteLength(source) > MAX_SOURCE_BYTES) {
@@ -217,6 +222,12 @@ function buildLiteralMask(source, filePath) {
   const hashComments = [".py", ".rb", ".sh", ".bash", ".zsh"].includes(extension);
   const dashComments = extension === ".sql";
   const tripleQuotes = extension === ".py";
+  const javascript = JAVASCRIPT_EXTENSIONS.has(extension);
+  let regexAllowed = true;
+  let regexCharacterClass = false;
+  let previousToken = "";
+  const controlParentheses = [];
+  const expressionBraces = [];
   let state = "normal";
   let escaped = false;
   const mask = new Uint8Array(source.length);
@@ -260,6 +271,21 @@ function buildLiteralMask(source, filePath) {
       }
       continue;
     }
+    if (state === "regex") {
+      if (character === "\n" || character === "\r") {
+        state = "normal";
+        escaped = false;
+      } else if (escaped) escaped = false;
+      else if (character === "\\") escaped = true;
+      else if (character === "[") regexCharacterClass = true;
+      else if (character === "]") regexCharacterClass = false;
+      else if (character === "/" && !regexCharacterClass) {
+        state = "normal";
+        regexAllowed = false;
+        previousToken = "value";
+      }
+      continue;
+    }
     if (state === "single" || state === "double" || state === "backtick") {
       if (escaped) {
         escaped = false;
@@ -270,7 +296,11 @@ function buildLiteralMask(source, filePath) {
         continue;
       }
       const terminator = state === "single" ? "'" : state === "double" ? '"' : "`";
-      if (character === terminator) state = "normal";
+      if (character === terminator) {
+        state = "normal";
+        regexAllowed = false;
+        previousToken = "value";
+      }
       continue;
     }
 
@@ -283,6 +313,10 @@ function buildLiteralMask(source, filePath) {
     } else if (character === "/" && next === "/") {
       state = "line-comment";
       index += 1;
+    } else if (javascript && character === "/" && regexAllowed) {
+      state = "regex";
+      regexCharacterClass = false;
+      escaped = false;
     } else if (hashComments && character === "#") {
       state = "line-comment";
     } else if (dashComments && character === "-" && next === "-") {
@@ -303,6 +337,40 @@ function buildLiteralMask(source, filePath) {
     } else if (character === "`") {
       state = "backtick";
       escaped = false;
+    } else if (javascript && !/\s/u.test(character)) {
+      // Track lexical expression position without rescanning prefixes. Comments do
+      // not change it; a control-condition ')' permits a following regex statement.
+      if (/[A-Za-z_$]/u.test(character)) {
+        const start = index;
+        const memberName = previousToken === ".";
+        while (index + 1 < source.length && /[\w$]/u.test(source[index + 1])) index += 1;
+        previousToken = source.slice(start, index + 1);
+        regexAllowed = !memberName && REGEX_PREFIX_KEYWORDS.has(previousToken);
+      } else if (character === "(") {
+        controlParentheses.push(CONTROL_PAREN_KEYWORDS.has(previousToken));
+        regexAllowed = true;
+        previousToken = character;
+      } else if (character === ")") {
+        regexAllowed = controlParentheses.pop() === true;
+        previousToken = character;
+      } else if (character === "{") {
+        expressionBraces.push(regexAllowed && !["", ";", "else", "do", "try", "finally", ")"].includes(previousToken));
+        regexAllowed = true;
+        previousToken = character;
+      } else if (character === "}") {
+        regexAllowed = expressionBraces.pop() !== true;
+        previousToken = character;
+      } else if ((character === "+" || character === "-") && next === character) {
+        previousToken = character + next;
+        index += 1;
+      } else if (character === "=" && next === ">") {
+        regexAllowed = true;
+        previousToken = "=>";
+        index += 1;
+      } else {
+        regexAllowed = "=(:,!&|?;[+-*%~^>/".includes(character);
+        previousToken = character;
+      }
     }
   }
 
