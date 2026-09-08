@@ -1,0 +1,8 @@
+{"query":"파일시스템이 하드링크를 지원하지 않아 잠금 파일 생성이 실패한다","expected":["llmnav.index.transaction"]}
+{"query":"캐시를 갱신하다 중단된 뒤 이전 파일로 롤백해야 한다","expected":["llmnav.index.transaction"]}
+{"query":"문맥 확장에서 탐색 간선 제한을 0으로 줘도 이웃을 따라간다","expected":["llmnav.search.query"]}
+{"query":"Go 모듈 경계에 맞게 import한 패키지를 찾고 싶다","expected":["llmnav.structure.modules"]}
+{"query":"주석 감사에서 제외된 파일의 이유를 설명해줘","expected":["llmnav.audit.coverage"]}
+{"query":"오래된 생성 형식을 마이그레이션하고 싶다","expected":["llmnav.project.migrate"]}
+{"query":"검색 샤드를 만들 때 포스팅을 반복 순회하는 부분을 찾는다","expected":["llmnav.index.search-shards"]}
+{"query":"문자열 안에 있는 주석 표기가 진짜 주석으로 잘못 인식된다","expected":["llmnav.syntax.parse"]}

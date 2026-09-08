@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "status": "template-not-an-observation",
+  "taskReference": null,
+  "repositoryCommit": null,
+  "condition": null,
+  "modelAndSettings": null,
+  "searchCalls": null,
+  "distinctSourceFilesOpened": null,
+  "wrongSourceFilesOpened": null,
+  "timeToFirstCorrectSourceSeconds": null,
+  "taskCompleted": null,
+  "verificationReference": null,
+  "uncachedInputTokens": null,
+  "measurementSource": null,
+  "limitations": []
+}
