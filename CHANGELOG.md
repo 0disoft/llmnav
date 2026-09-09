@@ -6,7 +6,7 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 
 ## [Unreleased]
 
-## [0.9.2] — Unreleased
+## [0.9.2] — 2026-09-09
 
 ### Fixed
 
