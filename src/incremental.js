@@ -21,6 +21,7 @@ import {
   atomicWrite,
   compareText,
   readJsonSafe,
+  readText,
   relativePosix,
   sha256,
   stableStringify,
@@ -28,7 +29,7 @@ import {
 
 export const FILE_STATE_SCHEMA_VERSION = 1;
 export const SOURCE_INDEXER_VERSION = 8;
-const STAT_HINTS_SCHEMA_VERSION = 1;
+const STAT_HINTS_SCHEMA_VERSION = 2;
 
 export async function scanProjectIncremental(root, options = {}) {
   const { config, configPath } = await loadConfig(root);
@@ -37,14 +38,30 @@ export async function scanProjectIncremental(root, options = {}) {
   await assertNoSymlinkTraversal(root, cacheDirectory, config.generation.cacheDirectory);
   const fileStatePath = path.join(cacheDirectory, "file-state.json");
   await assertNoSymlinkTraversal(root, fileStatePath, relativePosix(root, fileStatePath));
-  const previousState = options.previousState ?? await readJsonSafe(fileStatePath, null);
+  const fileStateSource = options.previousState
+    ? renderFileState(options.previousState)
+    : await readText(fileStatePath, null);
+  let previousState = null;
+  try {
+    previousState = fileStateSource === null ? null : JSON.parse(fileStateSource);
+  } catch (error) {
+    if (!(error instanceof SyntaxError)) throw error;
+  }
+  const manifest = await readJsonSafe(path.join(cacheDirectory, "manifest.json"), null);
+  const previousStateHash = fileStateSource === null ? null : sha256(fileStateSource);
+  const fileStateKey = `${relativePosix(root, cacheDirectory)}/file-state.json`;
+  const trustedPreviousState = manifest?.schemaVersion === 1 &&
+    manifest.repositoryId === config.repositoryId &&
+    manifest.files?.[fileStateKey] === previousStateHash &&
+    usableFileState(previousState);
   const hintsPath = path.join(root, ".llmnav", "state", "stat-hints.json");
   await assertNoSymlinkTraversal(root, hintsPath, relativePosix(root, hintsPath));
   const previousHints = options.useStatHints === false
     ? null
     : await readJsonSafe(hintsPath, null);
-  const previousFiles = usableFileState(previousState) ? mapStateFiles(previousState.files) : new Map();
-  const hintFiles = usableStatHints(previousHints) ? previousHints.files ?? {} : {};
+  const previousFiles = trustedPreviousState ? mapStateFiles(previousState.files) : new Map();
+  const hintFiles = trustedPreviousState && usableStatHints(previousHints) &&
+    previousHints.fileStateHash === previousStateHash ? previousHints.files : {};
 
   const fileRecords = [];
   const records = [];
@@ -69,13 +86,13 @@ export async function scanProjectIncremental(root, options = {}) {
     const relativePath = relativePosix(root, absolutePath);
     const details = await stat(absolutePath, { bigint: true });
     const fingerprint = statFingerprint(details);
-    nextHintFiles[relativePath] = fingerprint;
     seenPaths.add(relativePath);
     const previousFile = previousFiles.get(relativePath);
     const previousHint = hintFiles[relativePath];
     let stateFile;
 
-    if (previousFile && fingerprintsEqual(previousHint, fingerprint)) {
+    if (previousFile && previousHint?.contentHash === previousFile.contentHash &&
+      fingerprintsEqual(previousHint, fingerprint)) {
       stateFile = previousFile;
       stats.reusedFiles += 1;
       stats.reusedFilesByStat += 1;
@@ -97,6 +114,7 @@ export async function scanProjectIncremental(root, options = {}) {
     }
 
     const normalizedStateFile = normalizeStateFile(stateFile, relativePath);
+    nextHintFiles[relativePath] = { ...fingerprint, contentHash: normalizedStateFile.contentHash };
     nextStateFiles.push(normalizedStateFile);
     sourceBytes += normalizedStateFile.sourceBytes;
     semanticBytes += normalizedStateFile.semanticBytes;
@@ -117,6 +135,7 @@ export async function scanProjectIncremental(root, options = {}) {
   };
   const statHints = {
     schemaVersion: STAT_HINTS_SCHEMA_VERSION,
+    fileStateHash: sha256(renderFileState(fileState)),
     files: Object.fromEntries(Object.entries(nextHintFiles).sort(([left], [right]) => compareText(left, right))),
   };
   const registry = await loadRegistry(root);
@@ -176,12 +195,22 @@ export function renderFileState(fileState) {
 }
 
 export function usableFileState(value) {
-  return Boolean(
-    value &&
-      value.schemaVersion === FILE_STATE_SCHEMA_VERSION &&
-      value.indexerVersion === SOURCE_INDEXER_VERSION &&
-      Array.isArray(value.files),
-  );
+  if (!value || value.schemaVersion !== FILE_STATE_SCHEMA_VERSION ||
+    value.indexerVersion !== SOURCE_INDEXER_VERSION || !Array.isArray(value.files)) return false;
+  const paths = new Set();
+  for (const file of value.files) {
+    if (!file || typeof file.path !== "string" || !file.path || file.path.startsWith("/") ||
+      file.path.includes("\\") || file.path.split("/").includes("..") || paths.has(file.path) ||
+      !/^[0-9a-f]{64}$/u.test(file.contentHash) ||
+      !Number.isSafeInteger(file.sourceBytes) || file.sourceBytes < 0 ||
+      !Number.isSafeInteger(file.semanticBytes) || file.semanticBytes < 0 ||
+      !Array.isArray(file.imports) || !file.imports.every((item) => typeof item === "string") ||
+      !Array.isArray(file.blocks) || !file.blocks.every((block) => block &&
+        typeof block.raw === "string" && block.card && typeof block.card.id === "string") ||
+      !Array.isArray(file.declarations) || file.declarations.length !== file.blocks.length) return false;
+    paths.add(file.path);
+  }
+  return true;
 }
 
 function analyzeFile(relativePath, source) {
@@ -269,5 +298,7 @@ function fingerprintsEqual(left, right) {
 }
 
 function usableStatHints(value) {
-  return Boolean(value && value.schemaVersion === STAT_HINTS_SCHEMA_VERSION && value.files && typeof value.files === "object");
+  return Boolean(value && value.schemaVersion === STAT_HINTS_SCHEMA_VERSION &&
+    /^[0-9a-f]{64}$/u.test(value.fileStateHash) && value.files &&
+    typeof value.files === "object" && !Array.isArray(value.files));
 }

@@ -5,6 +5,7 @@ import path from "node:path";
 import test from "node:test";
 import { generateProject } from "../src/generator.js";
 import { SOURCE_INDEXER_VERSION } from "../src/incremental.js";
+import { sha256, stableStringify } from "../src/util.js";
 import { changeSyntheticCard, createSyntheticProject } from "./helpers/synthetic.js";
 
 
@@ -87,4 +88,55 @@ test("incremental generation discards file state from an older source indexer", 
   const fullCheck = await generateProject(root, { incremental: false, check: true });
   assert.equal(fullCheck.ok, true, fullCheck.changedFiles.join(", "));
   assert.equal(fullCheck.index.sourceHash, rebuilt.index.sourceHash);
+});
+
+test("restored file state cannot reuse stat hints from a newer generation", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-incremental-rollback-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await createSyntheticProject(root, { fileCount: 2, cardsPerFile: 5 });
+  const cacheRoot = path.join(root, ".llmnav", "cache");
+  const statePath = path.join(cacheRoot, "file-state.json");
+  const manifestPath = path.join(cacheRoot, "manifest.json");
+  const hintPath = path.join(root, ".llmnav", "state", "stat-hints.json");
+
+  assert.equal((await generateProject(root)).ok, true);
+  const oldState = await readFile(statePath, "utf8");
+  const oldManifest = await readFile(manifestPath, "utf8");
+  await changeSyntheticCard(root, 0, 1);
+  assert.equal((await generateProject(root)).ok, true);
+  const expectedIndex = await readFile(path.join(cacheRoot, "index.json"), "utf8");
+  const currentHints = JSON.parse(await readFile(hintPath, "utf8"));
+  assert.equal(currentHints.fileStateHash, sha256(await readFile(statePath, "utf8")));
+
+  await writeFile(statePath, oldState);
+  await writeFile(manifestPath, oldManifest);
+  const recovered = await generateProject(root);
+  assert.equal(recovered.ok, true);
+  assert.equal(recovered.incremental.files.reusedFilesByStat, 0);
+  assert.equal(recovered.incremental.files.parsedFiles, 1);
+  assert.equal(await readFile(path.join(cacheRoot, "index.json"), "utf8"), expectedIndex);
+  assert.equal((await generateProject(root, { incremental: false, check: true })).ok, true);
+});
+
+test("file state with an invalid record is reparsed even when its manifest hash matches", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-incremental-shape-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await createSyntheticProject(root, { fileCount: 2, cardsPerFile: 5 });
+  assert.equal((await generateProject(root)).ok, true);
+  const cacheRoot = path.join(root, ".llmnav", "cache");
+  const statePath = path.join(cacheRoot, "file-state.json");
+  const manifestPath = path.join(cacheRoot, "manifest.json");
+  const state = JSON.parse(await readFile(statePath, "utf8"));
+  const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
+  state.files[0].contentHash = "invalid";
+  const damagedState = stableStringify(state);
+  await writeFile(statePath, damagedState);
+  manifest.files[".llmnav/cache/file-state.json"] = sha256(damagedState);
+  await writeFile(manifestPath, stableStringify(manifest));
+
+  const repaired = await generateProject(root);
+  assert.equal(repaired.ok, true);
+  assert.equal(repaired.incremental.files.parsedFiles, 2);
+  assert.equal(repaired.incremental.files.reusedFiles, 0);
+  assert.equal((await generateProject(root, { incremental: false, check: true })).ok, true);
 });
