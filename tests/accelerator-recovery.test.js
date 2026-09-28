@@ -31,6 +31,29 @@ test("query rebuilds a malformed search accelerator from the compatible primary 
   assert.equal(await readFile(searchPath, "utf8"), "{malformed\n");
 });
 
+test("query rejects a mismatched primary index and preserves manifestless compatibility", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-primary-integrity-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await createProject(root);
+  const cacheRoot = path.join(root, ".llmnav", "cache");
+  const indexPath = path.join(cacheRoot, "index.json");
+  const manifestPath = path.join(cacheRoot, "manifest.json");
+  const original = await readFile(indexPath, "utf8");
+  const changed = JSON.parse(original);
+  changed.cards[0].role = "A different searchable meaning.";
+  await writeFile(indexPath, `${JSON.stringify(changed)}\n`);
+  await assert.rejects(() => queryProject(root, "replayed refresh token"), /Primary index\.json hash does not match manifest/u);
+
+  changed.cards = {};
+  await writeFile(indexPath, `${JSON.stringify(changed)}\n`);
+  await assert.rejects(() => queryProject(root, "replayed refresh token"), /Incompatible primary index/u);
+  await writeFile(indexPath, original);
+  await writeFile(manifestPath, "{malformed\n");
+  await assert.rejects(() => queryProject(root, "replayed refresh token"), /Malformed generated manifest/u);
+  await rm(manifestPath);
+  assert.equal((await queryProject(root, "replayed refresh token"))[0].id, "auth.session.rotate");
+});
+
 test("generation repairs malformed incremental accelerators from source", async (context) => {
   const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-generation-recovery-"));
   context.after(() => rm(root, { recursive: true, force: true }));

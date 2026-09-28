@@ -49,11 +49,33 @@ async function loadSearchDataLocked(root, lock) {
   for (const managedPath of [indexPath, manifestPath, graphPath, searchPath, lexiconPath]) {
     await assertNoSymlinkTraversal(root, managedPath, toPosix(path.relative(root, managedPath)));
   }
-  const index = await readJsonSafe(indexPath, null);
-  if (!index) throw new Error("No generated index found. Run `llmnav generate` first.");
+  const indexText = await readText(indexPath, null);
+  if (indexText === null) throw new Error("No generated index found. Run `llmnav generate` first.");
+  let index;
+  try {
+    index = JSON.parse(indexText);
+  } catch {
+    throw new Error("Malformed primary index.json. Run `llmnav generate` to rebuild it.");
+  }
+  if (!isUsablePrimaryIndex(index, config.repositoryId)) {
+    throw new Error("Incompatible primary index.json. Run `llmnav generate` to rebuild it.");
+  }
   const lexicon = await readJsonSafe(lexiconPath, { version: 1, aliases: {} });
-  const manifest = await readJsonSafe(manifestPath, null);
-  const graphRelative = `${toPosix(config.generation.cacheDirectory).replace(/\/+$/u, "")}/graph.json`;
+  const cacheRelative = toPosix(config.generation.cacheDirectory).replace(/\/+$/u, "");
+  const manifestText = await readText(manifestPath, null);
+  let manifest = null;
+  if (manifestText !== null) {
+    try {
+      manifest = JSON.parse(manifestText);
+    } catch {
+      throw new Error("Malformed generated manifest.json. Run `llmnav generate` to rebuild it.");
+    }
+    if (manifest?.repositoryId !== config.repositoryId ||
+      manifest.files?.[`${cacheRelative}/index.json`] !== sha256(indexText)) {
+      throw new Error("Primary index.json hash does not match manifest.json. Run `llmnav generate` to rebuild it.");
+    }
+  }
+  const graphRelative = `${cacheRelative}/graph.json`;
   const graphText = await readText(graphPath, null);
   let graph = null;
   if (graphText !== null) {
@@ -69,7 +91,7 @@ async function loadSearchDataLocked(root, lock) {
       isCompatibleRepositoryGraph(graph, index.repositoryId),
   );
   if (!graphMatches) graph = null;
-  const searchRelative = `${toPosix(config.generation.cacheDirectory).replace(/\/+$/u, "")}/search-index.json`;
+  const searchRelative = `${cacheRelative}/search-index.json`;
   const searchText = await readText(searchPath, null);
   let searchIndex = null;
   if (searchText !== null) {
@@ -90,6 +112,19 @@ async function loadSearchDataLocked(root, lock) {
     searchIndex = buildInvertedIndex(index).searchIndex;
   }
   return { index, lexicon, searchIndex, graph };
+}
+
+function isUsablePrimaryIndex(index, repositoryId) {
+  if (!index || index.schemaVersion !== 1 || index.repositoryId !== repositoryId || !Array.isArray(index.cards)) return false;
+  const ids = new Set();
+  for (const card of index.cards) {
+    if (!card || typeof card.id !== "string" || !card.id || typeof card.role !== "string" || ids.has(card.id)) return false;
+    ids.add(card.id);
+    for (const field of ["search", "owns", "excludes", "invariant", "effect", "risk", "rel"]) {
+      if (card[field] !== undefined && (!Array.isArray(card[field]) || card[field].some((value) => typeof value !== "string"))) return false;
+    }
+  }
+  return true;
 }
 
 export async function queryProject(root, query, options = {}) {

@@ -4546,7 +4546,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "a6c1871538fcb96b98578c2d4d48bb8b52eb52d517117897226bdcb2b739c5f3",
+      "contentHash": "01ae37f8257ddfb11f06e3820e6cf97cf4aa7e9dafb163a2a81bbf1aa6ac6919",
       "declarations": [
         null
       ],
@@ -4564,7 +4564,7 @@
       ],
       "path": "src/search.js",
       "semanticBytes": 464,
-      "sourceBytes": 27673
+      "sourceBytes": 29138
     },
     {
       "blocks": [],
@@ -5011,7 +5011,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "f6b8be98d16c66de4359f2e47a8aef255a3775bfcfb70bb47df03abe795ebecf",
+      "contentHash": "a9f256c4cf6d2cb5fda3d887c259b1ddc32e714c8d7ada8680db2fec4c91bb0f",
       "declarations": [],
       "imports": [
         "../src/doctor.js",
@@ -5026,7 +5026,7 @@
       ],
       "path": "tests/accelerator-recovery.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 4068
+      "sourceBytes": 5399
     },
     {
       "blocks": [],

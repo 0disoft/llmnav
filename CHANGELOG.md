@@ -11,6 +11,7 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 * Recognize Go and Rust raw string boundaries before scanning LLMNav cards, preserving real cards and leaving card-shaped literal text untouched.
 * Rank evaluation queries with the same repository graph used by project queries and sessions.
 * Read prompt bundles under the generation lock and let hosts refresh prompt partitions and search from one generation snapshot.
+* Validate the primary index against its manifest before trusting cached search and graph data, while retaining manifestless schema v1 reads.
 
 ## [0.9.2] — 2026-09-09
 
