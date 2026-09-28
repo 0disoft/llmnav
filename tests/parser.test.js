@@ -137,6 +137,44 @@ test("Rust character literals still hide LLMNav-looking text", () => {
   assert.deepEqual(parseLlmnavBlocks(source, "borrow.rs"), []);
 });
 
+test("Go raw strings ending in backslash do not hide following cards", () => {
+  const source = [
+    "package fixture",
+    "const directory = `C:\\`",
+    "",
+    "/* llmnav/1 module",
+    "id=fixture.real",
+    "role=Own the real Go boundary.",
+    "stability=architecture",
+    "*/",
+    "",
+  ].join("\n");
+  assert.deepEqual(parseLlmnavBlocks(source, "fixture.go").map((block) => block.card.id), ["fixture.real"]);
+  assert.equal(canonicalizeSource(source, "fixture.go").source, source);
+});
+
+test("Rust raw strings hide internal quotes and card-shaped text", () => {
+  const source = [
+    'const SAMPLE: &str = r#"quoted "',
+    "/* llmnav/1 module",
+    "role=This text belongs to a raw string.",
+    "id=fixture.fake",
+    "stability=architecture",
+    "*/",
+    '"#;',
+    "/* llmnav/1 module",
+    "id=fixture.real",
+    "role=Own the real Rust boundary.",
+    "stability=architecture",
+    "*/",
+    "",
+  ].join("\n");
+  assert.deepEqual(parseLlmnavBlocks(source, "fixture.rs").map((block) => block.card.id), ["fixture.real"]);
+  assert.equal(canonicalizeSource(source, "fixture.rs").source, source);
+  const byteString = source.replace('r#"quoted "', 'br##"quoted "').replace('"#;', '"##;');
+  assert.deepEqual(parseLlmnavBlocks(byteString, "fixture.rs").map((block) => block.card.id), ["fixture.real"]);
+});
+
 test("parses marker-dense source with one lexical pass", () => {
   const fake = "const value = '/* llmnav/1 symbol */';\n".repeat(20_000);
   const source = `${fake}/* llmnav/1 module\nid=fixture.real\nrole=Own the real fixture boundary.\nstability=architecture\n*/\n`;

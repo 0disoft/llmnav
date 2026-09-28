@@ -230,6 +230,7 @@ function buildLiteralMask(source, filePath) {
   const expressionBraces = [];
   let state = "normal";
   let escaped = false;
+  let rustRawTerminator = "";
   const mask = new Uint8Array(source.length);
 
   for (let index = 0; index < source.length; index += 1) {
@@ -286,12 +287,19 @@ function buildLiteralMask(source, filePath) {
       }
       continue;
     }
+    if (state === "rust-raw") {
+      if (source.startsWith(rustRawTerminator, index)) {
+        state = "normal";
+        index += rustRawTerminator.length - 1;
+      }
+      continue;
+    }
     if (state === "single" || state === "double" || state === "backtick") {
       if (escaped) {
         escaped = false;
         continue;
       }
-      if (character === "\\") {
+      if (character === "\\" && (state !== "backtick" || extension !== ".go")) {
         escaped = true;
         continue;
       }
@@ -304,7 +312,11 @@ function buildLiteralMask(source, filePath) {
       continue;
     }
 
-    if (nextFour === "<!--") {
+    const rawTerminator = extension === ".rs" ? rustRawStringTerminator(source, index) : null;
+    if (rawTerminator !== null) {
+      state = "rust-raw";
+      rustRawTerminator = rawTerminator;
+    } else if (nextFour === "<!--") {
       state = "html-comment";
       index += 3;
     } else if (character === "/" && next === "*") {
@@ -375,6 +387,21 @@ function buildLiteralMask(source, filePath) {
   }
 
   return mask;
+}
+
+function rustRawStringTerminator(source, index) {
+  let cursor;
+  if (source[index] === "r") cursor = index + 1;
+  else if (source[index] === "b" && source[index + 1] === "r") cursor = index + 2;
+  else return null;
+  if (index > 0 && /[\p{ID_Continue}]/u.test(source[index - 1])) return null;
+  let hashes = 0;
+  while (source[cursor] === "#" && hashes <= 255) {
+    hashes += 1;
+    cursor += 1;
+  }
+  if (hashes > 255 || source[cursor] !== '"') return null;
+  return `"${"#".repeat(hashes)}`;
 }
 
 function looksLikeRustCharacterLiteral(source, offset) {
