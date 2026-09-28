@@ -14,6 +14,7 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 * Validate the primary index against its manifest before trusting cached search and graph data, while retaining manifestless schema v1 reads.
 * Reuse persisted parsed file state only when its manifest hash, record shape, and local stat-hint generation agree; otherwise read source and rebuild safely. Explicit caller-provided state remains reusable.
 * Classify missing and ambiguous semantic IDs consistently across show and context agent operations.
+* Report whether retrieval evaluation passed, failed, was invalid, or lacks enough cases; allow API callers to require a minimum case count without changing the default CLI exit behavior.
 
 ## [0.9.2] — 2026-09-09
 

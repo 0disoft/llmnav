@@ -14,21 +14,29 @@ import { loadSearchData, queryPreparedIndex } from "./search.js";
 import { assertNoSymlinkTraversal, parseJsonLines, readText } from "./util.js";
 
 export async function evaluateProject(root, options = {}) {
+  const minimumCases = options.minimumCases ?? 0;
+  if (!Number.isSafeInteger(minimumCases) || minimumCases < 0) {
+    throw new RangeError("minimumCases must be a non-negative safe integer.");
+  }
   const { config } = await loadConfig(root);
   const { index, lexicon, searchIndex, graph } = await loadSearchData(root);
   const queryPath = path.resolve(root, options.file ?? config.evaluation.queryFile);
   await assertNoSymlinkTraversal(root, queryPath, "evaluation query file");
   const parsed = parseJsonLines(await readText(queryPath, ""), queryPath);
   if (parsed.errors.length > 0) {
-    return { ok: false, errors: parsed.errors, cases: [], metrics: emptyMetrics() };
+    return { ok: false, status: "invalid", minimumCases, errors: parsed.errors, cases: [], metrics: emptyMetrics() };
   }
 
   const cases = [];
   for (const record of parsed.records) {
-    if (!record || typeof record.query !== "string" || !Array.isArray(record.expected) || record.expected.length === 0) {
+    if (!record || typeof record.query !== "string" || !record.query.trim() ||
+      !Array.isArray(record.expected) || record.expected.length === 0 ||
+      !record.expected.every((id) => typeof id === "string" && id.trim())) {
       return {
         ok: false,
-        errors: [`${queryPath}: each record requires query:string and expected:string[]`],
+        status: "invalid",
+        minimumCases,
+        errors: [`${queryPath}: each record requires a non-empty query and non-empty expected IDs`],
         cases,
         metrics: emptyMetrics(),
       };
@@ -55,11 +63,12 @@ export async function evaluateProject(root, options = {}) {
         recallAt5: cases.filter((item) => item.passAt5).length / total,
         meanReciprocalRank: cases.reduce((sum, item) => sum + (item.rank ? 1 / item.rank : 0), 0) / total,
       };
-  const ok =
-    total === 0 ||
-    (metrics.recallAt1 >= config.evaluation.minimumRecallAt1 &&
-      metrics.recallAt5 >= config.evaluation.minimumRecallAt5);
-  return { ok, errors: [], cases, metrics, thresholds: config.evaluation };
+  const thresholdsPassed = metrics.recallAt1 >= config.evaluation.minimumRecallAt1 &&
+    metrics.recallAt5 >= config.evaluation.minimumRecallAt5;
+  const status = total === 0 ? "unmeasured" :
+    total < minimumCases ? "insufficient" : thresholdsPassed ? "passed" : "failed";
+  const ok = status === "passed" || (status === "unmeasured" && minimumCases === 0);
+  return { ok, status, minimumCases, errors: [], cases, metrics, thresholds: config.evaluation };
 }
 
 function emptyMetrics() {

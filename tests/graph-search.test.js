@@ -34,7 +34,8 @@ test("evaluation ranks the same graph neighbors as project queries and sessions"
   assert.equal((await generateProject(root)).ok, true);
   const graph = JSON.parse(await readFile(path.join(root, ".llmnav", "cache", "graph.json"), "utf8"));
   assert.ok(graph.edges.some((edge) => edge.from === "eval-graph/navigation.seed" && edge.to === "eval-graph/navigation.neighbor"));
-  await writeFile(path.join(root, ".llmnav", "eval", "queries.jsonl"), '{"query":"cobalt","expected":["navigation.seed"]}\n');
+  const queryPath = path.join(root, ".llmnav", "eval", "queries.jsonl");
+  await writeFile(queryPath, '{"query":"cobalt","expected":["navigation.seed"]}\n');
 
   const actual = (await queryProject(root, "cobalt")).map((item) => item.id);
   const session = await createProjectSession(root);
@@ -42,6 +43,33 @@ test("evaluation ranks the same graph neighbors as project queries and sessions"
   assert.deepEqual(actual, ["navigation.seed", "navigation.neighbor"]);
   assert.deepEqual(session.query("cobalt").map((item) => item.id), actual);
   assert.deepEqual(evaluation.cases[0].actual, actual);
+  assert.equal(evaluation.status, "passed");
+  assert.equal(evaluation.minimumCases, 0);
+
+  const insufficient = await evaluateProject(root, { minimumCases: 2 });
+  assert.equal(insufficient.status, "insufficient");
+  assert.equal(insufficient.ok, false);
+  assert.equal(insufficient.metrics.total, 1);
+
+  await writeFile(queryPath, '{"query":"cobalt","expected":["missing.id","navigation.seed"]}\n');
+  const alternatives = await evaluateProject(root, { minimumCases: 1 });
+  assert.equal(alternatives.status, "passed");
+  assert.equal(alternatives.cases[0].rank, 1);
+
+  await writeFile(queryPath, '{"query":"cobalt","expected":["missing.id"]}\n');
+  assert.equal((await evaluateProject(root, { minimumCases: 1 })).status, "failed");
+
+  await writeFile(queryPath, "");
+  const empty = await evaluateProject(root);
+  assert.equal(empty.status, "unmeasured");
+  assert.equal(empty.ok, true);
+  assert.equal((await evaluateProject(root, { minimumCases: 1 })).ok, false);
+
+  await writeFile(queryPath, '{"query":"cobalt","expected":[42]}\n');
+  const invalid = await evaluateProject(root);
+  assert.equal(invalid.status, "invalid");
+  assert.equal(invalid.ok, false);
+  await assert.rejects(() => evaluateProject(root, { minimumCases: -1 }), /minimumCases/u);
 });
 
 test("adds confidence-weighted graph neighbors without replacing lexical seeds", () => {

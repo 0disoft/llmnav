@@ -627,6 +627,8 @@ export interface MigrationResult {
 
 export interface EvaluationResult {
   ok: boolean;
+  status: "invalid" | "unmeasured" | "insufficient" | "passed" | "failed";
+  minimumCases: number;
   errors: string[];
   cases: Array<{
     query: string;
@@ -731,7 +733,7 @@ export function findAttachedDeclaration(source: string, block: LlmnavBlock, file
 export function extractImports(source: string, filePath: string): string[];
 export function doctorProject(root: string): Promise<{ ok: boolean; checks: Array<{ name: string; ok: boolean; message: string }> }>;
 export function migrateProject(root: string, options?: { write?: boolean; failpoint?: string; renameOptions?: Record<string, unknown>; lockOptions?: Record<string, unknown>; onTransactionPhase?: (phase: string) => void | Promise<void> }): Promise<MigrationResult>;
-export function evaluateProject(root: string, options?: { top?: number; file?: string }): Promise<EvaluationResult>;
+export function evaluateProject(root: string, options?: { top?: number; file?: string; minimumCases?: number }): Promise<EvaluationResult>;
 export function collectSourceFiles(root: string, config: LlmnavConfig, requestedPaths?: string[]): Promise<string[]>;
 export function findProjectRoot(start?: string): Promise<string>;
 export function formatProject(root: string, options?: { check?: boolean; paths?: string[] }): Promise<{ ok: boolean; changedFiles: string[]; errors: Array<{ file: string; line: number; message: string }> }>;

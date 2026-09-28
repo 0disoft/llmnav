@@ -268,6 +268,12 @@ The normative source vocabulary remains available from `llmnav/spec`.
 import { KEY_ORDER, EFFECT_KINDS, RISK_KINDS } from "llmnav/spec";
 ```
 
+## Retrieval evaluation
+
+`evaluateProject(root, { minimumCases: 1 })` requires at least one reviewed query before returning `ok: true`. The result's `status` is `passed`, `failed`, `insufficient`, `unmeasured`, or `invalid`. An empty dataset keeps the existing default `ok: true` for callers that use `eval` during setup, but always reports `status: "unmeasured"`; pass/fail gates should set `minimumCases` explicitly. The default CLI does not set this option.
+
+Each query record requires a non-empty `query` and at least one non-empty ID in `expected`. Multiple IDs mean **any one** is an acceptable answer; Recall@1, Recall@5, and MRR use the rank of the first acceptable ID. The current query format does not express a no-result case or require every listed ID to be found.
+
 ## Agent operation protocol
 
 `getAgentToolDefinitions()` returns defensive copies of five schemaVersion 1 tool definitions in fixed order. Their JSON Schema inputs reject unknown fields and deliberately omit the repository root.
