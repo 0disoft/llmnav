@@ -272,7 +272,7 @@ import { KEY_ORDER, EFFECT_KINDS, RISK_KINDS } from "llmnav/spec";
 
 `evaluateProject(root, { minimumCases: 1 })` requires at least one reviewed query before returning `ok: true`. The result's `status` is `passed`, `failed`, `insufficient`, `unmeasured`, or `invalid`. An empty dataset keeps the existing default `ok: true` for callers that use `eval` during setup, but always reports `status: "unmeasured"`; pass/fail gates should set `minimumCases` explicitly. The default CLI does not set this option.
 
-Each query record requires a non-empty `query` and at least one non-empty ID in `expected`. Multiple IDs mean **any one** is an acceptable answer; Recall@1, Recall@5, and MRR use the rank of the first acceptable ID. The current query format does not express a no-result case or require every listed ID to be found.
+Each query record requires a non-empty `query`. A positive case supplies at least one non-empty ID in `expected`; multiple IDs mean **any one** is an acceptable answer. A no-result case supplies `"expectNoResults": true` and omits `expected`. Recall@1, Recall@5, and MRR use only positive cases, while every no-result case must return zero cards for `status: "passed"`. At least one positive case is needed to pass. The current format does not require every listed ID to be found.
 
 ## Agent operation protocol
 

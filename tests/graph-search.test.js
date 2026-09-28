@@ -56,6 +56,27 @@ test("evaluation ranks the same graph neighbors as project queries and sessions"
   assert.equal(alternatives.status, "passed");
   assert.equal(alternatives.cases[0].rank, 1);
 
+  await writeFile(queryPath, '{"query":"cobalt","expected":["navigation.seed"]}\n' +
+    '{"query":"nonexistentzzzxxyy","expectNoResults":true}\n');
+  const withNoResult = await evaluateProject(root, { minimumCases: 2 });
+  assert.equal(withNoResult.status, "passed");
+  assert.deepEqual(withNoResult.cases[1].actual, []);
+  assert.equal(withNoResult.cases[1].passAt5, true);
+  assert.equal(withNoResult.metrics.positiveTotal, 1);
+  assert.equal(withNoResult.metrics.negativeTotal, 1);
+  assert.equal(withNoResult.metrics.negativePassed, 1);
+  assert.equal(withNoResult.metrics.recallAt1, 1);
+
+  await writeFile(queryPath, '{"query":"cobalt","expected":["navigation.seed"]}\n' +
+    '{"query":"cobalt","expectNoResults":true}\n');
+  const falseNoResult = await evaluateProject(root, { minimumCases: 2 });
+  assert.equal(falseNoResult.status, "failed");
+  assert.equal(falseNoResult.metrics.negativePassed, 0);
+  assert.equal(falseNoResult.metrics.recallAt1, 1);
+
+  await writeFile(queryPath, '{"query":"nonexistentzzzxxyy","expectNoResults":true}\n');
+  assert.equal((await evaluateProject(root, { minimumCases: 1 })).status, "failed");
+
   await writeFile(queryPath, '{"query":"cobalt","expected":["missing.id"]}\n');
   assert.equal((await evaluateProject(root, { minimumCases: 1 })).status, "failed");
 
@@ -69,6 +90,8 @@ test("evaluation ranks the same graph neighbors as project queries and sessions"
   const invalid = await evaluateProject(root);
   assert.equal(invalid.status, "invalid");
   assert.equal(invalid.ok, false);
+  await writeFile(queryPath, '{"query":"cobalt","expected":["navigation.seed"],"expectNoResults":true}\n');
+  assert.equal((await evaluateProject(root)).status, "invalid");
   await assert.rejects(() => evaluateProject(root, { minimumCases: -1 }), /minimumCases/u);
 });
 

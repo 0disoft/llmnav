@@ -633,6 +633,7 @@ export interface EvaluationResult {
   cases: Array<{
     query: string;
     expected: string[];
+    expectNoResults: boolean;
     actual: string[];
     rank: number | null;
     passAt1: boolean;
@@ -640,6 +641,9 @@ export interface EvaluationResult {
   }>;
   metrics: {
     total: number;
+    positiveTotal: number;
+    negativeTotal: number;
+    negativePassed: number;
     recallAt1: number;
     recallAt5: number;
     meanReciprocalRank: number;
