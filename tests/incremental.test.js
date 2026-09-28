@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { generateProject } from "../src/generator.js";
-import { SOURCE_INDEXER_VERSION } from "../src/incremental.js";
+import { scanProjectIncremental, SOURCE_INDEXER_VERSION } from "../src/incremental.js";
 import { sha256, stableStringify } from "../src/util.js";
 import { changeSyntheticCard, createSyntheticProject } from "./helpers/synthetic.js";
 
@@ -139,4 +139,18 @@ test("file state with an invalid record is reparsed even when its manifest hash 
   assert.equal(repaired.incremental.files.parsedFiles, 2);
   assert.equal(repaired.incremental.files.reusedFiles, 0);
   assert.equal((await generateProject(root, { incremental: false, check: true })).ok, true);
+});
+
+test("explicit previous file state remains reusable without a generated manifest", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-incremental-explicit-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await createSyntheticProject(root, { fileCount: 2, cardsPerFile: 5 });
+  assert.equal((await generateProject(root)).ok, true);
+  const cacheRoot = path.join(root, ".llmnav", "cache");
+  const previousState = JSON.parse(await readFile(path.join(cacheRoot, "file-state.json"), "utf8"));
+  await rm(path.join(cacheRoot, "manifest.json"));
+
+  const scanned = await scanProjectIncremental(root, { previousState, useStatHints: false });
+  assert.equal(scanned.stats.parsedFiles, 0);
+  assert.equal(scanned.stats.reusedFilesByHash, 2);
 });

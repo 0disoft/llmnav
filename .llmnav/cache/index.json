@@ -827,7 +827,7 @@
         "cache directory commit"
       ],
       "hashes": {
-        "body": "8e08729d6221f647728101e35d4979815bc1bd20fdd3511e3169be10d8b6839a",
+        "body": "512f94b8afa0d1d1a426c5d9ea8312fc5e66d15485a638b57ea09bc6626474c5",
         "semantic": "26e0abf92c39ff07a7eb622d795d5ecbc83c7704b7c1ed09cd3ad339e3c04865",
         "structure": "f99d4a0e388f36d5ad8435fe295befb0e0f0e13b96109fd0af76f55791605104"
       },
@@ -2188,6 +2188,6 @@
   "generatedBy": "llmnav@0.9.4",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "6af31eb972c83a2e7e931aeb2a13c3eeba28e16db62a8475e6fefa36fd8463f6",
+  "sourceHash": "afd748e6fd7b3d1567a47d35cb8ee49936731e982c8b3d6a666f9a89a3feb8f4",
   "specVersion": "1"
 }

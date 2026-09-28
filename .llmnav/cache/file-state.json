@@ -3247,7 +3247,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "8e08729d6221f647728101e35d4979815bc1bd20fdd3511e3169be10d8b6839a",
+      "contentHash": "512f94b8afa0d1d1a426c5d9ea8312fc5e66d15485a638b57ea09bc6626474c5",
       "declarations": [
         null
       ],
@@ -3264,7 +3264,7 @@
       ],
       "path": "src/incremental.js",
       "semanticBytes": 381,
-      "sourceBytes": 11103
+      "sourceBytes": 11146
     },
     {
       "blocks": [],
@@ -5303,7 +5303,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "c249b21755ade271fc7d665c5731040151026b0049c520ec4c15b6561d68481a",
+      "contentHash": "dee6c1ae5eeebccf4cde2f7f895488d6efaf7b586a6983dea450430e5dac29c0",
       "declarations": [],
       "imports": [
         "../src/generator.js",
@@ -5318,7 +5318,7 @@
       ],
       "path": "tests/incremental.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 8091
+      "sourceBytes": 8908
     },
     {
       "blocks": [],

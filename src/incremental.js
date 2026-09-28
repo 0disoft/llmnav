@@ -50,10 +50,10 @@ export async function scanProjectIncremental(root, options = {}) {
   const manifest = await readJsonSafe(path.join(cacheDirectory, "manifest.json"), null);
   const previousStateHash = fileStateSource === null ? null : sha256(fileStateSource);
   const fileStateKey = `${relativePosix(root, cacheDirectory)}/file-state.json`;
-  const trustedPreviousState = manifest?.schemaVersion === 1 &&
-    manifest.repositoryId === config.repositoryId &&
-    manifest.files?.[fileStateKey] === previousStateHash &&
-    usableFileState(previousState);
+  const trustedPreviousState = usableFileState(previousState) &&
+    (options.previousState != null ||
+      (manifest?.schemaVersion === 1 && manifest.repositoryId === config.repositoryId &&
+        manifest.files?.[fileStateKey] === previousStateHash));
   const hintsPath = path.join(root, ".llmnav", "state", "stat-hints.json");
   await assertNoSymlinkTraversal(root, hintsPath, relativePosix(root, hintsPath));
   const previousHints = options.useStatHints === false
