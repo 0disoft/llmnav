@@ -4546,7 +4546,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "cadbdc34c66ad8a24b2fc90c9fa0cd2b035d589aeee711253ae38fcdf7802c89",
+      "contentHash": "61c648c81cbbfff737220689083486216f21f72b92cc85307f43deb7e7d99700",
       "declarations": [
         null
       ],
@@ -4564,7 +4564,7 @@
       ],
       "path": "src/search.js",
       "semanticBytes": 464,
-      "sourceBytes": 29466
+      "sourceBytes": 30811
     },
     {
       "blocks": [],
@@ -4681,7 +4681,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "e74e0cbf736a08774ab1fb19f00ea5998712733200a8c5319b768f2dbbcbfbb0",
+      "contentHash": "87c61b858c4d9136f0e7bc842981f9a9e4b4359e6fd5f3883a6e0226b8022c98",
       "declarations": [
         null
       ],
@@ -5242,7 +5242,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "6da2698845da7e1f3ef16add4cab1d6e63d2e384bc171f5e89981fc2f2ed9399",
+      "contentHash": "46da12ea4968404b97531062332df6aeb715770a102f68be204516e0830a0587",
       "declarations": [],
       "imports": [
         "../src/evaluation.js",
@@ -5258,7 +5258,7 @@
       ],
       "path": "tests/graph-search.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 14178
+      "sourceBytes": 14693
     },
     {
       "blocks": [],

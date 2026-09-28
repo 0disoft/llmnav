@@ -176,18 +176,50 @@ async function loadSessionSnapshot(root, options = {}) {
   const snapshot = await loadProjectSnapshot(root, options);
   // Only session-owned graphs are cached: public query inputs may be mutable.
   if (snapshot.graph) sessionGraphAdjacencyCache.set(snapshot.graph, buildGraphAdjacency(snapshot.graph));
-  sessionSearchMetadataCache.set(snapshot.index, prepareSearchMetadata(snapshot.index, snapshot.lexicon, snapshot.graph));
+  sessionSearchMetadataCache.set(snapshot.index, prepareSearchMetadata(snapshot.index, snapshot.lexicon, snapshot.graph, true));
   return snapshot;
 }
 
-function prepareSearchMetadata(index, lexicon, graph) {
+function prepareSearchMetadata(index, lexicon, graph, forSession = false) {
+  const normalizedIds = index.cards.map((card) => normalizeSearchText(card.id));
   return {
     byId: new Map(index.cards.map((card) => [card.id, card])),
     cardOrder: new Map(index.cards.map((card, position) => [card.id, position])),
-    normalizedIds: index.cards.map((card) => normalizeSearchText(card.id)),
+    normalizedIds,
+    idCandidates: forSession ? buildIdCandidates(normalizedIds) : null,
     aliases: Object.entries(lexicon.aliases ?? {}).map(([alias, targets]) => [alias, targets, normalizeSearchText(alias)]),
     graphCompatible: isCompatibleRepositoryGraph(graph, index.repositoryId),
   };
+}
+
+function buildIdCandidates(normalizedIds) {
+  const exact = new Map();
+  const grams = new Map();
+  for (const [position, id] of normalizedIds.entries()) {
+    if (!exact.has(id)) exact.set(id, []);
+    exact.get(id).push(position);
+    const seen = new Set();
+    for (let offset = 0; offset <= id.length - 3; offset += 1) {
+      const gram = id.slice(offset, offset + 3);
+      if (seen.has(gram)) continue;
+      seen.add(gram);
+      if (!grams.has(gram)) grams.set(gram, []);
+      grams.get(gram).push(position);
+    }
+  }
+  return { exact, grams };
+}
+
+function idCandidatePositions(prepared, normalizedQuery) {
+  if (!prepared.idCandidates) return prepared.normalizedIds.keys();
+  if (normalizedQuery.length < 3) return prepared.idCandidates.exact.get(normalizedQuery) ?? [];
+  let smallest = null;
+  for (let offset = 0; offset <= normalizedQuery.length - 3; offset += 1) {
+    const positions = prepared.idCandidates.grams.get(normalizedQuery.slice(offset, offset + 3));
+    if (!positions) return [];
+    if (!smallest || positions.length < smallest.length) smallest = positions;
+  }
+  return smallest ?? [];
 }
 
 async function loadProjectSnapshot(root, options = {}) {
@@ -248,17 +280,19 @@ export function queryPreparedIndex(index, searchIndex, query, options = {}) {
     }
   }
 
-  for (const [position, card] of index.cards.entries()) {
+  for (const position of idCandidatePositions(prepared, normalizedQuery)) {
     if (metrics) metrics.idDocumentsScanned += 1;
+    const card = index.cards[position];
     const normalizedId = prepared.normalizedIds[position];
     if (normalizedId === normalizedQuery) {
       addScore(resultsById, card, 1000, "exact semantic ID");
     } else if (normalizedId.includes(normalizedQuery) && normalizedQuery.length > 2) {
       addScore(resultsById, card, 100, "semantic ID phrase");
     }
-    if (aliasTargets.has(card.id)) {
-      addScore(resultsById, card, 500, aliasReasons.get(card.id) ?? []);
-    }
+  }
+  for (const target of aliasTargets) {
+    const card = byId.get(target);
+    if (card) addScore(resultsById, card, 500, aliasReasons.get(target) ?? []);
   }
 
   const preparedSearchIndex = prepareCompactSearchIndex(searchIndex);

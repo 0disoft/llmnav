@@ -312,7 +312,7 @@ Pass `{ withPromptBundle: true }` to `createProjectSession` when a host needs pr
 
 Sessions prepare graph adjacency and traversal order once per snapshot for reuse by `query` and `context`. Refreshing prepares a new graph, and obsolete prepared state can be garbage-collected with the previous snapshot. Direct `queryIndex` and `queryPreparedIndex` calls do not cache caller-owned graphs, so in-place changes to supplied edges remain visible on the next call.
 
-Session queries also reuse card lookup tables, normalized IDs and aliases, and graph validation. ID substring and phrase matching still scan all documents to preserve ranking. Session `query` and `show` return detached results: caller edits cannot invalidate the private prepared snapshot. These tables are rebuilt on `refresh()` and retained only with that snapshot.
+Session queries also reuse card lookup tables, normalized IDs and aliases, and graph validation. Session ID substring checks use precomputed three-code-unit candidates before exact verification; direct queries retain their full ID scan. Phrase matching still scans all documents to preserve ranking. Session `query` and `show` return detached results: caller edits cannot invalidate the private prepared snapshot. These tables are rebuilt on `refresh()` and retained only with that snapshot.
 
 The typed `llmnav/examples/provider-neutral-host.mjs` export composes these APIs into a trusted-root closure. It exposes tool definitions, base and module-selected prompt partitions, the generation hash, one snapshot-backed operation executor, and an explicit refresh method without importing a model SDK. Refresh prepares a complete replacement before switching the host's prompt and search references.
 

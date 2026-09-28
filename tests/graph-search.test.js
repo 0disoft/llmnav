@@ -144,6 +144,8 @@ test("sessions sort graph edges once per snapshot and refresh neighbor results",
   ].join("\n");
   await writeFile(sourcePath, source);
   assert.equal((await initializeProject(root, { agents: ["none"] })).ok, true);
+  await writeFile(path.join(root, ".llmnav", "lexicon.json"),
+    '{"version":1,"aliases":{"retire credentials":"auth.session.rotate"}}\n');
   const originalSort = Array.prototype.sort;
   let graphSorts = 0;
   // Node's mock.method rejects array targets, including Array.prototype.
@@ -168,6 +170,13 @@ test("sessions sort graph edges once per snapshot and refresh neighbor results",
     assert.equal(graphSorts, 1);
   } finally {
     Array.prototype.sort = originalSort;
+  }
+  for (const query of ["auth.session.rotate", "session.rot", "retire credentials"]) {
+    const metrics = {};
+    const prepared = session.query(query, { metrics });
+    assert.deepEqual(prepared, await queryProject(root, query));
+    assert.equal(prepared[0]?.id, "auth.session.rotate");
+    assert.ok(metrics.idDocumentsScanned < 3, `${query} scanned every card ID`);
   }
   await writeFile(sourcePath, source.replace("rel=workflow>auth.session.revoke", "rel=workflow>auth.session.verify"));
   assert.equal((await generateProject(root)).ok, true);

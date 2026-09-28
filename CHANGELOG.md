@@ -17,6 +17,10 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 * Report whether retrieval evaluation passed, failed, was invalid, or lacks enough cases; allow API callers to require a minimum case count without changing the default CLI exit behavior.
 * Evaluate explicit no-result queries separately from positive recall, and require every no-result case to return no cards before evaluation passes.
 
+### Performance
+
+* Narrow session ID substring checks to precomputed candidates and resolve alias targets directly, preserving direct-query results and ranking.
+
 ## [0.9.2] — 2026-09-09
 
 ### Fixed
