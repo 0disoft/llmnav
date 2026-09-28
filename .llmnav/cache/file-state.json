@@ -2564,7 +2564,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "dcc8d70c727f84a17cc119cff300da3774b0bd5cabe7b4e0d8e72fd040215f8f",
+      "contentHash": "db35d49a9d49c0710260ad375ad76ae1bd6899f03b321c4be7814e178de38915",
       "declarations": [
         null
       ],
@@ -2576,7 +2576,7 @@
       ],
       "path": "src/evaluation.js",
       "semanticBytes": 382,
-      "sourceBytes": 2703
+      "sourceBytes": 2717
     },
     {
       "blocks": [
@@ -5239,9 +5239,10 @@
     },
     {
       "blocks": [],
-      "contentHash": "106c4b1dd5c5c2b786dcc48d30dcea1dab3e79b4f128cf3559acc351110b574e",
+      "contentHash": "e0b6e1dfe46e43ca438dd627827ed809dc7be4e271ecf2dabaccec65c23a415a",
       "declarations": [],
       "imports": [
+        "../src/evaluation.js",
         "../src/generator.js",
         "../src/initializer.js",
         "../src/inverted-index.js",
@@ -5254,7 +5255,7 @@
       ],
       "path": "tests/graph-search.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 9254
+      "sourceBytes": 11579
     },
     {
       "blocks": [],

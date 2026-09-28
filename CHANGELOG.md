@@ -9,6 +9,7 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 ### Fixed
 
 * Recognize Go and Rust raw string boundaries before scanning LLMNav cards, preserving real cards and leaving card-shaped literal text untouched.
+* Rank evaluation queries with the same repository graph used by project queries and sessions.
 
 ## [0.9.2] — 2026-09-09
 

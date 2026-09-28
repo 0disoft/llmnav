@@ -15,7 +15,7 @@ import { assertNoSymlinkTraversal, parseJsonLines, readText } from "./util.js";
 
 export async function evaluateProject(root, options = {}) {
   const { config } = await loadConfig(root);
-  const { index, lexicon, searchIndex } = await loadSearchData(root);
+  const { index, lexicon, searchIndex, graph } = await loadSearchData(root);
   const queryPath = path.resolve(root, options.file ?? config.evaluation.queryFile);
   await assertNoSymlinkTraversal(root, queryPath, "evaluation query file");
   const parsed = parseJsonLines(await readText(queryPath, ""), queryPath);
@@ -33,7 +33,7 @@ export async function evaluateProject(root, options = {}) {
         metrics: emptyMetrics(),
       };
     }
-    const results = queryPreparedIndex(index, searchIndex, record.query, { top: Math.max(options.top ?? 5, 5), lexicon });
+    const results = queryPreparedIndex(index, searchIndex, record.query, { top: Math.max(options.top ?? 5, 5), lexicon, graph });
     const ids = results.map((result) => result.id);
     const firstRank = ids.findIndex((id) => record.expected.includes(id));
     cases.push({

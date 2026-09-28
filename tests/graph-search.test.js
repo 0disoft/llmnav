@@ -3,10 +3,46 @@ import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
+import { evaluateProject } from "../src/evaluation.js";
 import { generateProject } from "../src/generator.js";
 import { initializeProject } from "../src/initializer.js";
 import { buildInvertedIndex } from "../src/inverted-index.js";
-import { buildContext, createProjectSession, queryPreparedIndex, showProjectCard } from "../src/search.js";
+import { buildContext, createProjectSession, queryPreparedIndex, queryProject, showProjectCard } from "../src/search.js";
+
+test("evaluation ranks the same graph neighbors as project queries and sessions", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-eval-graph-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await writeFile(path.join(root, "package.json"), '{"name":"eval-graph"}\n');
+  await mkdir(path.join(root, "src"));
+  await writeFile(path.join(root, "src", "navigation.ts"), [
+    "/* llmnav/1 symbol\nid=navigation.seed\nrole=Own cobalt routing.\nsearch=cobalt request|cobalt route\nstability=contract\n*/\nexport function seed() {}",
+    "/* llmnav/1 symbol\nid=navigation.neighbor\nrole=Own bronze fallback.\nsearch=bronze fallback|bronze route\nstability=contract\n*/\nexport function neighbor() {}",
+    "",
+  ].join("\n"));
+  assert.equal((await initializeProject(root, { agents: ["none"] })).ok, true);
+  await mkdir(path.join(root, ".llmnav", "imports"));
+  await writeFile(path.join(root, ".llmnav", "imports", "graph.json"), `${JSON.stringify({
+    schemaVersion: 1,
+    repositoryId: "eval-graph",
+    definitions: [],
+    references: [{ from: "navigation.seed", to: "navigation.neighbor", kind: "calls", confidence: 0.9 }],
+  })}\n`);
+  const configPath = path.join(root, ".llmnav", "config.json");
+  const config = JSON.parse(await readFile(configPath, "utf8"));
+  config.graph.indexFiles = [".llmnav/imports/graph.json"];
+  await writeFile(configPath, `${JSON.stringify(config)}\n`);
+  assert.equal((await generateProject(root)).ok, true);
+  const graph = JSON.parse(await readFile(path.join(root, ".llmnav", "cache", "graph.json"), "utf8"));
+  assert.ok(graph.edges.some((edge) => edge.from === "eval-graph/navigation.seed" && edge.to === "eval-graph/navigation.neighbor"));
+  await writeFile(path.join(root, ".llmnav", "eval", "queries.jsonl"), '{"query":"cobalt","expected":["navigation.seed"]}\n');
+
+  const actual = (await queryProject(root, "cobalt")).map((item) => item.id);
+  const session = await createProjectSession(root);
+  const evaluation = await evaluateProject(root);
+  assert.deepEqual(actual, ["navigation.seed", "navigation.neighbor"]);
+  assert.deepEqual(session.query("cobalt").map((item) => item.id), actual);
+  assert.deepEqual(evaluation.cases[0].actual, actual);
+});
 
 test("adds confidence-weighted graph neighbors without replacing lexical seeds", () => {
   const index = {
