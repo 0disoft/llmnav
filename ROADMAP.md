@@ -85,7 +85,7 @@ Implemented:
 
 ## 1.0 criteria
 
-The source grammar and generated formats will be declared stable only after use across multiple TypeScript, Go, Rust, Python, and mixed-language repositories. A 1.0 release requires migration tooling, documented compatibility guarantees, benchmark fixtures with published methodology, sustained Windows and Linux verification, and no unresolved high-severity parser or transaction ambiguity.
+The `llmnav/1` source protocol and schemaVersion 1 primary index already have compatibility guarantees. A 1.0 release requires evidence from multiple TypeScript, Go, Rust, Python, and mixed-language repositories, migration tooling, benchmark fixtures with published methodology, sustained Windows and Linux verification, and no unresolved high-severity parser or transaction ambiguity.
 
 In progress:
 

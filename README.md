@@ -6,7 +6,7 @@ It adds compact, stable metadata to a small number of architectural and behavior
 
 LLMNav is not a documentation generator, an embedding database, or a reason to annotate every function. It is a zero-runtime-dependency Node.js CLI and ESM library for reducing broad repository scans, irrelevant context, stale hand-written links, repeated card tokenization, and avoidable cache invalidation.
 
-## What v0.7 provides
+## Current capabilities
 
 * The backward-compatible `llmnav/1` source comment specification
 * A parser and data-loss-resistant canonical formatter
@@ -295,7 +295,7 @@ The project uses the Node.js standard library and built-in test runner. There is
 
 ## Status
 
-LLMNav is an experimental protocol and a usable v0.8 CLI. The source format remains `llmnav/1`; npm package changes and source-grammar changes are versioned independently.
+LLMNav is a pre-1.0 CLI and ESM library. The source format remains `llmnav/1`, and the primary index uses schemaVersion 1. Package, source-protocol, and generated-format versions change independently; see the [compatibility policy](docs/compatibility.md) and [roadmap](ROADMAP.md) for their respective guarantees and remaining 1.0 criteria.
 
 ## License
 
