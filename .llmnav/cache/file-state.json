@@ -5454,7 +5454,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "230a50a27d576c706c295723fc89e464c7c88bfafa4b3bdef06dd2add101a887",
+      "contentHash": "1c5d80fba4f237705f50dc6823726d0e2b1bce4edf6dd88584a606d16cf4b77a",
       "declarations": [],
       "imports": [
         "../examples/provider-neutral-host.mjs",
@@ -5470,7 +5470,7 @@
       ],
       "path": "tests/provider-neutral-example.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 4242
+      "sourceBytes": 4695
     },
     {
       "blocks": [],

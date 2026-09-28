@@ -70,6 +70,7 @@ export const authSession = true;
     loadPromptPrefixBundle(root),
     queryProject(root, "generation capacity"),
     host.refresh(),
+    createLlmnavHost(root),
   ]);
   let readersSettled = false;
   readers.then(() => { readersSettled = true; });
@@ -84,12 +85,16 @@ export const authSession = true;
     releaseWriter.resolve();
   }
   assert.equal((await generation).ok, true);
-  const [bundleRead, directRead, refreshOutcome] = await readers;
-  for (const outcome of [bundleRead, directRead, refreshOutcome]) {
+  const [bundleRead, directRead, refreshOutcome, newHostOutcome] = await readers;
+  for (const outcome of [bundleRead, directRead, refreshOutcome, newHostOutcome]) {
     assert.equal(outcome.status, "fulfilled", outcome.reason?.message);
   }
   assert.ok(bundleRead.value.partitions.some((item) => item.id === "module:generation.quota"));
   assert.equal(directRead.value[0].id, "generation.quota.reserve");
+  assert.notEqual(newHostOutcome.value.generationHash, initialGenerationHash);
+  assert.equal(newHostOutcome.value.selectPromptPartitions(["generation.quota"]).at(-1).id, "module:generation.quota");
+  const newHostQuery = await newHostOutcome.value.execute({ name: "llmnav_query", input: { task: "generation capacity" } });
+  assert.equal(newHostQuery.data[0].id, "generation.quota.reserve");
   assert.notEqual(host.generationHash, initialGenerationHash);
   assert.equal(host.selectPromptPartitions(["generation.quota"]).at(-1).id, "module:generation.quota");
   const refreshed = await host.execute({ name: "llmnav_query", input: { task: "generation capacity" } });
