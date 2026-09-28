@@ -32,6 +32,14 @@ const preparedSearchIndexCache = new WeakMap();
 const sessionGraphAdjacencyCache = new WeakMap();
 const sessionSearchMetadataCache = new WeakMap();
 
+export class SemanticIdLookupError extends Error {
+  constructor(reason, message) {
+    super(message);
+    this.name = "SemanticIdLookupError";
+    this.reason = reason;
+  }
+}
+
 export async function loadSearchData(root) {
   return withGenerationLock(root, (lock) => loadSearchDataLocked(root, lock));
 }
@@ -467,21 +475,21 @@ function buildSnapshotContext(snapshot, id, options = {}) {
     const resolved = resolveRegistryId(registry, id);
     if (resolved.state === "active" && index.cards.some((card) => card.id === resolved.id)) rootId = resolved.id;
     if (resolved.state === "ambiguous") {
-      throw new Error(`Ambiguous replaced semantic ID ${id}; choose one of ${resolved.candidates.join(", ")}.`);
+      throw new SemanticIdLookupError("ambiguous", `Ambiguous replaced semantic ID ${id}; choose one of ${resolved.candidates.join(", ")}.`);
     }
-    if (resolved.state === "cycle") throw new Error(`Registry cycle prevents resolving semantic ID ${id}.`);
+    if (resolved.state === "cycle") throw new SemanticIdLookupError("registry_cycle", `Registry cycle prevents resolving semantic ID ${id}.`);
   }
   if (isCompatibleRepositoryGraph(graph, index.repositoryId)) {
     const resolution = rootId
       ? resolveGraphNode(graph, `${index.repositoryId}/${rootId}`, index.repositoryId)
       : resolveGraphNode(graph, id, index.repositoryId);
     if (resolution.state === "ambiguous") {
-      throw new Error(`Ambiguous semantic ID ${id}; qualify one of ${resolution.candidates.join(", ")}.`);
+      throw new SemanticIdLookupError("ambiguous", `Ambiguous semantic ID ${id}; qualify one of ${resolution.candidates.join(", ")}.`);
     }
-    if (resolution.state !== "resolved") throw new Error(`Unknown or inactive semantic ID ${id}.`);
+    if (resolution.state !== "resolved") throw new SemanticIdLookupError("not_found", `Unknown or inactive semantic ID ${id}.`);
     return buildGraphContext(index, graph, resolution.node, { depth, budget, maxEdges });
   }
-  if (!rootId) throw new Error(`Unknown or inactive semantic ID ${id}.`);
+  if (!rootId) throw new SemanticIdLookupError("not_found", `Unknown or inactive semantic ID ${id}.`);
   return buildLegacyContext(index, rootId, { depth, budget, maxEdges });
 }
 

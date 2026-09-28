@@ -5,6 +5,7 @@ import path from "node:path";
 import test from "node:test";
 import { executeAgentOperation, getAgentToolDefinitions } from "../src/agent-protocol.js";
 import { initializeProject } from "../src/initializer.js";
+import { createProjectSession } from "../src/search.js";
 
 test("publishes stable provider-neutral tool definitions", () => {
   const definitions = getAgentToolDefinitions();
@@ -74,6 +75,13 @@ test("returns stable protocol failures for invalid input and missing IDs", async
   const missing = await executeAgentOperation(root, "llmnav_show", { id: "missing.capability" });
   assert.equal(missing.ok, false);
   assert.equal(missing.error.code, "LNVAP404");
+
+  for (const options of [{}, { session: await createProjectSession(root) }]) {
+    const missingContext = await executeAgentOperation(root, "llmnav_context", { id: "missing.capability" }, options);
+    assert.equal(missingContext.ok, false);
+    assert.equal(missingContext.error.code, "LNVAP404");
+    assert.match(missingContext.error.message, /Unknown or inactive semantic ID/u);
+  }
 
   const unknown = await executeAgentOperation(root, "provider_specific_tool", {});
   assert.equal(unknown.error.code, "LNVAP001");

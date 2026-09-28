@@ -1258,7 +1258,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "c6360f8b7f1dbb0f9102b20c644a0865b34e10333ca1b3f0bb72023c97bbac28",
+      "contentHash": "f8ff20b1ddacd9592aae0c8703a06d2f979344bb684d007a773f76e89c04f6c5",
       "declarations": [
         null
       ],
@@ -1272,7 +1272,7 @@
       ],
       "path": "src/agent-protocol.js",
       "semanticBytes": 504,
-      "sourceBytes": 5457
+      "sourceBytes": 6062
     },
     {
       "blocks": [
@@ -4546,7 +4546,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "01ae37f8257ddfb11f06e3820e6cf97cf4aa7e9dafb163a2a81bbf1aa6ac6919",
+      "contentHash": "cadbdc34c66ad8a24b2fc90c9fa0cd2b035d589aeee711253ae38fcdf7802c89",
       "declarations": [
         null
       ],
@@ -4564,7 +4564,7 @@
       ],
       "path": "src/search.js",
       "semanticBytes": 464,
-      "sourceBytes": 29138
+      "sourceBytes": 29466
     },
     {
       "blocks": [],
@@ -5030,11 +5030,12 @@
     },
     {
       "blocks": [],
-      "contentHash": "f393eb90f0e8935650a494152bef7d486210036341458a8a8da38b684af19818",
+      "contentHash": "86af8c2e2ac0bec9ade61149f8788df2d3fe4edf6942056a4ab47f1a4d08e7a1",
       "declarations": [],
       "imports": [
         "../src/agent-protocol.js",
         "../src/initializer.js",
+        "../src/search.js",
         "node:assert/strict",
         "node:fs/promises",
         "node:os",
@@ -5043,7 +5044,7 @@
       ],
       "path": "tests/agent-protocol.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 4131
+      "sourceBytes": 4576
     },
     {
       "blocks": [],

@@ -270,7 +270,7 @@ import { KEY_ORDER, EFFECT_KINDS, RISK_KINDS } from "llmnav/spec";
 
 ## Agent operation protocol
 
-`getAgentToolDefinitions()` returns defensive copies of four schemaVersion 1 tool definitions in fixed order. Their JSON Schema inputs reject unknown fields and deliberately omit the repository root.
+`getAgentToolDefinitions()` returns defensive copies of five schemaVersion 1 tool definitions in fixed order. Their JSON Schema inputs reject unknown fields and deliberately omit the repository root.
 
 ```js
 import { executeAgentOperation, getAgentToolDefinitions } from "llmnav";
@@ -283,7 +283,7 @@ const result = await executeAgentOperation(
 );
 ```
 
-The trusted wrapper binds `root`; the model supplies only the validated operation input. Results use one schemaVersion 1 envelope containing `operation`, `ok`, `data`, and `error`. Input errors use `LNVAP002`, missing IDs use `LNVAP404`, and unexpected operation failures use `LNVAP500`.
+The trusted wrapper binds `root`; the model supplies only the validated operation input. Results use one schemaVersion 1 envelope containing `operation`, `ok`, `data`, and `error`. Input errors use `LNVAP002`, missing IDs use `LNVAP404`, ambiguous IDs use `LNVAP409`, and unexpected operation failures use `LNVAP500`.
 
 Long-lived hosts can load one explicit snapshot for repeated navigation calls:
 

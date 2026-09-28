@@ -12,7 +12,7 @@ stability=contract
 
 import { loadGraphInputs } from "./graph-input.js";
 import { scanProject } from "./project.js";
-import { buildContext, queryProject, showProjectCard } from "./search.js";
+import { buildContext, queryProject, SemanticIdLookupError, showProjectCard } from "./search.js";
 import { countDiagnostics, validateProject } from "./validator.js";
 import { getAgentToolDefinitions } from "./agent-tools.js";
 import { explainProjectFile } from "./audit.js";
@@ -48,7 +48,12 @@ export async function executeAgentOperation(root, name, input = {}, options = {}
       const result = options.session
         ? options.session.show(input.id.trim())
         : await showProjectCard(root, input.id.trim());
-      if (!result.card && !result.node) return failure(operation, "LNVAP404", `Unknown or inactive semantic ID ${input.id}.`, result);
+      if (!result.card && !result.node) {
+        const state = result.resolvedFrom?.state;
+        if (state === "ambiguous") return failure(operation, "LNVAP409", `Ambiguous semantic ID ${input.id}; qualify or replace it with one candidate.`, result);
+        if (state === "cycle") return failure(operation, "LNVAP500", `Registry cycle prevents resolving semantic ID ${input.id}.`, result);
+        return failure(operation, "LNVAP404", `Unknown or inactive semantic ID ${input.id}.`, result);
+      }
       return success(operation, result);
     }
     if (operation === "context") {
@@ -76,6 +81,10 @@ export async function executeAgentOperation(root, name, input = {}, options = {}
       error: null,
     };
   } catch (error) {
+    if (error instanceof SemanticIdLookupError) {
+      return failure(operation, error.reason === "not_found" ? "LNVAP404" :
+        error.reason === "ambiguous" ? "LNVAP409" : "LNVAP500", error.message);
+    }
     return failure(operation, "LNVAP500", error instanceof Error ? error.message : String(error));
   }
 }
