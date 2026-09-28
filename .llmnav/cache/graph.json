@@ -100,6 +100,20 @@
     },
     {
       "confidence": 0.85,
+      "from": "llmnav/llmnav.agent.prompt-bundle",
+      "id": "21bf871cafcf15777b966724b01af13af16312d51fdc4d9b10118b51710f630a",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/prompt-bundle.js",
+        "source": "src/prompt-bundle.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.index.transaction"
+    },
+    {
+      "confidence": 0.85,
       "from": "llmnav/llmnav.agent.protocol",
       "id": "5c73f063db76c0af02524c87a869c6e6bfb3db71dd97e36c8b0bb2afd2f3b615",
       "kind": "imports",
@@ -1935,6 +1949,20 @@
     {
       "confidence": 0.85,
       "from": "llmnav/llmnav.search.query",
+      "id": "9ce8fd75296f68450889db0a9de061c5701abbbfbc88969cd5eb5c23d2109143",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/search.js",
+        "source": "src/search.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.agent.prompt-bundle"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.search.query",
       "id": "a986674d1ec00401c15c1546d43a79635751a7f6b8757249c1c567992d32e139",
       "kind": "imports",
       "provenance": {
@@ -3273,9 +3301,9 @@
   ],
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "705d3b64bcb7e94a7341d2d0b35424d83a95f0d09a3f149b7227800f443d1d02",
+  "sourceHash": "3e3e7ec5bd7b9e1d6d29c4ae11ce9a09816eae552a29bbb6d97a89480922ddf1",
   "stats": {
-    "edgeCount": 160,
+    "edgeCount": 162,
     "importedIndexCount": 0,
     "nodeCount": 44,
     "unresolvedNodeCount": 0

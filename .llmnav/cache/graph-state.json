@@ -450,9 +450,23 @@
             "type": "source-card"
           },
           "to": "llmnav/llmnav.index.generate"
+        },
+        {
+          "confidence": 0.85,
+          "from": "llmnav/llmnav.agent.prompt-bundle",
+          "id": "21bf871cafcf15777b966724b01af13af16312d51fdc4d9b10118b51710f630a",
+          "kind": "imports",
+          "provenance": {
+            "generator": "llmnav",
+            "line": null,
+            "path": "src/prompt-bundle.js",
+            "source": "src/prompt-bundle.js",
+            "type": "local-import"
+          },
+          "to": "llmnav/llmnav.index.transaction"
         }
       ],
-      "inputHash": "e6b3a6703bb683c4f3341f7737736fb5735e38e0a9fc2f662fab433867d8d5de",
+      "inputHash": "d6da14beb11b2b81a1204816adadd683bf6b30843ebde1b57a8f78ba6c7668dd",
       "key": "card:llmnav/llmnav.agent.prompt-bundle",
       "nodes": [
         {
@@ -511,9 +525,18 @@
           "repositoryId": "llmnav",
           "role": null,
           "semanticId": "llmnav.index.generate"
+        },
+        {
+          "definitions": [],
+          "external": false,
+          "key": "llmnav/llmnav.index.transaction",
+          "location": null,
+          "repositoryId": "llmnav",
+          "role": null,
+          "semanticId": "llmnav.index.transaction"
         }
       ],
-      "outputHash": "c73e317698e6a23151e0774077d751a2f9325270aadec49cc4555072093de7ab"
+      "outputHash": "bb809f62b8bee2dcfea9970cc84e80c1e84bd6144725fdb0ee24789bd70549e9"
     },
     {
       "edges": [
@@ -4097,6 +4120,20 @@
         {
           "confidence": 0.85,
           "from": "llmnav/llmnav.search.query",
+          "id": "9ce8fd75296f68450889db0a9de061c5701abbbfbc88969cd5eb5c23d2109143",
+          "kind": "imports",
+          "provenance": {
+            "generator": "llmnav",
+            "line": null,
+            "path": "src/search.js",
+            "source": "src/search.js",
+            "type": "local-import"
+          },
+          "to": "llmnav/llmnav.agent.prompt-bundle"
+        },
+        {
+          "confidence": 0.85,
+          "from": "llmnav/llmnav.search.query",
           "id": "a986674d1ec00401c15c1546d43a79635751a7f6b8757249c1c567992d32e139",
           "kind": "imports",
           "provenance": {
@@ -4235,9 +4272,18 @@
           "to": "llmnav/llmnav.search.tokenize"
         }
       ],
-      "inputHash": "2c3fb0e4db383bed8c5d4b8b29c44e91c9cb45e9d2ce0987626d24d144c7eb2d",
+      "inputHash": "87f5b9cec89efd0a16eb34acbbb64afcf70ce96de35c2c5030fa5822923c60b2",
       "key": "card:llmnav/llmnav.search.query",
       "nodes": [
+        {
+          "definitions": [],
+          "external": false,
+          "key": "llmnav/llmnav.agent.prompt-bundle",
+          "location": null,
+          "repositoryId": "llmnav",
+          "role": null,
+          "semanticId": "llmnav.agent.prompt-bundle"
+        },
         {
           "definitions": [],
           "external": false,
@@ -4323,7 +4369,7 @@
           "semanticId": "llmnav.search.tokenize"
         }
       ],
-      "outputHash": "f01f303add42f5293fea0328e1324f698bf46cbfeb0ffaac85c5d4826e309000"
+      "outputHash": "f41619eac3283333d621f9f9677def758a93ddb9b9684a6d4d95fe183efd46a1"
     },
     {
       "edges": [

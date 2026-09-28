@@ -529,7 +529,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "b0f8bf2d73f487a5bf842e97a09c23fb7291de6b486f6120928f92a2c87fe218",
+      "contentHash": "52ccb436761450010e915a9d0282bd2238fdd57607ee8dc8d5f9c62dc7b3761a",
       "declarations": [
         null
       ],
@@ -538,7 +538,7 @@
       ],
       "path": "examples/provider-neutral-host.mjs",
       "semanticBytes": 566,
-      "sourceBytes": 2013
+      "sourceBytes": 2203
     },
     {
       "blocks": [
@@ -3268,14 +3268,14 @@
     },
     {
       "blocks": [],
-      "contentHash": "34e396bde2b42fccd7898d357f51db408a4423fa222c93034947bb4ec78a1ea0",
+      "contentHash": "b022400caafad4c833b82c2f0f94b8720bd8335bd70e479a0d0efbe4e1eada9a",
       "declarations": [],
       "imports": [
         "./spec.js"
       ],
       "path": "src/index.d.ts",
       "semanticBytes": 0,
-      "sourceBytes": 29212
+      "sourceBytes": 29574
     },
     {
       "blocks": [],
@@ -4108,18 +4108,19 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "2abf520313d8b847a217445d5a4cbd4108a1e0f3fd55bdc3014657bd93331f7c",
+      "contentHash": "22f330c95c5d45f66b92656cee02cfb2b64a3aef26acffa49b29af8b6a0a7c95",
       "declarations": [
         null
       ],
       "imports": [
         "./config.js",
+        "./transaction.js",
         "./util.js",
         "node:path"
       ],
       "path": "src/prompt-bundle.js",
       "semanticBytes": 520,
-      "sourceBytes": 5370
+      "sourceBytes": 5801
     },
     {
       "blocks": [
@@ -4545,7 +4546,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "82011bdacad7637d437d593801de8037e10d1a95f343049bf0a25e328027f072",
+      "contentHash": "a6c1871538fcb96b98578c2d4d48bb8b52eb52d517117897226bdcb2b739c5f3",
       "declarations": [
         null
       ],
@@ -4554,6 +4555,7 @@
         "./generator.js",
         "./graph.js",
         "./inverted-index.js",
+        "./prompt-bundle.js",
         "./registry.js",
         "./tokenizer.js",
         "./transaction.js",
@@ -4562,7 +4564,7 @@
       ],
       "path": "src/search.js",
       "semanticBytes": 464,
-      "sourceBytes": 26996
+      "sourceBytes": 27673
     },
     {
       "blocks": [],
@@ -5429,26 +5431,28 @@
     },
     {
       "blocks": [],
-      "contentHash": "5ccdfa19921d0d7b84b0f8d883f5f1a9a958dda21fe01fb658a0c7b8f5f30a0b",
+      "contentHash": "d5148f1ec3efda352a7bd5505dc87649c6e570d5c29f2b1aec55f3375598cd9b",
       "declarations": [],
       "imports": [
         "../src/agent-tools.js",
         "../src/agents.js",
         "../src/initializer.js",
         "../src/prompt-bundle.js",
+        "../src/transaction.js",
         "node:assert/strict",
         "node:fs/promises",
+        "node:module",
         "node:os",
         "node:path",
         "node:test"
       ],
       "path": "tests/prompt-bundle.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 4139
+      "sourceBytes": 4968
     },
     {
       "blocks": [],
-      "contentHash": "758cb12636b00d0531fd49d754180da6e1251b7323718fbe541fdcf7c9de2dd6",
+      "contentHash": "982029010f189bef4e65d5c24ffc27f8a5669c74866db82a8babf491ef4dc29f",
       "declarations": [],
       "imports": [
         "../examples/provider-neutral-host.mjs",
@@ -5462,7 +5466,7 @@
       ],
       "path": "tests/provider-neutral-example.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 2590
+      "sourceBytes": 3028
     },
     {
       "blocks": [],

@@ -12,6 +12,7 @@ stability=architecture
 
 import path from "node:path";
 import { loadConfig } from "./config.js";
+import { recoverGenerationTransaction, withGenerationLock } from "./transaction.js";
 import { approximateTokens, assertNoSymlinkTraversal, compareText, readText, sha256, stableJson, stableStringify, toPosix } from "./util.js";
 
 export const PROMPT_BUNDLE_SCHEMA_VERSION = 1;
@@ -60,7 +61,12 @@ export function isCompatiblePromptPrefixBundle(bundle, repositoryId = undefined)
 }
 
 export async function loadPromptPrefixBundle(root) {
+  return withGenerationLock(root, async (lock) => (await loadPromptPrefixBundleLocked(root, lock)).bundle);
+}
+
+export async function loadPromptPrefixBundleLocked(root, lock) {
   const { config } = await loadConfig(root);
+  await recoverGenerationTransaction(root, { cacheDirectory: config.generation.cacheDirectory, lockOwnerId: lock.ownerId });
   const relativePath = `${toPosix(config.generation.cacheDirectory).replace(/\/+$/u, "")}/prompt-prefix.json`;
   const bundlePath = path.join(root, relativePath);
   const manifestPath = path.join(root, config.generation.cacheDirectory, "manifest.json");
@@ -80,7 +86,7 @@ export async function loadPromptPrefixBundle(root) {
   const manifestContent = await readText(manifestPath, "");
   const manifest = manifestContent ? JSON.parse(manifestContent) : null;
   if (manifest?.files?.[relativePath] !== sha256(content)) throw new Error(`Prompt bundle hash does not match manifest.json.`);
-  return bundle;
+  return { bundle, generationHash: sha256(manifestContent) };
 }
 
 function partition(id, cacheScope, contentType, content) {

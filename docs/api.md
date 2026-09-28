@@ -302,11 +302,13 @@ await session.refresh(); // after generation or checkout changes
 
 `query`, `show`, and `context` reuse the loaded index, postings, graph, lexicon, and registry. `refresh()` replaces the complete snapshot; it never mutates one layer in place. The `check` operation still scans current source and does not use session data.
 
+Pass `{ withPromptBundle: true }` to `createProjectSession` when a host needs prompt partitions and navigation from the same generation. The returned session exposes `promptBundle` and a content-derived `generationHash`; `refresh()` replaces both alongside the search snapshot. The hash identifies generated cache content, not whether ungenerated source edits exist in the working tree.
+
 Sessions prepare graph adjacency and traversal order once per snapshot for reuse by `query` and `context`. Refreshing prepares a new graph, and obsolete prepared state can be garbage-collected with the previous snapshot. Direct `queryIndex` and `queryPreparedIndex` calls do not cache caller-owned graphs, so in-place changes to supplied edges remain visible on the next call.
 
 Session queries also reuse card lookup tables, normalized IDs and aliases, and graph validation. ID substring and phrase matching still scan all documents to preserve ranking. Session `query` and `show` return detached results: caller edits cannot invalidate the private prepared snapshot. These tables are rebuilt on `refresh()` and retained only with that snapshot.
 
-The typed `llmnav/examples/provider-neutral-host.mjs` export composes these APIs into a trusted-root closure. It exposes tool definitions, base and module-selected prompt partitions, one snapshot-backed operation executor, and an explicit refresh method without importing a model SDK.
+The typed `llmnav/examples/provider-neutral-host.mjs` export composes these APIs into a trusted-root closure. It exposes tool definitions, base and module-selected prompt partitions, the generation hash, one snapshot-backed operation executor, and an explicit refresh method without importing a model SDK. Refresh prepares a complete replacement before switching the host's prompt and search references.
 
 `buildPromptPrefixBundle(input)` constructs ordered package, repository, and module partitions with normalized newlines, SHA-256 content hashes, estimated token counts, and explicit cache-boundary hints. `renderPromptPrefixBundle` serializes it deterministically. `loadPromptPrefixBundle(root)` accepts only a schema-compatible artifact whose exact bytes match `manifest.json`.
 

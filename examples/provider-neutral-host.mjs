@@ -13,15 +13,15 @@ import {
   executeAgentOperation,
   createProjectSession,
   getAgentToolDefinitions,
-  loadPromptPrefixBundle,
 } from "llmnav";
 
 export async function createLlmnavHost(root) {
-  let bundle = await loadPromptPrefixBundle(root);
-  let session = await createProjectSession(root);
+  let session = await createProjectSession(root, { withPromptBundle: true });
+  let bundle = session.promptBundle;
   const host = {
     toolDefinitions: getAgentToolDefinitions(),
     basePromptPartitions: selectPromptPartitions(bundle),
+    generationHash: session.generationHash,
     selectPromptPartitions(moduleIds = []) {
       return selectPromptPartitions(bundle, moduleIds);
     },
@@ -29,11 +29,13 @@ export async function createLlmnavHost(root) {
       return executeAgentOperation(root, call.name, call.input ?? {}, { session });
     },
     async refresh() {
-      [bundle, session] = await Promise.all([
-        loadPromptPrefixBundle(root),
-        createProjectSession(root),
-      ]);
-      host.basePromptPartitions = selectPromptPartitions(bundle);
+      const nextSession = await createProjectSession(root, { withPromptBundle: true });
+      const nextBundle = nextSession.promptBundle;
+      const nextBase = selectPromptPartitions(nextBundle);
+      session = nextSession;
+      bundle = nextBundle;
+      host.basePromptPartitions = nextBase;
+      host.generationHash = nextSession.generationHash;
       return host;
     },
   };

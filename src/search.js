@@ -23,6 +23,7 @@ import {
   verifySearchIndex,
 } from "./inverted-index.js";
 import { normalizeSearchText, tokenize } from "./tokenizer.js";
+import { loadPromptPrefixBundleLocked } from "./prompt-bundle.js";
 import { recoverGenerationTransaction, withGenerationLock } from "./transaction.js";
 import { isCompatibleRepositoryGraph, renderGraphNode, resolveGraphNode } from "./graph.js";
 
@@ -96,10 +97,12 @@ export async function queryProject(root, query, options = {}) {
   return queryPreparedIndex(index, searchIndex, query, { ...options, lexicon, graph });
 }
 
-export async function createProjectSession(root) {
-  let snapshot = await loadSessionSnapshot(root);
+export async function createProjectSession(root, options = {}) {
+  const withPromptBundle = options.withPromptBundle === true;
+  let snapshot = await loadSessionSnapshot(root, { withPromptBundle });
   const session = {
     root,
+    ...(withPromptBundle ? { promptBundle: snapshot.promptBundle, generationHash: snapshot.generationHash } : {}),
     query(query, options = {}) {
       return structuredClone(queryPreparedIndex(snapshot.index, snapshot.searchIndex, query, {
         ...options,
@@ -114,15 +117,20 @@ export async function createProjectSession(root) {
       return buildSnapshotContext(snapshot, id, options);
     },
     async refresh() {
-      snapshot = await loadSessionSnapshot(root);
+      const next = await loadSessionSnapshot(root, { withPromptBundle });
+      snapshot = next;
+      if (withPromptBundle) {
+        session.promptBundle = next.promptBundle;
+        session.generationHash = next.generationHash;
+      }
       return session;
     },
   };
   return session;
 }
 
-async function loadSessionSnapshot(root) {
-  const snapshot = await loadProjectSnapshot(root);
+async function loadSessionSnapshot(root, options = {}) {
+  const snapshot = await loadProjectSnapshot(root, options);
   // Only session-owned graphs are cached: public query inputs may be mutable.
   if (snapshot.graph) sessionGraphAdjacencyCache.set(snapshot.graph, buildGraphAdjacency(snapshot.graph));
   sessionSearchMetadataCache.set(snapshot.index, prepareSearchMetadata(snapshot.index, snapshot.lexicon, snapshot.graph));
@@ -139,11 +147,12 @@ function prepareSearchMetadata(index, lexicon, graph) {
   };
 }
 
-async function loadProjectSnapshot(root) {
+async function loadProjectSnapshot(root, options = {}) {
   return withGenerationLock(root, async (lock) => {
     const { index, lexicon, searchIndex, graph } = await loadSearchDataLocked(root, lock);
     const registry = await loadRegistry(root);
-    return { index, lexicon, searchIndex, graph, registry };
+    const prompt = options.withPromptBundle ? await loadPromptPrefixBundleLocked(root, lock) : null;
+    return { index, lexicon, searchIndex, graph, registry, promptBundle: prompt?.bundle, generationHash: prompt?.generationHash };
   });
 }
 

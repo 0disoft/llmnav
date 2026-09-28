@@ -8,6 +8,7 @@ import type {
 export interface LlmnavHost {
   toolDefinitions: AgentToolDefinition[];
   basePromptPartitions: PromptPrefixPartition[];
+  generationHash: string;
   selectPromptPartitions(moduleIds?: string[]): PromptPrefixPartition[];
   execute(call: { name: string; input?: Record<string, unknown> }): Promise<AgentOperationResult>;
   refresh(): Promise<LlmnavHost>;

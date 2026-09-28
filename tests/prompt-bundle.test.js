@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
-import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from "node:fs/promises";
+import fs, { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from "node:fs/promises";
+import { syncBuiltinESMExports } from "node:module";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
@@ -12,6 +13,7 @@ import {
   renderPromptPrefixBundle,
 } from "../src/prompt-bundle.js";
 import { initializeProject } from "../src/initializer.js";
+import { acquireGenerationLock } from "../src/transaction.js";
 
 test("builds deterministic explicit prompt cache partitions", () => {
   const input = {
@@ -78,6 +80,30 @@ export const fixture = true;
   assert.ok(bundle.partitions.some((item) => item.id === "module:fixture.core"));
 
   const bundlePath = path.join(root, ".llmnav", "cache", "prompt-prefix.json");
+  const originalRead = fs.readFile;
+  const reached = Promise.withResolvers();
+  const resume = Promise.withResolvers();
+  let pause = true;
+  const mock = context.mock.method(fs, "readFile", async (file, ...args) => {
+    if (pause && String(file) === bundlePath) {
+      pause = false;
+      reached.resolve();
+      await resume.promise;
+    }
+    return originalRead(file, ...args);
+  });
+  syncBuiltinESMExports();
+  const reading = loadPromptPrefixBundle(root);
+  try {
+    await reached.promise;
+    await assert.rejects(() => acquireGenerationLock(root, { delays: [0] }), /Timed out/u);
+  } finally {
+    resume.resolve();
+    await reading;
+    mock.mock.restore();
+    syncBuiltinESMExports();
+  }
+
   const content = await readFile(bundlePath, "utf8");
   await writeFile(bundlePath, `${content.trimEnd()}  \n`);
   await assert.rejects(() => loadPromptPrefixBundle(root), /does not match manifest/u);

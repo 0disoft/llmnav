@@ -253,6 +253,12 @@ export interface ProjectSession {
   refresh(): Promise<ProjectSession>;
 }
 
+export interface ProjectSessionWithPromptBundle extends ProjectSession {
+  promptBundle: PromptPrefixBundle;
+  generationHash: string;
+  refresh(): Promise<ProjectSessionWithPromptBundle>;
+}
+
 export interface RegistryRecord {
   id: string;
   state: "active" | "redirect" | "replaced" | "retired" | string;
@@ -757,7 +763,8 @@ export function renderRegistryRecords(records: RegistryRecord[]): string;
 export function loadRegistry(root: string): Promise<Registry>;
 export function resolveRegistryId(registry: Registry, id: string): { id: string; state: string; [key: string]: unknown };
 export function buildContext(root: string, id: string, options?: { depth?: number; budget?: number; maxEdges?: number }): Promise<{ id: string; depth: number; budget: number; maxEdges: number; included: string[]; includedEdges: string[]; text: string }>;
-export function createProjectSession(root: string): Promise<ProjectSession>;
+export function createProjectSession(root: string, options: { withPromptBundle: true }): Promise<ProjectSessionWithPromptBundle>;
+export function createProjectSession(root: string, options?: { withPromptBundle?: false }): Promise<ProjectSession>;
 export function loadSearchData(root: string): Promise<{ index: LlmnavIndex; searchIndex: LlmnavSearchIndex; lexicon: { version?: number; aliases: Record<string, string | string[]> }; graph: RepositoryGraph | null }>;
 export function queryIndex(index: LlmnavIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> }; invertedIndex?: LlmnavSearchIndex; metrics?: SearchMetrics; graph?: RepositoryGraph | null }): SearchResult[];
 export function queryPreparedIndex(index: LlmnavIndex, searchIndex: LlmnavSearchIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> }; metrics?: SearchMetrics; graph?: RepositoryGraph | null }): SearchResult[];

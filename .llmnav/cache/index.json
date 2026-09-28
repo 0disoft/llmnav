@@ -679,9 +679,9 @@
         "source mutation"
       ],
       "hashes": {
-        "body": "82011bdacad7637d437d593801de8037e10d1a95f343049bf0a25e328027f072",
+        "body": "a6c1871538fcb96b98578c2d4d48bb8b52eb52d517117897226bdcb2b739c5f3",
         "semantic": "945f325a2ad2abfa71212b02dd952c071d47ed6d3848a16d247afd48dbe5ced6",
-        "structure": "9df41c778d85858895ac596ce8cb1775f7ddd312795271b1265f0763ea590308"
+        "structure": "2b870e6bea8925cdf7ef701499a97ece5a8402e33614cdaeef93a7215d285403"
       },
       "id": "llmnav.search.query",
       "imports": [
@@ -689,6 +689,7 @@
         "./generator.js",
         "./graph.js",
         "./inverted-index.js",
+        "./prompt-bundle.js",
         "./registry.js",
         "./tokenizer.js",
         "./transaction.js",
@@ -1359,13 +1360,14 @@
         "source discovery"
       ],
       "hashes": {
-        "body": "2abf520313d8b847a217445d5a4cbd4108a1e0f3fd55bdc3014657bd93331f7c",
+        "body": "22f330c95c5d45f66b92656cee02cfb2b64a3aef26acffa49b29af8b6a0a7c95",
         "semantic": "017f482c228aa90c44fa6dc5c28dc170cd578730c84d09de7b1d13b2616f065a",
-        "structure": "5c48a37ebcabf7c03bdc14cd543f0f689c40c663b3f519f7eac9ed83bda231d6"
+        "structure": "bca3ff4f06072f7b5ca7cfa3805990cc20a941b10601bcb2947d4a1f50a7d38c"
       },
       "id": "llmnav.agent.prompt-bundle",
       "imports": [
         "./config.js",
+        "./transaction.js",
         "./util.js",
         "node:path"
       ],
@@ -1911,7 +1913,7 @@
         "model-selected repository roots"
       ],
       "hashes": {
-        "body": "b0f8bf2d73f487a5bf842e97a09c23fb7291de6b486f6120928f92a2c87fe218",
+        "body": "52ccb436761450010e915a9d0282bd2238fdd57607ee8dc8d5f9c62dc7b3761a",
         "semantic": "7ddc913aae938e8dcdeba2e7c1ba7a102fe88af9a4790c863b5fa8c24b3c9c13",
         "structure": "926240ed9207ce8468e7dd278266c6a22790c021a1ac96ac9aff4bd61e41855a"
       },
@@ -2186,6 +2188,6 @@
   "generatedBy": "llmnav@0.9.3",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "a36f6c8a45071d4ea0317e10fbd89a9ce08b5a71ed526d020f53de0e795a8c14",
+  "sourceHash": "a54b9999e2672d53325c6a01eab414d860a78c98f0d01d9d09e248f25807d618",
   "specVersion": "1"
 }
