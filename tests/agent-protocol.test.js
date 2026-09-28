@@ -83,6 +83,19 @@ test("returns stable protocol failures for invalid input and missing IDs", async
     assert.match(missingContext.error.message, /Unknown or inactive semantic ID/u);
   }
 
+  await writeFile(path.join(root, ".llmnav", "ids.jsonl"), [
+    '{"id":"auth.session.rotate","state":"active"}',
+    '{"id":"other.capability","state":"active"}',
+    '{"id":"old.capability","state":"replaced","by":["auth.session.rotate","other.capability"]}',
+    "",
+  ].join("\n"));
+  for (const options of [{}, { session: await createProjectSession(root) }]) {
+    const ambiguousShow = await executeAgentOperation(root, "llmnav_show", { id: "old.capability" }, options);
+    const ambiguousContext = await executeAgentOperation(root, "llmnav_context", { id: "old.capability" }, options);
+    assert.equal(ambiguousShow.error.code, "LNVAP409");
+    assert.equal(ambiguousContext.error.code, "LNVAP409");
+  }
+
   const unknown = await executeAgentOperation(root, "provider_specific_tool", {});
   assert.equal(unknown.error.code, "LNVAP001");
 });

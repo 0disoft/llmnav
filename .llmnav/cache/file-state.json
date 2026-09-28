@@ -5030,7 +5030,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "86af8c2e2ac0bec9ade61149f8788df2d3fe4edf6942056a4ab47f1a4d08e7a1",
+      "contentHash": "f8cd43287c33912eb9aa174032a649bf6a8141e4704dce5ffaf94d6f240d56d0",
       "declarations": [],
       "imports": [
         "../src/agent-protocol.js",
@@ -5044,7 +5044,7 @@
       ],
       "path": "tests/agent-protocol.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 4576
+      "sourceBytes": 5290
     },
     {
       "blocks": [],
