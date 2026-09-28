@@ -5454,12 +5454,14 @@
     },
     {
       "blocks": [],
-      "contentHash": "982029010f189bef4e65d5c24ffc27f8a5669c74866db82a8babf491ef4dc29f",
+      "contentHash": "230a50a27d576c706c295723fc89e464c7c88bfafa4b3bdef06dd2add101a887",
       "declarations": [],
       "imports": [
         "../examples/provider-neutral-host.mjs",
         "../src/generator.js",
         "../src/initializer.js",
+        "../src/prompt-bundle.js",
+        "../src/search.js",
         "node:assert/strict",
         "node:fs/promises",
         "node:os",
@@ -5468,7 +5470,7 @@
       ],
       "path": "tests/provider-neutral-example.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 3028
+      "sourceBytes": 4242
     },
     {
       "blocks": [],
