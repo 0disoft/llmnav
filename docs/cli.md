@@ -29,6 +29,8 @@ The initial repository ID comes from the package name, or the directory name whe
 
 Unknown adapters and combinations of `none` with any other adapter fail with usage status 2 before initialization creates or changes files. This also applies to `--force` and `--package-scripts`; correct the adapter selection and rerun the command. Other filesystem or generation failures can still happen after bootstrap writes.
 
+If `package.json` exists, it must contain a JSON object. With `--package-scripts`, its `scripts` must be an object, absent, or null. Invalid input fails with status 2 before bootstrap writes, including under `--force`; the diagnostic names the field without echoing the manifest contents. Correct the manifest and rerun initialization. A missing manifest still allows initialization using the directory name and does not create a package file.
+
 `--package-scripts` adds `llmnav:audit`, `llmnav:check`, `llmnav:format`, `llmnav:generate`, and `llmnav:eval` to an existing package.json. The audit script gates only high-priority candidates.
 
 `--force` refreshes configuration templates, schema, managed agent blocks, and `.llmnav/.gitignore`. It never resets semantic ID history, catalog order, aliases, evaluation cases, or source cards.

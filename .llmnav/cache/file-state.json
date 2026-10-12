@@ -1114,7 +1114,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "5388dccca4f1e8c67609c6fcbb16bd6054f33ef59569d1dd7c92993d3a101e6e",
+      "contentHash": "147e58fda6053ae4e9ca1d162aee3452203c05acc2e2cf87ce65b8a5437029fd",
       "declarations": [],
       "imports": [
         "node:child_process",
@@ -1125,7 +1125,7 @@
       ],
       "path": "scripts/pack-smoke.js",
       "semanticBytes": 0,
-      "sourceBytes": 8562
+      "sourceBytes": 9361
     },
     {
       "blocks": [],
@@ -3414,7 +3414,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "0fb8fbe77eebb5e371fdb99c104f089210b8d08763b0b53d0f021bde7ca254ba",
+      "contentHash": "b1c244adc09561d223ed853435e85dce664474d24af7cd4d56befec20d66fed7",
       "declarations": [
         null
       ],
@@ -3429,7 +3429,7 @@
       ],
       "path": "src/initializer.js",
       "semanticBytes": 418,
-      "sourceBytes": 5673
+      "sourceBytes": 6605
     },
     {
       "blocks": [
@@ -5322,7 +5322,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "afb2341896ed4737ce6726675610cb99822e3e5244b4b88a8bf82c2e5dd512a9",
+      "contentHash": "f75c93af6614fc470dbfffcec90e43e1dee2c1b7b74f9ff88271f70874a22ee6",
       "declarations": [],
       "imports": [
         "../src/initializer.js",
@@ -5336,7 +5336,7 @@
       ],
       "path": "tests/initializer.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 5056
+      "sourceBytes": 7863
     },
     {
       "blocks": [],

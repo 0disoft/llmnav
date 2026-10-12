@@ -87,3 +87,45 @@ test("none cannot combine with all and forced invalid init preserves existing co
   assert.equal(run(root, "init", "--agents", "all,none", "--force").status, 2);
   assert.deepEqual(await Promise.all(files.map((file) => readFile(path.join(root, file), "utf8"))), before);
 });
+
+test("malformed package JSON fails before writes without echoing input and recovers after correction", async (context) => {
+  const root = await fixture(context, "manifest-recovery");
+  const text = 'private-input-marker={"name":"manifest-recovery"}\n';
+  await writeFile(path.join(root, "package.json"), text);
+  const rejected = run(root, "init", "--agents", "all", "--package-scripts");
+  assert.equal(rejected.status, 2);
+  assert.match(rejected.stderr, /package\.json/u);
+  assert.ok(!rejected.stderr.includes("private-input-marker"));
+  assert.deepEqual(await readdir(root), ["package.json"]);
+  assert.equal(await readFile(path.join(root, "package.json"), "utf8"), text);
+  await writeFile(path.join(root, "package.json"), '{"name":"manifest-recovery"}\n');
+  assert.equal(run(root, "init", "--agents", "none", "--package-scripts").status, 0);
+});
+
+test("package manifests must be objects and script edits require an object scripts field", async (context) => {
+  for (const manifest of [null, false, [], "private-input-marker", { scripts: "private-input-marker" }, { scripts: [] }]) {
+    const root = await fixture(context, "manifest-shape");
+    const text = JSON.stringify(manifest) + "\n";
+    await writeFile(path.join(root, "package.json"), text);
+    const rejected = run(root, "init", "--agents", "all", "--package-scripts");
+    assert.equal(rejected.status, 2, rejected.stderr);
+    assert.ok(!rejected.stderr.includes("private-input-marker"));
+    assert.deepEqual(await readdir(root), ["package.json"]);
+    assert.equal(await readFile(path.join(root, "package.json"), "utf8"), text);
+  }
+});
+
+test("force with invalid scripts preserves existing bootstrap files and agent instructions", async (context) => {
+  const root = await fixture(context, "manifest-existing");
+  assert.equal(run(root, "init", "--agents", "agents").status, 0);
+  const files = ["AGENTS.md", ".llmnav/config.json", ".llmnav/ids.jsonl", ".llmnav/order.lock", ".llmnav/cache/index.json"];
+  const before = await Promise.all(files.map((file) => readFile(path.join(root, file), "utf8")));
+  const manifest = '{"name":"changed-name","scripts":42}\n';
+  await writeFile(path.join(root, "package.json"), manifest);
+  assert.equal(run(root, "init", "--agents", "all", "--force", "--package-scripts").status, 2);
+  assert.deepEqual(await Promise.all(files.map((file) => readFile(path.join(root, file), "utf8"))), before);
+  assert.equal(await readFile(path.join(root, "package.json"), "utf8"), manifest);
+  await writeFile(path.join(root, "package.json"), '{"name":"manifest-existing","scripts":null}\n');
+  assert.equal(run(root, "init", "--agents", "agents", "--package-scripts").status, 0);
+  assert.equal(JSON.parse(await readFile(path.join(root, "package.json"), "utf8")).scripts["llmnav:check"], "llmnav check");
+});

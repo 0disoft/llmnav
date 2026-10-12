@@ -578,7 +578,7 @@
         "automatic annotation"
       ],
       "hashes": {
-        "body": "0fb8fbe77eebb5e371fdb99c104f089210b8d08763b0b53d0f021bde7ca254ba",
+        "body": "b1c244adc09561d223ed853435e85dce664474d24af7cd4d56befec20d66fed7",
         "semantic": "32b959f42c7911d86ba137ce781e1b28f71b1d6f089e5ad0533bfe7e6a7e5956",
         "structure": "abe92e87f0692370a352bfd2b4227d079aa8e1c55f8bd08f60e815d202cd259b"
       },
@@ -2188,6 +2188,6 @@
   "generatedBy": "llmnav@0.9.7",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "b485881efb58ef112e12b465953cb74891c5480dee29372572e77b8fcd88b65f",
+  "sourceHash": "21c2df7e36ac23c1e14874ac9ea59d337ee294bc4966aa11afbc816e6499d4b5",
   "specVersion": "1"
 }

@@ -15,12 +15,14 @@ import { fileURLToPath } from "node:url";
 import { installAgentInstructions, normalizeAgentAdapters } from "./agents.js";
 import { generateProject } from "./generator.js";
 import { DEFAULT_CONFIG } from "./spec.js";
-import { assertNoSymlinkTraversal, atomicWrite, readJson, readText, sha256, stableStringify } from "./util.js";
+import { assertNoSymlinkTraversal, atomicWrite, readText, sha256, stableStringify } from "./util.js";
 
 const PACKAGE_ROOT = fileURLToPath(new URL("..", import.meta.url));
 
 export async function initializeProject(root, options = {}) {
   const agents = normalizeAgentAdapters(options.agents ?? ["agents"]);
+  const packageJson = await readPackageManifest(root, options.packageScripts);
+  const repositoryId = inferRepositoryId(root, packageJson);
   const controlDirectory = path.join(root, ".llmnav");
   const evalDirectory = path.join(controlDirectory, "eval");
   const schemaDirectory = path.join(controlDirectory, "schema");
@@ -29,7 +31,6 @@ export async function initializeProject(root, options = {}) {
   await assertNoSymlinkTraversal(root, schemaDirectory, ".llmnav/schema");
   await mkdir(evalDirectory, { recursive: true });
   await mkdir(schemaDirectory, { recursive: true });
-  const repositoryId = await inferRepositoryId(root);
   const changed = [];
 
   const config = structuredClone(DEFAULT_CONFIG);
@@ -107,8 +108,7 @@ export async function initializeProject(root, options = {}) {
   return { ok: true, changed: [...new Set(changed)].sort(), generated };
 }
 
-async function inferRepositoryId(root) {
-  const packageJson = await readJson(path.join(root, "package.json"), null);
+function inferRepositoryId(root, packageJson) {
   const candidate = packageJson?.name ?? path.basename(root);
   const normalized = String(candidate)
     .replace(/^@[^/]+\//u, "")
@@ -122,6 +122,29 @@ async function inferRepositoryId(root) {
   return `${identifier.slice(0, 51)}-${sha256(identifier).slice(0, 12)}`;
 }
 
+async function readPackageManifest(root, validateScripts) {
+  const packagePath = path.join(root, "package.json");
+  await assertNoSymlinkTraversal(root, packagePath, "package.json");
+  const text = await readText(packagePath, null);
+  if (text === null) return null;
+  let parsed;
+  try { parsed = JSON.parse(text); } catch {
+    throw packageUsageError("package.json must contain a valid JSON object. Correct it and rerun llmnav init.");
+  }
+  const object = (value) => value !== null && typeof value === "object" && !Array.isArray(value);
+  if (!object(parsed)) throw packageUsageError("package.json must contain a JSON object. Correct it and rerun llmnav init.");
+  if (validateScripts && parsed.scripts != null && !object(parsed.scripts)) {
+    throw packageUsageError("package.json scripts must be an object before using --package-scripts. Correct it and rerun llmnav init.");
+  }
+  return parsed;
+}
+
+function packageUsageError(message) {
+  const error = new Error(message);
+  error.exitCode = 2;
+  return error;
+}
+
 async function writeIfMissingOrForced(root, filePath, content, force, changed, displayPath) {
   await assertNoSymlinkTraversal(root, filePath, displayPath);
   const existing = await readText(filePath, null);
@@ -133,10 +156,8 @@ async function writeIfMissingOrForced(root, filePath, content, force, changed, d
 
 async function addPackageScripts(root) {
   const packagePath = path.join(root, "package.json");
-  await assertNoSymlinkTraversal(root, packagePath, "package.json");
-  const text = await readText(packagePath, null);
-  if (text === null) return false;
-  const parsed = JSON.parse(text);
+  const parsed = await readPackageManifest(root, true);
+  if (parsed === null) return false;
   parsed.scripts ??= {};
   const desired = {
     "llmnav:audit": "llmnav audit --fail-on high",

@@ -59,6 +59,17 @@ if (PACKAGE_VERSION !== ${JSON.stringify(installedPackage.version)} || SEARCH_IN
   if (invalidInit.status !== 2 || JSON.stringify((await readdir(project)).sort()) !== JSON.stringify(beforeInvalidInit)) {
     throw new Error("Installed invalid adapter initialization must fail before writing files.");
   }
+  const packagePath = path.join(project, "package.json");
+  const validManifest = await readFile(packagePath, "utf8");
+  const malformedManifest = 'private-input-marker={"name":"consumer"}\n';
+  await writeFile(packagePath, malformedManifest);
+  const invalidManifest = runStatus(process.execPath, [cli, "init", "--agents", "all", "--package-scripts", "--root", project], project);
+  if (invalidManifest.status !== 2 || invalidManifest.stderr.includes("private-input-marker") ||
+    JSON.stringify((await readdir(project)).sort()) !== JSON.stringify(beforeInvalidInit) ||
+    await readFile(packagePath, "utf8") !== malformedManifest) {
+    throw new Error("Installed invalid manifest initialization must preserve files and omit input contents.");
+  }
+  await writeFile(packagePath, validManifest);
   run(process.execPath, [cli, "init", "--agents", "none", "--root", project], project);
   const repositoryId = JSON.parse(await readFile(path.join(project, ".llmnav", "config.json"), "utf8")).repositoryId;
   if (!/^[a-z][a-z0-9-]{0,63}$/u.test(repositoryId)) throw new Error("Installed initialization inferred an invalid repository ID.");
