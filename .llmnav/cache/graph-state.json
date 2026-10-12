@@ -357,7 +357,7 @@
           "to": "llmnav/llmnav.search.query"
         }
       ],
-      "inputHash": "d71a7b2c5183ea3211bfced166472e5af7c9fc3f80bc1f4a9ca9ab506737933c",
+      "inputHash": "4fe3e92bc5e01cabd31d800d4e39d4aea616b18981cecc4ed47df3418ba67905",
       "key": "card:llmnav/llmnav.agent.install",
       "nodes": [
         {

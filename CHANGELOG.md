@@ -8,6 +8,7 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 
 ### Fixed
 
+* Check all selected agent instruction files before bootstrap writes and reject duplicate closing markers; malformed later adapters no longer leave earlier instructions or forced configuration partially updated.
 * Preserve team instructions before managed agent blocks when the generated heading is missing, renamed, or separated from the marker by unrelated text.
 * Infer valid repository IDs for numeric-leading and long package names so fresh initialization can generate its first index; preserve existing valid short IDs and distinguish long names with a deterministic suffix.
 * Reject invalid agent selections before bootstrap writes and reject `all,none` combinations instead of installing every agent's instructions.

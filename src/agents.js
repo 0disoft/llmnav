@@ -8,7 +8,6 @@ rel=workflow>llmnav.search.query
 stability=architecture
 */
 
-import { mkdir } from "node:fs/promises";
 import path from "node:path";
 import { assertNoSymlinkTraversal, atomicWrite, readText } from "./util.js";
 
@@ -38,47 +37,42 @@ After semantic changes, run \`npm exec -- llmnav format\`, \`npm exec -- llmnav 
 ${END}`;
 
 export async function installAgentInstructions(root, adapters = ["agents"]) {
+  const planned = await planAgentInstructions(root, adapters);
+  for (const item of planned) await atomicWrite(root, item.target, item.content);
+  return planned.map(item => item.path);
+}
+
+/** Check every selected instruction target before project bootstrap writes anything. */
+export async function validateAgentInstructions(root, adapters = ["agents"]) {
+  await planAgentInstructions(root, adapters);
+}
+
+async function planAgentInstructions(root, adapters) {
   const selected = normalizeAgentAdapters(adapters);
-  const changed = [];
+  const planned = [];
+  const markdown = {
+    agents: ["AGENTS.md", "# Repository instructions"],
+    claude: ["CLAUDE.md", "# Claude Code instructions"],
+    copilot: [".github/copilot-instructions.md", "# GitHub Copilot instructions"],
+  };
   for (const adapter of selected) {
-    if (adapter === "agents") {
-      const target = path.join(root, "AGENTS.md");
-      await assertNoSymlinkTraversal(root, target, "AGENTS.md");
-      if (await upsertMarkdown(root, target, "# Repository instructions", AGENT_PROTOCOL)) {
-        changed.push("AGENTS.md");
-      }
-    } else if (adapter === "claude") {
-      const target = path.join(root, "CLAUDE.md");
-      await assertNoSymlinkTraversal(root, target, "CLAUDE.md");
-      if (await upsertMarkdown(root, target, "# Claude Code instructions", AGENT_PROTOCOL)) {
-        changed.push("CLAUDE.md");
-      }
-    } else if (adapter === "copilot") {
-      const target = path.join(root, ".github", "copilot-instructions.md");
-      await assertNoSymlinkTraversal(root, target, ".github/copilot-instructions.md");
-      if (await upsertMarkdown(root, target, "# GitHub Copilot instructions", AGENT_PROTOCOL)) {
-        changed.push(".github/copilot-instructions.md");
-      }
-    } else if (adapter === "cursor") {
-      const target = path.join(root, ".cursor", "rules", "llmnav.mdc");
-      await assertNoSymlinkTraversal(root, target, ".cursor/rules/llmnav.mdc");
-      const content = `---\ndescription: Use LLMNav before broad codebase exploration\nalwaysApply: true\n---\n\n${AGENT_PROTOCOL}\n`;
-      const existing = await readText(target, "");
-      if (existing !== content) {
-        await atomicWrite(root, target, content);
-        changed.push(".cursor/rules/llmnav.mdc");
-      }
-    }
+    const [displayPath, title] = adapter === "cursor" ? [".cursor/rules/llmnav.mdc", null] : markdown[adapter];
+    const target = path.join(root, displayPath);
+    await assertNoSymlinkTraversal(root, target, displayPath);
+    const existing = await readText(target, "");
+    const content = adapter === "cursor"
+      ? `---\ndescription: Use LLMNav before broad codebase exploration\nalwaysApply: true\n---\n\n${AGENT_PROTOCOL}\n`
+      : renderMarkdown(existing, displayPath, title, AGENT_PROTOCOL);
+    if (existing !== content) planned.push({ path: displayPath, target, content });
   }
 
   const canonicalPath = path.join(root, ".llmnav", "AGENT_INSTRUCTIONS.md");
   await assertNoSymlinkTraversal(root, canonicalPath, ".llmnav/AGENT_INSTRUCTIONS.md");
   const canonical = `# LLMNav agent protocol\n\n${AGENT_PROTOCOL}\n`;
   if ((await readText(canonicalPath, "")) !== canonical) {
-    await atomicWrite(root, canonicalPath, canonical);
-    changed.push(".llmnav/AGENT_INSTRUCTIONS.md");
+    planned.push({ path: ".llmnav/AGENT_INSTRUCTIONS.md", target: canonicalPath, content: canonical });
   }
-  return changed;
+  return planned;
 }
 
 export function normalizeAgentAdapters(adapters) {
@@ -104,17 +98,15 @@ function adapterUsageError(message) {
   return error;
 }
 
-async function upsertMarkdown(root, filePath, title, block) {
-  await mkdir(path.dirname(filePath), { recursive: true });
-  const existing = await readText(filePath, "");
+function renderMarkdown(existing, displayPath, title, block) {
   let next;
   const start = existing.indexOf(START);
   const end = existing.indexOf(END);
   if ((start >= 0) !== (end >= 0) || (start >= 0 && end < start)) {
-    throw new Error(`${filePath} contains an incomplete LLMNav managed block.`);
+    throw adapterUsageError(`${displayPath} contains an incomplete LLMNav managed block. Correct the markers and rerun initialization.`);
   }
-  if (start >= 0 && existing.indexOf(START, start + START.length) >= 0) {
-    throw new Error(`${filePath} contains multiple LLMNav managed blocks.`);
+  if (start >= 0 && (existing.indexOf(START, start + START.length) >= 0 || existing.indexOf(END, end + END.length) >= 0)) {
+    throw adapterUsageError(`${displayPath} contains multiple LLMNav managed blocks. Keep one complete marker pair and rerun initialization.`);
   }
   if (start >= 0 && end >= start) {
     // Only the generated heading directly adjacent to the marker belongs to us.
@@ -126,7 +118,5 @@ async function upsertMarkdown(root, filePath, title, block) {
   } else {
     next = `${existing.trimEnd()}\n\n${block}\n`;
   }
-  if (next === existing) return false;
-  await atomicWrite(root, filePath, next);
-  return true;
+  return next;
 }

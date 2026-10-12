@@ -70,7 +70,29 @@ if (PACKAGE_VERSION !== ${JSON.stringify(installedPackage.version)} || SEARCH_IN
     throw new Error("Installed invalid manifest initialization must preserve files and omit input contents.");
   }
   await writeFile(packagePath, validManifest);
-  run(process.execPath, [cli, "init", "--agents", "none", "--root", project], project);
+  const agentPath = path.join(project, "AGENTS.md");
+  const teamPrefix = "# Consumer instructions\n\nNever publish automatically.\n\n";
+  const teamInstructions = teamPrefix + "<!-- llmnav:start -->\nOld protocol.\n<!-- llmnav:end -->\n";
+  await writeFile(agentPath, teamInstructions);
+  const claudePath = path.join(project, "CLAUDE.md");
+  const brokenInstructions = "# Consumer notes\n<!-- llmnav:start -->\n";
+  await writeFile(claudePath, brokenInstructions);
+  const beforeBrokenInstructions = (await readdir(project)).sort();
+  const invalidInstructions = runStatus(process.execPath, [cli, "init", "--agents", "all", "--force", "--package-scripts", "--root", project], project);
+  if (invalidInstructions.status !== 2 ||
+    JSON.stringify((await readdir(project)).sort()) !== JSON.stringify(beforeBrokenInstructions) ||
+    await readFile(agentPath, "utf8") !== teamInstructions || await readFile(claudePath, "utf8") !== brokenInstructions ||
+    await readFile(packagePath, "utf8") !== validManifest) {
+    throw new Error("Installed initialization must reject broken instructions before bootstrap writes.");
+  }
+  await writeFile(claudePath, "# Consumer notes\n");
+  run(process.execPath, [cli, "init", "--agents", "all", "--root", project], project);
+  const updatedInstructions = await readFile(agentPath, "utf8");
+  if (!updatedInstructions.startsWith(teamPrefix) || updatedInstructions.includes("Old protocol.")) {
+    throw new Error("Installed initialization did not preserve instructions before the managed block.");
+  }
+  run(process.execPath, [cli, "init", "--agents", "all", "--root", project], project);
+  if (await readFile(agentPath, "utf8") !== updatedInstructions) throw new Error("Installed repeated initialization changed managed instructions.");
   const repositoryId = JSON.parse(await readFile(path.join(project, ".llmnav", "config.json"), "utf8")).repositoryId;
   if (!/^[a-z][a-z0-9-]{0,63}$/u.test(repositoryId)) throw new Error("Installed initialization inferred an invalid repository ID.");
   const generation = JSON.parse(run(process.execPath, [cli, "generate", "--root", project, "--json"], project));

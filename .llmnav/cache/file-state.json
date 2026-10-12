@@ -1114,7 +1114,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "147e58fda6053ae4e9ca1d162aee3452203c05acc2e2cf87ce65b8a5437029fd",
+      "contentHash": "c855c7a3c3d03e3d5d6f85defe7ef34ff71ffbd0aa53c2170b7b3981a5d066fc",
       "declarations": [],
       "imports": [
         "node:child_process",
@@ -1125,7 +1125,7 @@
       ],
       "path": "scripts/pack-smoke.js",
       "semanticBytes": 0,
-      "sourceBytes": 9361
+      "sourceBytes": 11049
     },
     {
       "blocks": [],
@@ -1462,18 +1462,17 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "56efa6ff0562f1e2d5b8dc9986d7692816e48d15db06a3300804e4071381e5be",
+      "contentHash": "e7e78c823e6a71455387568dbf4bceaed8f9ad27fa12007b0f81f489c3b77b76",
       "declarations": [
         null
       ],
       "imports": [
         "./util.js",
-        "node:fs/promises",
         "node:path"
       ],
       "path": "src/agents.js",
       "semanticBytes": 374,
-      "sourceBytes": 7058
+      "sourceBytes": 6804
     },
     {
       "blocks": [
@@ -3414,7 +3413,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "b1c244adc09561d223ed853435e85dce664474d24af7cd4d56befec20d66fed7",
+      "contentHash": "165d3c2b4ffa520743c43ca124ce7e724b319c0376e79b95876e9694271d3c76",
       "declarations": [
         null
       ],
@@ -3429,7 +3428,7 @@
       ],
       "path": "src/initializer.js",
       "semanticBytes": 418,
-      "sourceBytes": 6605
+      "sourceBytes": 6681
     },
     {
       "blocks": [
@@ -5030,10 +5029,11 @@
     },
     {
       "blocks": [],
-      "contentHash": "3cffdbc851a27bf0a6e8bc84f549a557b12468ffa9bba048f44f3e63e75804c1",
+      "contentHash": "edd5ddbb5acdf4fc388755322880d5099467b5bcad4f3ee7ad44e5a29793c588",
       "declarations": [],
       "imports": [
         "../src/agents.js",
+        "../src/initializer.js",
         "node:assert/strict",
         "node:fs/promises",
         "node:os",
@@ -5042,7 +5042,7 @@
       ],
       "path": "tests/agent-instructions.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 2554
+      "sourceBytes": 6384
     },
     {
       "blocks": [],

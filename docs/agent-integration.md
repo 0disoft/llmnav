@@ -35,6 +35,8 @@ Re-running initialization replaces the managed block and preserves unrelated rep
 
 Only the markers and an immediately adjacent generated `## LLMNav code navigation` heading are replaced. If that heading is missing, renamed, or separated from the marker by team instructions, the text before and after the markers remains in place. Repeated updates do not duplicate the generated heading or block.
 
+Initialization checks every selected instruction file before bootstrap writes. Incomplete, reversed, or duplicate marker pairs fail with usage status 2 and leave existing instructions, configuration, and package scripts untouched, including with `--force`. Correct the named file and rerun initialization. Later filesystem failures or process interruption can still leave partial bootstrap writes; this preflight is not a transaction across all instruction files.
+
 ## Protocol installed for agents
 
 The generated instruction tells an agent to:

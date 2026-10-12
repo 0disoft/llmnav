@@ -348,14 +348,13 @@
         "agent execution"
       ],
       "hashes": {
-        "body": "56efa6ff0562f1e2d5b8dc9986d7692816e48d15db06a3300804e4071381e5be",
+        "body": "e7e78c823e6a71455387568dbf4bceaed8f9ad27fa12007b0f81f489c3b77b76",
         "semantic": "7258d93062db7c24d1bdf4076e99802a3fcc413f4012e0aca49148a9fe1dedaa",
-        "structure": "62e268ed9d2dd21c68421c28b2731d9a84ff0f7a1b1bcd17b9bde4f90f1e7cc1"
+        "structure": "3053c2bc1f7f90fbd706cec759bbf0a1aa2ac261ef4902263d23ea5d4e88b01d"
       },
       "id": "llmnav.agent.install",
       "imports": [
         "./util.js",
-        "node:fs/promises",
         "node:path"
       ],
       "location": {
@@ -578,7 +577,7 @@
         "automatic annotation"
       ],
       "hashes": {
-        "body": "b1c244adc09561d223ed853435e85dce664474d24af7cd4d56befec20d66fed7",
+        "body": "165d3c2b4ffa520743c43ca124ce7e724b319c0376e79b95876e9694271d3c76",
         "semantic": "32b959f42c7911d86ba137ce781e1b28f71b1d6f089e5ad0533bfe7e6a7e5956",
         "structure": "abe92e87f0692370a352bfd2b4227d079aa8e1c55f8bd08f60e815d202cd259b"
       },
@@ -2188,6 +2187,6 @@
   "generatedBy": "llmnav@0.9.7",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "00ad639563f4d3a62ac114a9c8b94ec954623170aa98eb70eec9ff5d4ae1ac9c",
+  "sourceHash": "8a128afa5367343097e5ae6c8084659c2809bf3205b6f90b6945b0d85e856182",
   "specVersion": "1"
 }
