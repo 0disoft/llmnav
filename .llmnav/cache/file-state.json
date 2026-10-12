@@ -2909,7 +2909,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "89f593a06a30bb73ffb9b3fd91460a69ec38648823df673e63c9ecb13f1d8781",
+      "contentHash": "2dff06e2055421cb4edb074d7a72f2588e8656ee39560f17908db1e2f8550d34",
       "declarations": [
         null
       ],
@@ -2938,7 +2938,7 @@
       ],
       "path": "src/generator.js",
       "semanticBytes": 476,
-      "sourceBytes": 20064
+      "sourceBytes": 20359
     },
     {
       "blocks": [
@@ -3327,7 +3327,9 @@
               "automatic annotation"
             ],
             "id": "llmnav.project.initialize",
-            "invariant": [],
+            "invariant": [
+              "Bootstrap writes and index generation share one repository lock."
+            ],
             "owns": [
               "project bootstrap",
               "configuration templates",
@@ -3348,8 +3350,8 @@
             "stability": "architecture",
             "unknown": []
           },
-          "end": 418,
-          "endLine": 10,
+          "end": 493,
+          "endLine": 11,
           "entries": [
             {
               "key": "id",
@@ -3382,21 +3384,27 @@
               "value": "llmnav init|repository bootstrap|agent setup"
             },
             {
-              "key": "rel",
+              "key": "invariant",
               "line": 7,
               "order": 5,
-              "value": "workflow>llmnav.agent.install"
+              "value": "Bootstrap writes and index generation share one repository lock."
             },
             {
               "key": "rel",
               "line": 8,
               "order": 6,
+              "value": "workflow>llmnav.agent.install"
+            },
+            {
+              "key": "rel",
+              "line": 9,
+              "order": 7,
               "value": "workflow>llmnav.index.generate"
             },
             {
               "key": "stability",
-              "line": 9,
-              "order": 7,
+              "line": 10,
+              "order": 8,
               "value": "architecture"
             }
           ],
@@ -3404,7 +3412,7 @@
           "indent": "",
           "newline": "\n",
           "prefix": null,
-          "raw": "/* llmnav/1 module\nid=llmnav.project.initialize\nrole=Create a repository's LLMNav configuration, registry, schemas, agent instructions, and initial index.\nowns=project bootstrap|configuration templates|initial generation\nexcludes=package installation|automatic annotation\nsearch=llmnav init|repository bootstrap|agent setup\nrel=workflow>llmnav.agent.install\nrel=workflow>llmnav.index.generate\nstability=architecture\n*/",
+          "raw": "/* llmnav/1 module\nid=llmnav.project.initialize\nrole=Create a repository's LLMNav configuration, registry, schemas, agent instructions, and initial index.\nowns=project bootstrap|configuration templates|initial generation\nexcludes=package installation|automatic annotation\nsearch=llmnav init|repository bootstrap|agent setup\ninvariant=Bootstrap writes and index generation share one repository lock.\nrel=workflow>llmnav.agent.install\nrel=workflow>llmnav.index.generate\nstability=architecture\n*/",
           "scope": "module",
           "specVersion": "1",
           "start": 0,
@@ -3413,7 +3421,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "165d3c2b4ffa520743c43ca124ce7e724b319c0376e79b95876e9694271d3c76",
+      "contentHash": "2fc1aaf4090a9cfd684af21256eb966d7e6a06255600133294605c6f46f18e99",
       "declarations": [
         null
       ],
@@ -3427,8 +3435,8 @@
         "node:url"
       ],
       "path": "src/initializer.js",
-      "semanticBytes": 418,
-      "sourceBytes": 6681
+      "semanticBytes": 493,
+      "sourceBytes": 7210
     },
     {
       "blocks": [
@@ -5335,6 +5343,26 @@
       "path": "tests/incremental.test.js",
       "semanticBytes": 0,
       "sourceBytes": 8908
+    },
+    {
+      "blocks": [],
+      "contentHash": "db46fb71af301f3d5c3782f0dd75f1d7f9732053bf658966fb1ff36d2abf15d0",
+      "declarations": [],
+      "imports": [
+        "../src/initializer.js",
+        "../src/transaction.js",
+        "node:assert/strict",
+        "node:child_process",
+        "node:fs/promises",
+        "node:module",
+        "node:os",
+        "node:path",
+        "node:test",
+        "node:url"
+      ],
+      "path": "tests/initializer-concurrency.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 6368
     },
     {
       "blocks": [],

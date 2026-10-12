@@ -509,7 +509,7 @@
         "agent search decisions"
       ],
       "hashes": {
-        "body": "89f593a06a30bb73ffb9b3fd91460a69ec38648823df673e63c9ecb13f1d8781",
+        "body": "2dff06e2055421cb4edb074d7a72f2588e8656ee39560f17908db1e2f8550d34",
         "semantic": "7052622c9732ab29e37c3ab87f848188e931f601684e811e7bb8adef31fbfe85",
         "structure": "9e2888cf59a38a89a022ac7c3564ca169dc9a16d8aa4902928f30fde5a01233a"
       },
@@ -577,8 +577,8 @@
         "automatic annotation"
       ],
       "hashes": {
-        "body": "165d3c2b4ffa520743c43ca124ce7e724b319c0376e79b95876e9694271d3c76",
-        "semantic": "32b959f42c7911d86ba137ce781e1b28f71b1d6f089e5ad0533bfe7e6a7e5956",
+        "body": "2fc1aaf4090a9cfd684af21256eb966d7e6a06255600133294605c6f46f18e99",
+        "semantic": "ade205cf2bc9147662a917f6a2063498c11ad767e21307e363e85effa3f91455",
         "structure": "abe92e87f0692370a352bfd2b4227d079aa8e1c55f8bd08f60e815d202cd259b"
       },
       "id": "llmnav.project.initialize",
@@ -591,9 +591,12 @@
         "node:path",
         "node:url"
       ],
+      "invariant": [
+        "Bootstrap writes and index generation share one repository lock."
+      ],
       "location": {
         "declarationLine": null,
-        "endLine": 10,
+        "endLine": 11,
         "exported": null,
         "kind": null,
         "language": null,
@@ -2187,6 +2190,6 @@
   "generatedBy": "llmnav@0.9.7",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "8a128afa5367343097e5ae6c8084659c2809bf3205b6f90b6945b0d85e856182",
+  "sourceHash": "52481b4dbb5443ff2f9d325c2db5c4daa165593ac77e96f40fb3b19c985d74c2",
   "specVersion": "1"
 }

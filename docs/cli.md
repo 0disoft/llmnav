@@ -35,6 +35,8 @@ If `package.json` exists, it must contain a JSON object. With `--package-scripts
 
 `--force` refreshes configuration templates, schema, managed agent blocks, and `.llmnav/.gitignore`. It never resets semantic ID history, catalog order, aliases, evaluation cases, or source cards.
 
+Bootstrap writes and the generation that follows share one generation lock, so concurrent `init` or `generate` runs in the same repository serialize instead of overwriting each other's files. A waiting `init` re-reads the package manifest and the selected agent instruction files after it acquires the lock, and rejects invalid input before writing. If a run is interrupted, rerun the same `init`; it reclaims a lock whose owner process is gone and removes it. This recovery covers the bootstrap point and the generation lock, and it is not a full bootstrap rollback: an interrupted run can leave atomic temp fragments behind, and power loss, external editors, and phases outside this lock remain outside its scope.
+
 ## `llmnav audit`
 
 ```sh

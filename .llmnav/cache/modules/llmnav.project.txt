@@ -5,6 +5,7 @@ Read semantic cards before opening source. Resolve current paths and signatures 
 role Create a repository's LLMNav configuration, registry, schemas, agent instructions, and initial index.
 owns project bootstrap, configuration templates, initial generation
 excludes package installation, automatic annotation
+invariant Bootstrap writes and index generation share one repository lock.
 rel workflow>llmnav.agent.install, workflow>llmnav.index.generate
 
 @llmnav.project.scan

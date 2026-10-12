@@ -66,9 +66,17 @@ import {
 } from "./prompt-bundle.js";
 
 export async function generateProject(root, options = {}) {
+  return generateProjectWithPreparation(root, undefined, options);
+}
+
+/** Internal bootstrap integration; preparation and generation share the same owner. */
+export async function generateProjectWithPreparation(root, prepare, options = {}) {
   return withGenerationLock(
     root,
-    (lock) => generateProjectLocked(root, { ...options, lockOwnerId: lock.ownerId }),
+    async (lock) => {
+      await prepare?.();
+      return generateProjectLocked(root, { ...options, lockOwnerId: lock.ownerId });
+    },
     options.lockOptions,
   );
 }

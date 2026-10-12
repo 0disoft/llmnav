@@ -4,6 +4,7 @@ role=Create a repository's LLMNav configuration, registry, schemas, agent instru
 owns=project bootstrap|configuration templates|initial generation
 excludes=package installation|automatic annotation
 search=llmnav init|repository bootstrap|agent setup
+invariant=Bootstrap writes and index generation share one repository lock.
 rel=workflow>llmnav.agent.install
 rel=workflow>llmnav.index.generate
 stability=architecture
@@ -13,7 +14,7 @@ import { copyFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { installAgentInstructions, normalizeAgentAdapters, validateAgentInstructions } from "./agents.js";
-import { generateProject } from "./generator.js";
+import { generateProjectWithPreparation } from "./generator.js";
 import { DEFAULT_CONFIG } from "./spec.js";
 import { assertNoSymlinkTraversal, atomicWrite, readText, sha256, stableStringify } from "./util.js";
 
@@ -21,6 +22,20 @@ const PACKAGE_ROOT = fileURLToPath(new URL("..", import.meta.url));
 
 export async function initializeProject(root, options = {}) {
   const agents = normalizeAgentAdapters(options.agents ?? ["agents"]);
+  // Reject malformed inputs before lock acquisition creates the control directory.
+  await readPackageManifest(root, options.packageScripts);
+  await validateAgentInstructions(root, agents);
+  let changed;
+  const generated = await generateProjectWithPreparation(root, async () => {
+    changed = await bootstrapProject(root, options, agents);
+  }, { check: false });
+  if (!generated.ok) return { ok: false, changed: [...new Set(changed)].sort(), generated };
+  changed.push(...generated.changedFiles);
+  return { ok: true, changed: [...new Set(changed)].sort(), generated };
+}
+
+async function bootstrapProject(root, options, agents) {
+  // Inputs may have changed while another operation owned the lock.
   const packageJson = await readPackageManifest(root, options.packageScripts);
   const repositoryId = inferRepositoryId(root, packageJson);
   await validateAgentInstructions(root, agents);
@@ -101,12 +116,7 @@ export async function initializeProject(root, options = {}) {
     if (await addPackageScripts(root)) changed.push("package.json");
   }
 
-  const generated = await generateProject(root, { check: false });
-  if (!generated.ok) {
-    return { ok: false, changed: [...new Set(changed)].sort(), generated };
-  }
-  changed.push(...generated.changedFiles);
-  return { ok: true, changed: [...new Set(changed)].sort(), generated };
+  return changed;
 }
 
 function inferRepositoryId(root, packageJson) {

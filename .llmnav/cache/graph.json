@@ -3018,7 +3018,7 @@
       "key": "llmnav/llmnav.project.initialize",
       "location": {
         "declarationLine": null,
-        "endLine": 10,
+        "endLine": 11,
         "exported": null,
         "kind": null,
         "language": null,
@@ -3301,7 +3301,7 @@
   ],
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "3e3e7ec5bd7b9e1d6d29c4ae11ce9a09816eae552a29bbb6d97a89480922ddf1",
+  "sourceHash": "62fa3895702f53113a8f027e53c951a5995089089068f95034c78b9fa5d3fb8f",
   "stats": {
     "edgeCount": 162,
     "importedIndexCount": 0,

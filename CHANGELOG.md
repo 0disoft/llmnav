@@ -8,6 +8,7 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 
 ### Fixed
 
+* Serialize initialization and the following generation under one generation lock, so concurrent `init` or `generate` runs cannot overwrite each other, and let a rerun reclaim a lock whose owner process was killed.
 * Check all selected agent instruction files before bootstrap writes and reject duplicate closing markers; malformed later adapters no longer leave earlier instructions or forced configuration partially updated.
 * Preserve team instructions before managed agent blocks when the generated heading is missing, renamed, or separated from the marker by unrelated text.
 * Infer valid repository IDs for numeric-leading and long package names so fresh initialization can generate its first index; preserve existing valid short IDs and distinguish long names with a deterministic suffix.

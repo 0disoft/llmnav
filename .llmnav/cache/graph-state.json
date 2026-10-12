@@ -3448,7 +3448,7 @@
           "to": "llmnav/llmnav.spec.contract"
         }
       ],
-      "inputHash": "9fade6be9f010d0de14170a2855b00cc638ac11a5dbfb300da77a5b22e2d109b",
+      "inputHash": "78f8bcf2cf980e8e226ce17ac7a6d8a1d2043a19fc814152d582f252786ca41a",
       "key": "card:llmnav/llmnav.project.initialize",
       "nodes": [
         {
@@ -3475,7 +3475,7 @@
           "key": "llmnav/llmnav.project.initialize",
           "location": {
             "declarationLine": null,
-            "endLine": 10,
+            "endLine": 11,
             "exported": null,
             "kind": null,
             "language": null,
@@ -3500,7 +3500,7 @@
           "semanticId": "llmnav.spec.contract"
         }
       ],
-      "outputHash": "c76a624c1be68d09e5588bbd2c540c78972dac2d952d7bca5d74e191824dbe42"
+      "outputHash": "facbbe4b56bf83fc36fb0346b141d9772a527dc9c8310e572412863c7cca099b"
     },
     {
       "edges": [
