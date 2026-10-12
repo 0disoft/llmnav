@@ -23,6 +23,8 @@ llmnav init [--agents <adapters>] [--package-scripts] [--force]
 
 Creates project configuration, schema, registry, lexicon, evaluation file, agent protocol, deterministic cache, volatile state ignore rules, and transaction ignore rules.
 
+The initial repository ID comes from the package name, or the directory name when no package name is available. A numeric leading character receives a `repository-` prefix; identifiers longer than 64 characters are shortened with a deterministic hash suffix. Existing valid short-name IDs keep their previous spelling. Normal initialization preserves an existing configuration; edit its `repositoryId` explicitly if an earlier initialization left an invalid ID.
+
 `--agents` accepts `agents`, `claude`, `copilot`, `cursor`, a comma-separated combination, `all`, or `none`. The default is `agents`.
 
 `--package-scripts` adds `llmnav:audit`, `llmnav:check`, `llmnav:format`, `llmnav:generate`, and `llmnav:eval` to an existing package.json. The audit script gates only high-priority candidates.

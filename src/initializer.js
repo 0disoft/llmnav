@@ -15,7 +15,7 @@ import { fileURLToPath } from "node:url";
 import { installAgentInstructions } from "./agents.js";
 import { generateProject } from "./generator.js";
 import { DEFAULT_CONFIG } from "./spec.js";
-import { assertNoSymlinkTraversal, atomicWrite, readJson, readText, stableStringify } from "./util.js";
+import { assertNoSymlinkTraversal, atomicWrite, readJson, readText, sha256, stableStringify } from "./util.js";
 
 const PACKAGE_ROOT = fileURLToPath(new URL("..", import.meta.url));
 
@@ -115,7 +115,10 @@ async function inferRepositoryId(root) {
     .toLowerCase()
     .replace(/[^a-z0-9-]+/gu, "-")
     .replace(/^-+|-+$/gu, "");
-  return normalized || "repository";
+  if (!normalized) return "repository";
+  const identifier = /^[a-z]/u.test(normalized) ? normalized : `repository-${normalized}`;
+  if (identifier.length <= 64) return identifier;
+  return `${identifier.slice(0, 51)}-${sha256(identifier).slice(0, 12)}`;
 }
 
 async function writeIfMissingOrForced(root, filePath, content, force, changed, displayPath) {

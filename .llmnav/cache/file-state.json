@@ -3414,7 +3414,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "2650d662e5a6b3cf202686548c404c18b1e6214c9870b8000b0a5f6b76158d00",
+      "contentHash": "2c2397e479aa8f9c5c815c3757681551605253a42d2dccef985983b3ef102a32",
       "declarations": [
         null
       ],
@@ -3429,7 +3429,7 @@
       ],
       "path": "src/initializer.js",
       "semanticBytes": 418,
-      "sourceBytes": 5374
+      "sourceBytes": 5600
     },
     {
       "blocks": [
@@ -5319,6 +5319,23 @@
       "path": "tests/incremental.test.js",
       "semanticBytes": 0,
       "sourceBytes": 8908
+    },
+    {
+      "blocks": [],
+      "contentHash": "6a1b5ebd4b883d3ec5423a262f7dcd557e824c71582ae414763a6cd29e379ea0",
+      "declarations": [],
+      "imports": [
+        "node:assert/strict",
+        "node:child_process",
+        "node:fs/promises",
+        "node:os",
+        "node:path",
+        "node:test",
+        "node:url"
+      ],
+      "path": "tests/initializer.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 3081
     },
     {
       "blocks": [],
