@@ -1114,7 +1114,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "faabab57f9738971673b8e81eafad4bb8b540659855a15b044615fafea0e6836",
+      "contentHash": "5388dccca4f1e8c67609c6fcbb16bd6054f33ef59569d1dd7c92993d3a101e6e",
       "declarations": [],
       "imports": [
         "node:child_process",
@@ -1125,7 +1125,7 @@
       ],
       "path": "scripts/pack-smoke.js",
       "semanticBytes": 0,
-      "sourceBytes": 7663
+      "sourceBytes": 8562
     },
     {
       "blocks": [],
@@ -1462,7 +1462,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "6f23a6f4d201881db6cd241d650001f2987991c3fb7ea12f44d4f383f2dbbc08",
+      "contentHash": "ab8fc7b8634328aafd74705ddd30ec4a085d3d4dcd73e0cbee72de1e770f6803",
       "declarations": [
         null
       ],
@@ -1473,7 +1473,7 @@
       ],
       "path": "src/agents.js",
       "semanticBytes": 374,
-      "sourceBytes": 6949
+      "sourceBytes": 6966
     },
     {
       "blocks": [
@@ -3414,7 +3414,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "2c2397e479aa8f9c5c815c3757681551605253a42d2dccef985983b3ef102a32",
+      "contentHash": "0fb8fbe77eebb5e371fdb99c104f089210b8d08763b0b53d0f021bde7ca254ba",
       "declarations": [
         null
       ],
@@ -3429,7 +3429,7 @@
       ],
       "path": "src/initializer.js",
       "semanticBytes": 418,
-      "sourceBytes": 5600
+      "sourceBytes": 5673
     },
     {
       "blocks": [
@@ -5322,9 +5322,10 @@
     },
     {
       "blocks": [],
-      "contentHash": "6a1b5ebd4b883d3ec5423a262f7dcd557e824c71582ae414763a6cd29e379ea0",
+      "contentHash": "afb2341896ed4737ce6726675610cb99822e3e5244b4b88a8bf82c2e5dd512a9",
       "declarations": [],
       "imports": [
+        "../src/initializer.js",
         "node:assert/strict",
         "node:child_process",
         "node:fs/promises",
@@ -5335,7 +5336,7 @@
       ],
       "path": "tests/initializer.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 3081
+      "sourceBytes": 5056
     },
     {
       "blocks": [],

@@ -27,6 +27,8 @@ The initial repository ID comes from the package name, or the directory name whe
 
 `--agents` accepts `agents`, `claude`, `copilot`, `cursor`, a comma-separated combination, `all`, or `none`. The default is `agents`.
 
+Unknown adapters and combinations of `none` with any other adapter fail with usage status 2 before initialization creates or changes files. This also applies to `--force` and `--package-scripts`; correct the adapter selection and rerun the command. Other filesystem or generation failures can still happen after bootstrap writes.
+
 `--package-scripts` adds `llmnav:audit`, `llmnav:check`, `llmnav:format`, `llmnav:generate`, and `llmnav:eval` to an existing package.json. The audit script gates only high-priority candidates.
 
 `--force` refreshes configuration templates, schema, managed agent blocks, and `.llmnav/.gitignore`. It never resets semantic ID history, catalog order, aliases, evaluation cases, or source cards.

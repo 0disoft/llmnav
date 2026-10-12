@@ -12,7 +12,7 @@ stability=architecture
 import { copyFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { installAgentInstructions } from "./agents.js";
+import { installAgentInstructions, normalizeAgentAdapters } from "./agents.js";
 import { generateProject } from "./generator.js";
 import { DEFAULT_CONFIG } from "./spec.js";
 import { assertNoSymlinkTraversal, atomicWrite, readJson, readText, sha256, stableStringify } from "./util.js";
@@ -20,6 +20,7 @@ import { assertNoSymlinkTraversal, atomicWrite, readJson, readText, sha256, stab
 const PACKAGE_ROOT = fileURLToPath(new URL("..", import.meta.url));
 
 export async function initializeProject(root, options = {}) {
+  const agents = normalizeAgentAdapters(options.agents ?? ["agents"]);
   const controlDirectory = path.join(root, ".llmnav");
   const evalDirectory = path.join(controlDirectory, "eval");
   const schemaDirectory = path.join(controlDirectory, "schema");
@@ -92,7 +93,7 @@ export async function initializeProject(root, options = {}) {
     changed.push(".llmnav/schema/config.schema.json");
   }
 
-  changed.push(...(await installAgentInstructions(root, options.agents ?? ["agents"])));
+  changed.push(...(await installAgentInstructions(root, agents)));
 
   if (options.packageScripts) {
     if (await addPackageScripts(root)) changed.push("package.json");

@@ -9,6 +9,7 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 ### Fixed
 
 * Infer valid repository IDs for numeric-leading and long package names so fresh initialization can generate its first index; preserve existing valid short IDs and distinguish long names with a deterministic suffix.
+* Reject invalid agent selections before bootstrap writes and reject `all,none` combinations instead of installing every agent's instructions.
 
 ## [0.9.7] — 2026-09-28
 

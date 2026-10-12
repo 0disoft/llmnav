@@ -38,7 +38,7 @@ After semantic changes, run \`npm exec -- llmnav format\`, \`npm exec -- llmnav 
 ${END}`;
 
 export async function installAgentInstructions(root, adapters = ["agents"]) {
-  const selected = normalizeAdapters(adapters);
+  const selected = normalizeAgentAdapters(adapters);
   const changed = [];
   for (const adapter of selected) {
     if (adapter === "agents") {
@@ -81,7 +81,7 @@ export async function installAgentInstructions(root, adapters = ["agents"]) {
   return changed;
 }
 
-function normalizeAdapters(adapters) {
+export function normalizeAgentAdapters(adapters) {
   const values = adapters
     .flatMap((value) => String(value).split(","))
     .map((value) => value.trim().toLowerCase())
@@ -89,11 +89,11 @@ function normalizeAdapters(adapters) {
   const allowed = new Set(["all", "none", "agents", "claude", "copilot", "cursor"]);
   const unknown = values.filter((value) => !allowed.has(value));
   if (unknown.length > 0) throw adapterUsageError(`Unknown agent adapter(s): ${[...new Set(unknown)].join(", ")}.`);
-  if (values.includes("all")) return ["agents", "claude", "copilot", "cursor"];
   if (values.includes("none")) {
     if (values.length > 1) throw adapterUsageError("Agent adapter none cannot be combined with other adapters.");
     return [];
   }
+  if (values.includes("all")) return ["agents", "claude", "copilot", "cursor"];
   return [...new Set(values)];
 }
 

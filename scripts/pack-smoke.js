@@ -1,5 +1,5 @@
 import { execFileSync, spawnSync } from "node:child_process";
-import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -30,7 +30,7 @@ try {
     installSource = path.join(packDirectory, filename);
   }
 
-  await writeFile(path.join(project, "package.json"), `${JSON.stringify({ name: "llmnav-pack-smoke", private: true }, null, 2)}\n`);
+  await writeFile(path.join(project, "package.json"), `${JSON.stringify({ name: `123-llmnav-pack-smoke-${"a".repeat(70)}`, private: true }, null, 2)}\n`);
   runNpm(["install", "--ignore-scripts", "--no-audit", "--no-fund", installSource], project);
 
   const installedPackage = JSON.parse(await readFile(path.join(project, "node_modules", "llmnav", "package.json"), "utf8"));
@@ -54,7 +54,14 @@ if (PACKAGE_VERSION !== ${JSON.stringify(installedPackage.version)} || SEARCH_IN
     `/* llmnav/1 symbol\nid=auth.session.rotate\nrole=Rotate one refresh-token family and reject replayed tokens.\nsearch=refresh token|token rotation|replay detection\ninvariant=At most one live refresh token exists per family.\nstability=contract\n*/\nexport function rotateSession(): void {}\n`,
   );
 
+  const beforeInvalidInit = (await readdir(project)).sort();
+  const invalidInit = runStatus(process.execPath, [cli, "init", "--agents", "copliot", "--root", project], project);
+  if (invalidInit.status !== 2 || JSON.stringify((await readdir(project)).sort()) !== JSON.stringify(beforeInvalidInit)) {
+    throw new Error("Installed invalid adapter initialization must fail before writing files.");
+  }
   run(process.execPath, [cli, "init", "--agents", "none", "--root", project], project);
+  const repositoryId = JSON.parse(await readFile(path.join(project, ".llmnav", "config.json"), "utf8")).repositoryId;
+  if (!/^[a-z][a-z0-9-]{0,63}$/u.test(repositoryId)) throw new Error("Installed initialization inferred an invalid repository ID.");
   const generation = JSON.parse(run(process.execPath, [cli, "generate", "--root", project, "--json"], project));
   if (!generation.ok) throw new Error(`Installed generation failed: ${JSON.stringify(generation)}`);
   run(
@@ -105,10 +112,14 @@ if (!result.ok || result.data[0]?.id !== "auth.session.rotate" || !explanation.o
     packageBytes: packed?.size ?? null,
     unpackedBytes: packed?.unpackedSize ?? null,
     runtimeDependencies: 0,
+    repositoryId,
     queryResult: results[0].id,
     explainStatus: explanation.status,
   }, null, 2));
 } finally {
+  if (path.dirname(temp) !== path.resolve(os.tmpdir()) || !path.basename(temp).startsWith("llmnav-pack-smoke-")) {
+    throw new Error("Refusing cleanup outside the package smoke directory.");
+  }
   await rm(temp, { recursive: true, force: true });
 }
 
