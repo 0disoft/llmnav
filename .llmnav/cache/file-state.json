@@ -1462,7 +1462,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "ab8fc7b8634328aafd74705ddd30ec4a085d3d4dcd73e0cbee72de1e770f6803",
+      "contentHash": "56efa6ff0562f1e2d5b8dc9986d7692816e48d15db06a3300804e4071381e5be",
       "declarations": [
         null
       ],
@@ -1473,7 +1473,7 @@
       ],
       "path": "src/agents.js",
       "semanticBytes": 374,
-      "sourceBytes": 6966
+      "sourceBytes": 7058
     },
     {
       "blocks": [
@@ -5027,6 +5027,22 @@
       "path": "tests/accelerator-recovery.test.js",
       "semanticBytes": 0,
       "sourceBytes": 5399
+    },
+    {
+      "blocks": [],
+      "contentHash": "3cffdbc851a27bf0a6e8bc84f549a557b12468ffa9bba048f44f3e63e75804c1",
+      "declarations": [],
+      "imports": [
+        "../src/agents.js",
+        "node:assert/strict",
+        "node:fs/promises",
+        "node:os",
+        "node:path",
+        "node:test"
+      ],
+      "path": "tests/agent-instructions.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 2554
     },
     {
       "blocks": [],

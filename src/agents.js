@@ -117,7 +117,8 @@ async function upsertMarkdown(root, filePath, title, block) {
     throw new Error(`${filePath} contains multiple LLMNav managed blocks.`);
   }
   if (start >= 0 && end >= start) {
-    const before = existing.slice(0, Math.max(0, existing.lastIndexOf("## LLMNav code navigation", start)));
+    // Only the generated heading directly adjacent to the marker belongs to us.
+    const before = existing.slice(0, start).replace(/(?:^|\r?\n)## LLMNav code navigation[ \t]*\r?\n[ \t\r\n]*$/u, "");
     const after = existing.slice(end + END.length).replace(/^\s+/u, "");
     next = `${before.trimEnd()}${before.trim() ? "\n\n" : ""}${block}\n${after ? `\n${after.trimStart()}` : ""}`;
   } else if (!existing.trim()) {

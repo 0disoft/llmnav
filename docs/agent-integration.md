@@ -33,6 +33,8 @@ Each Markdown adapter uses managed markers:
 
 Re-running initialization replaces the managed block and preserves unrelated repository instructions.
 
+Only the markers and an immediately adjacent generated `## LLMNav code navigation` heading are replaced. If that heading is missing, renamed, or separated from the marker by team instructions, the text before and after the markers remains in place. Repeated updates do not duplicate the generated heading or block.
+
 ## Protocol installed for agents
 
 The generated instruction tells an agent to:
