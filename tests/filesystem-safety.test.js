@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
-import { mkdir, mkdtemp, readFile, readdir, rename, rm, symlink, writeFile } from "node:fs/promises";
+import fs, { mkdir, mkdtemp, readFile, readdir, rename, rm, symlink, writeFile } from "node:fs/promises";
+import { syncBuiltinESMExports } from "node:module";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
@@ -8,6 +9,25 @@ import { formatProject } from "../src/formatter.js";
 import { initializeProject } from "../src/initializer.js";
 import { ensureActiveIds, loadRegistry } from "../src/registry.js";
 import { loadSearchData } from "../src/search.js";
+import { atomicWrite } from "../src/util.js";
+
+test("a failed atomic write removes the partially written temporary file", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-atomic-write-failure-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  const originalWriteFile = fs.writeFile;
+  const mock = context.mock.method(fs, "writeFile", async (filePath, content, options) => {
+    await originalWriteFile(filePath, content, options);
+    throw Object.assign(new Error("no space left on device"), { code: "ENOSPC" });
+  });
+  syncBuiltinESMExports();
+  try {
+    await assert.rejects(() => atomicWrite(root, path.join(root, "registry.json"), "payload\n"), /no space left/u);
+  } finally {
+    mock.mock.restore();
+    syncBuiltinESMExports();
+  }
+  assert.deepEqual(await readdir(root), []);
+});
 
 test("initialization rejects a schema directory junction outside the repository", async (context) => {
   const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-init-link-root-"));

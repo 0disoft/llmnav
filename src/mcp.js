@@ -9,6 +9,7 @@ rel=workflow>llmnav.agent.protocol
 stability=contract
 */
 
+import { once } from "node:events";
 import { stat } from "node:fs/promises";
 import path from "node:path";
 import readline from "node:readline";
@@ -34,7 +35,9 @@ export function createMcpServer(options = {}) {
     throw new TypeError("createMcpServer requires a project root path.");
   }
   const session = options.session ?? null;
-  const sessionCache = options.session === undefined ? createSessionCache(root) : null;
+  const sessionCache = options.session === undefined
+    ? createSessionCache(root, { createSession: options.createSession })
+    : null;
   const tools = getAgentToolDefinitions().map(toMcpTool);
 
   return {
@@ -120,22 +123,33 @@ async function resolveSession(session, sessionCache) {
   }
 }
 
-function createSessionCache(root) {
+export function createSessionCache(root, dependencies = {}) {
+  const createSession = dependencies.createSession ?? createProjectSession;
   let session = null;
   let stamp = null;
+  let loading = null;
   return {
-    async current() {
-      const nextStamp = await sessionStamp(root);
-      if (session === null) {
-        session = await createProjectSession(root);
-      } else if (nextStamp !== stamp) {
-        // Generation rewrites the artifacts; reuse the prepared snapshot only while they are untouched.
-        await session.refresh();
-      }
-      stamp = nextStamp;
-      return session;
+    current() {
+      // Concurrent calls share one load: a burst of tool calls must not each
+      // rebuild the prepared index from disk.
+      loading ??= load().finally(() => {
+        loading = null;
+      });
+      return loading;
     },
   };
+
+  async function load() {
+    const nextStamp = await sessionStamp(root);
+    if (session === null) {
+      session = await createSession(root);
+    } else if (nextStamp !== stamp) {
+      // Generation rewrites the artifacts; reuse the prepared snapshot only while they are untouched.
+      await session.refresh();
+    }
+    stamp = nextStamp;
+    return session;
+  }
 }
 
 /**
@@ -187,10 +201,31 @@ export async function serveMcpStdio(options = {}) {
     for await (const line of reader) {
       if (line.trim().length === 0) continue;
       const response = await server.handleLine(line);
-      if (response !== null) output.write(`${JSON.stringify(response)}\n`);
+      if (response === null) continue;
+      try {
+        await writeWithBackpressure(output, `${JSON.stringify(response)}\n`);
+      } catch (error) {
+        // A host that closed the pipe is not a server failure.
+        if (error && typeof error === "object" && error.code === "EPIPE") return 0;
+        throw error;
+      }
     }
   } finally {
     reader.close();
   }
   return 0;
+}
+
+async function writeWithBackpressure(output, text) {
+  if (output.write(text) === true) return;
+  // Ignoring the write result would buffer every response in memory; waiting for
+  // drain or close keeps one request in flight.
+  const closed = Promise.withResolvers();
+  const onClose = () => closed.resolve(false);
+  output.once("close", onClose);
+  try {
+    await Promise.race([once(output, "drain"), closed.promise]);
+  } finally {
+    output.removeListener("close", onClose);
+  }
 }

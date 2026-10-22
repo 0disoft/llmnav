@@ -1,12 +1,13 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { once } from "node:events";
+import { EventEmitter, once } from "node:events";
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
+import { Readable } from "node:stream";
 import { fileURLToPath } from "node:url";
-import { createMcpServer, MCP_PROTOCOL_VERSION, MCP_SERVER_NAME, sessionStamp } from "../src/mcp.js";
+import { createMcpServer, createSessionCache, MCP_PROTOCOL_VERSION, MCP_SERVER_NAME, serveMcpStdio, sessionStamp } from "../src/mcp.js";
 import { getAgentToolDefinitions } from "../src/agent-protocol.js";
 import { generateProject } from "../src/generator.js";
 import { initializeProject } from "../src/initializer.js";
@@ -126,6 +127,58 @@ export function issueInvoice(): void {}
   assert.ok(refreshed.data.some((card) => card.id === "auth.billing.issue"));
   const direct = await queryProject(root, "billing invoice", { top: 3 });
   assert.deepEqual(refreshed.data.map((card) => card.id), direct.map((card) => card.id));
+});
+
+test("concurrent tool calls share one snapshot load", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-mcp-single-flight-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  let created = 0;
+  let refreshed = 0;
+  const session = { refresh: async () => { refreshed += 1; } };
+  const gate = Promise.withResolvers();
+  const cache = createSessionCache(root, {
+    createSession: async () => {
+      created += 1;
+      await gate.promise;
+      return session;
+    },
+  });
+  const pending = Promise.all([cache.current(), cache.current(), cache.current()]);
+  gate.resolve();
+  const loaded = await pending;
+  assert.equal(created, 1);
+  assert.equal(refreshed, 0);
+  for (const value of loaded) assert.equal(value, session);
+  assert.equal(await cache.current(), session);
+  assert.equal(created, 1);
+});
+
+test("stdio output applies backpressure before reading the next request", async () => {
+  const writes = [];
+  const output = new EventEmitter();
+  output.write = (text) => {
+    writes.push(text);
+    return writes.length > 1;
+  };
+  const input = Readable.from([
+    `${JSON.stringify({ jsonrpc: "2.0", id: 1, method: "ping" })}\n`,
+    `${JSON.stringify({ jsonrpc: "2.0", id: 2, method: "ping" })}\n`,
+  ]);
+  const serving = serveMcpStdio({ root: os.tmpdir(), input, output });
+  await new Promise((resolve) => setTimeout(resolve, 20));
+  assert.equal(writes.length, 1);
+  output.emit("drain");
+  assert.equal(await serving, 0);
+  assert.equal(writes.length, 2);
+});
+
+test("a closed stdio output ends the session without an error", async () => {
+  const output = new EventEmitter();
+  output.write = () => {
+    throw Object.assign(new Error("broken pipe"), { code: "EPIPE" });
+  };
+  const input = Readable.from([`${JSON.stringify({ jsonrpc: "2.0", id: 1, method: "ping" })}\n`]);
+  assert.equal(await serveMcpStdio({ root: os.tmpdir(), input, output }), 0);
 });
 
 test("cache stamps separate regenerations inside one millisecond", async (context) => {

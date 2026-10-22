@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import fs, { mkdir, mkdtemp, open, readFile, readdir, rm, symlink, writeFile } from "node:fs/promises";
+import fs, { access, mkdir, mkdtemp, open, readFile, readdir, rm, symlink, writeFile } from "node:fs/promises";
 import { syncBuiltinESMExports } from "node:module";
 import os from "node:os";
 import path from "node:path";
@@ -19,6 +19,7 @@ import {
   TRANSACTION_ABORT_EXIT_CODE,
   acquireGenerationLock,
   releaseGenerationLock,
+  withGenerationLock,
 } from "../src/transaction.js";
 
 test("a failed owner write leaves no authoritative lock or candidate", async (context) => {
@@ -461,6 +462,90 @@ test("cache, registry, and stable order roll back as one generation state", asyn
   assert.equal(await readFile(indexPath, "utf8"), before.index);
   assert.equal(await readFile(registryPath, "utf8"), before.registry);
   assert.equal(await readFile(orderPath, "utf8"), before.order);
+});
+
+test("a transient lock release failure is retried instead of stranding the lock", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-lock-release-retry-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  const originalRename = fs.rename;
+  let remaining = 1;
+  const mock = context.mock.method(fs, "rename", async (...args) => {
+    if (remaining > 0 && String(args[1]).includes(".release-")) {
+      remaining -= 1;
+      throw Object.assign(new Error("resource busy"), { code: "EBUSY" });
+    }
+    return originalRename(...args);
+  });
+  syncBuiltinESMExports();
+  try {
+    assert.equal(await withGenerationLock(root, () => "completed"), "completed");
+  } finally {
+    mock.mock.restore();
+    syncBuiltinESMExports();
+  }
+  assert.equal(remaining, 0);
+  await assert.rejects(() => access(path.join(root, ".llmnav", "generation.lock")), { code: "ENOENT" });
+});
+
+test("a persistent release failure keeps the callback error and force-drops a self-owned lock", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-lock-release-failure-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  const originalRename = fs.rename;
+  const mock = context.mock.method(fs, "rename", async (...args) => {
+    if (String(args[1]).includes(".release-")) {
+      throw Object.assign(new Error("resource busy"), { code: "EBUSY" });
+    }
+    return originalRename(...args);
+  });
+  syncBuiltinESMExports();
+  try {
+    await assert.rejects(
+      () => withGenerationLock(root, () => { throw new Error("callback exploded"); }),
+      { message: "callback exploded" },
+    );
+  } finally {
+    mock.mock.restore();
+    syncBuiltinESMExports();
+  }
+  await assert.rejects(() => access(path.join(root, ".llmnav", "generation.lock")), { code: "ENOENT" });
+  const lock = await acquireGenerationLock(root, { delays: [0] });
+  await releaseGenerationLock(lock);
+});
+
+test("an unreleasable lock is reported together with the callback error", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-lock-release-stuck-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  const lockPath = path.join(root, ".llmnav", "generation.lock");
+  const originalRename = fs.rename;
+  const originalRm = fs.rm;
+  const renameMock = context.mock.method(fs, "rename", async (...args) => {
+    if (String(args[1]).includes(".release-")) {
+      throw Object.assign(new Error("resource busy"), { code: "EBUSY" });
+    }
+    return originalRename(...args);
+  });
+  const rmMock = context.mock.method(fs, "rm", async (target, options) => {
+    if (target === lockPath) throw Object.assign(new Error("operation not permitted"), { code: "EPERM" });
+    return originalRm(target, options);
+  });
+  syncBuiltinESMExports();
+  try {
+    await assert.rejects(
+      () => withGenerationLock(root, () => { throw new Error("callback exploded"); }),
+      (error) => {
+        assert.ok(error instanceof AggregateError);
+        assert.equal(error.errors.length, 2);
+        assert.equal(error.errors[0].message, "callback exploded");
+        assert.equal(error.errors[1].message, "resource busy");
+        return true;
+      },
+    );
+  } finally {
+    renameMock.mock.restore();
+    rmMock.mock.restore();
+    syncBuiltinESMExports();
+  }
+  await access(lockPath);
 });
 
 test("lock options reject values that cannot produce a valid wait schedule", async (context) => {

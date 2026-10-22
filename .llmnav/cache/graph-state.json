@@ -466,7 +466,7 @@
           "to": "llmnav/llmnav.spec.contract"
         }
       ],
-      "inputHash": "12794e9f53d5cba340250a318f02d245cc3ade430d34588292f3028406ca633b",
+      "inputHash": "3912d55e251fe0dc7b1b79c23ec19d19c7ed197d50b68e83c2eb0047850e77ae",
       "key": "card:llmnav/llmnav.agent.mcp",
       "nodes": [
         {

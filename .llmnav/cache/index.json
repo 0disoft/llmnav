@@ -935,7 +935,7 @@
         "source indexing"
       ],
       "hashes": {
-        "body": "d93f360e0a9e17321b2ce615416c3aeaca1b7743aa9ed0b85c4c58a2868fb790",
+        "body": "0881c9827f1428576fcd84811b0ce9a9d0a51116ef94106250df565e563d77f8",
         "semantic": "ce2cf8943f71d053f8cba914886bae20316e5b6106857f52abc4d8a59afb1ef1",
         "structure": "5de94f39bf7e761651c8294ee0af6202e494f6eb4a3f829ad9e27414fc3d9848"
       },
@@ -2200,15 +2200,16 @@
         "index preparation"
       ],
       "hashes": {
-        "body": "d114cc47c989ba216d3e8c9e18d1ff44f3de1db5328d9c196073359bb17ffc86",
+        "body": "96a0d6e8505c6f72391c4271c3596dde45fe1374346e45701588804102a16014",
         "semantic": "a1ec177829cdd462b6ea996d78d53c2c9071291f1dd14202e05d1236559a8973",
-        "structure": "f0a2187617b9c7a9a4adf2d2ae1948a6206b5e969a20febe645e9e3868152dd4"
+        "structure": "f70330ec11860d1c61aa2fdf6af64764231710a9346d26df09c586c009531c54"
       },
       "id": "llmnav.agent.mcp",
       "imports": [
         "./agent-protocol.js",
         "./search.js",
         "./spec.js",
+        "node:events",
         "node:fs/promises",
         "node:path",
         "node:readline"
@@ -2391,6 +2392,6 @@
   "generatedBy": "llmnav@0.11.1",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "16d04d0ee48abe2ba54213410a37efd5ced42882b26881e93095554e02dac0c3",
+  "sourceHash": "ebae2bb98a2622bab34bb6e1ab4ee8edd3adce021c9f1544aa244c579df38668",
   "specVersion": "1"
 }

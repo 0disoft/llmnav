@@ -53,11 +53,52 @@ const CONTROL_ARTIFACT_PATHS = new Set([".llmnav/ids.jsonl", ".llmnav/order.lock
 
 export async function withGenerationLock(root, callback, options = {}) {
   const lock = await acquireGenerationLock(root, options);
+  let result;
+  let failure;
   try {
-    return await callback(lock);
-  } finally {
-    await releaseGenerationLock(lock);
+    result = await callback(lock);
+  } catch (error) {
+    failure = error;
   }
+  // Releasing is part of the operation's contract: a callback error must not
+  // hide a release error, and a release error must not leave a live-pid lock
+  // behind that blocks every later generation in this process.
+  const releaseFailure = await releaseGenerationLockSettled(lock);
+  if (failure !== undefined && releaseFailure !== undefined) {
+    throw new AggregateError([failure, releaseFailure], "Generation failed and its lock could not be released.");
+  }
+  if (failure !== undefined) throw failure;
+  if (releaseFailure !== undefined) throw releaseFailure;
+  return result;
+}
+
+const LOCK_RELEASE_RETRY_DELAYS = Object.freeze([0, 8, 16]);
+
+async function releaseGenerationLockSettled(lock) {
+  const runtime = lock.runtime ?? DEFAULT_RUNTIME;
+  let failure;
+  for (const delay of LOCK_RELEASE_RETRY_DELAYS) {
+    if (delay > 0) await runtime.sleep(delay);
+    try {
+      await releaseGenerationLock(lock);
+      return undefined;
+    } catch (error) {
+      failure = error;
+    }
+  }
+  // The lock still names this process, so removal cannot steal another owner's
+  // lock: finishing without it would only strand the next generation.
+  try {
+    const observed = await readLockRecord(lock.lockPath);
+    if (observed.missing) return undefined;
+    if (observed.record?.ownerId === lock.ownerId) {
+      await rm(lock.lockPath, { force: true });
+      return undefined;
+    }
+  } catch {
+    // Report the original release failure instead of the fallback cleanup error.
+  }
+  return failure;
 }
 
 export async function acquireGenerationLock(root, options = {}) {

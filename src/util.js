@@ -144,14 +144,15 @@ export async function atomicWrite(root, filePath, content, options = {}) {
   await mkdir(parent, { recursive: true });
   const parentIdentity = await directoryIdentity(root, parent, label);
   const temporaryPath = `${filePath}.tmp-${process.pid}-${Math.random().toString(16).slice(2)}`;
-  await writeFile(temporaryPath, content, { encoding: "utf8", flag: "wx" });
   try {
+    await writeFile(temporaryPath, content, { encoding: "utf8", flag: "wx" });
     await options.beforeCommit?.({ filePath, temporaryPath });
     await assertNoSymlinkTraversal(root, filePath, label);
     const currentIdentity = await directoryIdentity(root, parent, label);
     if (currentIdentity !== parentIdentity) throw new Error(`${label} parent directory changed during atomic write.`);
     await rename(temporaryPath, filePath);
   } catch (error) {
+    // A failed write can still leave a partial temporary file (ENOSPC, EIO).
     if (await parentHasIdentity(root, parent, parentIdentity)) await rm(temporaryPath, { force: true });
     throw error;
   }
