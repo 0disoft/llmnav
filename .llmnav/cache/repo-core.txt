@@ -135,7 +135,7 @@ rel workflow>llmnav.agent.tool-schema, workflow>llmnav.agent.install, workflow>l
 
 @llmnav.declaration.extract
 role Attach symbol cards to language declarations and derive structural metadata without executing source.
-owns declaration attachment, signature extraction, import extraction
+owns declaration attachment, signature extraction, import extraction, source declaration candidates
 excludes semantic card parsing, type-system resolution
 invariant String literals and comments do not create false declarations or imports.
 rel workflow>llmnav.project.scan
@@ -195,3 +195,10 @@ owns source change stamps, on-request incremental generation, refresh failure re
 excludes filesystem watchers, source annotation, request cancellation ownership
 invariant Only a successful uncancelled generation advances the prepared source stamp.
 rel workflow>llmnav.index.generate
+
+@llmnav.search.discover
+role Find source files and heuristic declarations before a repository has semantic cards or generated indexes.
+owns unannotated source navigation, file and declaration ranking, candidate provenance
+excludes business rule inference, source mutation, semantic ID assignment
+invariant Automatic candidates carry source provenance and never claim reviewed semantic contracts.
+rel workflow>llmnav.declaration.extract, workflow>llmnav.audit.coverage

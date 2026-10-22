@@ -50,3 +50,4 @@
 {"id":"llmnav.support.concurrency","state":"active"}
 {"id":"llmnav.support.read-operation","state":"active"}
 {"id":"llmnav.agent.freshness","state":"active"}
+{"id":"llmnav.search.discover","state":"active"}

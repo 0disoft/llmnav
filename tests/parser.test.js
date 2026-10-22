@@ -82,7 +82,7 @@ test("JavaScript regex quotes do not hide later cards or expose regex contents",
   for (const prefix of prefixes) {
     const source = `${prefix}\n${card}\n`;
     assert.doesNotThrow(() => new Script(source), prefix);
-    for (const extension of ["js", "ts", "mjs", "cjs", "jsx", "tsx"]) {
+    for (const extension of ["js", "ts", "mts", "cts", "mjs", "cjs", "jsx", "tsx"]) {
       assert.deepEqual(parseLlmnavBlocks(source, `fixture.${extension}`).map((block) => block.card.id), ["regex.real"], prefix);
     }
   }

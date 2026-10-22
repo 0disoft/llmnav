@@ -71,3 +71,10 @@ export const TOKEN_ESTIMATION = Object.freeze({
   asciiCharactersPerToken: 4,
   nonAsciiCodeUnitsPerToken: 1.8,
 });
+
+export const DISCOVERY_RANK = Object.freeze({
+  symbolToken: 8,
+  pathToken: 3,
+  signatureToken: 2,
+  exactSymbol: 40,
+});

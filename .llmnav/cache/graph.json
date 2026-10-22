@@ -437,6 +437,20 @@
     {
       "confidence": 0.85,
       "from": "llmnav/llmnav.agent.protocol",
+      "id": "093a5bd6388b94481fa63b073e8474da3641f980594efb483f9eb1765a7a6d3b",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/agent-protocol.js",
+        "source": "src/agent-protocol.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.search.discover"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.agent.protocol",
       "id": "b5b88d17c4a94d7e4796aaaba74bc1058a2ba83a39607d4a2cb697c944020a22",
       "kind": "imports",
       "provenance": {
@@ -913,6 +927,20 @@
     {
       "confidence": 0.85,
       "from": "llmnav/llmnav.cli.dispatch",
+      "id": "5911be11f331f1edadfb2dec52ac79a509f51252388f5be2ce5b069a385e2170",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/cli.js",
+        "source": "src/cli.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.search.discover"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.cli.dispatch",
       "id": "bf06b4d68eda5fb522d030d38f0d058787e28c0a5c12b6d9e97ad13462eed650",
       "kind": "imports",
       "provenance": {
@@ -1063,6 +1091,20 @@
         "type": "local-import"
       },
       "to": "llmnav/llmnav.support.policy"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.declaration.extract",
+      "id": "def927ff3a1f7c2b4588d2771638c67f324c8d77e720121eb97f243456a1d06c",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/declaration.js",
+        "source": "src/declaration.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.syntax.parse"
     },
     {
       "confidence": 0.85,
@@ -2477,6 +2519,104 @@
         "type": "source-card"
       },
       "to": "llmnav/llmnav.syntax.parse"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.search.discover",
+      "id": "ca5cc85312bb942d2b5a47e1068bdfc49954f662218cd4709ddbd253aa1c8e66",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/discovery.js",
+        "source": "src/discovery.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.audit.coverage"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.search.discover",
+      "id": "c195945404c79dc185486954c8aa0265f2941c35580bd523eaf919bd26f10465",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/discovery.js",
+        "source": "src/discovery.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.declaration.extract"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.search.discover",
+      "id": "48f1f50a57be3ccaa27588a0436bf3c8862c4820111439644b24fe861d2e70cd",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/discovery.js",
+        "source": "src/discovery.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.declaration.extract"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.search.discover",
+      "id": "1fc7c81cc6310d0b62e00e03fef88c6da1a314572c53dfd58bba352c53b5e642",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/discovery.js",
+        "source": "src/discovery.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.project.scan"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.search.discover",
+      "id": "5af985e6aaa2bd11445584e62cfe4d9ee887d9f439751d56bea45751013db8eb",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/discovery.js",
+        "source": "src/discovery.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.search.tokenize"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.search.discover",
+      "id": "3cc14fb28a45e942d8c79e86e182e85448bc4848d22f1cac0c98eaaf2624fc08",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/discovery.js",
+        "source": "src/discovery.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.support.abort"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.search.discover",
+      "id": "256127acbc9e7a8ba1f0365c57d5bdabe90886c9528dcc3990531d712584b648",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/discovery.js",
+        "source": "src/discovery.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.support.policy"
     },
     {
       "confidence": 0.85,
@@ -3925,6 +4065,28 @@
     {
       "definitions": [],
       "external": false,
+      "key": "llmnav/llmnav.search.discover",
+      "location": {
+        "declarationLine": null,
+        "endLine": 11,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/discovery.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Find source files and heuristic declarations before a repository has semantic cards or generated indexes.",
+      "semanticId": "llmnav.search.discover",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
       "key": "llmnav/llmnav.search.query",
       "location": {
         "declarationLine": null,
@@ -4233,11 +4395,11 @@
   ],
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "92f562492e6a9519ec2d471be34e5f3b680f29f48c840a9611d3512fd119d67a",
+  "sourceHash": "08603ca29cbcdddfb8a762a40003caa0efdd47bc681de527f5bfc420db5b7849",
   "stats": {
-    "edgeCount": 216,
+    "edgeCount": 226,
     "importedIndexCount": 0,
-    "nodeCount": 52,
+    "nodeCount": 53,
     "unresolvedNodeCount": 0
   }
 }

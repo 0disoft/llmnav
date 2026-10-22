@@ -39,7 +39,7 @@ const BLOCK_PATTERNS = [
 ];
 const MAX_SOURCE_BYTES = 16 * 1024 * 1024;
 const MAX_BLOCKS_PER_FILE = 10_000;
-const JAVASCRIPT_EXTENSIONS = new Set([".js", ".mjs", ".cjs", ".jsx", ".ts", ".tsx"]);
+const JAVASCRIPT_EXTENSIONS = new Set([".js", ".mjs", ".cjs", ".jsx", ".ts", ".tsx", ".mts", ".cts"]);
 const REGEX_PREFIX_KEYWORDS = new Set([
   "await", "case", "delete", "do", "else", "in", "instanceof", "new", "return", "throw", "typeof", "void", "yield",
 ]);
@@ -239,7 +239,7 @@ const LITERAL_STATE_SCANNERS = {
   backtick: scanQuotedLiteral,
 };
 
-function buildLiteralMask(source, filePath) {
+export function buildLiteralMask(source, filePath) {
   const scan = createLiteralScan(source, filePath);
   const mask = new Uint8Array(source.length);
   for (scan.index = 0; scan.index < source.length; scan.index += 1) {

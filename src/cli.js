@@ -13,6 +13,7 @@ stability=architecture
 */
 
 import path from "node:path";
+import { discoverProject } from "./discovery.js";
 import { findProjectRoot } from "./files.js";
 import { initializeProject } from "./initializer.js";
 import { scanProject } from "./project.js";
@@ -51,6 +52,7 @@ const COMMAND_OPTIONS = Object.freeze({
   format: new Set(["--check", "--root", "--json"]),
   generate: new Set(["--check", "--verify", "--full", "--root", "--json"]),
   index: new Set(["--check", "--verify", "--full", "--root", "--json"]),
+  discover: new Set(["--top", "--root", "--json"]),
   query: new Set(["--top", "--root", "--json"]),
   show: new Set(["--root", "--json"]),
   context: new Set(["--depth", "--budget", "--max-edges", "--root", "--json"]),
@@ -97,6 +99,8 @@ export async function runCli(argv) {
     case "generate":
     case "index":
       return runGenerate(root, args, json);
+    case "discover":
+      return runDiscover(root, args, json);
     case "query":
       return runQuery(root, args, json);
     case "show":
@@ -140,6 +144,7 @@ async function runInit(root, args, json) {
     if (result.changed.length === 0) console.log("No files changed.");
     for (const file of result.changed) console.log(`  wrote ${file}`);
     if (!result.ok) printDiagnostics(result.generated.diagnostics, "text");
+    else console.log('First exploration: llmnav discover "<identifier or task>" --top 5');
   }
   return result.ok ? 0 : 1;
 }
@@ -226,7 +231,7 @@ async function runQuery(root, args, json) {
   if (json) {
     console.log(JSON.stringify(results, null, 2));
   } else if (results.length === 0) {
-    console.log("No credible LLMNav candidates found.");
+    console.log("No credible LLMNav candidates found. Try llmnav discover with source identifiers or paths.");
   } else {
     for (const [index, result] of results.entries()) {
       const symbol = result.location?.symbol ? `#${result.location.symbol}` : "";
@@ -236,6 +241,25 @@ async function runQuery(root, args, json) {
       console.log(`   ${result.location?.path ?? "unknown"}${symbol}:${line}`);
       console.log(`   why ${result.reasons.join(", ")}`);
     }
+  }
+  return 0;
+}
+
+async function runDiscover(root, args, json) {
+  const query = getPositionals(args).join(" ").trim();
+  if (!query) { console.error("discover requires search text."); return 2; }
+  const top = parseCliIntegerOption(args, "--top", SEARCH_LIMITS.top.default);
+  const result = await discoverProject(root, query, { top });
+  if (json) console.log(JSON.stringify(result, null, 2));
+  else if (result.results.length === 0) console.log("No matching source paths or declarations found. Try identifiers in the repository language.");
+  else {
+    for (const [index, candidate] of result.results.entries()) {
+      const symbol = candidate.symbol ? `#${candidate.symbol}` : "";
+      console.log(`${index + 1}. [${candidate.source}] ${candidate.path}${symbol}:${candidate.line} score=${candidate.score}`);
+      if (candidate.signature) console.log(`   ${candidate.signature}`);
+      if (candidate.cardIds.length) console.log(`   cards: ${candidate.cardIds.join(", ")}`);
+    }
+    console.log("Read the source to verify behavior. Use llmnav explain <path> before adding a durable semantic card.");
   }
   return 0;
 }
@@ -566,6 +590,7 @@ Usage
   llmnav check [paths...] [--format text|json|github|sarif|editor]
   llmnav format [paths...] [--check]
   llmnav generate [--check] [--full]
+  llmnav discover "<text>" [--top <n>] [--root <path>] [--json]
   llmnav query "<task>" [--top ${SEARCH_LIMITS.top.default}]
   llmnav show <semantic-id>
   llmnav context <semantic-id> [--depth ${SEARCH_LIMITS.depth.default}] [--budget ${SEARCH_LIMITS.budget.default}] [--max-edges ${SEARCH_LIMITS.maxEdges.default}]

@@ -257,7 +257,7 @@ Prints the active source specification version, canonical key order, stability v
 llmnav tools [--json]
 ```
 
-Prints the fixed provider-neutral tool definitions for `query`, `show`, `context`, `check`, `explain`, and `audit`. Each definition carries schemaVersion 2; JSON output wraps the ordered definitions in a schemaVersion 1 command envelope. Tool inputs reject unknown fields and never accept a repository root; a trusted host binds repository scope when it calls the library dispatcher.
+Prints the fixed provider-neutral tool definitions for `query`, `show`, `context`, `check`, `explain`, `audit`, and `discover`. Each definition carries schemaVersion 3; JSON output wraps the ordered definitions in a schemaVersion 1 command envelope. Tool inputs reject unknown fields and never accept a repository root; a trusted host binds repository scope when it calls the library dispatcher.
 
 ## `llmnav mcp`
 
@@ -284,3 +284,11 @@ llmnav editor vscode
 Prints a schemaVersion 1 editor integration envelope containing a VS Code `tasks.json` configuration. The command is repository-independent and does not write `.vscode` files. Merge the returned task into an existing configuration when necessary.
 
 Use `llmnav mcp --auto-generate` for on-request source freshness. Without the flag the host runs generation explicitly. See [editor integration](editor-integration.md#source-freshness-for-mcp).
+
+## Discover live source
+
+```sh
+llmnav discover "rotate session" --top 5 --json
+```
+
+Works before initialization or generation. Searches selected source paths, heuristic declaration names and signatures. Use identifiers in the repository language; JSON results distinguish `file` and `declaration` sources. Review source behavior before adding a semantic card. The corresponding provider-neutral operation is `llmnav_discover` with `{ task, top? }`.

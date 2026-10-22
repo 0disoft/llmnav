@@ -310,3 +310,11 @@ Latin aliases match complete words (case insensitive): `auth` matches `auth-toke
 Normal queries score responsibilities and code metadata; `excludes` text contributes no positive score. Query `llmnav query "excludes: billing"` to inspect cards explicitly excluding that responsibility. These results carry an `excludes=` reason and do not expand through relations.
 
 Default source selection includes `.mts` and `.cts`. Existing configurations with explicit `includeExtensions` lists need those extensions added if desired; `.d.mts` and `.d.cts` follow the existing `.d.ts` inclusion policy.
+
+### Start without semantic cards
+
+Run `llmnav discover "rotate session" --top 5` before initialization or index generation. It reads selected live source files and ranks paths, declaration names and signatures, including camel-case identifiers. JSON output labels each candidate as `source: "file"` or `source: "declaration"` and lists any same-file `cardIds`. `llmnav_discover` exposes the same operation over MCP without loading or creating an index.
+
+Discovery uses syntax heuristics and the repository language; it does not infer business meaning or translate a query automatically. Read the candidate source, then run `llmnav explain <path>` or `llmnav audit` to decide whether one durable boundary deserves a card. Add a narrow coverage rule and one retrieval query after review. Existing `query`, `show`, and `context` keep their semantic-card contracts.
+
+For editing sessions, run `llmnav mcp --auto-generate` to prepare current indexes before semantic navigation calls.

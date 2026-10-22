@@ -348,7 +348,7 @@
         "agent execution"
       ],
       "hashes": {
-        "body": "e7e78c823e6a71455387568dbf4bceaed8f9ad27fa12007b0f81f489c3b77b76",
+        "body": "e1b3c90d3d476e28f1d563524cdd01b6c85049d55c59f55557fa3453590798d9",
         "semantic": "7258d93062db7c24d1bdf4076e99802a3fcc413f4012e0aca49148a9fe1dedaa",
         "structure": "3053c2bc1f7f90fbd706cec759bbf0a1aa2ac261ef4902263d23ea5d4e88b01d"
       },
@@ -393,14 +393,15 @@
         "index persistence format"
       ],
       "hashes": {
-        "body": "c5143c77c92f724d7a032704d2b9ccf7a4b02b4db714c31e5c641b3682cd68c7",
+        "body": "8b405993275dd338cd88ee1584084f3b879893cea758b123bb5cdb9f59d34792",
         "semantic": "f4671d61fc8164fc24498faa91ba84f777e28a7f325750991908542867a69b6e",
-        "structure": "95bb4b37dc587e88afdffa5e159aacf975164f6261ec8a8d13c0912b54e1f0ed"
+        "structure": "b4bf4435bde7971c2feb72565f8fe38887af95e953e386c795593925f8876c95"
       },
       "id": "llmnav.cli.dispatch",
       "imports": [
         "./agent-protocol.js",
         "./audit.js",
+        "./discovery.js",
         "./doctor.js",
         "./editor.js",
         "./evaluation.js",
@@ -685,7 +686,7 @@
         "source mutation"
       ],
       "hashes": {
-        "body": "e2d1a1f3e039bd54cdc2076f6f76bc10e05c84bcf53c70c79adcea461bd657df",
+        "body": "3f5d08a4257898857511c92bad453ec9fa47a5313d2c4d0aced64e34d687074d",
         "semantic": "945f325a2ad2abfa71212b02dd952c071d47ed6d3848a16d247afd48dbe5ced6",
         "structure": "a53c3b192c4f1a53461232c4516ebbfd79337f70a6fb27f2e6325213050a6cb6"
       },
@@ -745,7 +746,7 @@
         "repository search"
       ],
       "hashes": {
-        "body": "639c84477a0991034b879e826bb16f32453d35b1d38003f3379c80d5d3ecc8e3",
+        "body": "b4a74150feffcb32610d4530570f0fc3c2faf8cc6e0d1bcde2ea70941d8470ce",
         "semantic": "6fe19b8340b0f5a5ba89cf953692dfd02bb937b04718dfc19ea14b936de5fb80",
         "structure": "976d8125d028a5788c1f5b74b77a43ba06dcd0b54702a2ddf99c64b436c7896d"
       },
@@ -835,7 +836,7 @@
         "cache directory commit"
       ],
       "hashes": {
-        "body": "7cac890d172c2d69dfbe482bb9f308687a3589d04555b47da660c9e98ce06aaf",
+        "body": "bcb0c64929c9ef31f70a0e3402bfa987d280244dd0703d17fe9bdc668a42c8f1",
         "semantic": "26e0abf92c39ff07a7eb622d795d5ecbc83c7704b7c1ed09cd3ad339e3c04865",
         "structure": "4533f320f5c701808b979357ece450b56bdbc35f1117a5d53a2556e684a33657"
       },
@@ -1317,15 +1318,16 @@
         "source mutation"
       ],
       "hashes": {
-        "body": "e7ca33fec789ebf59a9fa5495db2802f73e942af8f297d0d0ec2fa3e5fe69a75",
+        "body": "d5d1a10f3ebb38ac9826ca545b92cc745b61d8dcbe76a898c2f64c495e76c68d",
         "semantic": "ce30fe54e5dab8eb3cda8e1e6afdcee3489c3f62267d99ff85257f4c819d21a4",
-        "structure": "0fe64f939a8ed48926b7c3e733ab33492b32991aabf69887568a4d6611ad25bd"
+        "structure": "95d824e01b3df78a9bd187082735ef147cd288047ecd667c0b1cdde861f83df5"
       },
       "id": "llmnav.agent.protocol",
       "imports": [
         "./abort.js",
         "./agent-tools.js",
         "./audit.js",
+        "./discovery.js",
         "./errors.js",
         "./graph-input.js",
         "./policy.js",
@@ -1428,7 +1430,7 @@
         "repository scope"
       ],
       "hashes": {
-        "body": "6e12196a3f9157d763546937015c66c6f627bb8aa3dd32130f82a5ed165062f6",
+        "body": "97b81d56c49d9149ddbf1b2ff51c435bdb80740e3553171e27ce188de7c5e69b",
         "semantic": "d1de5aa0a4d4ade41371bd255707d45ec8ba04edd4d99f9d49242cd766df1f4a",
         "structure": "f7288c1ea4e3c498c7ca4e1d62c455c8e07d1cc102615842d2b06c21bc8cc503"
       },
@@ -1571,12 +1573,13 @@
         "type-system resolution"
       ],
       "hashes": {
-        "body": "31ffea0dbb62b53eca6c6d53c02a40deaafa68974e38a92320b8484aeacf4fca",
-        "semantic": "a23716e9b8875db627bcaf423c48724cbebc2d4b7eb086b35379cc85525af93a",
-        "structure": "93e9370f5b74928a43897738c572379dc96b3a8582d35101667bab65e9491ee0"
+        "body": "d9b92be1c11517fbe535700475a0d2d8f4a62d5fa8bbe1133edae88ebb0cb061",
+        "semantic": "7030b7ad2203425883d7d7fb0110b74e4994d2f821b457eaabb59bdc49c6a4ea",
+        "structure": "2aebd4bc4c948f540c790d4ab8b02cbb87ce123eaab8fdf344ae0ac1cad9e32d"
       },
       "id": "llmnav.declaration.extract",
       "imports": [
+        "./parser.js",
         "./policy.js",
         "./util.js",
         "node:path"
@@ -1600,7 +1603,8 @@
       "owns": [
         "declaration attachment",
         "signature extraction",
-        "import extraction"
+        "import extraction",
+        "source declaration candidates"
       ],
       "rel": [
         "workflow>llmnav.project.scan"
@@ -2212,7 +2216,7 @@
         "index preparation"
       ],
       "hashes": {
-        "body": "3ecef5813dfa810bd1af2a03ab6455d758a25f733b6f755d209a5a152d6fa9e5",
+        "body": "883e1a0533c68c4df13fac19dfc563e40f0a2e1c213039462c1543c04623bd8c",
         "semantic": "a1ec177829cdd462b6ea996d78d53c2c9071291f1dd14202e05d1236559a8973",
         "structure": "78e4d8d2614cbfb79ac3a7b19b1f3df4022a797dbb3dd967555bdc37b1a9861f"
       },
@@ -2357,7 +2361,7 @@
         "agent transport"
       ],
       "hashes": {
-        "body": "68a1ae3b833a07bcf6d5b7f4f780098a21f84f1f9c3d9611e02fffdba9e0f870",
+        "body": "40e81525100fe39846b85a957628a669f8eb483e93bd47452794f10e4d4106ea",
         "semantic": "1c3e0a746691316d75d33f3aaef87db10419c52cae67bbcc5dc26c25b7dcff74",
         "structure": "79d75218e26f6313afbe080aa88e5ab3e9fb12e97d17ac3c2168c1c1ccf0c935"
       },
@@ -2551,7 +2555,7 @@
         "request cancellation ownership"
       ],
       "hashes": {
-        "body": "795d99728f47cbff6f5760fc96cfeb1ea6939b9d7a50003e2bb42da2e562207a",
+        "body": "53b3649dbece82c1200657d10fe3ac2bb27a21b4e079158156941e5d94e84eb1",
         "semantic": "273f312a13397e49d44806ba090489f8b4f0b901e54593397ba22b84a00ab671",
         "structure": "f22dd5cafaec2f4c787d8e092423c28f9196630c35618378b4f8d33dce1b2f47"
       },
@@ -2598,11 +2602,66 @@
         "index freshness"
       ],
       "stability": "architecture"
+    },
+    {
+      "boundaries": [],
+      "excludes": [
+        "business rule inference",
+        "source mutation",
+        "semantic ID assignment"
+      ],
+      "hashes": {
+        "body": "dfa428c7e06647f8db724d2023dd570e4ebf4544b3567a452c47164a9a2afb2e",
+        "semantic": "172ba02627952bedcf36390a976b34f698fd1f73db8c2f9398d21bcc26c5cae6",
+        "structure": "0d22a1ad773bdc9e24cacd91b6455a69a5be06952f6594db26b4fe59fd0795d5"
+      },
+      "id": "llmnav.search.discover",
+      "imports": [
+        "./abort.js",
+        "./declaration.js",
+        "./policy.js",
+        "./project.js",
+        "./tokenizer.js",
+        "./util.js"
+      ],
+      "invariant": [
+        "Automatic candidates carry source provenance and never claim reviewed semantic contracts."
+      ],
+      "location": {
+        "declarationLine": null,
+        "endLine": 11,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/discovery.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "owns": [
+        "unannotated source navigation",
+        "file and declaration ranking",
+        "candidate provenance"
+      ],
+      "rel": [
+        "workflow>llmnav.declaration.extract",
+        "workflow>llmnav.audit.coverage"
+      ],
+      "role": "Find source files and heuristic declarations before a repository has semantic cards or generated indexes.",
+      "scope": "module",
+      "search": [
+        "cardless code search",
+        "first source exploration",
+        "find declaration without cards"
+      ],
+      "stability": "architecture"
     }
   ],
   "contractFingerprints": {
     "configuration": {
-      "sha256": "e0f2e2e891adc1defce72fa414794d935ad4eceb95624533f5f40fa01d264358"
+      "sha256": "03ae1d4f4339b0b348a6f47fabbe0b76c96934620dbc7376de28da2505f7bda5"
     },
     "exportedApi": {
       "count": 5,
@@ -2613,6 +2672,6 @@
   "generatedBy": "llmnav@0.14.0",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "26c79d6e331002dbca631690af96afa89dc9d0fabcd2e48e33c6909bfb41ac7a",
+  "sourceHash": "be0eba7c596a98e882f5e29ac0efb737f5eccd872b3e1268f735267e6e29d08e",
   "specVersion": "1"
 }

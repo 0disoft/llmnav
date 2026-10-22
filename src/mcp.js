@@ -113,7 +113,8 @@ async function callTool(id, params, root, session, sessionCache, requestTimeoutM
   try {
     throwIfAborted(options.signal);
     const operation = Promise.resolve().then(async () => {
-      const activeSession = await resolveSession(session, sessionCache, controller.signal);
+      const activeSession = params.name === "llmnav_discover"
+        ? null : await resolveSession(session, sessionCache, controller.signal);
       throwIfAborted(controller.signal);
       return executeAgentOperation(root, params.name, input, {
         ...(activeSession === null ? {} : { session: activeSession }),

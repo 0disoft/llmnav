@@ -1,7 +1,7 @@
 /* llmnav/1 module
 id=llmnav.declaration.extract
 role=Attach symbol cards to language declarations and derive structural metadata without executing source.
-owns=declaration attachment|signature extraction|import extraction
+owns=declaration attachment|signature extraction|import extraction|source declaration candidates
 excludes=semantic card parsing|type-system resolution
 search=declaration extraction|symbol attachment|body hash
 invariant=String literals and comments do not create false declarations or imports.
@@ -10,6 +10,7 @@ stability=architecture
 */
 
 import path from "node:path";
+import { buildLiteralMask } from "./parser.js";
 import { DECLARATION_SCAN_POLICY } from "./policy.js";
 import { buildLineStarts, lineAtOffsetFromStarts, normalizeNewlines, sha256 } from "./util.js";
 
@@ -93,6 +94,31 @@ export function findAttachedDeclaration(source, block, filePath, scanContext = c
     };
   }
   return null;
+}
+
+// Heuristic declaration discovery shares the same syntax, literal masking and
+// aggregate work budget as annotated declaration attachment. No source writes.
+export function extractSourceDeclarations(source, filePath) {
+  const mask = buildLiteralMask(source, filePath);
+  const extension = path.extname(filePath).toLowerCase();
+  const patterns = DECLARATION_PATTERNS[languageFamily(extension)] ?? DECLARATION_PATTERNS.generic;
+  const scanContext = createDeclarationScanContext(source);
+  const declarations = [];
+  for (const match of source.matchAll(/^[ \t]*(?=\S)/gmu)) {
+    const offset = match.index + match[0].length;
+    if (mask[offset] === 1) continue;
+    const candidate = source.slice(offset, offset + DECLARATION_SCAN_POLICY.attachmentWindowCharacters);
+    if (!patterns.some(definition => definition.pattern.test(candidate))) continue;
+    const declaration = findAttachedDeclaration(source, { scope: "symbol", end: offset }, filePath, scanContext);
+    if (declaration) {
+      const header = normalizeNewlines(source.slice(declaration.offset,
+        Math.min(declaration.endOffset, declaration.offset + DECLARATION_SCAN_POLICY.attachmentWindowCharacters)))
+        .split("\n").slice(0, DECLARATION_SCAN_POLICY.signatureLines).join(" ").replace(/\s+/gu, " ").trim();
+      declarations.push({ ...declaration, signature: extractSignature(header, declaration.language) });
+    }
+    if (scanContext.remainingScanUnits === 0) break;
+  }
+  return declarations;
 }
 
 function skipTrivia(value) {

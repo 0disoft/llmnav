@@ -1396,7 +1396,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "e7ca33fec789ebf59a9fa5495db2802f73e942af8f297d0d0ec2fa3e5fe69a75",
+      "contentHash": "d5d1a10f3ebb38ac9826ca545b92cc745b61d8dcbe76a898c2f64c495e76c68d",
       "declarations": [
         null
       ],
@@ -1404,6 +1404,7 @@
         "./abort.js",
         "./agent-tools.js",
         "./audit.js",
+        "./discovery.js",
         "./errors.js",
         "./graph-input.js",
         "./policy.js",
@@ -1413,7 +1414,7 @@
       ],
       "path": "src/agent-protocol.js",
       "semanticBytes": 528,
-      "sourceBytes": 9475
+      "sourceBytes": 9777
     },
     {
       "blocks": [
@@ -1506,7 +1507,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "6e12196a3f9157d763546937015c66c6f627bb8aa3dd32130f82a5ed165062f6",
+      "contentHash": "97b81d56c49d9149ddbf1b2ff51c435bdb80740e3553171e27ce188de7c5e69b",
       "declarations": [
         null
       ],
@@ -1515,7 +1516,7 @@
       ],
       "path": "src/agent-tools.js",
       "semanticBytes": 411,
-      "sourceBytes": 3501
+      "sourceBytes": 3906
     },
     {
       "blocks": [
@@ -1605,7 +1606,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "e7e78c823e6a71455387568dbf4bceaed8f9ad27fa12007b0f81f489c3b77b76",
+      "contentHash": "e1b3c90d3d476e28f1d563524cdd01b6c85049d55c59f55557fa3453590798d9",
       "declarations": [
         null
       ],
@@ -1615,7 +1616,7 @@
       ],
       "path": "src/agents.js",
       "semanticBytes": 374,
-      "sourceBytes": 6804
+      "sourceBytes": 6971
     },
     {
       "blocks": [
@@ -2054,13 +2055,14 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "c5143c77c92f724d7a032704d2b9ccf7a4b02b4db714c31e5c641b3682cd68c7",
+      "contentHash": "8b405993275dd338cd88ee1584084f3b879893cea758b123bb5cdb9f59d34792",
       "declarations": [
         null
       ],
       "imports": [
         "./agent-protocol.js",
         "./audit.js",
+        "./discovery.js",
         "./doctor.js",
         "./editor.js",
         "./evaluation.js",
@@ -2084,7 +2086,7 @@
       ],
       "path": "src/cli.js",
       "semanticBytes": 508,
-      "sourceBytes": 23193
+      "sourceBytes": 24679
     },
     {
       "blocks": [
@@ -2414,7 +2416,8 @@
             "owns": [
               "declaration attachment",
               "signature extraction",
-              "import extraction"
+              "import extraction",
+              "source declaration candidates"
             ],
             "rel": [
               "workflow>llmnav.project.scan"
@@ -2430,7 +2433,7 @@
             "stability": "architecture",
             "unknown": []
           },
-          "end": 477,
+          "end": 507,
           "endLine": 10,
           "entries": [
             {
@@ -2449,7 +2452,7 @@
               "key": "owns",
               "line": 4,
               "order": 2,
-              "value": "declaration attachment|signature extraction|import extraction"
+              "value": "declaration attachment|signature extraction|import extraction|source declaration candidates"
             },
             {
               "key": "excludes",
@@ -2486,7 +2489,7 @@
           "indent": "",
           "newline": "\n",
           "prefix": null,
-          "raw": "/* llmnav/1 module\nid=llmnav.declaration.extract\nrole=Attach symbol cards to language declarations and derive structural metadata without executing source.\nowns=declaration attachment|signature extraction|import extraction\nexcludes=semantic card parsing|type-system resolution\nsearch=declaration extraction|symbol attachment|body hash\ninvariant=String literals and comments do not create false declarations or imports.\nrel=workflow>llmnav.project.scan\nstability=architecture\n*/",
+          "raw": "/* llmnav/1 module\nid=llmnav.declaration.extract\nrole=Attach symbol cards to language declarations and derive structural metadata without executing source.\nowns=declaration attachment|signature extraction|import extraction|source declaration candidates\nexcludes=semantic card parsing|type-system resolution\nsearch=declaration extraction|symbol attachment|body hash\ninvariant=String literals and comments do not create false declarations or imports.\nrel=workflow>llmnav.project.scan\nstability=architecture\n*/",
           "scope": "module",
           "specVersion": "1",
           "start": 0,
@@ -2495,18 +2498,140 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "31ffea0dbb62b53eca6c6d53c02a40deaafa68974e38a92320b8484aeacf4fca",
+      "contentHash": "d9b92be1c11517fbe535700475a0d2d8f4a62d5fa8bbe1133edae88ebb0cb061",
       "declarations": [
         null
       ],
       "imports": [
+        "./parser.js",
         "./policy.js",
         "./util.js",
         "node:path"
       ],
       "path": "src/declaration.js",
-      "semanticBytes": 477,
-      "sourceBytes": 19806
+      "semanticBytes": 507,
+      "sourceBytes": 21366
+    },
+    {
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
+              "business rule inference",
+              "source mutation",
+              "semantic ID assignment"
+            ],
+            "id": "llmnav.search.discover",
+            "invariant": [
+              "Automatic candidates carry source provenance and never claim reviewed semantic contracts."
+            ],
+            "owns": [
+              "unannotated source navigation",
+              "file and declaration ranking",
+              "candidate provenance"
+            ],
+            "rel": [
+              "workflow>llmnav.declaration.extract",
+              "workflow>llmnav.audit.coverage"
+            ],
+            "risk": [],
+            "role": "Find source files and heuristic declarations before a repository has semantic cards or generated indexes.",
+            "scope": "module",
+            "search": [
+              "cardless code search",
+              "first source exploration",
+              "find declaration without cards"
+            ],
+            "stability": "architecture",
+            "unknown": []
+          },
+          "end": 597,
+          "endLine": 11,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.search.discover"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Find source files and heuristic declarations before a repository has semantic cards or generated indexes."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "unannotated source navigation|file and declaration ranking|candidate provenance"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "business rule inference|source mutation|semantic ID assignment"
+            },
+            {
+              "key": "search",
+              "line": 6,
+              "order": 4,
+              "value": "cardless code search|first source exploration|find declaration without cards"
+            },
+            {
+              "key": "invariant",
+              "line": 7,
+              "order": 5,
+              "value": "Automatic candidates carry source provenance and never claim reviewed semantic contracts."
+            },
+            {
+              "key": "rel",
+              "line": 8,
+              "order": 6,
+              "value": "workflow>llmnav.declaration.extract"
+            },
+            {
+              "key": "rel",
+              "line": 9,
+              "order": 7,
+              "value": "workflow>llmnav.audit.coverage"
+            },
+            {
+              "key": "stability",
+              "line": 10,
+              "order": 8,
+              "value": "architecture"
+            }
+          ],
+          "filePath": "src/discovery.js",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.search.discover\nrole=Find source files and heuristic declarations before a repository has semantic cards or generated indexes.\nowns=unannotated source navigation|file and declaration ranking|candidate provenance\nexcludes=business rule inference|source mutation|semantic ID assignment\nsearch=cardless code search|first source exploration|find declaration without cards\ninvariant=Automatic candidates carry source provenance and never claim reviewed semantic contracts.\nrel=workflow>llmnav.declaration.extract\nrel=workflow>llmnav.audit.coverage\nstability=architecture\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "dfa428c7e06647f8db724d2023dd570e4ebf4544b3567a452c47164a9a2afb2e",
+      "declarations": [
+        null
+      ],
+      "imports": [
+        "./abort.js",
+        "./declaration.js",
+        "./policy.js",
+        "./project.js",
+        "./tokenizer.js",
+        "./util.js"
+      ],
+      "path": "src/discovery.js",
+      "semanticBytes": 597,
+      "sourceBytes": 4049
     },
     {
       "blocks": [
@@ -3605,7 +3730,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "7cac890d172c2d69dfbe482bb9f308687a3589d04555b47da660c9e98ce06aaf",
+      "contentHash": "bcb0c64929c9ef31f70a0e3402bfa987d280244dd0703d17fe9bdc668a42c8f1",
       "declarations": [
         null
       ],
@@ -3624,22 +3749,22 @@
       ],
       "path": "src/incremental.js",
       "semanticBytes": 381,
-      "sourceBytes": 12925
+      "sourceBytes": 12926
     },
     {
       "blocks": [],
-      "contentHash": "af920f87699dd324f94baa625aa92a5d1a73c5bfa45d6dbcc16a010687f61eab",
+      "contentHash": "78d8348a3cd3ff3124c41664cdefe6a046c7b6596d3c1e56bfc4dbdc7d70a722",
       "declarations": [],
       "imports": [
         "./spec.js"
       ],
       "path": "src/index.d.ts",
       "semanticBytes": 0,
-      "sourceBytes": 34838
+      "sourceBytes": 35483
     },
     {
       "blocks": [],
-      "contentHash": "7ee7ba145cedd1f86ff171b6a08785847e51a65e008a1cf23c3160143ff60049",
+      "contentHash": "821ec6cc732a1e9048cd0baebe506cde487f282b53f69686c812684096bb9b69",
       "declarations": [],
       "imports": [
         "./abort.js",
@@ -3651,6 +3776,7 @@
         "./config.js",
         "./contracts.js",
         "./declaration.js",
+        "./discovery.js",
         "./doctor.js",
         "./editor.js",
         "./errors.js",
@@ -3680,7 +3806,7 @@
       ],
       "path": "src/index.js",
       "semanticBytes": 0,
-      "sourceBytes": 4100
+      "sourceBytes": 4151
     },
     {
       "blocks": [
@@ -4009,7 +4135,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "795d99728f47cbff6f5760fc96cfeb1ea6939b9d7a50003e2bb42da2e562207a",
+      "contentHash": "53b3649dbece82c1200657d10fe3ac2bb27a21b4e079158156941e5d94e84eb1",
       "declarations": [
         null
       ],
@@ -4025,7 +4151,7 @@
       ],
       "path": "src/mcp-refresh.js",
       "semanticBytes": 507,
-      "sourceBytes": 3911
+      "sourceBytes": 4014
     },
     {
       "blocks": [
@@ -4129,7 +4255,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "3ecef5813dfa810bd1af2a03ab6455d758a25f733b6f755d209a5a152d6fa9e5",
+      "contentHash": "883e1a0533c68c4df13fac19dfc563e40f0a2e1c213039462c1543c04623bd8c",
       "declarations": [
         null
       ],
@@ -4148,7 +4274,7 @@
       ],
       "path": "src/mcp.js",
       "semanticBytes": 531,
-      "sourceBytes": 13861
+      "sourceBytes": 13912
     },
     {
       "blocks": [
@@ -4482,7 +4608,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "639c84477a0991034b879e826bb16f32453d35b1d38003f3379c80d5d3ecc8e3",
+      "contentHash": "b4a74150feffcb32610d4530570f0fc3c2faf8cc6e0d1bcde2ea70941d8470ce",
       "declarations": [
         null
       ],
@@ -4492,7 +4618,7 @@
       ],
       "path": "src/parser.js",
       "semanticBytes": 336,
-      "sourceBytes": 20369
+      "sourceBytes": 20392
     },
     {
       "blocks": [
@@ -4602,14 +4728,14 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "68a1ae3b833a07bcf6d5b7f4f780098a21f84f1f9c3d9611e02fffdba9e0f870",
+      "contentHash": "40e81525100fe39846b85a957628a669f8eb483e93bd47452794f10e4d4106ea",
       "declarations": [
         null
       ],
       "imports": [],
       "path": "src/policy.js",
       "semanticBytes": 556,
-      "sourceBytes": 2197
+      "sourceBytes": 2322
     },
     {
       "blocks": [
@@ -5478,7 +5604,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "e2d1a1f3e039bd54cdc2076f6f76bc10e05c84bcf53c70c79adcea461bd657df",
+      "contentHash": "3f5d08a4257898857511c92bad453ec9fa47a5313d2c4d0aced64e34d687074d",
       "declarations": [
         null
       ],
@@ -5498,7 +5624,7 @@
       ],
       "path": "src/search.js",
       "semanticBytes": 464,
-      "sourceBytes": 36592
+      "sourceBytes": 36719
     },
     {
       "blocks": [],
@@ -6009,7 +6135,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "0472effdeb33a006a760669f881d6233aef00bee7b2a4a76aa814ac84c422fca",
+      "contentHash": "737005f2cb1e550d9f543698751c24319a4ddf912e5550ecd0fa04b666b2ac4a",
       "declarations": [],
       "imports": [
         "../src/agent-protocol.js",
@@ -6024,7 +6150,7 @@
       ],
       "path": "tests/agent-protocol.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 12647
+      "sourceBytes": 12670
     },
     {
       "blocks": [],
@@ -6067,7 +6193,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "f43882abd4ece0a78c40cb05929164e47cf74adb58f68308de4577291b2090ed",
+      "contentHash": "5adf29da1f85bf2c46e08aa9e7900164b14e3a3161a63427752ec6f3e69d66ab",
       "declarations": [],
       "imports": [
         "../src/cli.js",
@@ -6082,7 +6208,7 @@
       ],
       "path": "tests/cli.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 3218
+      "sourceBytes": 3241
     },
     {
       "blocks": [],
@@ -6174,6 +6300,26 @@
       "path": "tests/determinism.test.js",
       "semanticBytes": 0,
       "sourceBytes": 2030
+    },
+    {
+      "blocks": [],
+      "contentHash": "b8965f7408e3bb5adc099ecb35bb8eaf55e797e23eec7b622b5eacf456f94753",
+      "declarations": [],
+      "imports": [
+        "../src/agent-protocol.js",
+        "../src/discovery.js",
+        "../src/mcp.js",
+        "node:assert/strict",
+        "node:child_process",
+        "node:fs/promises",
+        "node:os",
+        "node:path",
+        "node:test",
+        "node:url"
+      ],
+      "path": "tests/discovery.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 5594
     },
     {
       "blocks": [],
@@ -6520,7 +6666,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "29e78ad28a189834592d88e565fcb21ebde5ae9ff765777dceeafdbbac2492fe",
+      "contentHash": "956a8582e22baa41d52802a9cbae45d8054acd445a6a3633f383622617c91508",
       "declarations": [],
       "imports": [
         "../src/declaration.js",
@@ -6531,7 +6677,7 @@
       ],
       "path": "tests/parser.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 11333
+      "sourceBytes": 11347
     },
     {
       "blocks": [],
@@ -6587,7 +6733,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "eeda773c13d84e239d6b5d60c44f704f7707dc411675aafd5a7e091d77678770",
+      "contentHash": "b71247d6388826c50cb21c1acf090af4d90c81d79bd4b4f2be4569c2521f5ace",
       "declarations": [],
       "imports": [
         "../examples/provider-neutral-host.mjs",
@@ -6603,7 +6749,7 @@
       ],
       "path": "tests/provider-neutral-example.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 4717
+      "sourceBytes": 4740
     },
     {
       "blocks": [],
@@ -6713,18 +6859,21 @@
     },
     {
       "blocks": [],
-      "contentHash": "096cf57cdb48c5887cea32ddcf567e0c9e5047230a4403f196ff383ba7adb9ae",
+      "contentHash": "c123c74b5e585690f6e0bf54cf6c7a27b91a1597f7157cbda90dd577f2e67595",
       "declarations": [],
       "imports": [
         "../src/mcp-refresh.js",
         "../src/mcp.js",
         "node:assert/strict",
         "node:events",
+        "node:fs/promises",
+        "node:os",
+        "node:path",
         "node:test"
       ],
       "path": "tests/session-cache.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 6539
+      "sourceBytes": 8056
     },
     {
       "blocks": [],
@@ -6833,6 +6982,6 @@
       "sourceBytes": 11501
     }
   ],
-  "indexerVersion": 9,
+  "indexerVersion": 10,
   "schemaVersion": 1
 }

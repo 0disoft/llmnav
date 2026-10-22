@@ -50,3 +50,4 @@ llmnav.support.errors
 llmnav.support.concurrency
 llmnav.support.read-operation
 llmnav.agent.freshness
+llmnav.search.discover

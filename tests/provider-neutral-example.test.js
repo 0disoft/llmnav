@@ -37,6 +37,7 @@ export const authSession = true;
     "llmnav_check",
     "llmnav_explain",
     "llmnav_audit",
+    "llmnav_discover",
     ]);
   assert.deepEqual(host.basePromptPartitions.map((item) => item.id), [
     "package:tool-definitions",

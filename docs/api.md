@@ -385,7 +385,7 @@ Each query record requires a non-empty `query`. A positive case supplies at leas
 
 ## Agent operation protocol
 
-`getAgentToolDefinitions()` returns defensive copies of six schemaVersion 2 tool definitions in fixed order. Their JSON Schema inputs reject unknown fields and deliberately omit the repository root.
+`getAgentToolDefinitions()` returns defensive copies of seven schemaVersion 3 tool definitions in fixed order. Their JSON Schema inputs reject unknown fields and deliberately omit the repository root.
 
 ```js
 import { executeAgentOperation, getAgentToolDefinitions } from "llmnav";
@@ -434,3 +434,12 @@ The typed `llmnav/examples/provider-neutral-host.mjs` export composes these APIs
 The public API follows package semantic versioning. `index.json` schemaVersion 1 and `llmnav/1` source syntax remain compatible. Contract fingerprints are optional additive index fields. `search-index.json`, `file-state.json`, `graph-state.json`, transaction journals, and performance metrics retain their own schema or implementation versions.
 
 See [Compatibility and deprecation policy](compatibility.md) for the pre-1.0 stability classes, removal window, migration guarantees, and security exception.
+
+## Discover source without a generated index
+
+```js
+import { discoverProject } from "llmnav";
+const result = await discoverProject(root, "rotate session", { top: 5, signal });
+```
+
+Returns `{ schemaVersion: 1, repositoryId, results, matched, truncated }`. Each candidate carries `source` (`file` or `declaration`), `path`, one-based `line`, `cardIds`, `score`, and `reasons`. Declarations also carry `symbol`, `signature`, `kind`, and `language`. These are syntax heuristics, including nested declarations when within the shared scan budget; they do not provide type resolution, stable semantic IDs, or inferred business contracts. The operation reads selected live sources, honors include/exclude rules and cancellation, uses bounded file I/O, and writes nothing. `top` is an integer from 1 to 100.

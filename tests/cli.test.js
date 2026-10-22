@@ -55,6 +55,7 @@ test("prints provider-neutral tool schemas outside a repository", () => {
     "llmnav_check",
     "llmnav_explain",
     "llmnav_audit",
+    "llmnav_discover",
     ]);
 });
 

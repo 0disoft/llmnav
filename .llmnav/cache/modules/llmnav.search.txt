@@ -12,3 +12,10 @@ role Normalize task text and emit deterministic word and CJK n-gram tokens for s
 owns query normalization, CJK n-grams, tokenizer version
 excludes card ranking, inverted-index persistence
 rel workflow>llmnav.search.query
+
+@llmnav.search.discover
+role Find source files and heuristic declarations before a repository has semantic cards or generated indexes.
+owns unannotated source navigation, file and declaration ranking, candidate provenance
+excludes business rule inference, source mutation, semantic ID assignment
+invariant Automatic candidates carry source provenance and never claim reviewed semantic contracts.
+rel workflow>llmnav.declaration.extract, workflow>llmnav.audit.coverage

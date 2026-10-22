@@ -8,6 +8,7 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 
 ### Added
 
+* `discover` CLI, `discoverProject` API and appended `llmnav_discover` tool (tool schema version 3) search live paths and heuristic declarations before initialization, with explicit provenance and no generated semantic contracts.
 * Opt-in `mcp --auto-generate`: detect source edits, additions, moves, deletion and metadata changes at request boundaries; generate incrementally before loading the shared session. Report preparation status and failures without returning stale data.
 
 ### Fixed

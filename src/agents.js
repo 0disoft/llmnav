@@ -33,7 +33,7 @@ After initialization and whenever public entrypoints, commands, routes, schemas,
 
 When deciding whether one specific file needs a card, run \`npm exec -- llmnav explain <file>\`. Use its coverage, score, and disposition evidence to guide review, but never turn its recommendation into automatic source annotation.
 
-After semantic changes, run \`npm exec -- llmnav format\`, \`npm exec -- llmnav check\`, and \`npm exec -- llmnav generate\`. Use broad text search only when LLMNav returns no credible candidate.
+After semantic changes, run \`npm exec -- llmnav format\`, \`npm exec -- llmnav check\`, and \`npm exec -- llmnav generate\`. If no credible card is returned, run \`npm exec -- llmnav discover "<task>" --top 5\` for live file and declaration candidates. Read their source before adding a card. Use broad text search when discovery also has no credible candidate.
 ${END}`;
 
 export async function installAgentInstructions(root, adapters = ["agents"]) {

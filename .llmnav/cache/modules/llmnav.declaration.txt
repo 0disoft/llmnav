@@ -3,7 +3,7 @@ Read semantic cards before opening source. Resolve current paths and signatures 
 
 @llmnav.declaration.extract
 role Attach symbol cards to language declarations and derive structural metadata without executing source.
-owns declaration attachment, signature extraction, import extraction
+owns declaration attachment, signature extraction, import extraction, source declaration candidates
 excludes semantic card parsing, type-system resolution
 invariant String literals and comments do not create false declarations or imports.
 rel workflow>llmnav.project.scan

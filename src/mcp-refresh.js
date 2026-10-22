@@ -50,6 +50,7 @@ export function createSourcePreparation(root, dependencies = {}) {
 }
 
 export async function sourceStamp(root, options = {}) {
+  await assertNoSymlinkTraversal(root, path.join(root, ".llmnav/config.json"), ".llmnav/config.json");
   const { config } = await loadConfig(root, options);
   const files = await collectSourceFiles(root, config, [], options);
   const inputs = new Set([".llmnav/config.json", ...config.graph.indexFiles]);

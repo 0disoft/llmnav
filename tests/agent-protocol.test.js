@@ -35,8 +35,9 @@ test("publishes stable provider-neutral tool definitions", () => {
     "llmnav_check",
     "llmnav_explain",
     "llmnav_audit",
+    "llmnav_discover",
   ]);
-  assert.ok(definitions.every((item) => item.schemaVersion === 2));
+  assert.ok(definitions.every((item) => item.schemaVersion === 3));
   const auditTool = definitions.find((item) => item.name === "llmnav_audit");
   assert.deepEqual(auditTool.inputSchema.required, []);
   assert.deepEqual(auditTool.inputSchema.properties.priority.enum, [...AUDIT_PRIORITIES]);

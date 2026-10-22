@@ -1,7 +1,10 @@
 import assert from "node:assert/strict";
 import { getEventListeners } from "node:events";
 import test from "node:test";
-import { createSourcePreparation } from "../src/mcp-refresh.js";
+import { mkdir, mkdtemp, rm, symlink, writeFile } from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
+import { sourceStamp, createSourcePreparation } from "../src/mcp-refresh.js";
 import { createSessionCache } from "../src/mcp.js";
 
 function deadline() {
@@ -156,4 +159,27 @@ test("edits during preparation and late abandoned completions are not acknowledg
   await changing();
   await changing();
   assert.equal(generates, 4);
+});
+
+test("source stamps include Go and configured graph metadata and reject metadata junctions", async context => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-source-stamp-"));
+  const outside = await mkdtemp(path.join(os.tmpdir(), "llmnav-source-external-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  context.after(() => rm(outside, { recursive: true, force: true }));
+  await mkdir(path.join(root, "src"));
+  await mkdir(path.join(root, ".llmnav"));
+  await mkdir(path.join(root, "metadata"));
+  await writeFile(path.join(root, "src/main.go"), "package main\n");
+  await writeFile(path.join(root, ".llmnav/config.json"), JSON.stringify({ repositoryId: "fixture", graph: { indexFiles: ["metadata/graph.json"] } }));
+  const initial = await sourceStamp(root);
+  await writeFile(path.join(root, "src/go.mod"), "module example.test/nested\n");
+  const go = await sourceStamp(root);
+  assert.notEqual(go, initial);
+  await writeFile(path.join(root, "metadata/graph.json"), "{}\n");
+  const graph = await sourceStamp(root);
+  assert.notEqual(graph, go);
+  assert.equal(await sourceStamp(root), graph);
+  await rm(path.join(root, "metadata"), { recursive: true });
+  await symlink(outside, path.join(root, "metadata"), process.platform === "win32" ? "junction" : "dir");
+  await assert.rejects(sourceStamp(root), /symbolic link/u);
 });

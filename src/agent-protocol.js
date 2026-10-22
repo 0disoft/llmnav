@@ -10,6 +10,7 @@ rel=workflow>llmnav.audit.coverage
 stability=contract
 */
 
+import { discoverProject } from "./discovery.js";
 import { loadGraphInputs } from "./graph-input.js";
 import { scanProject } from "./project.js";
 import { buildContext, queryProject, SemanticIdLookupError, showProjectCard } from "./search.js";
@@ -36,6 +37,7 @@ const DEFINITIONS = getAgentToolDefinitions();
 
 const OPERATIONS = new Map([
   ["llmnav_query", "query"],
+  ["llmnav_discover", "discover"],
   ["llmnav_show", "show"],
   ["llmnav_context", "context"],
   ["llmnav_check", "check"],
@@ -46,6 +48,7 @@ const OPERATIONS = new Map([
 // Validation runs once in resolveRequest; handlers only execute work and report failure kinds.
 const OPERATION_HANDLERS = new Map([
   ["query", handleQuery],
+  ["discover", handleDiscover],
   ["show", handleShow],
   ["context", handleContext],
   ["check", handleCheck],
@@ -87,6 +90,10 @@ function resolveRequest(name, input) {
     return { failure: failure(operation, AGENT_OPERATION_ERROR_CODES.invalidInput, validationError) };
   }
   return { operation };
+}
+
+async function handleDiscover(input, root, options) {
+  return { data: await discoverProject(root, input.task.trim(), { ...options, top: input.top ?? SEARCH_LIMITS.top.default }) };
 }
 
 async function handleQuery(input, root, options) {

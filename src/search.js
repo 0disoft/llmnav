@@ -91,7 +91,7 @@ async function loadSearchDataLocked(root, lock, options = {}) {
 }
 
 function parsePrimaryIndex(indexText, repositoryId) {
-  if (indexText === null) throw new Error("No generated index found. Run `llmnav generate` first.");
+  if (indexText === null) throw new Error("No generated index found. Run `llmnav generate` first, or `llmnav discover` to explore live source without cards.");
   let index;
   try {
     index = JSON.parse(indexText);
@@ -328,14 +328,15 @@ function initializeQueryMetrics(metrics, queryTokenCount, cardCount, cached) {
 function matchesAlias(query, alias) {
   if (!alias) return false;
   const characters = [...alias];
-  const word = /[\p{L}\p{N}_]/u;
+  const wordStart = /^[\p{L}\p{N}_]/u;
+  const wordEnd = /[\p{L}\p{N}_]$/u;
   const latin = /[\p{Script=Latin}\p{N}_]/u;
   let offset = query.indexOf(alias);
   while (offset !== -1) {
-    const before = [...query.slice(0, offset)].at(-1) ?? "";
-    const after = [...query.slice(offset + alias.length)][0] ?? "";
-    if ((!latin.test(characters[0]) || !word.test(before)) &&
-      (!latin.test(characters.at(-1)) || !word.test(after))) return true;
+    const before = query.slice(Math.max(0, offset - 2), offset);
+    const after = query.slice(offset + alias.length, offset + alias.length + 2);
+    if ((!latin.test(characters[0]) || !wordEnd.test(before)) &&
+      (!latin.test(characters.at(-1)) || !wordStart.test(after))) return true;
     offset = query.indexOf(alias, offset + 1);
   }
   return false;
