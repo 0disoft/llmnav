@@ -122,6 +122,24 @@ const result = await generateProject(process.cwd(), { incremental: false });
 
 Failure injection options exist for the repository test suite and are not a normal application interface.
 
+## Inject the generation runtime in tests
+
+Time, process identity, randomness, sleeping, environment lookup, and process liveness come from one injectable object:
+
+```js
+import { createRuntime, generateProject } from "llmnav";
+
+const runtime = createRuntime({
+  now: () => 1_700_000_000_000,
+  pid: 4242,
+  randomHex: () => "abcdef",
+});
+
+await generateProject(process.cwd(), { runtime });
+```
+
+`createRuntime` fills omitted fields from `DEFAULT_RUNTIME`, which reads the real clock, process id, cryptographic randomness, `process.env`, and OS process liveness. Unknown keys raise a `TypeError`, so a misspelled field cannot quietly fall back to production behavior. The same object can be passed as `lockOptions.runtime` to `acquireGenerationLock` or `withGenerationLock`.
+
 ## Cancel long-running work
 
 `generateProject`, `queryProject`, `scanProject`, and `auditProject` accept an optional `signal`:

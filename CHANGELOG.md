@@ -4,6 +4,26 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.11.0] — 2026-10-22
+
+### Added
+
+* Accept an optional `signal` (`AbortSignal`) on generation, scanning, query, context, audit, and source-collection entry points. Long operations stop at cooperative checkpoints, a cancelled commit rolls the cache back like any other failure, and omitting the signal keeps the previous behavior.
+* Export `createAbortError` and `throwIfAborted` so hosts can share one cancellation shape, and preserve an `Error` passed to `controller.abort(error)` unchanged.
+* Export `createRuntime` and `DEFAULT_RUNTIME` as one injectable seam for the clock, process id, randomness, sleeping, environment lookup, and process liveness used by generation locks and transaction identifiers.
+
+### Changed
+
+* Match `excludeFiles` globs without `/` against file names at any depth, so the documented defaults such as `*.min.js` also exclude generated bundles inside subdirectories. Patterns with `/` stay anchored at the repository root, and `**` spans directories only when it occupies a whole path segment.
+* Reject invalid generation-lock timing options up front and fail immediately on a lock owner record that cannot be read, instead of waiting out the full lock timeout.
+
+### Fixed
+
+* Raise `TransactionAbortError` from an abort failpoint instead of exiting the host process inside the library, while the CLI keeps exit code 86.
+* Report the original generation error when the transaction journal itself is corrupt instead of replacing it with a parse error.
+* Charge the truncation ellipsis against the token budget and never split a surrogate pair, so bounded prompts stay inside the requested budget.
+* Detect a regenerated cache inside the same millisecond in the MCP server by stamping artifacts with nanosecond timestamps and file identity.
+
 ## [0.10.1] — 2026-10-22
 
 ### Performance
