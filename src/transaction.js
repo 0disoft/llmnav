@@ -140,6 +140,34 @@ export async function commitGeneratedCache(root, cacheDirectory, artifacts, opti
       options.lockOptions,
     );
   }
+  const transaction = await openTransaction(root, cacheDirectory, options);
+  try {
+    await stageArtifacts(transaction, artifacts, options);
+    transaction.controlRecords = await stageControlArtifacts(
+      root,
+      transaction.transactionPath,
+      options.controlArtifacts,
+    );
+    await invokeFailpoint("after-stage", options);
+    await persistJournal(transaction, options, "prepared");
+    await invokeFailpoint("after-journal", options);
+    await moveCacheAside(transaction, options);
+    await installCache(transaction, options);
+    await finalizeTransaction(transaction, options);
+    return {
+      committed: true,
+      skipped: false,
+      recovered: transaction.recovery.recovered,
+      recoveryAction: transaction.recovery.action,
+      transactionId: transaction.transactionId,
+      replacedExisting: transaction.hadExistingCache,
+    };
+  } catch (error) {
+    return failTransaction(error, transaction, options);
+  }
+}
+
+async function openTransaction(root, cacheDirectory, options) {
   const cacheRelative = projectRelativePath(cacheDirectory, "cacheDirectory");
   const cachePath = path.join(root, cacheRelative);
   const controlDirectory = path.join(root, ".llmnav");
@@ -161,108 +189,119 @@ export async function commitGeneratedCache(root, cacheDirectory, artifacts, opti
   const stagePath = path.join(transactionPath, "stage");
   const backupPath = path.join(transactionPath, "backup");
   await assertNoSymlinkTraversal(root, transactionPath, relativePosix(root, transactionPath));
-  const hadExistingCacheAtStart = await pathExists(cachePath);
-  let controlRecords = [];
+  const hadExistingCache = await pathExists(cachePath);
   await mkdir(stagePath, { recursive: true });
+  return {
+    root,
+    cacheRelative,
+    cachePath,
+    transactionsDirectory,
+    journalPath,
+    transactionId,
+    transactionPath,
+    stagePath,
+    backupPath,
+    hadExistingCache,
+    recovery,
+    controlRecords: [],
+    journal: null,
+  };
+}
 
-  const cachePrefix = `${cacheRelative.replace(/\/+$/u, "")}/`;
+async function stageArtifacts(transaction, artifacts, options) {
+  const cachePrefix = `${transaction.cacheRelative.replace(/\/+$/u, "")}/`;
   const cacheArtifacts = [...artifacts.entries()]
     .filter(([relativePath]) => toPosix(relativePath).startsWith(cachePrefix))
     .sort(([left], [right]) => compareText(toPosix(left), toPosix(right)));
-  if (cacheArtifacts.length === 0) throw new Error(`No generated artifacts target ${cacheRelative}.`);
-
-  try {
-    for (const [relativePath, content] of cacheArtifacts) {
-      const normalized = projectRelativePath(relativePath, `Generated artifact ${relativePath}`);
-      const stageRelative = normalized.slice(cachePrefix.length);
-      if (!normalized.startsWith(cachePrefix) || !stageRelative) {
-        throw new Error(`Generated artifact ${normalized} escapes the staged cache.`);
-      }
-      const destination = path.join(stagePath, ...stageRelative.split("/"));
-      const relativeDestination = path.relative(stagePath, path.resolve(destination));
-      if (relativeDestination === ".." || relativeDestination.startsWith(`..${path.sep}`) || path.isAbsolute(relativeDestination)) {
-        throw new Error(`Generated artifact ${normalized} escapes the staged cache.`);
-      }
-      await mkdir(path.dirname(destination), { recursive: true });
-      await writeFile(destination, content, "utf8");
-      await invokeFailpoint(`after-write:${stageRelative}`, options);
-    }
-    await verifyStagedArtifacts(stagePath, cacheArtifacts, cachePrefix);
-    controlRecords = await stageControlArtifacts(root, transactionPath, options.controlArtifacts);
-    await invokeFailpoint("after-stage", options);
-
-    const hadExistingCache = hadExistingCacheAtStart;
-    let journal = {
-      schemaVersion: TRANSACTION_SCHEMA_VERSION,
-      cacheDirectory: cacheRelative,
-      transactionDirectory: relativePosix(root, transactionPath),
-      stageDirectory: relativePosix(root, stagePath),
-      backupDirectory: relativePosix(root, backupPath),
-      hadExistingCache,
-      ownerId: options.lockOwnerId,
-      controlArtifacts: controlRecords,
-      phase: "prepared",
-    };
-    await atomicWrite(root, journalPath, stableStringify(journal));
-    await invokeFailpoint("after-journal", options);
-
-    if (hadExistingCache) {
-      await renameWithRetry(cachePath, backupPath, options.renameOptions);
-    }
-    await moveControlArtifactsToBackup(root, controlRecords, options.renameOptions);
-    journal = { ...journal, phase: "old-moved" };
-    await atomicWrite(root, journalPath, stableStringify(journal));
-    await invokeFailpoint("after-cache-moved", options);
-
-    await renameWithRetry(stagePath, cachePath, options.renameOptions);
-    await installControlArtifacts(root, controlRecords, options.renameOptions);
-    journal = { ...journal, phase: "new-installed" };
-    await atomicWrite(root, journalPath, stableStringify(journal));
-    await verifyCommittedCache(cachePath, cacheRelative);
-    await verifyControlArtifacts(root, controlRecords);
-    await invokeFailpoint("after-new-installed", options);
-
-    journal = { ...journal, phase: "committed" };
-    await atomicWrite(root, journalPath, stableStringify(journal));
-    if (hadExistingCache) await removeWithRetry(backupPath, options.renameOptions);
-    await removeWithRetry(transactionPath, options.renameOptions);
-    await removeWithRetry(journalPath, options.renameOptions);
-    await cleanupEmptyTransactionsDirectory(transactionsDirectory);
-
-    return {
-      committed: true,
-      skipped: false,
-      recovered: recovery.recovered,
-      recoveryAction: recovery.action,
-      transactionId,
-      replacedExisting: hadExistingCache,
-    };
-  } catch (error) {
-    // An abort failpoint reproduces a crash: the journal must survive so the
-    // next read or generation can recover the interrupted swap.
-    if (error instanceof TransactionAbortError) throw error;
-    const journal = await readJournalForRollback(journalPath);
-    const ownedJournal = journal?.ownerId === options.lockOwnerId ? journal : null;
-    if (ownedJournal?.phase !== "committed") {
-      try {
-        await rollbackTransaction(root, ownedJournal ?? {
-          schemaVersion: TRANSACTION_SCHEMA_VERSION,
-          cacheDirectory: cacheRelative,
-          transactionDirectory: relativePosix(root, transactionPath),
-          stageDirectory: relativePosix(root, stagePath),
-          backupDirectory: relativePosix(root, backupPath),
-          hadExistingCache: hadExistingCacheAtStart,
-          ownerId: options.lockOwnerId,
-          controlArtifacts: controlRecords,
-          phase: "prepared",
-        }, cacheRelative, options.renameOptions);
-      } catch (rollbackError) {
-        const message = rollbackError instanceof Error ? rollbackError.message : String(rollbackError);
-        throw new AggregateError([error, rollbackError], `Generation failed and rollback also failed: ${message}`);
-      }
-    }
-    throw error;
+  if (cacheArtifacts.length === 0) {
+    throw new Error(`No generated artifacts target ${transaction.cacheRelative}.`);
   }
+  for (const [relativePath, content] of cacheArtifacts) {
+    const normalized = projectRelativePath(relativePath, `Generated artifact ${relativePath}`);
+    const stageRelative = normalized.slice(cachePrefix.length);
+    if (!normalized.startsWith(cachePrefix) || !stageRelative) {
+      throw new Error(`Generated artifact ${normalized} escapes the staged cache.`);
+    }
+    const destination = path.join(transaction.stagePath, ...stageRelative.split("/"));
+    const relativeDestination = path.relative(transaction.stagePath, path.resolve(destination));
+    if (relativeDestination === ".." || relativeDestination.startsWith(`..${path.sep}`) || path.isAbsolute(relativeDestination)) {
+      throw new Error(`Generated artifact ${normalized} escapes the staged cache.`);
+    }
+    await mkdir(path.dirname(destination), { recursive: true });
+    await writeFile(destination, content, "utf8");
+    await invokeFailpoint(`after-write:${stageRelative}`, options);
+  }
+  await verifyStagedArtifacts(transaction.stagePath, cacheArtifacts, cachePrefix);
+}
+
+function journalRecord(transaction, options, phase) {
+  return {
+    schemaVersion: TRANSACTION_SCHEMA_VERSION,
+    cacheDirectory: transaction.cacheRelative,
+    transactionDirectory: relativePosix(transaction.root, transaction.transactionPath),
+    stageDirectory: relativePosix(transaction.root, transaction.stagePath),
+    backupDirectory: relativePosix(transaction.root, transaction.backupPath),
+    hadExistingCache: transaction.hadExistingCache,
+    ownerId: options.lockOwnerId,
+    controlArtifacts: transaction.controlRecords,
+    phase,
+  };
+}
+
+async function persistJournal(transaction, options, phase) {
+  transaction.journal = journalRecord(transaction, options, phase);
+  await atomicWrite(transaction.root, transaction.journalPath, stableStringify(transaction.journal));
+}
+
+async function moveCacheAside(transaction, options) {
+  if (transaction.hadExistingCache) {
+    await renameWithRetry(transaction.cachePath, transaction.backupPath, options.renameOptions);
+  }
+  await moveControlArtifactsToBackup(transaction.root, transaction.controlRecords, options.renameOptions);
+  await persistJournal(transaction, options, "old-moved");
+  await invokeFailpoint("after-cache-moved", options);
+}
+
+async function installCache(transaction, options) {
+  await renameWithRetry(transaction.stagePath, transaction.cachePath, options.renameOptions);
+  await installControlArtifacts(transaction.root, transaction.controlRecords, options.renameOptions);
+  await persistJournal(transaction, options, "new-installed");
+  await verifyCommittedCache(transaction.cachePath, transaction.cacheRelative);
+  await verifyControlArtifacts(transaction.root, transaction.controlRecords);
+  await invokeFailpoint("after-new-installed", options);
+}
+
+async function finalizeTransaction(transaction, options) {
+  await persistJournal(transaction, options, "committed");
+  if (transaction.hadExistingCache) {
+    await removeWithRetry(transaction.backupPath, options.renameOptions);
+  }
+  await removeWithRetry(transaction.transactionPath, options.renameOptions);
+  await removeWithRetry(transaction.journalPath, options.renameOptions);
+  await cleanupEmptyTransactionsDirectory(transaction.transactionsDirectory);
+}
+
+async function failTransaction(error, transaction, options) {
+  // An abort failpoint reproduces a crash: the journal must survive so the
+  // next read or generation can recover the interrupted swap.
+  if (error instanceof TransactionAbortError) throw error;
+  const journal = await readJournalForRollback(transaction.journalPath);
+  const ownedJournal = journal?.ownerId === options.lockOwnerId ? journal : null;
+  if (ownedJournal?.phase !== "committed") {
+    const fallback = journalRecord(transaction, options, "prepared");
+    try {
+      await rollbackTransaction(
+        transaction.root,
+        ownedJournal ?? fallback,
+        transaction.cacheRelative,
+        options.renameOptions,
+      );
+    } catch (rollbackError) {
+      const message = rollbackError instanceof Error ? rollbackError.message : String(rollbackError);
+      throw new AggregateError([error, rollbackError], `Generation failed and rollback also failed: ${message}`);
+    }
+  }
+  throw error;
 }
 
 export async function recoverGenerationTransaction(root, options = {}) {

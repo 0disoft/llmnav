@@ -511,7 +511,7 @@
         "agent search decisions"
       ],
       "hashes": {
-        "body": "b2aea51aadec112b38bf343af5ab35961555c83aa31ad4b0614254914cc7b380",
+        "body": "1e961b2e46cb73ce24c76952d04611ea4fc69992861dfbe177c46d65f56e690c",
         "semantic": "7052622c9732ab29e37c3ab87f848188e931f601684e811e7bb8adef31fbfe85",
         "structure": "9a0f6533552a700901d005e54958d56c10a2a7ce9c901e3942a85ad8273d7eef"
       },
@@ -935,7 +935,7 @@
         "source indexing"
       ],
       "hashes": {
-        "body": "aaeb11095091bb248112c6829d721ebdb16eb756750cca2f6427f3ebdd0a9cdb",
+        "body": "d93f360e0a9e17321b2ce615416c3aeaca1b7743aa9ed0b85c4c58a2868fb790",
         "semantic": "ce2cf8943f71d053f8cba914886bae20316e5b6106857f52abc4d8a59afb1ef1",
         "structure": "5de94f39bf7e761651c8294ee0af6202e494f6eb4a3f829ad9e27414fc3d9848"
       },
@@ -2390,6 +2390,6 @@
   "generatedBy": "llmnav@0.11.0",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "6fd4132400294208a055768cdd9bfd44c46914457d36b0f94e3eaeb66a41a8c8",
+  "sourceHash": "6dfe89a1206bdeb3b9607f6c8a6fe7ab233f31f4878ccbb3e11a5a15c7d2350c",
   "specVersion": "1"
 }

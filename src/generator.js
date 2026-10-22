@@ -89,85 +89,127 @@ export async function generateProjectWithPreparation(root, prepare, options = {}
 
 async function generateProjectLocked(root, options) {
   throwIfAborted(options.signal);
-  const { config: recoveryConfig } = await loadConfig(root);
+  const { config } = await loadConfig(root);
   const recovery = await recoverGenerationTransaction(root, {
-    cacheDirectory: recoveryConfig.generation.cacheDirectory,
+    cacheDirectory: config.generation.cacheDirectory,
     renameOptions: options.renameOptions,
     lockOwnerId: options.lockOwnerId,
   });
-  const cacheDirectory = path.join(root, recoveryConfig.generation.cacheDirectory);
-  const previousIndex = await readJsonSafe(path.join(cacheDirectory, "index.json"), null);
-  const previousSearchIndex = await readJsonSafe(path.join(cacheDirectory, "search-index.json"), null);
-  const previousGraphState = await readJsonSafe(path.join(cacheDirectory, "graph-state.json"), null);
-
-  let project;
-  let fileState;
-  let statHints = null;
-  let hintsPath = null;
-  let scanStats;
-  if (options.incremental === false) {
-    project = await scanProject(root, options);
-    fileState = buildFileStateFromProject(project);
-    scanStats = {
-      totalFiles: project.fileRecords.length,
-      parsedFiles: project.fileRecords.length,
-      reusedFiles: 0,
-      reusedFilesByStat: 0,
-      reusedFilesByHash: 0,
-      deletedFiles: 0,
-      bytesRead: project.sourceBytes,
-      cardsParsed: project.records.length,
-      cardsReused: 0,
-    };
-  } else {
-    const incremental = await scanProjectIncremental(root, {
-      ...options,
-      useStatHints: options.useStatHints,
-    });
-    ({ project, fileState, statHints, hintsPath, stats: scanStats } = incremental);
-  }
+  const cacheDirectory = path.join(root, config.generation.cacheDirectory);
+  const previous = await loadPreviousArtifacts(cacheDirectory);
+  const scan = await scanForGeneration(root, options);
+  const project = scan.project;
 
   throwIfAborted(options.signal);
   const graphInputs = await loadGraphInputs(root, project.config);
   project.graphInputs = graphInputs.indexes;
   const diagnostics = [...validateProject(project), ...graphInputs.diagnostics].sort(compareGeneratedDiagnostics);
-  let counts = countDiagnostics(diagnostics);
+  const counts = countDiagnostics(diagnostics);
   if (counts.error > 0) {
-    return {
-      ok: false,
-      diagnostics,
-      changedFiles: [],
-      changedCards: [],
-      affectedBoundaries: [],
-      affectedCatalogs: [],
-      project,
-      counts,
-      incremental: { enabled: options.incremental !== false, files: scanStats, cards: null, graph: null },
-      transaction: { committed: false, skipped: true, recovered: recovery.recovered, recoveryAction: recovery.action },
-    };
+    return skippedGenerationResult(project, diagnostics, counts, scan.stats, recovery, options);
   }
 
+  const plan = await planGeneration(root, project, options, previous, scan.fileState, diagnostics);
+  const applied = await applyGeneration(root, project, plan, scan, options, recovery);
+  return {
+    ok: options.check ? plan.uniqueChangedFiles.length === 0 : true,
+    diagnostics,
+    changedFiles: plan.uniqueChangedFiles,
+    changedCards: plan.changedCards,
+    affectedBoundaries: plan.affectedBoundaries,
+    affectedCatalogs: plan.affectedCatalogs,
+    project,
+    counts: plan.counts,
+    artifacts: plan.artifacts,
+    index: plan.built.index,
+    searchIndex: plan.built.searchIndex,
+    graph: plan.built.graph,
+    incremental: {
+      enabled: options.incremental !== false,
+      files: scan.stats,
+      cards: plan.built.searchStats,
+      graph: plan.built.graphStats,
+      statHintsPersisted: applied.statHintsPersisted,
+      statHintsError: applied.statHintsError,
+    },
+    transaction: applied.transaction,
+  };
+}
+
+async function loadPreviousArtifacts(cacheDirectory) {
+  return {
+    index: await readJsonSafe(path.join(cacheDirectory, "index.json"), null),
+    searchIndex: await readJsonSafe(path.join(cacheDirectory, "search-index.json"), null),
+    graphState: await readJsonSafe(path.join(cacheDirectory, "graph-state.json"), null),
+  };
+}
+
+async function scanForGeneration(root, options) {
+  if (options.incremental === false) {
+    const project = await scanProject(root, options);
+    return {
+      project,
+      fileState: buildFileStateFromProject(project),
+      statHints: null,
+      hintsPath: null,
+      stats: {
+        totalFiles: project.fileRecords.length,
+        parsedFiles: project.fileRecords.length,
+        reusedFiles: 0,
+        reusedFilesByStat: 0,
+        reusedFilesByHash: 0,
+        deletedFiles: 0,
+        bytesRead: project.sourceBytes,
+        cardsParsed: project.records.length,
+        cardsReused: 0,
+      },
+    };
+  }
+  const incremental = await scanProjectIncremental(root, {
+    ...options,
+    useStatHints: options.useStatHints,
+  });
+  return {
+    project: incremental.project,
+    fileState: incremental.fileState,
+    statHints: incremental.statHints,
+    hintsPath: incremental.hintsPath,
+    stats: incremental.stats,
+  };
+}
+
+function skippedGenerationResult(project, diagnostics, counts, scanStats, recovery, options) {
+  return {
+    ok: false,
+    diagnostics,
+    changedFiles: [],
+    changedCards: [],
+    affectedBoundaries: [],
+    affectedCatalogs: [],
+    project,
+    counts,
+    incremental: { enabled: options.incremental !== false, files: scanStats, cards: null, graph: null },
+    transaction: { committed: false, skipped: true, recovered: recovery.recovered, recoveryAction: recovery.action },
+  };
+}
+
+async function planGeneration(root, project, options, previous, fileState, diagnostics) {
   throwIfAborted(options.signal);
   const ids = project.records.map((record) => record.card.id).filter(Boolean);
   const order = await buildStableOrder(root, ids);
   const built = buildArtifactSet(project, order, {
-    previousSearchIndex: options.incremental === false ? null : previousSearchIndex,
-    previousGraphState: options.incremental === false ? null : previousGraphState,
+    previousSearchIndex: options.incremental === false ? null : previous.searchIndex,
+    previousGraphState: options.incremental === false ? null : previous.graphState,
     fileState,
   });
   const contractChanges = compareContractFingerprints(
-    previousIndex?.contractFingerprints,
+    previous.index?.contractFingerprints,
     built.index.contractFingerprints,
   );
-  for (const change of contractChanges) {
-    diagnostics.push(
-      diagnosticForContractChange(change),
-    );
-  }
+  for (const change of contractChanges) diagnostics.push(diagnosticForContractChange(change));
   diagnostics.sort(compareGeneratedDiagnostics);
-  counts = countDiagnostics(diagnostics);
-  const artifacts = built.artifacts;
-  const changedFiles = await compareArtifacts(root, project.config.generation.cacheDirectory, artifacts);
+  const counts = countDiagnostics(diagnostics);
+  const changedFiles = await compareArtifacts(root, project.config.generation.cacheDirectory, built.artifacts);
   const orderContent = renderOrder(order);
   const orderChanged = await compareOne(path.join(root, ".llmnav", "order.lock"), orderContent);
   if (orderChanged) changedFiles.push(".llmnav/order.lock");
@@ -176,97 +218,74 @@ async function generateProjectLocked(root, options) {
   if (missingRegistryIds.length > 0) changedFiles.push(".llmnav/ids.jsonl");
 
   const uniqueChangedFiles = [...new Set(changedFiles.map(toPosix))].sort(compareText);
-  const changedCards = compareCardIndexes(previousIndex, built.index);
-  const affectedBoundaries = describeAffectedBoundaries(
-    changedCards,
-    project.config,
-    previousIndex,
-    built.index,
-  );
-  const affectedCatalogs = describeAffectedCatalogs(
+  const changedCards = compareCardIndexes(previous.index, built.index);
+  return {
+    ids,
+    order,
+    built,
+    counts,
+    orderContent,
+    orderChanged,
+    missingRegistryIds,
     uniqueChangedFiles,
-    project.config.generation.cacheDirectory,
-    project.config,
-    previousIndex,
-    built.index,
-  );
-
-  let transaction = {
-    committed: false,
-    skipped: true,
-    recovered: recovery.recovered,
-    recoveryAction: recovery.action,
-  };
-  let statHintsPersisted = false;
-  let statHintsError = null;
-
-  if (!options.check) {
-    await assertNoSymlinkTraversal(root, path.join(root, ".llmnav"), ".llmnav");
-    await assertNoSymlinkTraversal(
-      root,
-      path.join(root, project.config.generation.cacheDirectory),
+    changedCards,
+    affectedBoundaries: describeAffectedBoundaries(changedCards, project.config, previous.index, built.index),
+    affectedCatalogs: describeAffectedCatalogs(
+      uniqueChangedFiles,
       project.config.generation.cacheDirectory,
-    );
-    const cachePrefix = `${toPosix(project.config.generation.cacheDirectory).replace(/\/+$/u, "")}/`;
-    const cacheChanges = uniqueChangedFiles.filter((file) => file.startsWith(cachePrefix));
-    const controlArtifacts = new Map();
-    if (missingRegistryIds.length > 0) {
-      controlArtifacts.set(
-        ".llmnav/ids.jsonl",
-        renderRegistryRecords(mergeActiveIds(project.registry, ids).records),
-      );
-    }
-    if (orderChanged) controlArtifacts.set(".llmnav/order.lock", orderContent);
-    if (cacheChanges.length > 0 || controlArtifacts.size > 0) {
-      transaction = await commitGeneratedCache(
-        root,
-        project.config.generation.cacheDirectory,
-        artifacts,
-        {
-          failpoint: options.failpoint,
-          onPhase: options.onTransactionPhase,
-          renameOptions: options.renameOptions,
-          lockOwnerId: options.lockOwnerId,
-          controlArtifacts,
-          runtime: options.runtime,
-          signal: options.signal,
-        },
-      );
-    }
+      project.config,
+      previous.index,
+      built.index,
+    ),
+    artifacts: built.artifacts,
+  };
+}
 
-    if (statHints && hintsPath) {
-      try {
-        await persistStatHints(root, hintsPath, statHints);
-        statHintsPersisted = true;
-      } catch (error) {
-        statHintsError = error instanceof Error ? error.message : String(error);
-      }
-    }
+async function applyGeneration(root, project, plan, scan, options, recovery) {
+  const applied = {
+    transaction: { committed: false, skipped: true, recovered: recovery.recovered, recoveryAction: recovery.action },
+    statHintsPersisted: false,
+    statHintsError: null,
+  };
+  if (options.check) return applied;
+
+  await assertNoSymlinkTraversal(root, path.join(root, ".llmnav"), ".llmnav");
+  await assertNoSymlinkTraversal(
+    root,
+    path.join(root, project.config.generation.cacheDirectory),
+    project.config.generation.cacheDirectory,
+  );
+  const cachePrefix = `${toPosix(project.config.generation.cacheDirectory).replace(/\/+$/u, "")}/`;
+  const cacheChanges = plan.uniqueChangedFiles.filter((file) => file.startsWith(cachePrefix));
+  const controlArtifacts = new Map();
+  if (plan.missingRegistryIds.length > 0) {
+    controlArtifacts.set(
+      ".llmnav/ids.jsonl",
+      renderRegistryRecords(mergeActiveIds(project.registry, plan.ids).records),
+    );
+  }
+  if (plan.orderChanged) controlArtifacts.set(".llmnav/order.lock", plan.orderContent);
+  if (cacheChanges.length > 0 || controlArtifacts.size > 0) {
+    applied.transaction = await commitGeneratedCache(root, project.config.generation.cacheDirectory, plan.artifacts, {
+      failpoint: options.failpoint,
+      onPhase: options.onTransactionPhase,
+      renameOptions: options.renameOptions,
+      lockOwnerId: options.lockOwnerId,
+      controlArtifacts,
+      runtime: options.runtime,
+      signal: options.signal,
+    });
   }
 
-  return {
-    ok: options.check ? uniqueChangedFiles.length === 0 : true,
-    diagnostics,
-    changedFiles: uniqueChangedFiles,
-    changedCards,
-    affectedBoundaries,
-    affectedCatalogs,
-    project,
-    counts,
-    artifacts,
-    index: built.index,
-    searchIndex: built.searchIndex,
-    graph: built.graph,
-    incremental: {
-      enabled: options.incremental !== false,
-      files: scanStats,
-      cards: built.searchStats,
-      graph: built.graphStats,
-      statHintsPersisted,
-      statHintsError,
-    },
-    transaction,
-  };
+  if (scan.statHints && scan.hintsPath) {
+    try {
+      await persistStatHints(root, scan.hintsPath, scan.statHints);
+      applied.statHintsPersisted = true;
+    } catch (error) {
+      applied.statHintsError = error instanceof Error ? error.message : String(error);
+    }
+  }
+  return applied;
 }
 
 export function buildArtifacts(project, order, options = {}) {
