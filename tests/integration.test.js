@@ -5,11 +5,39 @@ import path from "node:path";
 import test from "node:test";
 import { installAgentInstructions } from "../src/agents.js";
 import { evaluateProject } from "../src/evaluation.js";
-import { findProjectRoot } from "../src/files.js";
+import { collectSourceFiles, findProjectRoot } from "../src/files.js";
+import { loadConfig } from "../src/config.js";
 import { buildArtifactSet, generateProject } from "../src/generator.js";
 import { initializeProject } from "../src/initializer.js";
 import { scanProject } from "../src/project.js";
 import { buildContext, queryProject } from "../src/search.js";
+
+test("runtime scratch files never enter source discovery or invalidate a clean generated cache", async context => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-private-source-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await writeFile(path.join(root, "source.js"), "export const value = 1;\n");
+  await initializeProject(root, { agents: ["none"] });
+  const { config } = await loadConfig(root);
+  const internal = [".llmnav/tmp", ".llmnav/state", ".llmnav/.transactions"];
+  for (const directory of internal) {
+    await mkdir(path.join(root, directory), { recursive: true });
+    const file = `${directory}/scratch.js`;
+    await writeFile(path.join(root, file), "export const localOnly = true;\n");
+    assert.deepEqual(await collectSourceFiles(root, config, [directory, file]), []);
+  }
+  const files = await collectSourceFiles(root, config);
+  assert.deepEqual(files.map(file => path.relative(root, file)), ["source.js"]);
+  const checked = await generateProject(root, { incremental: false, check: true });
+  assert.equal(checked.ok, true, JSON.stringify(checked.changedFiles));
+  const customConfig = { ...config, generation: { ...config.generation, cacheDirectory: ".llmnav/custom-cache" } };
+  await mkdir(path.join(root, customConfig.generation.cacheDirectory));
+  const cacheFile = `${customConfig.generation.cacheDirectory}/scratch.js`;
+  await writeFile(path.join(root, cacheFile), "export const cached = true;\n");
+  assert.deepEqual(await collectSourceFiles(root, customConfig, [".", customConfig.generation.cacheDirectory, cacheFile]), [path.join(root, "source.js")]);
+  await mkdir(path.join(root, ".llmnav/tmp-source"));
+  await writeFile(path.join(root, ".llmnav/tmp-source/owned.js"), "export const owned = true;\n");
+  assert.equal((await collectSourceFiles(root, config, [".llmnav/tmp-source"])).length, 1);
+});
 
 test("initializes, generates, verifies, and searches a project", async (context) => {
   const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-integration-"));

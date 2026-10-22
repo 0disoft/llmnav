@@ -2,54 +2,6 @@
   "files": [
     {
       "blocks": [],
-      "contentHash": "bf745e159c0cde01cb03335804588b5b6de8655df1f1b1d38324054aed4abada",
-      "declarations": [],
-      "imports": [
-        "node:fs/promises"
-      ],
-      "path": ".llmnav/tmp/append-tests.mjs",
-      "semanticBytes": 0,
-      "sourceBytes": 5192
-    },
-    {
-      "blocks": [],
-      "contentHash": "4f437d5d14890a6f22e1e95ecf3d5de921351aefd64db8adbdb9f8109f71504b",
-      "declarations": [],
-      "imports": [
-        "../../src/transaction.js",
-        "node:fs/promises",
-        "node:os",
-        "node:path"
-      ],
-      "path": ".llmnav/tmp/probe-lock.mjs",
-      "semanticBytes": 0,
-      "sourceBytes": 1147
-    },
-    {
-      "blocks": [],
-      "contentHash": "b15de517893d320cef375a4babbe43469a21e6ac5bde828f828d6419ca55fe02",
-      "declarations": [],
-      "imports": [
-        "../../src/search.js",
-        "../../src/util.js"
-      ],
-      "path": ".llmnav/tmp/probe-search.mjs",
-      "semanticBytes": 0,
-      "sourceBytes": 996
-    },
-    {
-      "blocks": [],
-      "contentHash": "5ac80fecce5aff0113532e05d1e3c74ca24e631c9eb43ead4a55833b036c36dd",
-      "declarations": [],
-      "imports": [
-        "../../src/util.js"
-      ],
-      "path": ".llmnav/tmp/probe-util.mjs",
-      "semanticBytes": 0,
-      "sourceBytes": 1101
-    },
-    {
-      "blocks": [],
       "contentHash": "3e66a523a48e2e1d61e97114735bd6cc9c0e28b55be36e351561f1ec76dace99",
       "declarations": [],
       "imports": [
@@ -3973,7 +3925,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "a84cd02677032c6348e29c59cb183bc214afd4d9228073c27f8beb1a7a1b2a49",
+      "contentHash": "af00810bc9de6108ce9e3c320b39ee6657c8e94ae8b6b8df1320ed9bd163ebd1",
       "declarations": [
         null
       ],
@@ -3986,7 +3938,7 @@
       ],
       "path": "src/files.js",
       "semanticBytes": 485,
-      "sourceBytes": 4785
+      "sourceBytes": 5230
     },
     {
       "blocks": [
@@ -7401,10 +7353,11 @@
     },
     {
       "blocks": [],
-      "contentHash": "7c58a32c7bcc9d92ed150438d365cd18fcb3726c4510f7a2e6eeded96720f459",
+      "contentHash": "c275ddf5d5a21c09265399b5d3745ccb770ecd94012439e08203c030182d2593",
       "declarations": [],
       "imports": [
         "../src/agents.js",
+        "../src/config.js",
         "../src/evaluation.js",
         "../src/files.js",
         "../src/generator.js",
@@ -7419,7 +7372,7 @@
       ],
       "path": "tests/integration.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 11580
+      "sourceBytes": 13526
     },
     {
       "blocks": [],

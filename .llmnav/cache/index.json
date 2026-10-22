@@ -1791,7 +1791,7 @@
         "generated artifact selection"
       ],
       "hashes": {
-        "body": "a84cd02677032c6348e29c59cb183bc214afd4d9228073c27f8beb1a7a1b2a49",
+        "body": "af00810bc9de6108ce9e3c320b39ee6657c8e94ae8b6b8df1320ed9bd163ebd1",
         "semantic": "c4bc743c8234815ec4eb769379036544321fbbbedfeeb363c580bb1658320a33",
         "structure": "41ab60f39516b3c84d5f12f567dfee581cd6351517842d0f142034010e2febdf"
       },
@@ -3067,6 +3067,6 @@
   "generatedBy": "llmnav@0.15.2",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "3b108fc6fb112eac62a905821d9ccaea2663e59bea68636ff32f903cc3e01204",
+  "sourceHash": "f119799719bb9a154de18cf74a6320b321b41e914aaebb6e7e8fe47086462fae",
   "specVersion": "1"
 }

@@ -15,6 +15,8 @@ import { throwIfAborted } from "./abort.js";
 import { DEFAULT_IO_CONCURRENCY, mapWithConcurrency } from "./concurrency.js";
 import { compareText, matchesAnyGlob, relativePosix, toPosix } from "./util.js";
 
+const INTERNAL_DIRECTORIES = [".llmnav/tmp", ".llmnav/state", ".llmnav/.transactions"];
+
 export async function findProjectRoot(start = process.cwd()) {
   let current = path.resolve(start);
   let fallback = null;
@@ -49,6 +51,7 @@ export async function collectSourceFiles(root, config, requestedPaths = [], opti
     throwIfAborted(options.signal);
     const absolute = path.resolve(root, sourceRoot);
     assertInsideRoot(root, absolute, sourceRoot);
+    if (isInternalPath(root, absolute, config)) continue;
     try {
       const linkDetails = await lstat(absolute);
       if (linkDetails.isSymbolicLink()) throw new Error(`Source path ${JSON.stringify(sourceRoot)} is a symbolic link.`);
@@ -97,10 +100,9 @@ async function readDirectory(root, directory, config, signal) {
   const batch = { files: [], directories: [] };
   for (const entry of entries) {
     const absolute = path.join(directory, entry.name);
-    const relative = relativePosix(root, absolute);
     if (entry.isDirectory()) {
       if (config.excludeDirectories.includes(entry.name)) continue;
-      if (relative.startsWith(`${toPosix(config.generation.cacheDirectory)}/`)) continue;
+      if (isInternalPath(root, absolute, config)) continue;
       batch.directories.push(absolute);
     } else if (entry.isFile() && shouldIncludeFile(root, absolute, config)) {
       batch.files.push(absolute);
@@ -110,9 +112,16 @@ async function readDirectory(root, directory, config, signal) {
 }
 
 function shouldIncludeFile(root, absolutePath, config) {
+  if (isInternalPath(root, absolutePath, config)) return false;
   const extension = path.extname(absolutePath).toLowerCase();
   if (!config.includeExtensions.includes(extension)) return false;
   const relative = relativePosix(root, absolutePath);
   if (matchesAnyGlob(relative, config.excludeFiles)) return false;
   return true;
+}
+
+function isInternalPath(root, absolutePath, config) {
+  const relative = relativePosix(root, absolutePath);
+  const cache = toPosix(config.generation.cacheDirectory).replace(/\/+$/u, "");
+  return [cache, ...INTERNAL_DIRECTORIES].some(directory => relative === directory || relative.startsWith(`${directory}/`));
 }

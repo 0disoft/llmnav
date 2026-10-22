@@ -1,5 +1,7 @@
 # Configuration reference
 
+Source collection always excludes `.llmnav/tmp`, `.llmnav/state`, `.llmnav/.transactions` and the configured generation cache directory. This also applies to explicit source paths; runtime scratch files must not affect a repository's generated snapshot.
+
 `llmnav init` creates `.llmnav/config.json` and a local JSON schema at `.llmnav/schema/config.schema.json`.
 
 ## Complete shape
