@@ -11,6 +11,7 @@ stability=architecture
 */
 
 import path from "node:path";
+import { throwIfAborted } from "./abort.js";
 import { loadConfig } from "./config.js";
 import { resolveRegistryId, loadRegistry } from "./registry.js";
 import { renderCompactCard } from "./generator.js";
@@ -136,7 +137,9 @@ function isUsablePrimaryIndex(index, repositoryId) {
 }
 
 export async function queryProject(root, query, options = {}) {
+  throwIfAborted(options.signal);
   const { index, lexicon, searchIndex, graph } = await loadSearchData(root);
+  throwIfAborted(options.signal);
   return queryPreparedIndex(index, searchIndex, query, { ...options, lexicon, graph });
 }
 
@@ -256,6 +259,7 @@ export function queryPreparedIndex(index, searchIndex, query, options = {}) {
   const aliasReasons = new Map();
   const { byId, cardOrder } = prepared;
   const resultsById = new Map();
+  throwIfAborted(options.signal);
 
   if (metrics) {
     metrics.queryTokens = queryTokens.length;
@@ -281,6 +285,7 @@ export function queryPreparedIndex(index, searchIndex, query, options = {}) {
   }
 
   for (const position of idCandidatePositions(prepared, normalizedQuery)) {
+    throwIfAborted(options.signal);
     if (metrics) metrics.idDocumentsScanned += 1;
     const card = index.cards[position];
     const normalizedId = prepared.normalizedIds[position];
@@ -303,6 +308,7 @@ export function queryPreparedIndex(index, searchIndex, query, options = {}) {
     const frequency = tokenPostings.length;
     const idf = Math.log(1 + (documentCount + 1) / (frequency + 1));
     for (const [cardIndex, vector] of tokenPostings) {
+    throwIfAborted(options.signal);
       if (metrics) metrics.postingVisits += 1;
       const id = searchIndex.cardIds[cardIndex];
       const card = byId.get(id);
@@ -319,6 +325,7 @@ export function queryPreparedIndex(index, searchIndex, query, options = {}) {
 
   if (normalizedQuery.length >= 4) {
     for (const [cardIndex, document] of searchIndex.documents.entries()) {
+      throwIfAborted(options.signal);
       if (metrics) metrics.phraseDocumentsScanned += 1;
       const phrases = Array.isArray(document) && Array.isArray(document[1]) ? document[1] : [];
       if (!phrases.some((field) => field.includes(normalizedQuery))) continue;

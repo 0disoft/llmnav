@@ -11,6 +11,7 @@ stability=architecture
 */
 
 import { readFile } from "node:fs/promises";
+import { throwIfAborted } from "./abort.js";
 import { loadConfig } from "./config.js";
 import { createDeclarationScanContext, findAttachedDeclaration, extractImports } from "./declaration.js";
 import { collectSourceFiles } from "./files.js";
@@ -21,13 +22,14 @@ import { relativePosix, sha256 } from "./util.js";
 
 export async function scanProject(root, options = {}) {
   const { config, configPath } = await loadConfig(root);
-  const files = await collectSourceFiles(root, config, options.paths ?? []);
+  const files = await collectSourceFiles(root, config, options.paths ?? [], { signal: options.signal });
   const records = [];
   const fileRecords = [];
   let sourceBytes = 0;
   let semanticBytes = 0;
 
   for (const absolutePath of files) {
+    throwIfAborted(options.signal);
     const source = await readFile(absolutePath, "utf8");
     const relativePath = relativePosix(root, absolutePath);
     const blocks = parseLlmnavBlocks(source, relativePath);

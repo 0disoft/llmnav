@@ -510,12 +510,13 @@
         "agent search decisions"
       ],
       "hashes": {
-        "body": "b85c7d583f13ce33f4d851154d3d2d65d83402b2492a0fd4352a8b897a75518c",
+        "body": "b2aea51aadec112b38bf343af5ab35961555c83aa31ad4b0614254914cc7b380",
         "semantic": "7052622c9732ab29e37c3ab87f848188e931f601684e811e7bb8adef31fbfe85",
-        "structure": "9e2888cf59a38a89a022ac7c3564ca169dc9a16d8aa4902928f30fde5a01233a"
+        "structure": "9a0f6533552a700901d005e54958d56c10a2a7ce9c901e3942a85ad8273d7eef"
       },
       "id": "llmnav.index.generate",
       "imports": [
+        "./abort.js",
         "./agent-tools.js",
         "./agents.js",
         "./boundaries.js",
@@ -682,12 +683,13 @@
         "source mutation"
       ],
       "hashes": {
-        "body": "61c648c81cbbfff737220689083486216f21f72b92cc85307f43deb7e7d99700",
+        "body": "71804b668f8583fdf00c30268079cb0f1cbef4a054c71531513a3b18a79704f8",
         "semantic": "945f325a2ad2abfa71212b02dd952c071d47ed6d3848a16d247afd48dbe5ced6",
-        "structure": "2b870e6bea8925cdf7ef701499a97ece5a8402e33614cdaeef93a7215d285403"
+        "structure": "72a8b2e76b92988e953b02478748f913e5f05e3f4108cc810de6fafcc079d3dd"
       },
       "id": "llmnav.search.query",
       "imports": [
+        "./abort.js",
         "./config.js",
         "./generator.js",
         "./graph.js",
@@ -830,12 +832,13 @@
         "cache directory commit"
       ],
       "hashes": {
-        "body": "512f94b8afa0d1d1a426c5d9ea8312fc5e66d15485a638b57ea09bc6626474c5",
+        "body": "e2f8cd95cd09ecc732d6fbc7263eb62b033be2aa076f51044ea89c4e6ce832b4",
         "semantic": "26e0abf92c39ff07a7eb622d795d5ecbc83c7704b7c1ed09cd3ad339e3c04865",
-        "structure": "f99d4a0e388f36d5ad8435fe295befb0e0f0e13b96109fd0af76f55791605104"
+        "structure": "d03a4559c819fe6738538d7228758b12722ccd5d4e8f0b93ce02795fbbd717fa"
       },
       "id": "llmnav.index.incremental",
       "imports": [
+        "./abort.js",
         "./config.js",
         "./declaration.js",
         "./files.js",
@@ -930,12 +933,13 @@
         "source indexing"
       ],
       "hashes": {
-        "body": "e1a2067dc55879ce3ee07b5488b745469f89902e14c928eac221c4c67540ad06",
+        "body": "aaeb11095091bb248112c6829d721ebdb16eb756750cca2f6427f3ebdd0a9cdb",
         "semantic": "ce2cf8943f71d053f8cba914886bae20316e5b6106857f52abc4d8a59afb1ef1",
-        "structure": "8571bbc68f73cf451e6fcad466eb22bf3f5b1ffe308bf3fb80618656bd85bc6c"
+        "structure": "5de94f39bf7e761651c8294ee0af6202e494f6eb4a3f829ad9e27414fc3d9848"
       },
       "id": "llmnav.index.transaction",
       "imports": [
+        "./abort.js",
         "./runtime.js",
         "./util.js",
         "node:fs/promises",
@@ -1659,12 +1663,13 @@
         "cache generation"
       ],
       "hashes": {
-        "body": "4d977b144b43cc041e53364f82a49bae32b40c3f0f1ed156b4e0edbac8bb5405",
+        "body": "0ac92faf923a7766a212e79c179c896f6aa00ede4f0f7c5c720c649513b0f233",
         "semantic": "c7cfa511ec9a14754b58e0f03bae113bd850ef9c716034a56d82449368d41af2",
-        "structure": "319c51444edb1fd99265dacf4aa5fb1ec7060819fa6180dfef1da0ae9c608bd4"
+        "structure": "d0a6a1248c27baccb0d69a888c3425fd9ef4a080888650f959f70f37ff940ee1"
       },
       "id": "llmnav.project.scan",
       "imports": [
+        "./abort.js",
         "./config.js",
         "./declaration.js",
         "./files.js",
@@ -1765,12 +1770,13 @@
         "generated artifact selection"
       ],
       "hashes": {
-        "body": "95c3f03efcfea323e39f036117030479886d6f8e9ae3db3bb9cd0fcdd8cb56d7",
+        "body": "f8911bdf8681b77d2bb2763578f0af0f9dc517fc346b975ff032a9e555188d3a",
         "semantic": "c4bc743c8234815ec4eb769379036544321fbbbedfeeb363c580bb1658320a33",
-        "structure": "c00e8b2a1850798321d50fcc261ef380ccbec1a6f455a6d03e454d1b45fc5a35"
+        "structure": "22a3ff9f20dd020969fdb2fcb0ecca8ecc70735d7aef3b2da2c283a10e56e8bb"
       },
       "id": "llmnav.source.discover",
       "imports": [
+        "./abort.js",
         "./util.js",
         "node:fs/promises",
         "node:path"
@@ -1963,12 +1969,13 @@
         "semantic role generation"
       ],
       "hashes": {
-        "body": "2726ac611932172641cc6c404aa5864512b1a0fd5554fe056f4e35b66ce6d1b8",
+        "body": "b102b85d489f9204e379f0864cf8ebcff76db9da3b380da31e195f7616397d76",
         "semantic": "47c79f36d71a39ad0b795700686fce0f12733568534f1a69dca05cc3cc8348c7",
-        "structure": "477878b800393949f73e344b829c26c77c664a47c89a60ac535d2b83da8aa187"
+        "structure": "1ab02741eeb4f62f28c6f7c745cc81efcf10dc9fd541e7f33188a4194a2d79e0"
       },
       "id": "llmnav.audit.coverage",
       "imports": [
+        "./abort.js",
         "./boundaries.js",
         "./module-resolution.js",
         "./project.js",
@@ -2275,6 +2282,45 @@
         "deterministic transaction ids"
       ],
       "stability": "architecture"
+    },
+    {
+      "boundaries": [],
+      "excludes": [
+        "cancellation sources",
+        "retry policy"
+      ],
+      "hashes": {
+        "body": "5627ff2699116c927230a03c8178b1b468fd21acd9914aa400944dc1c2e836df",
+        "semantic": "2d23c9211ed6b0c7499267c411a0fa80ce8b6dc786552b69fe9ea6ef136b10fc",
+        "structure": "a9ce90ad2b2f047692bca136bcdc7d946c98a5497aa1b129dd4cdfb7dbc5d327"
+      },
+      "id": "llmnav.support.abort",
+      "imports": [],
+      "location": {
+        "declarationLine": null,
+        "endLine": 8,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/abort.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "owns": [
+        "abort checks",
+        "abort error normalization"
+      ],
+      "role": "Expose cooperative cancellation checks so long scans, queries, and generations can stop at bounded checkpoints.",
+      "scope": "module",
+      "search": [
+        "abort signal",
+        "cancellation",
+        "abort error"
+      ],
+      "stability": "architecture"
     }
   ],
   "contractFingerprints": {
@@ -2290,6 +2336,6 @@
   "generatedBy": "llmnav@0.10.1",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "227239c81c6a32f9b7eecf1419bb248a4fae19101d0eb110c67412510971fdcc",
+  "sourceHash": "da63b96b6ac9473f751d57c57ff76bc7542e6bc45afda1b07660e69f5fc0e96b",
   "specVersion": "1"
 }

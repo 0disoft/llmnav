@@ -1,3 +1,4 @@
+export { ABORT_ERROR_NAME, createAbortError, throwIfAborted } from "./abort.js";
 export { AGENT_PROTOCOL, installAgentInstructions } from "./agents.js";
 export {
   AGENT_OPERATION_SCHEMA_VERSION,

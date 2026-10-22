@@ -586,6 +586,20 @@ export interface TransactionResult {
   replacedExisting?: boolean;
 }
 
+/**
+ * Structural subset of the platform AbortSignal so declarations do not require @types/node.
+ */
+export interface AbortSignalLike {
+  readonly aborted: boolean;
+  readonly reason?: unknown;
+  addEventListener(type: "abort", listener: () => void): void;
+  removeEventListener?(type: "abort", listener: () => void): void;
+}
+
+export const ABORT_ERROR_NAME: string;
+export function createAbortError(signal?: AbortSignalLike): Error;
+export function throwIfAborted(signal?: AbortSignalLike): void;
+
 export interface Runtime {
   now(): number;
   pid: number;
@@ -771,21 +785,21 @@ export function describeAffectedBoundaries(changedCards: ChangedCardRecord[], co
 export function describeAffectedCatalogs(changedFiles: string[], cacheDirectory: string, config: LlmnavConfig, previousIndex: LlmnavIndex | null, currentIndex: LlmnavIndex): AffectedCatalogRecord[];
 export function loadConfig(root: string): Promise<{ config: LlmnavConfig; configPath: string }>;
 export function validateConfig(config: LlmnavConfig, configPath?: string): void;
-export function auditProject(root: string): Promise<AuditResult>;
+export function auditProject(root: string, options?: { signal?: AbortSignalLike }): Promise<AuditResult>;
 export function auditHasFindings(result: AuditResult, minimumPriority?: AuditPriority | "none"): boolean;
 export function selectAuditCandidates(result: AuditResult, minimumPriority?: AuditPriority, top?: number): AuditCandidateSelection;
 export function explainProjectFile(root: string, file: string): Promise<FileExplanationResult>;
 export function findAttachedDeclaration(source: string, block: LlmnavBlock, filePath: string): Declaration | null;
 export function extractImports(source: string, filePath: string): string[];
 export function doctorProject(root: string): Promise<{ ok: boolean; checks: Array<{ name: string; ok: boolean; message: string }> }>;
-export function migrateProject(root: string, options?: { write?: boolean; failpoint?: string; renameOptions?: Record<string, unknown>; lockOptions?: GenerationLockOptions; runtime?: Runtime; onTransactionPhase?: (phase: string) => void | Promise<void> }): Promise<MigrationResult>;
+export function migrateProject(root: string, options?: { write?: boolean; failpoint?: string; renameOptions?: Record<string, unknown>; lockOptions?: GenerationLockOptions; runtime?: Runtime; signal?: AbortSignalLike; onTransactionPhase?: (phase: string) => void | Promise<void> }): Promise<MigrationResult>;
 export function evaluateProject(root: string, options?: { top?: number; file?: string; minimumCases?: number }): Promise<EvaluationResult>;
-export function collectSourceFiles(root: string, config: LlmnavConfig, requestedPaths?: string[]): Promise<string[]>;
+export function collectSourceFiles(root: string, config: LlmnavConfig, requestedPaths?: string[], options?: { signal?: AbortSignalLike }): Promise<string[]>;
 export function findProjectRoot(start?: string): Promise<string>;
 export function formatProject(root: string, options?: { check?: boolean; paths?: string[] }): Promise<{ ok: boolean; changedFiles: string[]; errors: Array<{ file: string; line: number; message: string }> }>;
 export function buildArtifacts(project: ScannedProject, order: string[], options?: { previousSearchIndex?: LlmnavSearchIndex | null; previousGraphState?: RepositoryGraphState | null; fileState?: LlmnavFileState }): Map<string, string>;
 export function buildArtifactSet(project: ScannedProject, order: string[], options?: { previousSearchIndex?: LlmnavSearchIndex | null; previousGraphState?: RepositoryGraphState | null; fileState?: LlmnavFileState }): { artifacts: Map<string, string>; index: LlmnavIndex; searchIndex: LlmnavSearchIndex; searchStats: SearchIndexStats; fileState: LlmnavFileState; graph: RepositoryGraph; graphState: RepositoryGraphState; graphStats: IncrementalGraphStats; promptBundle: PromptPrefixBundle; moduleManifest: Array<{ id: string; file: string; cards: number }> };
-export function generateProject(root: string, options?: { check?: boolean; incremental?: boolean; useStatHints?: boolean; paths?: string[]; failpoint?: string; renameOptions?: Record<string, unknown>; lockOptions?: GenerationLockOptions; runtime?: Runtime; onTransactionPhase?: (phase: string) => void | Promise<void> }): Promise<GenerationResult>;
+export function generateProject(root: string, options?: { check?: boolean; incremental?: boolean; useStatHints?: boolean; paths?: string[]; failpoint?: string; renameOptions?: Record<string, unknown>; lockOptions?: GenerationLockOptions; runtime?: Runtime; signal?: AbortSignalLike; onTransactionPhase?: (phase: string) => void | Promise<void> }): Promise<GenerationResult>;
 export function renderCompactCard(card: IndexedCard): string;
 export function renderSemanticCard(card: IndexedCard): string;
 export function scanProjectIncremental(root: string, options?: { paths?: string[]; useStatHints?: boolean; previousState?: LlmnavFileState }): Promise<{ project: ScannedProject; fileState: LlmnavFileState; stats: IncrementalFileStats; statHints: unknown; hintsPath: string }>;
@@ -804,7 +818,7 @@ export function canonicalizeSource(source: string, filePath?: string): { source:
 export function cardToCanonicalObject(card: LlmnavCard): Record<string, string | string[]>;
 export function formatLlmnavBlock(block: LlmnavBlock): string;
 export function parseLlmnavBlocks(source: string, filePath?: string): LlmnavBlock[];
-export function scanProject(root: string, options?: { paths?: string[] }): Promise<ScannedProject>;
+export function scanProject(root: string, options?: { paths?: string[]; signal?: AbortSignalLike }): Promise<ScannedProject>;
 export function ensureActiveIds(root: string, registry: Registry, ids: string[]): Promise<{ records: RegistryRecord[]; changed: boolean }>;
 export function mergeActiveIds(registry: Registry, ids: string[]): { records: RegistryRecord[]; changed: boolean };
 export function renderRegistryRecords(records: RegistryRecord[]): string;
@@ -815,9 +829,9 @@ export function createProjectSession(root: string, options: { withPromptBundle: 
 export function createProjectSession(root: string, options?: { withPromptBundle?: false }): Promise<ProjectSession>;
 export function loadSearchData(root: string): Promise<{ index: LlmnavIndex; searchIndex: LlmnavSearchIndex; lexicon: { version?: number; aliases: Record<string, string | string[]> }; graph: RepositoryGraph | null }>;
 export function queryIndex(index: LlmnavIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> }; invertedIndex?: LlmnavSearchIndex; metrics?: SearchMetrics; graph?: RepositoryGraph | null }): SearchResult[];
-export function queryPreparedIndex(index: LlmnavIndex, searchIndex: LlmnavSearchIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> }; metrics?: SearchMetrics; graph?: RepositoryGraph | null }): SearchResult[];
+export function queryPreparedIndex(index: LlmnavIndex, searchIndex: LlmnavSearchIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> }; metrics?: SearchMetrics; graph?: RepositoryGraph | null; signal?: AbortSignalLike }): SearchResult[];
 export function queryIndexLegacy(index: LlmnavIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> } }): SearchResult[];
-export function queryProject(root: string, query: string, options?: { top?: number }): Promise<SearchResult[]>;
+export function queryProject(root: string, query: string, options?: { top?: number; signal?: AbortSignalLike }): Promise<SearchResult[]>;
 export function showProjectCard(root: string, id: string): Promise<{ card: IndexedCard | null; node: GraphNode | null; resolvedFrom: unknown }>;
 export function tokenize(value: string): string[];
 export function normalizeSearchText(value: string): string;

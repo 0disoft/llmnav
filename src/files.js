@@ -11,6 +11,7 @@ stability=contract
 
 import { lstat, readdir, stat } from "node:fs/promises";
 import path from "node:path";
+import { throwIfAborted } from "./abort.js";
 import { compareText, matchesAnyGlob, relativePosix, toPosix } from "./util.js";
 
 export async function findProjectRoot(start = process.cwd()) {
@@ -39,10 +40,12 @@ async function pathExists(candidate) {
   }
 }
 
-export async function collectSourceFiles(root, config, requestedPaths = []) {
+export async function collectSourceFiles(root, config, requestedPaths = [], options = {}) {
+  throwIfAborted(options.signal);
   const roots = requestedPaths.length > 0 ? requestedPaths : config.sourceRoots;
   const files = new Map();
   for (const sourceRoot of roots) {
+    throwIfAborted(options.signal);
     const absolute = path.resolve(root, sourceRoot);
     assertInsideRoot(root, absolute, sourceRoot);
     try {
@@ -52,7 +55,7 @@ export async function collectSourceFiles(root, config, requestedPaths = []) {
       if (details.isFile()) {
         if (shouldIncludeFile(root, absolute, config)) files.set(absolute, true);
       } else if (details.isDirectory()) {
-        await walkDirectory(root, absolute, config, files);
+        await walkDirectory(root, absolute, config, files, options.signal);
       }
     } catch (error) {
       if (!error || typeof error !== "object" || error.code !== "ENOENT") throw error;
@@ -67,16 +70,17 @@ function assertInsideRoot(root, absolutePath, sourcePath) {
   throw new Error(`Source path ${JSON.stringify(sourcePath)} escapes the repository root.`);
 }
 
-async function walkDirectory(root, directory, config, files) {
+async function walkDirectory(root, directory, config, files, signal) {
   const entries = await readdir(directory, { withFileTypes: true });
   entries.sort((left, right) => compareText(left.name, right.name));
   for (const entry of entries) {
+    throwIfAborted(signal);
     const absolute = path.join(directory, entry.name);
     const relative = relativePosix(root, absolute);
     if (entry.isDirectory()) {
       if (config.excludeDirectories.includes(entry.name)) continue;
       if (relative.startsWith(`${toPosix(config.generation.cacheDirectory)}/`)) continue;
-      await walkDirectory(root, absolute, config, files);
+      await walkDirectory(root, absolute, config, files, signal);
     } else if (entry.isFile() && shouldIncludeFile(root, absolute, config)) {
       files.set(absolute, true);
     }

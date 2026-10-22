@@ -1207,6 +1207,95 @@
           "card": {
             "effect": [],
             "excludes": [
+              "cancellation sources",
+              "retry policy"
+            ],
+            "id": "llmnav.support.abort",
+            "invariant": [],
+            "owns": [
+              "abort checks",
+              "abort error normalization"
+            ],
+            "rel": [],
+            "risk": [],
+            "role": "Expose cooperative cancellation checks so long scans, queries, and generations can stop at bounded checkpoints.",
+            "scope": "module",
+            "search": [
+              "abort signal",
+              "cancellation",
+              "abort error"
+            ],
+            "stability": "architecture",
+            "unknown": []
+          },
+          "end": 317,
+          "endLine": 8,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.support.abort"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Expose cooperative cancellation checks so long scans, queries, and generations can stop at bounded checkpoints."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "abort checks|abort error normalization"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "cancellation sources|retry policy"
+            },
+            {
+              "key": "search",
+              "line": 6,
+              "order": 4,
+              "value": "abort signal|cancellation|abort error"
+            },
+            {
+              "key": "stability",
+              "line": 7,
+              "order": 5,
+              "value": "architecture"
+            }
+          ],
+          "filePath": "src/abort.js",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.support.abort\nrole=Expose cooperative cancellation checks so long scans, queries, and generations can stop at bounded checkpoints.\nowns=abort checks|abort error normalization\nexcludes=cancellation sources|retry policy\nsearch=abort signal|cancellation|abort error\nstability=architecture\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "5627ff2699116c927230a03c8178b1b468fd21acd9914aa400944dc1c2e836df",
+      "declarations": [
+        null
+      ],
+      "imports": [],
+      "path": "src/abort.js",
+      "semanticBytes": 317,
+      "sourceBytes": 1479
+    },
+    {
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
               "provider SDK transport",
               "repository discovery",
               "source mutation"
@@ -1621,11 +1710,12 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "2726ac611932172641cc6c404aa5864512b1a0fd5554fe056f4e35b66ce6d1b8",
+      "contentHash": "b102b85d489f9204e379f0864cf8ebcff76db9da3b380da31e195f7616397d76",
       "declarations": [
         null
       ],
       "imports": [
+        "./abort.js",
         "./boundaries.js",
         "./module-resolution.js",
         "./project.js",
@@ -1634,7 +1724,7 @@
       ],
       "path": "src/audit.js",
       "semanticBytes": 577,
-      "sourceBytes": 24378
+      "sourceBytes": 24558
     },
     {
       "blocks": [
@@ -2723,18 +2813,19 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "95c3f03efcfea323e39f036117030479886d6f8e9ae3db3bb9cd0fcdd8cb56d7",
+      "contentHash": "f8911bdf8681b77d2bb2763578f0af0f9dc517fc346b975ff032a9e555188d3a",
       "declarations": [
         null
       ],
       "imports": [
+        "./abort.js",
         "./util.js",
         "node:fs/promises",
         "node:path"
       ],
       "path": "src/files.js",
       "semanticBytes": 485,
-      "sourceBytes": 3810
+      "sourceBytes": 3999
     },
     {
       "blocks": [
@@ -2958,11 +3049,12 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "b85c7d583f13ce33f4d851154d3d2d65d83402b2492a0fd4352a8b897a75518c",
+      "contentHash": "b2aea51aadec112b38bf343af5ab35961555c83aa31ad4b0614254914cc7b380",
       "declarations": [
         null
       ],
       "imports": [
+        "./abort.js",
         "./agent-tools.js",
         "./agents.js",
         "./boundaries.js",
@@ -2987,7 +3079,7 @@
       ],
       "path": "src/generator.js",
       "semanticBytes": 476,
-      "sourceBytes": 20548
+      "sourceBytes": 20819
     },
     {
       "blocks": [
@@ -3295,11 +3387,12 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "512f94b8afa0d1d1a426c5d9ea8312fc5e66d15485a638b57ea09bc6626474c5",
+      "contentHash": "e2f8cd95cd09ecc732d6fbc7263eb62b033be2aa076f51044ea89c4e6ce832b4",
       "declarations": [
         null
       ],
       "imports": [
+        "./abort.js",
         "./config.js",
         "./declaration.js",
         "./files.js",
@@ -3312,24 +3405,25 @@
       ],
       "path": "src/incremental.js",
       "semanticBytes": 381,
-      "sourceBytes": 11146
+      "sourceBytes": 11255
     },
     {
       "blocks": [],
-      "contentHash": "181437736cf74ddf18a66f4270ceda83af72b3411f494d115bd6e6c01f210117",
+      "contentHash": "b10926f10052efdcde92d30a46790255a278f685f1f2729c7dae97378803a0f1",
       "declarations": [],
       "imports": [
         "./spec.js"
       ],
       "path": "src/index.d.ts",
       "semanticBytes": 0,
-      "sourceBytes": 30754
+      "sourceBytes": 31462
     },
     {
       "blocks": [],
-      "contentHash": "a947b486ea98d0253d0d56a269d392b88f5b0794656d014dbecc464f924bb483",
+      "contentHash": "0a5c1ce5cac22ee6c1399408abbb6b8990c34031e58560317c53046ae717eb72",
       "declarations": [],
       "imports": [
+        "./abort.js",
         "./agent-protocol.js",
         "./agents.js",
         "./audit.js",
@@ -3365,7 +3459,7 @@
       ],
       "path": "src/index.js",
       "semanticBytes": 0,
-      "sourceBytes": 3767
+      "sourceBytes": 3848
     },
     {
       "blocks": [
@@ -4159,11 +4253,12 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "4d977b144b43cc041e53364f82a49bae32b40c3f0f1ed156b4e0edbac8bb5405",
+      "contentHash": "0ac92faf923a7766a212e79c179c896f6aa00ede4f0f7c5c720c649513b0f233",
       "declarations": [
         null
       ],
       "imports": [
+        "./abort.js",
         "./config.js",
         "./declaration.js",
         "./files.js",
@@ -4175,7 +4270,7 @@
       ],
       "path": "src/project.js",
       "semanticBytes": 510,
-      "sourceBytes": 2785
+      "sourceBytes": 2894
     },
     {
       "blocks": [
@@ -4814,11 +4909,12 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "61c648c81cbbfff737220689083486216f21f72b92cc85307f43deb7e7d99700",
+      "contentHash": "71804b668f8583fdf00c30268079cb0f1cbef4a054c71531513a3b18a79704f8",
       "declarations": [
         null
       ],
       "imports": [
+        "./abort.js",
         "./config.js",
         "./generator.js",
         "./graph.js",
@@ -4832,7 +4928,7 @@
       ],
       "path": "src/search.js",
       "semanticBytes": 464,
-      "sourceBytes": 30811
+      "sourceBytes": 31068
     },
     {
       "blocks": [],
@@ -5145,11 +5241,12 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "e1a2067dc55879ce3ee07b5488b745469f89902e14c928eac221c4c67540ad06",
+      "contentHash": "aaeb11095091bb248112c6829d721ebdb16eb756750cca2f6427f3ebdd0a9cdb",
       "declarations": [
         null
       ],
       "imports": [
+        "./abort.js",
         "./runtime.js",
         "./util.js",
         "node:fs/promises",
@@ -5157,7 +5254,7 @@
       ],
       "path": "src/transaction.js",
       "semanticBytes": 393,
-      "sourceBytes": 29976
+      "sourceBytes": 30089
     },
     {
       "blocks": [],
@@ -5275,6 +5372,26 @@
       "path": "src/validator.js",
       "semanticBytes": 359,
       "sourceBytes": 21275
+    },
+    {
+      "blocks": [],
+      "contentHash": "fde2812ac6df6b64a7bb4fe7144eb70691176106116aed3312145010da2f9cd8",
+      "declarations": [],
+      "imports": [
+        "../src/abort.js",
+        "../src/audit.js",
+        "../src/generator.js",
+        "../src/initializer.js",
+        "../src/search.js",
+        "node:assert/strict",
+        "node:fs/promises",
+        "node:os",
+        "node:path",
+        "node:test"
+      ],
+      "path": "tests/abort-signal.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 5026
     },
     {
       "blocks": [],

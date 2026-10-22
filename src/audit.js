@@ -10,6 +10,7 @@ stability=contract
 */
 
 import path from "node:path";
+import { throwIfAborted } from "./abort.js";
 import { detectBoundaries } from "./boundaries.js";
 import { moduleKeyForFile, resolveGoImportModule } from "./module-resolution.js";
 import { scanProject } from "./project.js";
@@ -28,8 +29,8 @@ const UTILITY_NAME_PATTERN = /^(?:common|helpers?|shared|utils?)$/u;
 const NON_PRODUCTION_PATH_PATTERN = /(?:^|\/)(?:__tests__|benchmarks?|fixtures?|testdata|tests?)(?:\/|$)|\.(?:spec|test)\.[^/]+$|_test\.go$/u;
 const LARGE_SOURCE_BYTES = 12_000;
 
-export async function auditProject(root) {
-  return (await analyzeAuditProject(root)).result;
+export async function auditProject(root, options = {}) {
+  return (await analyzeAuditProject(root, options)).result;
 }
 
 export async function explainProjectFile(root, inputPath) {
@@ -87,8 +88,9 @@ export async function explainProjectFile(root, inputPath) {
     "no-card-needed", "Do not add a card solely for coverage; revisit only if the file gains a durable responsibility or stronger structural signals.");
 }
 
-async function analyzeAuditProject(root) {
-  const project = await scanProject(root);
+async function analyzeAuditProject(root, options = {}) {
+  throwIfAborted(options.signal);
+  const project = await scanProject(root, { signal: options.signal });
   const fileByPath = new Map(
     project.fileRecords.map((record) => [toPosix(record.relativePath), record]),
   );
@@ -127,6 +129,7 @@ async function analyzeAuditProject(root) {
   const candidates = [];
 
   for (const [moduleKey, files] of [...filesByModule.entries()].sort(([left], [right]) => compareText(left, right))) {
+    throwIfAborted(options.signal);
     if (coveredModules.has(moduleKey)) continue;
     const selectableFiles = files.filter(([file]) => !exactCardPaths.has(file) && !/\.d\.[cm]?ts$/u.test(file));
     if (selectableFiles.length === 0) continue;

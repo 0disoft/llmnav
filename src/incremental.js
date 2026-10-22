@@ -10,6 +10,7 @@ stability=architecture
 
 import { readFile, stat } from "node:fs/promises";
 import path from "node:path";
+import { throwIfAborted } from "./abort.js";
 import { loadConfig } from "./config.js";
 import { createDeclarationScanContext, findAttachedDeclaration, extractImports } from "./declaration.js";
 import { collectSourceFiles } from "./files.js";
@@ -33,7 +34,7 @@ const STAT_HINTS_SCHEMA_VERSION = 2;
 
 export async function scanProjectIncremental(root, options = {}) {
   const { config, configPath } = await loadConfig(root);
-  const files = await collectSourceFiles(root, config, options.paths ?? []);
+  const files = await collectSourceFiles(root, config, options.paths ?? [], { signal: options.signal });
   const cacheDirectory = path.join(root, config.generation.cacheDirectory);
   await assertNoSymlinkTraversal(root, cacheDirectory, config.generation.cacheDirectory);
   const fileStatePath = path.join(cacheDirectory, "file-state.json");
@@ -83,6 +84,7 @@ export async function scanProjectIncremental(root, options = {}) {
   let semanticBytes = 0;
 
   for (const absolutePath of files) {
+    throwIfAborted(options.signal);
     const relativePath = relativePosix(root, absolutePath);
     const details = await stat(absolutePath, { bigint: true });
     const fingerprint = statFingerprint(details);

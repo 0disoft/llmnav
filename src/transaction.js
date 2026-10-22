@@ -22,6 +22,7 @@ import {
   stableStringify,
   toPosix,
 } from "./util.js";
+import { throwIfAborted } from "./abort.js";
 import { DEFAULT_RUNTIME } from "./runtime.js";
 
 export const TRANSACTION_SCHEMA_VERSION = 1;
@@ -131,6 +132,7 @@ export async function releaseGenerationLock(lock) {
 }
 
 export async function commitGeneratedCache(root, cacheDirectory, artifacts, options = {}) {
+  throwIfAborted(options.signal);
   if (!options.lockOwnerId) {
     return withGenerationLock(
       root,
@@ -617,6 +619,7 @@ function invalidOwnerRecordError() {
 }
 
 async function invokeFailpoint(name, options) {
+  throwIfAborted(options.signal);
   if (typeof options.onPhase === "function") await options.onPhase(name);
   const runtime = options.runtime ?? DEFAULT_RUNTIME;
   const failpoint = options.failpoint ?? runtime.env().LLMNAV_TEST_FAILPOINT;

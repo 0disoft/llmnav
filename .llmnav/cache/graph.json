@@ -394,6 +394,20 @@
     },
     {
       "confidence": 0.85,
+      "from": "llmnav/llmnav.audit.coverage",
+      "id": "6634fa6258a46bd13308ea9bea00f8ffbdab53b2b9eac4687e0718ae11775686",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/audit.js",
+        "source": "src/audit.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.support.abort"
+    },
+    {
+      "confidence": 0.85,
       "from": "llmnav/llmnav.cli.dispatch",
       "id": "76a4f1b60bad6a632f8cf1a5b8a04b4952c111cd1976963b0ccb32f9fe32df29",
       "kind": "imports",
@@ -1431,6 +1445,20 @@
     {
       "confidence": 0.85,
       "from": "llmnav/llmnav.index.generate",
+      "id": "e55e2cffdf1f0cd5cd0f1281c36bcb2eafb4ffac99fd307143fbc95c5e8af88c",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/generator.js",
+        "source": "src/generator.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.support.abort"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.index.generate",
       "id": "eff55cb7a0753c8ed11bcc844fa1efa8c7ff12b947a4742df242b241461ae005",
       "kind": "imports",
       "provenance": {
@@ -1525,6 +1553,20 @@
         "type": "local-import"
       },
       "to": "llmnav/llmnav.structure.modules"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.index.incremental",
+      "id": "91677f8f03a1b553bdb52b00586d096aff4a88c6e153b872c56e0ef88315d4a1",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/incremental.js",
+        "source": "src/incremental.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.support.abort"
     },
     {
       "confidence": 0.85,
@@ -1637,6 +1679,20 @@
         "type": "source-card"
       },
       "to": "llmnav/llmnav.index.generate"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.index.transaction",
+      "id": "fed10b667d6a488d7582c4e9b4c54298b0bd6b5972e5f9b3a1485b2a8ec2b09b",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/transaction.js",
+        "source": "src/transaction.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.support.abort"
     },
     {
       "confidence": 0.85,
@@ -1935,6 +1991,20 @@
     {
       "confidence": 0.85,
       "from": "llmnav/llmnav.project.scan",
+      "id": "63aec2efde57e8fdc89f02cdb52b417cc05dbd91f2f388e0c63c8d295ec63002",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/project.js",
+        "source": "src/project.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.support.abort"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.project.scan",
       "id": "abd5074665c983c6a436efaf1df7bcc65834974507395109b3d1be74e9dd2f4d",
       "kind": "imports",
       "provenance": {
@@ -2199,6 +2269,20 @@
       "to": "llmnav/llmnav.search.tokenize"
     },
     {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.search.query",
+      "id": "c8ec6df0b744b9968229bdf5055be7b58770f69d7c243e8dc4a7abda317bcf0d",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/search.js",
+        "source": "src/search.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.support.abort"
+    },
+    {
       "confidence": 1,
       "from": "llmnav/llmnav.search.tokenize",
       "id": "8ace185e173fcaa492a544e8ea5f68e3f781457a06cc2f82cbe18b8f850460ec",
@@ -2225,6 +2309,20 @@
         "type": "source-card"
       },
       "to": "llmnav/llmnav.project.scan"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.source.discover",
+      "id": "1bb40a0c4b95d378dbc09651fdb36942a23fd58e790c0a515adf24b69a53e790",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/files.js",
+        "source": "src/files.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.support.abort"
     },
     {
       "confidence": 0.85,
@@ -3399,6 +3497,28 @@
     {
       "definitions": [],
       "external": false,
+      "key": "llmnav/llmnav.support.abort",
+      "location": {
+        "declarationLine": null,
+        "endLine": 8,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/abort.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Expose cooperative cancellation checks so long scans, queries, and generations can stop at bounded checkpoints.",
+      "semanticId": "llmnav.support.abort",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
       "key": "llmnav/llmnav.support.runtime",
       "location": {
         "declarationLine": null,
@@ -3443,11 +3563,11 @@
   ],
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "2b21170c68288f06d3cff2df6b1cbacbcedaccb1facaacad0a20f7304909e0bd",
+  "sourceHash": "498d1e60968c83f22d9dbc1351597b3040d84702bc744b04cc51cd2262a67357",
   "stats": {
-    "edgeCount": 169,
+    "edgeCount": 176,
     "importedIndexCount": 0,
-    "nodeCount": 46,
+    "nodeCount": 47,
     "unresolvedNodeCount": 0
   }
 }

@@ -122,6 +122,21 @@ const result = await generateProject(process.cwd(), { incremental: false });
 
 Failure injection options exist for the repository test suite and are not a normal application interface.
 
+## Cancel long-running work
+
+`generateProject`, `queryProject`, `scanProject`, and `auditProject` accept an optional `signal`:
+
+```js
+const controller = new AbortController();
+const pending = generateProject(process.cwd(), { signal: controller.signal });
+controller.abort("user cancelled");
+await pending; // rejects with the abort reason
+```
+
+Cancellation is cooperative. Generation checks the signal while scanning, between graph and identifier work, and at every commit phase; a cancelled commit behaves like any other failure and rolls the cache back to its previous bytes. Queries check between ranking passes, and audits check between candidate modules. Omitting `signal` keeps the previous behavior, and an already-aborted signal fails before the first mutation.
+
+`throwIfAborted(signal)` performs the same check in caller code, and `createAbortError(signal)` normalizes a signal into one error. An `Error` passed to `controller.abort(error)` is rethrown unchanged; any other reason becomes an `AbortError`.
+
 ## Build and update an inverted index
 
 ```js

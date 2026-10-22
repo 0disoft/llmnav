@@ -13,6 +13,7 @@ stability=architecture
 
 import { readdir } from "node:fs/promises";
 import path from "node:path";
+import { assertAbortSignal, throwIfAborted } from "./abort.js";
 import { cardToCanonicalObject } from "./parser.js";
 import { scanProject } from "./project.js";
 import { mergeActiveIds, renderRegistryRecords } from "./registry.js";
@@ -71,6 +72,8 @@ export async function generateProject(root, options = {}) {
 
 /** Internal bootstrap integration; preparation and generation share the same owner. */
 export async function generateProjectWithPreparation(root, prepare, options = {}) {
+  assertAbortSignal(options.signal);
+  throwIfAborted(options.signal);
   const lockOptions = options.runtime === undefined
     ? options.lockOptions
     : { ...options.lockOptions, runtime: options.runtime };
@@ -85,6 +88,7 @@ export async function generateProjectWithPreparation(root, prepare, options = {}
 }
 
 async function generateProjectLocked(root, options) {
+  throwIfAborted(options.signal);
   const { config: recoveryConfig } = await loadConfig(root);
   const recovery = await recoverGenerationTransaction(root, {
     cacheDirectory: recoveryConfig.generation.cacheDirectory,
@@ -123,6 +127,7 @@ async function generateProjectLocked(root, options) {
     ({ project, fileState, statHints, hintsPath, stats: scanStats } = incremental);
   }
 
+  throwIfAborted(options.signal);
   const graphInputs = await loadGraphInputs(root, project.config);
   project.graphInputs = graphInputs.indexes;
   const diagnostics = [...validateProject(project), ...graphInputs.diagnostics].sort(compareGeneratedDiagnostics);
@@ -142,6 +147,7 @@ async function generateProjectLocked(root, options) {
     };
   }
 
+  throwIfAborted(options.signal);
   const ids = project.records.map((record) => record.card.id).filter(Boolean);
   const order = await buildStableOrder(root, ids);
   const built = buildArtifactSet(project, order, {
@@ -223,6 +229,7 @@ async function generateProjectLocked(root, options) {
           lockOwnerId: options.lockOwnerId,
           controlArtifacts,
           runtime: options.runtime,
+          signal: options.signal,
         },
       );
     }

@@ -165,3 +165,8 @@ rel workflow>llmnav.project.scan, workflow>llmnav.graph.generate
 role Supply injectable clock, process identity, randomness, sleep, environment, and liveness probes for deterministic tests.
 owns runtime injection, deterministic identity, process liveness
 excludes filesystem access, generation policy
+
+@llmnav.support.abort
+role Expose cooperative cancellation checks so long scans, queries, and generations can stop at bounded checkpoints.
+owns abort checks, abort error normalization
+excludes cancellation sources, retry policy
