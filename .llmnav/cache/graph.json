@@ -43,6 +43,62 @@
       "to": "llmnav/llmnav.search.query"
     },
     {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.agent.mcp",
+      "id": "c50e9852a08bd7c0d765b816c8e3932237670dbe6e6583f6b50d4502f9180399",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/mcp.js",
+        "source": "src/mcp.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.agent.protocol"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.agent.mcp",
+      "id": "b4b00edf5080173ee205b94d972537598f47e9b46ed5919a7eeb7a8121578fee",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/mcp.js",
+        "source": "src/mcp.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.agent.protocol"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.agent.mcp",
+      "id": "dd4d543c247cbdede464325f1ea14418ba52b571448eeb1b2da2df74ee57b5ff",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/mcp.js",
+        "source": "src/mcp.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.agent.tool-schema"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.agent.mcp",
+      "id": "51e2130f03660f8e78b07610a5ad15a941cd77df8f020797ad082ab059afcd68",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/mcp.js",
+        "source": "src/mcp.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.spec.contract"
+    },
+    {
       "confidence": 1,
       "from": "llmnav/llmnav.agent.prompt-bundle",
       "id": "f23befe35d758f69f4fa4bdb6342ec302d2bf751a07ace88c403d829e89c4eae",
@@ -321,6 +377,20 @@
         "type": "local-import"
       },
       "to": "llmnav/llmnav.structure.modules"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.cli.dispatch",
+      "id": "76a4f1b60bad6a632f8cf1a5b8a04b4952c111cd1976963b0ccb32f9fe32df29",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/cli.js",
+        "source": "src/cli.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.agent.mcp"
     },
     {
       "confidence": 0.85,
@@ -2531,6 +2601,28 @@
     {
       "definitions": [],
       "external": false,
+      "key": "llmnav/llmnav.agent.mcp",
+      "location": {
+        "declarationLine": null,
+        "endLine": 10,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/mcp.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Serve the stable agent tool schema and operation protocol over the Model Context Protocol stdio transport.",
+      "semanticId": "llmnav.agent.mcp",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
       "key": "llmnav/llmnav.agent.prompt-bundle",
       "location": {
         "declarationLine": null,
@@ -3301,11 +3393,11 @@
   ],
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "fffc0e7e030edf6bf7f4fb5fcece486c9b0eb989318a1a6d71c1f12078cddfc7",
+  "sourceHash": "d6f045244c2ec70642a43cc73372a5dac3c1788e8e25a7fe78aeb351db253d6f",
   "stats": {
-    "edgeCount": 162,
+    "edgeCount": 167,
     "importedIndexCount": 0,
-    "nodeCount": 44,
+    "nodeCount": 45,
     "unresolvedNodeCount": 0
   }
 }

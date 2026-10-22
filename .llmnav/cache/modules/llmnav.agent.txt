@@ -31,3 +31,9 @@ owns host-side root binding, project session lifecycle, prompt partition selecti
 excludes model provider client, authentication, model-selected repository roots
 invariant The host supplies the repository root; model-generated tool input cannot replace it.
 rel workflow>llmnav.agent.protocol
+
+@llmnav.agent.mcp
+role Serve the stable agent tool schema and operation protocol over the Model Context Protocol stdio transport.
+owns JSON-RPC framing, capability negotiation, tool listing, tool call mapping
+excludes agent tool schemas, operation execution, provider SDK transport
+rel workflow>llmnav.agent.tool-schema, workflow>llmnav.agent.protocol

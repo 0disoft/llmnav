@@ -96,7 +96,15 @@ The host selects only the modules relevant to the current task, preserves the de
 
 ## Tool wrappers
 
-LLMNav v0.5 does not ship an MCP server. A wrapper can pass `getAgentToolDefinitions()` to its provider SDK and route calls through `executeAgentOperation(root, name, input)`.
+`llmnav mcp` serves the same schema over the Model Context Protocol stdio transport:
+
+```sh
+llmnav mcp --root .
+```
+
+The server answers `initialize`, `ping`, `tools/list`, and `tools/call`, mapping every call onto `executeAgentOperation(root, name, input)`. Responses are newline-delimited JSON-RPC 2.0, notifications such as `notifications/initialized` are accepted silently, and tool results carry the schemaVersion 1 envelope as text content with `isError` set whenever `ok` is false, so expected validation and not-found failures stay inspectable by the model instead of becoming transport errors.
+
+A host that speaks a different transport can still pass `getAgentToolDefinitions()` to its provider SDK and route calls through `executeAgentOperation(root, name, input)`.
 
 Suggested contract:
 

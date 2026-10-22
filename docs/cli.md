@@ -173,7 +173,7 @@ Ranks cards using exact ID matching, multilingual aliases, pre-tokenized determi
 
 Only query text is tokenized per invocation. Card fields are read from `search-index.json`. A missing or incompatible search index is rebuilt in memory from the v0.1-compatible `index.json`.
 
-The ranker uses no network calls, embeddings, model API, MCP server, or hosted service. `--top` is bounded from 1 to 100.
+The ranker uses no network calls, embeddings, model API, or hosted service. `--top` is bounded from 1 to 100.
 
 Before reading the cache, `query` waits for an active generation lock and then recovers an abandoned transaction if necessary. It never rolls back a live writer or observes an uncommitted cache as authoritative.
 
@@ -258,6 +258,14 @@ llmnav tools [--json]
 ```
 
 Prints the fixed provider-neutral tool definitions for `query`, `show`, `context`, and `check`. JSON output wraps the ordered definitions in a schemaVersion 1 object. Tool inputs reject unknown fields and never accept a repository root; a trusted host binds repository scope when it calls the library dispatcher.
+
+## `llmnav mcp`
+
+```sh
+llmnav mcp [--root <path>]
+```
+
+Serves the same tool definitions and operation envelope over the Model Context Protocol stdio transport as newline-delimited JSON-RPC 2.0 on stdout. The server answers `initialize`, `ping`, `tools/list`, and `tools/call` with protocol version 2024-11-05, accepts notifications silently, and never writes diagnostics to stdout, so a host can parse every line as protocol traffic. Each `tools/call` result carries the schemaVersion 1 agent operation envelope as text content and sets `isError` whenever `ok` is false. Malformed frames return JSON-RPC parse or invalid-request errors and leave the session alive.
 
 ## `llmnav bundle`
 

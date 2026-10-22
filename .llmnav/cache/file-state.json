@@ -1908,7 +1908,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "d04eaafea84598ba8849f7808fc700f580883a6b4aa2f29421ac5476c510399e",
+      "contentHash": "28c1b3b77a3963791a3226bd6bae51a7d8e41fd9325cac4ca5159d8502862a7e",
       "declarations": [
         null
       ],
@@ -1924,6 +1924,7 @@
         "./graph-input.js",
         "./graph.js",
         "./initializer.js",
+        "./mcp.js",
         "./migration.js",
         "./project.js",
         "./prompt-bundle.js",
@@ -1936,7 +1937,7 @@
       ],
       "path": "src/cli.js",
       "semanticBytes": 508,
-      "sourceBytes": 22467
+      "sourceBytes": 22820
     },
     {
       "blocks": [
@@ -3545,6 +3546,118 @@
       "path": "src/inverted-index.js",
       "semanticBytes": 428,
       "sourceBytes": 11426
+    },
+    {
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
+              "agent tool schemas",
+              "operation execution",
+              "provider SDK transport"
+            ],
+            "id": "llmnav.agent.mcp",
+            "invariant": [],
+            "owns": [
+              "JSON-RPC framing",
+              "capability negotiation",
+              "tool listing",
+              "tool call mapping"
+            ],
+            "rel": [
+              "workflow>llmnav.agent.tool-schema",
+              "workflow>llmnav.agent.protocol"
+            ],
+            "risk": [],
+            "role": "Serve the stable agent tool schema and operation protocol over the Model Context Protocol stdio transport.",
+            "scope": "module",
+            "search": [
+              "mcp server",
+              "model context protocol",
+              "json rpc stdio",
+              "agent tool transport"
+            ],
+            "stability": "contract",
+            "unknown": []
+          },
+          "end": 469,
+          "endLine": 10,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.agent.mcp"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Serve the stable agent tool schema and operation protocol over the Model Context Protocol stdio transport."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "JSON-RPC framing|capability negotiation|tool listing|tool call mapping"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "agent tool schemas|operation execution|provider SDK transport"
+            },
+            {
+              "key": "search",
+              "line": 6,
+              "order": 4,
+              "value": "mcp server|model context protocol|json rpc stdio|agent tool transport"
+            },
+            {
+              "key": "rel",
+              "line": 7,
+              "order": 5,
+              "value": "workflow>llmnav.agent.tool-schema"
+            },
+            {
+              "key": "rel",
+              "line": 8,
+              "order": 6,
+              "value": "workflow>llmnav.agent.protocol"
+            },
+            {
+              "key": "stability",
+              "line": 9,
+              "order": 7,
+              "value": "contract"
+            }
+          ],
+          "filePath": "src/mcp.js",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.agent.mcp\nrole=Serve the stable agent tool schema and operation protocol over the Model Context Protocol stdio transport.\nowns=JSON-RPC framing|capability negotiation|tool listing|tool call mapping\nexcludes=agent tool schemas|operation execution|provider SDK transport\nsearch=mcp server|model context protocol|json rpc stdio|agent tool transport\nrel=workflow>llmnav.agent.tool-schema\nrel=workflow>llmnav.agent.protocol\nstability=contract\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "226c3a65798c5be83714a540a642f78016d8747cd2f36dac1e6722c234c4a95e",
+      "declarations": [
+        null
+      ],
+      "imports": [
+        "./agent-protocol.js",
+        "./spec.js",
+        "node:readline"
+      ],
+      "path": "src/mcp.js",
+      "semanticBytes": 469,
+      "sourceBytes": 4435
     },
     {
       "blocks": [
@@ -5418,6 +5531,28 @@
       "path": "tests/inverted-index.test.js",
       "semanticBytes": 0,
       "sourceBytes": 2846
+    },
+    {
+      "blocks": [],
+      "contentHash": "455e0cd0329094f6a23646d2ccdc969592bdcbe15e41a374e04e501053c36ece",
+      "declarations": [],
+      "imports": [
+        "../src/agent-protocol.js",
+        "../src/initializer.js",
+        "../src/mcp.js",
+        "../src/spec.js",
+        "node:assert/strict",
+        "node:child_process",
+        "node:events",
+        "node:fs/promises",
+        "node:os",
+        "node:path",
+        "node:test",
+        "node:url"
+      ],
+      "path": "tests/mcp.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 5968
     },
     {
       "blocks": [],

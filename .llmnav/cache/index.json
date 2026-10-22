@@ -393,9 +393,9 @@
         "index persistence format"
       ],
       "hashes": {
-        "body": "d04eaafea84598ba8849f7808fc700f580883a6b4aa2f29421ac5476c510399e",
+        "body": "28c1b3b77a3963791a3226bd6bae51a7d8e41fd9325cac4ca5159d8502862a7e",
         "semantic": "f4671d61fc8164fc24498faa91ba84f777e28a7f325750991908542867a69b6e",
-        "structure": "d07095544a74a9bf34d1256f116457d0d9ca43cf06a4beb579eabf9df6471424"
+        "structure": "cb4a647894b1c1e9431175b7d81b81a12e5aa89358a05c5c02468297dd2d8bb6"
       },
       "id": "llmnav.cli.dispatch",
       "imports": [
@@ -410,6 +410,7 @@
         "./graph-input.js",
         "./graph.js",
         "./initializer.js",
+        "./mcp.js",
         "./migration.js",
         "./project.js",
         "./prompt-bundle.js",
@@ -2175,6 +2176,57 @@
         "local module resolution"
       ],
       "stability": "architecture"
+    },
+    {
+      "boundaries": [],
+      "excludes": [
+        "agent tool schemas",
+        "operation execution",
+        "provider SDK transport"
+      ],
+      "hashes": {
+        "body": "226c3a65798c5be83714a540a642f78016d8747cd2f36dac1e6722c234c4a95e",
+        "semantic": "87615e16b7951132807548a03d67a5003b6127949713c2cd5812dce16d267637",
+        "structure": "e4e5b9a699f711e242681b29a840fe7d41530a186f446cdeab4973966a521e94"
+      },
+      "id": "llmnav.agent.mcp",
+      "imports": [
+        "./agent-protocol.js",
+        "./spec.js",
+        "node:readline"
+      ],
+      "location": {
+        "declarationLine": null,
+        "endLine": 10,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/mcp.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "owns": [
+        "JSON-RPC framing",
+        "capability negotiation",
+        "tool listing",
+        "tool call mapping"
+      ],
+      "rel": [
+        "workflow>llmnav.agent.tool-schema",
+        "workflow>llmnav.agent.protocol"
+      ],
+      "role": "Serve the stable agent tool schema and operation protocol over the Model Context Protocol stdio transport.",
+      "scope": "module",
+      "search": [
+        "mcp server",
+        "model context protocol",
+        "json rpc stdio",
+        "agent tool transport"
+      ],
+      "stability": "contract"
     }
   ],
   "contractFingerprints": {
@@ -2190,6 +2242,6 @@
   "generatedBy": "llmnav@0.9.8",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "6e5acc71b5e5675fc1c1a49aca71de620495ab1fbbc53b3d97d7f16c0e34cc9e",
+  "sourceHash": "cbef97b80cc6048c59f5638be4f605d53dff04988fb321fd64b71ce51c8f43d9",
   "specVersion": "1"
 }

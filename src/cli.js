@@ -36,6 +36,7 @@ import { diagnosticsToSarif } from "./sarif.js";
 import { loadGraphInputs } from "./graph-input.js";
 import { renderGraphNode } from "./graph.js";
 import { getAgentToolDefinitions } from "./agent-protocol.js";
+import { serveMcpStdio } from "./mcp.js";
 import { loadPromptPrefixBundle } from "./prompt-bundle.js";
 import { diagnosticsToEditor, getEditorIntegration } from "./editor.js";
 import { AUDIT_PRIORITIES, auditHasFindings, auditProject, explainProjectFile } from "./audit.js";
@@ -59,6 +60,7 @@ const COMMAND_OPTIONS = Object.freeze({
   explain: new Set(["--root", "--json"]),
   spec: new Set(["--root", "--json"]),
   tools: new Set(["--json"]),
+  mcp: new Set(["--root"]),
   bundle: new Set(["--root", "--json"]),
   editor: new Set(["--json"]),
   help: new Set(["--root", "--json"]),
@@ -79,6 +81,7 @@ export async function runCli(argv) {
   validateOptions(command, args);
   const json = hasFlag(args, "--json");
   if (command === "tools") return runTools(json);
+  if (command === "mcp") return runMcp(args);
   if (command === "editor") return runEditor(args);
   const rootOption = getOption(args, "--root");
   const root = rootOption ? path.resolve(rootOption) : await findProjectRoot(process.cwd());
@@ -435,6 +438,12 @@ function runTools(json) {
   return 0;
 }
 
+async function runMcp(args) {
+  const rootOption = getOption(args, "--root");
+  const root = rootOption ? path.resolve(rootOption) : await findProjectRoot(process.cwd());
+  return serveMcpStdio({ root });
+}
+
 async function runBundle(root, json) {
   const bundle = await loadPromptPrefixBundle(root);
   if (json) console.log(JSON.stringify(bundle, null, 2));
@@ -566,6 +575,7 @@ Usage
   llmnav explain <file>
   llmnav spec
   llmnav tools [--json]
+  llmnav mcp [--root <path>]
   llmnav bundle [--json]
   llmnav editor vscode
 

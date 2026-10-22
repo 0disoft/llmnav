@@ -27,6 +27,7 @@ LLMNav is not a documentation generator, an embedding database, or a reason to a
 * Exact qualified and ambiguity-safe workspace semantic ID resolution
 * Content-addressed incremental graph partitions with safe invalidation
 * A runnable provider-neutral host adapter with a reusable project snapshot and typed package export
+* A Model Context Protocol stdio server that serves the same agent tool schema
 * Repository and module catalogs designed for prompt-prefix reuse
 * Multilingual alias routing and CJK n-gram retrieval
 * Search regression tests with Recall@1, Recall@5, and MRR
@@ -185,6 +186,7 @@ Line-comment cards require an explicit terminator and work with `//`, `#`, and `
 | `llmnav migrate` | Check or transactionally apply generated-format upgrades from canonical source |
 | `llmnav spec` | Print source-spec vocabularies and key order |
 | `llmnav tools` | Print stable provider-neutral agent tool schemas |
+| `llmnav mcp` | Serve those tool schemas over Model Context Protocol stdio |
 | `llmnav bundle` | Inspect the generated prompt-prefix cache partitions |
 | `llmnav editor` | Print a deterministic editor task integration |
 
@@ -256,7 +258,7 @@ Do not annotate trivial getters, generated files, obvious wrappers, every test f
 
 The deterministic coverage audit prioritizes root and nested-package entrypoints, structural boundaries, persistent artifact filename protocols, versioned schema literals, Rust/Tauri runtime signals, TypeScript Tauri invoke adapters, and high fan-in modules. It suppresses declaration files, dependency caches, test support code, simple barrels, and low-fan-in broad utilities. It suggests narrow coverage rules but never writes cards or invents semantic roles. Exact reviewed dispositions suppress known non-boundaries while stale dispositions expose obsolete decisions. Use `llmnav audit --summary --json` for a compact automation result or `llmnav audit --json --output .llmnav/audit.json` to keep the full candidate report out of captured stdout.
 
-LLMNav does not discover sibling repositories automatically and does not ship an MCP server, embedding database, hosted service, SCIP generator, or complete language-aware call graph. External tools may export the documented compact graph-input schema. Generated structure never writes derived edges into source cards.
+LLMNav does not discover sibling repositories automatically and does not ship an embedding database, hosted service, SCIP generator, or complete language-aware call graph. External tools may export the documented compact graph-input schema. Generated structure never writes derived edges into source cards.
 
 ## Documentation
 

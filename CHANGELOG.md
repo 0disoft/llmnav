@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.9.9] — 2026-10-22
+
+### Added
+
+* Serve the stable agent tool schema over the Model Context Protocol stdio transport with `llmnav mcp`, mapping `initialize`, `ping`, `tools/list`, and `tools/call` onto the existing provider-neutral operation dispatcher and returning the schemaVersion 1 envelope as tool content.
+
 ## [0.9.8] — 2026-10-22
 
 ### Fixed
