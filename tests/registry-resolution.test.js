@@ -1,9 +1,10 @@
 import assert from "node:assert/strict";
-import { mkdtemp, rm } from "node:fs/promises";
+import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { ensureActiveIds, loadRegistry, resolveRegistryId } from "../src/registry.js";
+import { scanProject } from "../src/project.js";
 
 test("multi-target replacements remain explicit instead of choosing the first entry", () => {
   const registry = registryFrom([
@@ -59,6 +60,22 @@ test("merging active IDs re-reads the registry inside the generation lock", asyn
   const final = await loadRegistry(root);
   assert.deepEqual(final.records.map((record) => record.id), ["alpha.one", "beta.two"]);
   assert.deepEqual(final.errors, []);
+});
+
+test("scanning accepts a registry prepared by the caller", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-registry-scan-"));
+  context.after(async () => {
+    assert.ok(path.basename(root).startsWith("llmnav-registry-scan-"));
+    await rm(root, { recursive: true, force: true });
+  });
+  await writeFile(path.join(root, "package.json"), '{"name":"registry-scan-fixture"}\n');
+  const injected = {
+    records: [{ id: "prepared.only", state: "active" }],
+    byId: new Map([["prepared.only", { id: "prepared.only", state: "active" }]]),
+    registryPath: path.join(root, ".llmnav", "ids.jsonl"),
+  };
+  const project = await scanProject(root, { registry: injected });
+  assert.equal(project.registry, injected);
 });
 
 function registryFrom(records) {

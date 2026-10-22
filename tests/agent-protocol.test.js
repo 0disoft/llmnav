@@ -69,6 +69,30 @@ test("executes bounded operations through one deterministic envelope", async (co
   assert.equal(explained.data.navigationCards[0].id, "auth.session.rotate");
 });
 
+test("check resolves relations against the session registry snapshot", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-agent-check-session-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await createProject(root);
+  const session = await createProjectSession(root);
+  const first = session.registrySnapshot();
+  const second = session.registrySnapshot();
+  assert.notEqual(first, second, "registry snapshots are detached copies");
+  assert.deepEqual(first.records, second.records);
+
+  let snapshots = 0;
+  const stub = {
+    ...session,
+    registrySnapshot() {
+      snapshots += 1;
+      return first;
+    },
+  };
+  const checked = await executeAgentOperation(root, "llmnav_check", { paths: ["src"] }, { session: stub });
+  assert.equal(checked.ok, true);
+  assert.equal(checked.data.cardCount, 1);
+  assert.equal(snapshots, 1, "check reuses the prepared registry instead of rereading it");
+});
+
 test("returns bounded audit candidates with deterministic priority ordering", async (context) => {
   const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-agent-audit-"));
   context.after(() => rm(root, { recursive: true, force: true }));

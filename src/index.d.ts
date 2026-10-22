@@ -255,6 +255,7 @@ export interface ProjectSession {
   root: string;
   query(query: string, options?: { top?: number; metrics?: SearchMetrics }): SearchResult[];
   show(id: string): { card: IndexedCard | null; node: GraphNode | null; resolvedFrom: unknown };
+  registrySnapshot(): Registry;
   context(id: string, options?: { depth?: number; budget?: number; maxEdges?: number }): { id: string; depth: number; budget: number; maxEdges: number; included: string[]; includedEdges: string[]; text: string };
   refresh(): Promise<ProjectSession>;
 }
@@ -818,7 +819,7 @@ export function canonicalizeSource(source: string, filePath?: string): { source:
 export function cardToCanonicalObject(card: LlmnavCard): Record<string, string | string[]>;
 export function formatLlmnavBlock(block: LlmnavBlock): string;
 export function parseLlmnavBlocks(source: string, filePath?: string): LlmnavBlock[];
-export function scanProject(root: string, options?: { paths?: string[]; signal?: AbortSignalLike }): Promise<ScannedProject>;
+export function scanProject(root: string, options?: { paths?: string[]; signal?: AbortSignalLike; registry?: Registry }): Promise<ScannedProject>;
 export function ensureActiveIds(root: string, registry: Registry, ids: string[], options?: { lockOwnerId?: string; lockOptions?: GenerationLockOptions }): Promise<{ records: RegistryRecord[]; changed: boolean }>;
 export function mergeActiveIds(registry: Registry, ids: string[]): { records: RegistryRecord[]; changed: boolean };
 export function renderRegistryRecords(records: RegistryRecord[]): string;

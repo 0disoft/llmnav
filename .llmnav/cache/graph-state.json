@@ -3983,6 +3983,20 @@
           "to": "llmnav/llmnav.index.search-shards"
         },
         {
+          "confidence": 0.85,
+          "from": "llmnav/llmnav.project.migrate",
+          "id": "5ec8370befafbb1c83561bdf9c6809359832e4873d30112007c0f5349a1d571c",
+          "kind": "imports",
+          "provenance": {
+            "generator": "llmnav",
+            "line": null,
+            "path": "src/migration.js",
+            "source": "src/migration.js",
+            "type": "local-import"
+          },
+          "to": "llmnav/llmnav.index.transaction"
+        },
+        {
           "confidence": 1,
           "from": "llmnav/llmnav.project.migrate",
           "id": "38677fcb72c0b099da14d39817fa07779a6a8bafa28b770f7af0da308ac45fe8",
@@ -3997,7 +4011,7 @@
           "to": "llmnav/llmnav.index.transaction"
         }
       ],
-      "inputHash": "859eb178667bdd3c5c4d5e76486f4652786283d809635ceffd6cde85eb6b0432",
+      "inputHash": "6990f0cc0868a22dde08fd0f7102693dc2cb57b75b792fd55ecb0932ef0fff59",
       "key": "card:llmnav/llmnav.project.migrate",
       "nodes": [
         {
@@ -4094,7 +4108,7 @@
           "semanticId": "llmnav.project.migrate"
         }
       ],
-      "outputHash": "82537bc71a6c8826761939858a20b0c256ba52c789e22f45c8e1a0cf1bd87cd0"
+      "outputHash": "3f2e1153d0d9468fd1f9602702e90affedd576287863e8469c7c2804eca5dc05"
     },
     {
       "edges": [

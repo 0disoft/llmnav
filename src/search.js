@@ -160,6 +160,10 @@ export async function createProjectSession(root, options = {}) {
     show(id) {
       return structuredClone(showSnapshotCard(snapshot, id));
     },
+    registrySnapshot() {
+      // Clone so a read-only consumer cannot mutate the session's snapshot.
+      return structuredClone(snapshot.registry);
+    },
     context(id, options = {}) {
       return buildSnapshotContext(snapshot, id, options);
     },

@@ -81,10 +81,21 @@ export async function generateProjectWithPreparation(root, prepare, options = {}
     root,
     async (lock) => {
       await prepare?.();
-      return generateProjectLocked(root, { ...options, lockOwnerId: lock.ownerId, runtime: lock.runtime });
+      return generateProjectUnderLock(root, options, lock);
     },
     lockOptions,
   );
+}
+
+/**
+ * Internal: run one generation while the caller already owns the generation lock.
+ * Callers must have acquired the lock for the same root, so a plan and the apply
+ * that depends on it cannot be invalidated by a concurrent generation.
+ */
+export async function generateProjectUnderLock(root, options, lock) {
+  assertAbortSignal(options.signal);
+  throwIfAborted(options.signal);
+  return generateProjectLocked(root, { ...options, lockOwnerId: lock.ownerId, runtime: lock.runtime });
 }
 
 async function generateProjectLocked(root, options) {

@@ -511,7 +511,7 @@
         "agent search decisions"
       ],
       "hashes": {
-        "body": "1e961b2e46cb73ce24c76952d04611ea4fc69992861dfbe177c46d65f56e690c",
+        "body": "ded2f83a93966b790ee6dbb2466261b57fe48589ca767c614796777dbc78847f",
         "semantic": "7052622c9732ab29e37c3ab87f848188e931f601684e811e7bb8adef31fbfe85",
         "structure": "9a0f6533552a700901d005e54958d56c10a2a7ce9c901e3942a85ad8273d7eef"
       },
@@ -684,7 +684,7 @@
         "source mutation"
       ],
       "hashes": {
-        "body": "62ea5bc392cd0097ec6fef499c2fc251b5468a1ed2d53b5c1bb5a52512dc4020",
+        "body": "738998de8610029c4c92c37114c27f9be6bbf30df2a5a241d2d993140efebd95",
         "semantic": "945f325a2ad2abfa71212b02dd952c071d47ed6d3848a16d247afd48dbe5ced6",
         "structure": "a53c3b192c4f1a53461232c4516ebbfd79337f70a6fb27f2e6325213050a6cb6"
       },
@@ -1314,7 +1314,7 @@
         "source mutation"
       ],
       "hashes": {
-        "body": "9efdf40b51ced992bd805765631f65f32402ff396d4a4773bf304072d179d018",
+        "body": "1a90169061599accd2d150c776acfdd75b40acceebda6700ae9f3251c713cb6c",
         "semantic": "ce30fe54e5dab8eb3cda8e1e6afdcee3489c3f62267d99ff85257f4c819d21a4",
         "structure": "e2ebafd67f7b7afa843ab30ea2d66cd74a0893a2f6b0875d2e452d8eebd15e63"
       },
@@ -1669,7 +1669,7 @@
         "cache generation"
       ],
       "hashes": {
-        "body": "0ac92faf923a7766a212e79c179c896f6aa00ede4f0f7c5c720c649513b0f233",
+        "body": "997eb182366aecb2f7ad26f7390074bc97702ba7804869b0174196c3321d089e",
         "semantic": "c7cfa511ec9a14754b58e0f03bae113bd850ef9c716034a56d82449368d41af2",
         "structure": "d0a6a1248c27baccb0d69a888c3425fd9ef4a080888650f959f70f37ff940ee1"
       },
@@ -2088,9 +2088,9 @@
         "semantic ID reassignment"
       ],
       "hashes": {
-        "body": "49db9d52f67396d36828d55ce3af1bb208576b9b83db17127ad3f8dfc6c89aae",
+        "body": "6ebeea5b352e87b5692d98268636ef1a9b4e32e758b776304ff1af7862c53c43",
         "semantic": "494a51c075eee00a0da948bbc268d3ca4af5485d1a6739fd415fec556ed2af82",
-        "structure": "1f0740f8cce65a89e82be3ea0f8b91121413c9dab6ed23ade2c1bd717d37781d"
+        "structure": "20c8daf1062273ed75b053239acac7d96b4e72435bb96b33ab55d21e8bfe7f81"
       },
       "id": "llmnav.project.migrate",
       "imports": [
@@ -2101,6 +2101,7 @@
         "./inverted-index.js",
         "./prompt-bundle.js",
         "./search-shards.js",
+        "./transaction.js",
         "./util.js",
         "node:path"
       ],
@@ -2200,7 +2201,7 @@
         "index preparation"
       ],
       "hashes": {
-        "body": "96a0d6e8505c6f72391c4271c3596dde45fe1374346e45701588804102a16014",
+        "body": "22b2cd98f0f6032faa3e9b8ae936b99fb7ca20c0819913967afc1717660637c6",
         "semantic": "a1ec177829cdd462b6ea996d78d53c2c9071291f1dd14202e05d1236559a8973",
         "structure": "f70330ec11860d1c61aa2fdf6af64764231710a9346d26df09c586c009531c54"
       },
@@ -2392,6 +2393,6 @@
   "generatedBy": "llmnav@0.11.1",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "ebae2bb98a2622bab34bb6e1ab4ee8edd3adce021c9f1544aa244c579df38668",
+  "sourceHash": "fa08781ecd2989c77141d9a6332cc45966314ae7a35c6b94ee3d160bdbf3f3c6",
   "specVersion": "1"
 }

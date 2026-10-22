@@ -13,12 +13,13 @@ stability=contract
 
 import path from "node:path";
 import { loadConfig } from "./config.js";
-import { generateProject } from "./generator.js";
+import { generateProjectUnderLock } from "./generator.js";
 import { compatibleGraphState, GRAPH_SCHEMA_VERSION, GRAPH_STATE_SCHEMA_VERSION, isCompatibleRepositoryGraph } from "./graph.js";
 import { FILE_STATE_SCHEMA_VERSION, SOURCE_INDEXER_VERSION, usableFileState } from "./incremental.js";
 import { isCompatibleSearchIndex, SEARCH_INDEX_ENCODING, SEARCH_INDEX_SCHEMA_VERSION } from "./inverted-index.js";
 import { isCompatiblePromptPrefixBundle, PROMPT_BUNDLE_SCHEMA_VERSION } from "./prompt-bundle.js";
 import { SEARCH_SHARD_SCHEMA_VERSION } from "./search-shards.js";
+import { withGenerationLock } from "./transaction.js";
 import { assertNoSymlinkTraversal, readText, toPosix } from "./util.js";
 
 export const MIGRATION_REPORT_SCHEMA_VERSION = 1;
@@ -27,17 +28,38 @@ export async function migrateProject(root, options = {}) {
   const write = options.write === true;
   const { config } = await loadConfig(root);
   const before = await inspectGeneratedFormats(root, config);
-  const plan = await generateProject(root, {
-    check: true,
-    incremental: false,
-    lockOptions: options.lockOptions,
-    renameOptions: options.renameOptions,
-    runtime: options.runtime,
-  });
-  const required = plan.changedFiles.length > 0 || before.some((format) => format.status !== "current");
-  const blocked = plan.counts.error > 0;
+  const lockOptions = options.runtime === undefined
+    ? options.lockOptions
+    : { ...options.lockOptions, runtime: options.runtime };
 
-  if (!write || blocked || !required) {
+  // Plan and apply share one lock: a concurrent generation between them would
+  // invalidate the plan and let a stale migration overwrite newer artifacts.
+  const outcome = await withGenerationLock(root, async (lock) => {
+    const plan = await generateProjectUnderLock(root, {
+      check: true,
+      incremental: false,
+      signal: options.signal,
+      renameOptions: options.renameOptions,
+    }, lock);
+    const required = plan.changedFiles.length > 0 || before.some((format) => format.status !== "current");
+    const blocked = plan.counts.error > 0;
+    if (!write || blocked || !required) {
+      return { plan, required, blocked, applied: null, after: before };
+    }
+    const applied = await generateProjectUnderLock(root, {
+      check: false,
+      incremental: false,
+      signal: options.signal,
+      failpoint: options.failpoint,
+      renameOptions: options.renameOptions,
+      onTransactionPhase: options.onTransactionPhase,
+    }, lock);
+    const after = applied.ok ? await inspectGeneratedFormats(root, config) : before;
+    return { plan, required, blocked, applied, after };
+  }, lockOptions);
+
+  const { plan, required, blocked, applied, after } = outcome;
+  if (applied === null) {
     return {
       schemaVersion: MIGRATION_REPORT_SCHEMA_VERSION,
       ok: !blocked && !required,
@@ -51,16 +73,6 @@ export async function migrateProject(root, options = {}) {
     };
   }
 
-  const applied = await generateProject(root, {
-    check: false,
-    incremental: false,
-    failpoint: options.failpoint,
-    lockOptions: options.lockOptions,
-    renameOptions: options.renameOptions,
-    onTransactionPhase: options.onTransactionPhase,
-    runtime: options.runtime,
-  });
-  const after = applied.ok ? await inspectGeneratedFormats(root, config) : before;
   return {
     schemaVersion: MIGRATION_REPORT_SCHEMA_VERSION,
     ok: applied.ok && after.every((format) => format.status === "current"),

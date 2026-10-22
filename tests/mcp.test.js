@@ -194,13 +194,20 @@ test("cache stamps separate regenerations inside one millisecond", async (contex
   const readStamp = () => sessionStamp(root, async (filePath) => files.get(filePathFor(filePath)) ?? null);
 
   const baseStamp = await readStamp();
-  assert.equal(baseStamp, "manifest.json:1000000:10:7|index.json:1000000:20:7|search-index.json:1000000:30:7|graph.json:missing");
+  assert.equal(
+    baseStamp,
+    "manifest.json:1000000:10:7|index.json:1000000:20:7|search-index.json:1000000:30:7|graph.json:missing|ids.jsonl:missing",
+  );
   assert.equal(await readStamp(), baseStamp);
 
   files.set("search-index.json", { mtimeNs: 1_000_001n, size: 30n, ino: 7n });
   assert.notEqual(await readStamp(), baseStamp);
   files.set("search-index.json", { mtimeNs: 1_000_000n, size: 30n, ino: 8n });
   assert.notEqual(await readStamp(), baseStamp);
+
+  // Registering active IDs rewrites the registry without touching the cache.
+  files.set("ids.jsonl", { mtimeNs: 1_000_000n, size: 40n, ino: 7n });
+  assert.match(await readStamp(), /\|ids\.jsonl:1000000:40:7$/u);
 });
 
 async function callTool(server, id, name, args) {

@@ -159,8 +159,12 @@ async function handleExplain(input, root) {
   return { data: await explainProjectFile(root, input.file.trim()) };
 }
 
-async function handleCheck(input, root) {
-  const project = await scanProject(root, { paths: input.paths ?? [] });
+async function handleCheck(input, root, options) {
+  const registry = options.session ? options.session.registrySnapshot() : undefined;
+  const project = await scanProject(root, {
+    paths: input.paths ?? [],
+    ...(registry === undefined ? {} : { registry }),
+  });
   const graphInputs = await loadGraphInputs(root, project.config);
   const diagnostics = [...validateProject(project), ...graphInputs.diagnostics].sort(compareDiagnostics);
   const counts = countDiagnostics(diagnostics);

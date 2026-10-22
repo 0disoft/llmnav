@@ -26,8 +26,15 @@ const METHOD_NOT_FOUND = -32601;
 const INVALID_PARAMS = -32602;
 const INTERNAL_ERROR = -32603;
 
-// Cache artifacts rewritten by generation; the stamp decides when a lazily owned session reloads.
-const SESSION_STAMP_FILES = ["manifest.json", "index.json", "search-index.json", "graph.json"];
+// Artifacts a prepared session depends on; the stamp decides when it reloads.
+// The registry is included because active-ID merges rewrite it without a generation.
+const SESSION_STAMP_FILES = [
+  ".llmnav/cache/manifest.json",
+  ".llmnav/cache/index.json",
+  ".llmnav/cache/search-index.json",
+  ".llmnav/cache/graph.json",
+  ".llmnav/ids.jsonl",
+];
 
 export function createMcpServer(options = {}) {
   const root = options.root;
@@ -161,8 +168,9 @@ export function createSessionCache(root, dependencies = {}) {
  */
 export async function sessionStamp(root, statFile = statCacheFile) {
   const parts = [];
-  for (const name of SESSION_STAMP_FILES) {
-    const info = await statFile(path.join(root, ".llmnav", "cache", name));
+  for (const relativePath of SESSION_STAMP_FILES) {
+    const name = path.posix.basename(relativePath);
+    const info = await statFile(path.join(root, relativePath));
     parts.push(info === null ? `${name}:missing` : `${name}:${info.mtimeNs}:${info.size}:${info.ino}`);
   }
   return parts.join("|");

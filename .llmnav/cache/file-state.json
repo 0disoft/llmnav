@@ -1396,7 +1396,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "9efdf40b51ced992bd805765631f65f32402ff396d4a4773bf304072d179d018",
+      "contentHash": "1a90169061599accd2d150c776acfdd75b40acceebda6700ae9f3251c713cb6c",
       "declarations": [
         null
       ],
@@ -1411,7 +1411,7 @@
       ],
       "path": "src/agent-protocol.js",
       "semanticBytes": 528,
-      "sourceBytes": 8791
+      "sourceBytes": 8945
     },
     {
       "blocks": [
@@ -3055,7 +3055,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "1e961b2e46cb73ce24c76952d04611ea4fc69992861dfbe177c46d65f56e690c",
+      "contentHash": "ded2f83a93966b790ee6dbb2466261b57fe48589ca767c614796777dbc78847f",
       "declarations": [
         null
       ],
@@ -3085,7 +3085,7 @@
       ],
       "path": "src/generator.js",
       "semanticBytes": 476,
-      "sourceBytes": 21965
+      "sourceBytes": 22410
     },
     {
       "blocks": [
@@ -3415,14 +3415,14 @@
     },
     {
       "blocks": [],
-      "contentHash": "26d2e695d279643171a9eae8f636b4726c19806c21b086e795810d7996d6ee05",
+      "contentHash": "87bcfc98b1a48d73e137e97250230e1072fcbc1488d72da6318e343ef5033295",
       "declarations": [],
       "imports": [
         "./spec.js"
       ],
       "path": "src/index.d.ts",
       "semanticBytes": 0,
-      "sourceBytes": 31535
+      "sourceBytes": 31588
     },
     {
       "blocks": [],
@@ -3798,7 +3798,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "96a0d6e8505c6f72391c4271c3596dde45fe1374346e45701588804102a16014",
+      "contentHash": "22b2cd98f0f6032faa3e9b8ae936b99fb7ca20c0819913967afc1717660637c6",
       "declarations": [
         null
       ],
@@ -3813,7 +3813,7 @@
       ],
       "path": "src/mcp.js",
       "semanticBytes": 531,
-      "sourceBytes": 7871
+      "sourceBytes": 8075
     },
     {
       "blocks": [
@@ -3926,7 +3926,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "49db9d52f67396d36828d55ce3af1bb208576b9b83db17127ad3f8dfc6c89aae",
+      "contentHash": "6ebeea5b352e87b5692d98268636ef1a9b4e32e758b776304ff1af7862c53c43",
       "declarations": [
         null
       ],
@@ -3938,12 +3938,13 @@
         "./inverted-index.js",
         "./prompt-bundle.js",
         "./search-shards.js",
+        "./transaction.js",
         "./util.js",
         "node:path"
       ],
       "path": "src/migration.js",
       "semanticBytes": 567,
-      "sourceBytes": 7891
+      "sourceBytes": 8546
     },
     {
       "blocks": [
@@ -4374,7 +4375,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "0ac92faf923a7766a212e79c179c896f6aa00ede4f0f7c5c720c649513b0f233",
+      "contentHash": "997eb182366aecb2f7ad26f7390074bc97702ba7804869b0174196c3321d089e",
       "declarations": [
         null
       ],
@@ -4391,7 +4392,7 @@
       ],
       "path": "src/project.js",
       "semanticBytes": 510,
-      "sourceBytes": 2894
+      "sourceBytes": 2914
     },
     {
       "blocks": [
@@ -5031,7 +5032,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "62ea5bc392cd0097ec6fef499c2fc251b5468a1ed2d53b5c1bb5a52512dc4020",
+      "contentHash": "738998de8610029c4c92c37114c27f9be6bbf30df2a5a241d2d993140efebd95",
       "declarations": [
         null
       ],
@@ -5051,7 +5052,7 @@
       ],
       "path": "src/search.js",
       "semanticBytes": 464,
-      "sourceBytes": 32778
+      "sourceBytes": 32936
     },
     {
       "blocks": [],
@@ -5554,7 +5555,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "22a50cfbcaa548a6f1125fd75ee7bc5137130c37ed94f61e3aa17d95eaa9288e",
+      "contentHash": "3a92221ac30a0f35b6fd1c3c9000fec5907ee5028ba37da8bce7360a827798d4",
       "declarations": [],
       "imports": [
         "../src/agent-protocol.js",
@@ -5569,7 +5570,7 @@
       ],
       "path": "tests/agent-protocol.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 10985
+      "sourceBytes": 11942
     },
     {
       "blocks": [],
@@ -5942,7 +5943,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "fce9e7dc91d35ceb777cc53f83d0a0b38c97bd7015b45904486f96d74fc3c3d6",
+      "contentHash": "6598705a7615dc9f830c6778048da5575338b9592ecf86880ae19245af73b135",
       "declarations": [],
       "imports": [
         "../src/agent-protocol.js",
@@ -5963,7 +5964,7 @@
       ],
       "path": "tests/mcp.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 10890
+      "sourceBytes": 11137
     },
     {
       "blocks": [],
@@ -6099,9 +6100,10 @@
     },
     {
       "blocks": [],
-      "contentHash": "1b5ab51ff843596d159244926b01ba2f1ec331d90358004e0524d0d036ac70b9",
+      "contentHash": "9a2344682cf5db270551de96c82d01d513bd0c6f152555069aa33b6141271314",
       "declarations": [],
       "imports": [
+        "../src/project.js",
         "../src/registry.js",
         "node:assert/strict",
         "node:fs/promises",
@@ -6111,7 +6113,7 @@
       ],
       "path": "tests/registry-resolution.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 2669
+      "sourceBytes": 3480
     },
     {
       "blocks": [],

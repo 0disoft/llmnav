@@ -66,7 +66,7 @@ export async function scanProject(root, options = {}) {
     }
   }
 
-  const registry = await loadRegistry(root);
+  const registry = options.registry ?? await loadRegistry(root);
   const moduleResolution = await loadModuleResolution(root, fileRecords);
   return {
     root,
