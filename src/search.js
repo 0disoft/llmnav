@@ -153,6 +153,8 @@ export async function createProjectSession(root, options = {}) {
   const withPromptBundle = options.withPromptBundle === true;
   const { signal, ...sessionOptions } = options;
   let snapshot = await loadSessionSnapshot(root, { ...options, withPromptBundle });
+  let refreshSequence = 0;
+  let publishedRefresh = 0;
   const session = {
     root,
     ...(withPromptBundle ? { promptBundle: snapshot.promptBundle, generationHash: snapshot.generationHash } : {}),
@@ -175,12 +177,16 @@ export async function createProjectSession(root, options = {}) {
       return buildSnapshotContext(snapshot, id, options);
     },
     async refresh(refreshOptions = {}) {
+      const sequence = ++refreshSequence;
       const next = await loadSessionSnapshot(root, { ...sessionOptions, ...refreshOptions, withPromptBundle });
+      throwIfAborted(refreshOptions.signal);
+      if (sequence < publishedRefresh) return session;
       snapshot = next;
       if (withPromptBundle) {
         session.promptBundle = next.promptBundle;
         session.generationHash = next.generationHash;
       }
+      publishedRefresh = sequence;
       return session;
     },
   };

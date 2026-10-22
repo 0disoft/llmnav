@@ -18,6 +18,8 @@ import {
 export async function createLlmnavHost(root) {
   let session = await createProjectSession(root, { withPromptBundle: true });
   let bundle = session.promptBundle;
+  let refreshSequence = 0;
+  let publishedRefresh = 0;
   const host = {
     toolDefinitions: getAgentToolDefinitions(),
     basePromptPartitions: selectPromptPartitions(bundle),
@@ -29,13 +31,16 @@ export async function createLlmnavHost(root) {
       return executeAgentOperation(root, call.name, call.input ?? {}, { session });
     },
     async refresh() {
+      const sequence = ++refreshSequence;
       const nextSession = await createProjectSession(root, { withPromptBundle: true });
       const nextBundle = nextSession.promptBundle;
       const nextBase = selectPromptPartitions(nextBundle);
+      if (sequence < publishedRefresh) return host;
       session = nextSession;
       bundle = nextBundle;
       host.basePromptPartitions = nextBase;
       host.generationHash = nextSession.generationHash;
+      publishedRefresh = sequence;
       return host;
     },
   };

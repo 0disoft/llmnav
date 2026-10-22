@@ -389,7 +389,7 @@ const result = await executeAgentOperation(
 await session.refresh(); // after generation or checkout changes
 ```
 
-`query`, `show`, and `context` reuse the loaded index, postings, graph, lexicon, and registry. `refresh()` replaces the complete snapshot; it never mutates one layer in place. The `check` operation still scans current source and does not use session data.
+`query`, `show`, and `context` reuse the loaded index, postings, graph, lexicon, and registry. `refresh()` replaces the complete snapshot; it never mutates one layer in place. Concurrent refreshes publish in request order: an older completion cannot overwrite a newer successful refresh. Failed or cancelled refreshes leave the last published snapshot intact. The `check` operation still scans current source and does not use session data.
 
 The MCP server refreshes sessions when configuration, aliases, registry records, or generated search artifacts change. Its artifact stamp follows `generation.cacheDirectory`, including non-default cache locations. The stdio transport observes cancellation while idle or waiting for output drainage, closes its reader, and removes its listeners on every exit. A closed output ends the transport successfully; other output errors and cancellation reject the serving operation. Caller-owned streams remain under caller control.
 
@@ -399,7 +399,7 @@ Sessions prepare graph adjacency and traversal order once per snapshot for reuse
 
 Session queries also reuse card lookup tables, normalized IDs and aliases, and graph validation. Session ID substring checks use precomputed three-code-unit candidates before exact verification; direct queries retain their full ID scan. Phrase matching still scans all documents to preserve ranking. Session `query` and `show` return detached results: caller edits cannot invalidate the private prepared snapshot. These tables are rebuilt on `refresh()` and retained only with that snapshot.
 
-The typed `llmnav/examples/provider-neutral-host.mjs` export composes these APIs into a trusted-root closure. It exposes tool definitions, base and module-selected prompt partitions, the generation hash, one snapshot-backed operation executor, and an explicit refresh method without importing a model SDK. Refresh prepares a complete replacement before switching the host's prompt and search references.
+The typed `llmnav/examples/provider-neutral-host.mjs` export composes these APIs into a trusted-root closure. It exposes tool definitions, base and module-selected prompt partitions, the generation hash, one snapshot-backed operation executor, and an explicit refresh method without importing a model SDK. Refresh prepares a complete replacement before switching the host's prompt and search references. A late older refresh cannot replace a newer successful host refresh.
 
 `buildPromptPrefixBundle(input)` constructs ordered package, repository, and module partitions with normalized newlines, SHA-256 content hashes, estimated token counts, and explicit cache-boundary hints. `renderPromptPrefixBundle` serializes it deterministically. `loadPromptPrefixBundle(root)` accepts only a schema-compatible artifact whose exact bytes match `manifest.json`.
 
