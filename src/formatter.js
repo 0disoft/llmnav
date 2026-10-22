@@ -14,8 +14,14 @@ import { loadConfig } from "./config.js";
 import { collectSourceFiles } from "./files.js";
 import { canonicalizeSource } from "./parser.js";
 import { atomicWrite, relativePosix } from "./util.js";
+import { withGenerationLock } from "./transaction.js";
 
 export async function formatProject(root, options = {}) {
+  if (options.check) return formatProjectLocked(root, options);
+  return withGenerationLock(root, () => formatProjectLocked(root, options), options.lockOptions);
+}
+
+async function formatProjectLocked(root, options) {
   const { config } = await loadConfig(root);
   const files = await collectSourceFiles(root, config, options.paths ?? []);
   const changedFiles = [];
@@ -27,7 +33,9 @@ export async function formatProject(root, options = {}) {
     errors.push(...result.errors.map((error) => ({ file: relativePath, ...error })));
     if (!result.changed) continue;
     changedFiles.push(relativePath);
-    if (!options.check) await atomicWrite(root, filePath, result.source, options.atomicWriteOptions);
+    if (!options.check) {
+      await atomicWrite(root, filePath, result.source, { ...options.atomicWriteOptions, expectedContent: source });
+    }
   }
   const ok = errors.length === 0 && (options.check ? changedFiles.length === 0 : true);
   return { ok, changedFiles, errors };

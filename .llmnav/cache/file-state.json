@@ -3141,7 +3141,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "1f1a1da89dcb1e07db386aedd554a08a7a2846f49153f965ec78bee93d26be57",
+      "contentHash": "3e7af368c2c33741ca1350df43a0119e3c34bff2fb45c26d8d9dd54e0ffc7069",
       "declarations": [
         null
       ],
@@ -3149,12 +3149,13 @@
         "./config.js",
         "./files.js",
         "./parser.js",
+        "./transaction.js",
         "./util.js",
         "node:fs/promises"
       ],
       "path": "src/formatter.js",
       "semanticBytes": 461,
-      "sourceBytes": 1531
+      "sourceBytes": 1849
     },
     {
       "blocks": [
@@ -3628,14 +3629,14 @@
     },
     {
       "blocks": [],
-      "contentHash": "11806e614d3298959b9b98717315ea0804d8085626c31c7ac5875a115395152e",
+      "contentHash": "fff32986d8c0b11e8b84bb3789458b0738a3c897df4598705a685ef792b5ff30",
       "declarations": [],
       "imports": [
         "./spec.js"
       ],
       "path": "src/index.d.ts",
       "semanticBytes": 0,
-      "sourceBytes": 34203
+      "sourceBytes": 34240
     },
     {
       "blocks": [],
@@ -5606,7 +5607,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "a63498fde05dbfe470fa1f7949f65a7d6c8b6e82a98f1878d8d3d58d417d0eeb",
+      "contentHash": "f1cbba9661dd110451d2ba63523ea91e5c39a30e808db395006df58472f67d43",
       "declarations": [],
       "imports": [
         "./abort.js",
@@ -5618,7 +5619,7 @@
       ],
       "path": "src/util.js",
       "semanticBytes": 0,
-      "sourceBytes": 11560
+      "sourceBytes": 11857
     },
     {
       "blocks": [
@@ -6000,7 +6001,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "b8721b1b74701da74725ec767da2a8586adc8aaf2fd8769e7ca363bc01486301",
+      "contentHash": "31f021b5b13d0f138733dbbc7c60b1554fd3fbdcfe28e1bf03c5e5dbe283c9ca",
       "declarations": [],
       "imports": [
         "../src/formatter.js",
@@ -6019,7 +6020,7 @@
       ],
       "path": "tests/filesystem-safety.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 7239
+      "sourceBytes": 9722
     },
     {
       "blocks": [],

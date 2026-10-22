@@ -12,6 +12,51 @@ import { loadSearchData } from "../src/search.js";
 import { atomicWrite } from "../src/util.js";
 import { createRuntime } from "../src/runtime.js";
 
+test("formatting rejects concurrent edits instead of overwriting current source", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-format-conflict-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  const filePath = path.join(root, "source.js");
+  const source = "/* llmnav/1 file\nrole=Own the fixture boundary.\nid=fixture.test\nstability=architecture\n*/\nexport const value = 1;\n";
+  const newer = source.replace("value = 1", "value = 2");
+  await writeFile(filePath, source);
+  await assert.rejects(() => formatProject(root, {
+    paths: ["source.js"],
+    atomicWriteOptions: { beforeCommit: async () => writeFile(filePath, newer) },
+  }), { code: "LLMNAV_WRITE_CONFLICT" });
+  assert.equal(await readFile(filePath, "utf8"), newer);
+  assert.deepEqual((await readdir(root)).filter(name => name.includes(".tmp-")), []);
+  await assert.rejects(() => fs.access(path.join(root, ".llmnav/generation.lock")), { code: "ENOENT" });
+  assert.deepEqual((await formatProject(root, { paths: ["source.js"] })).changedFiles, ["source.js"]);
+  assert.ok((await readFile(filePath, "utf8")).includes("value = 2"));
+});
+
+test("concurrent formatters re-read source under the repository lock", { timeout: 15000 }, async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-format-serialized-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await writeFile(path.join(root, "source.js"), "/* llmnav/1 file\nrole=Own the fixture boundary.\nid=fixture.test\nstability=architecture\n*/\n");
+  const paused = Promise.withResolvers(), resume = Promise.withResolvers(), contending = Promise.withResolvers();
+  const first = formatProject(root, { paths: ["source.js"], atomicWriteOptions: {
+    beforeCommit: async () => { paused.resolve(); await resume.promise; },
+  } });
+  await paused.promise;
+  const originalLink = fs.link;
+  const mock = context.mock.method(fs, "link", async (...args) => {
+    if (args[1] === path.join(root, ".llmnav/generation.lock")) contending.resolve();
+    return originalLink(...args);
+  });
+  syncBuiltinESMExports();
+  const second = formatProject(root, { paths: ["source.js"] });
+  try {
+    await contending.promise;
+  } finally {
+    resume.resolve();
+    await Promise.all([first, second]);
+    mock.mock.restore(); syncBuiltinESMExports();
+  }
+  assert.deepEqual((await first).changedFiles, ["source.js"]);
+  assert.deepEqual((await second).changedFiles, []);
+});
+
 test("a failed atomic write removes the partially written temporary file", async (context) => {
   const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-atomic-write-failure-"));
   context.after(() => rm(root, { recursive: true, force: true }));

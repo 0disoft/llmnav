@@ -167,6 +167,8 @@ A generation that is waiting for the lock also stops waiting when its signal abo
 
 `loadSearchData`, `createProjectSession`, `showProjectCard`, `buildContext`, and `executeAgentOperation` also accept `signal` in their existing optional options object. Session `show`, `query`, `context`, and `refresh` accept a per-call signal. A creation signal applies to the initial load; it is not retained for future refreshes. Lock release and transaction rollback finish even after cancellation. Ownership changes are serialized by a short-lived `generation.lock.guard`. Dead main owners are recovered automatically. If a process dies while changing ownership and leaves a dead or unreadable guard, stop all LLMNav processes before removing that guard and retrying. All processes sharing a repository must use the same locking protocol.
 
+`formatProject` serializes source rewrites with the repository generation lock. A source change detected immediately before replacement rejects with `LLMNAV_WRITE_CONFLICT`; retry reads and formats the current file. Check mode remains read-only. Editors and other tools that bypass this lock must be coordinated separately: the filesystem replacement does not provide CAS against nonparticipating writers.
+
 For deterministic tests, lock options accept `scheduler.now`, a monotonic millisecond clock. Polling is clamped to the remaining timeout; zero permits one immediate acquisition attempt. `loadConfig`, `loadSearchData`, `queryProject`, `createProjectSession`, `scanProject`, and `scanProjectIncremental` accept an optional `io.readFile(path, "utf8")` hook. Omitted hooks keep filesystem reads and path-safety checks intact.
 
 ## Report failures with a cause and a deadline

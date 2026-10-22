@@ -1836,15 +1836,16 @@
         "generated cache formatting"
       ],
       "hashes": {
-        "body": "1f1a1da89dcb1e07db386aedd554a08a7a2846f49153f965ec78bee93d26be57",
+        "body": "3e7af368c2c33741ca1350df43a0119e3c34bff2fb45c26d8d9dd54e0ffc7069",
         "semantic": "96da0bbe3ce024aae971854f5333d10bf58c99073f1236d1be40b435a0d7191b",
-        "structure": "02092ff5e69779635847844ae75b786f1698ad37bf7a1dfc08eed2e6b9db49b1"
+        "structure": "74cd50e96af6524cc22e1c39e5849f4ecdbe57892df1eceda3e231daad5b24e3"
       },
       "id": "llmnav.source.format",
       "imports": [
         "./config.js",
         "./files.js",
         "./parser.js",
+        "./transaction.js",
         "./util.js",
         "node:fs/promises"
       ],
@@ -2506,6 +2507,6 @@
   "generatedBy": "llmnav@0.13.2",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "878ce49b895966626d8d78e74e7e821db31259f7726d268c8cb02038523afb7c",
+  "sourceHash": "0de242d23b3315123798c9db3592b5ac95e949989bd73023cf873d45626536dc",
   "specVersion": "1"
 }

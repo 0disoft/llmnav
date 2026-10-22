@@ -164,6 +164,11 @@ export async function atomicWrite(root, filePath, content, options = {}) {
     await assertNoSymlinkTraversal(root, filePath, label);
     const currentIdentity = await directoryIdentity(root, parent, label);
     if (currentIdentity !== parentIdentity) throw new Error(`${label} parent directory changed during atomic write.`);
+    if (options.expectedContent !== undefined && await readText(filePath, null, options) !== options.expectedContent) {
+      const error = new Error(`${label} changed during atomic write. Retry against the current contents.`);
+      error.code = "LLMNAV_WRITE_CONFLICT";
+      throw error;
+    }
     await (options.io?.rename ?? rename)(temporaryPath, filePath);
   } catch (error) {
     // A failed write can still leave a partial temporary file (ENOSPC, EIO).
