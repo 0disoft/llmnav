@@ -3265,7 +3265,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "382849ea19052552634253463ae4508e8ffc05c81296fa07d84a79bf6024e0d3",
+      "contentHash": "16c0693751e88e8441890d8872e6a9e9a96fe132a724b202573006e005f5b9f8",
       "declarations": [
         null
       ],
@@ -3296,7 +3296,7 @@
       ],
       "path": "src/generator.js",
       "semanticBytes": 476,
-      "sourceBytes": 22767
+      "sourceBytes": 23530
     },
     {
       "blocks": [
@@ -3897,7 +3897,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "3312de9254a43912944e3065e8e4a9acd65d8e4d0713c0286b20429177d6cfdb",
+      "contentHash": "851f17a7bc13bc0f90de1663ebd95910a9488330284527e91000a8ba9f0a51bc",
       "declarations": [
         null
       ],
@@ -3907,7 +3907,7 @@
       ],
       "path": "src/inverted-index.js",
       "semanticBytes": 428,
-      "sourceBytes": 11426
+      "sourceBytes": 11436
     },
     {
       "blocks": [
@@ -6167,7 +6167,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "10e08b6ecba64bd7e30b5e1463103c0934bf5427cf96ad9a01c3422efb216f3a",
+      "contentHash": "7c58a32c7bcc9d92ed150438d365cd18fcb3726c4510f7a2e6eeded96720f459",
       "declarations": [],
       "imports": [
         "../src/agents.js",
@@ -6185,11 +6185,11 @@
       ],
       "path": "tests/integration.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 11104
+      "sourceBytes": 11580
     },
     {
       "blocks": [],
-      "contentHash": "6b4687c9fb67998b910a27690dfad44d72681247432221a98e01f51f46030033",
+      "contentHash": "57dc57fb8e8210784f818b35bb54bbfa8ea5edd37613d20f4cb06753cd4ab21c",
       "declarations": [],
       "imports": [
         "../src/inverted-index.js",
@@ -6200,7 +6200,7 @@
       ],
       "path": "tests/inverted-index.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 2846
+      "sourceBytes": 3552
     },
     {
       "blocks": [],
@@ -6478,7 +6478,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "54bfed28dcbabb17dd7bcc90aca4c0e1d81cbd1a4c9120ead50bbb7a8ed1fe13",
+      "contentHash": "4fd5e890077c7a92682af6e1f43031d8dab77923103bc254937504ac8350a0b5",
       "declarations": [],
       "imports": [
         "../src/generator.js",
@@ -6497,7 +6497,7 @@
       ],
       "path": "tests/transaction.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 32603
+      "sourceBytes": 32636
     },
     {
       "blocks": [],

@@ -280,7 +280,7 @@ function deserializeSearchIndex(searchIndex) {
     }
     documents.set(id, {
       hash: serialized[0],
-      phrases: serialized[1],
+      phrases: [...serialized[1]],
       tokens: [],
     });
   }
@@ -304,7 +304,7 @@ function deserializeSearchIndex(searchIndex) {
       const id = searchIndex.cardIds[cardIndex];
       const document = documents.get(id);
       if (!document) throw new Error("Compact search posting references an unknown card.");
-      tokenPostings.set(id, vector);
+      tokenPostings.set(id, [...vector]);
       document.tokens.push(token);
     }
     if (tokenPostings.size > 0) postings.set(token, tokenPostings);

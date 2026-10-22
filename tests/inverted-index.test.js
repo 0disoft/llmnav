@@ -64,3 +64,20 @@ test("inverted index bytes do not depend on card traversal order", () => {
   assert.equal(JSON.stringify(buildInvertedIndex(reversed).searchIndex), expected);
   assert.equal(JSON.stringify(buildInvertedIndex(zigzag).searchIndex), expected);
 });
+
+test("incremental indexes own reused phrases and posting vectors", () => {
+  const input = buildSyntheticIndex(3);
+  const previous = buildInvertedIndex(input).searchIndex;
+  const before = structuredClone(previous);
+  const next = buildInvertedIndex(input, previous);
+  assert.equal(next.stats.reusedCards, 3);
+  assert.deepEqual(next.searchIndex, before);
+  next.searchIndex.documents[0][1].push("caller phrase");
+  next.searchIndex.postings[0][0][1][1] += 100;
+  assert.deepEqual(previous, before);
+
+  const stableNext = structuredClone(next.searchIndex);
+  previous.documents[1][1].push("previous phrase");
+  previous.postings[1][0][1][1] += 100;
+  assert.deepEqual(next.searchIndex, stableNext);
+});

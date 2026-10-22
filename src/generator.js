@@ -127,7 +127,7 @@ async function generateProjectLocked(root, options) {
   const applied = await applyGeneration(root, project, plan, scan, options, recovery);
   return {
     ok: options.check ? plan.uniqueChangedFiles.length === 0 : true,
-    diagnostics,
+    diagnostics: plan.diagnostics,
     changedFiles: plan.uniqueChangedFiles,
     changedCards: plan.changedCards,
     affectedBoundaries: plan.affectedBoundaries,
@@ -207,7 +207,7 @@ function skippedGenerationResult(project, diagnostics, counts, scanStats, recove
   };
 }
 
-async function planGeneration(root, project, options, previous, fileState, diagnostics) {
+async function planGeneration(root, project, options, previous, fileState, initialDiagnostics) {
   throwIfAborted(options.signal);
   const ids = project.records.map((record) => record.card.id).filter(Boolean);
   const order = await buildStableOrder(root, ids);
@@ -220,8 +220,8 @@ async function planGeneration(root, project, options, previous, fileState, diagn
     previous.index?.contractFingerprints,
     built.index.contractFingerprints,
   );
-  for (const change of contractChanges) diagnostics.push(diagnosticForContractChange(change));
-  diagnostics.sort(compareGeneratedDiagnostics);
+  const diagnostics = [...initialDiagnostics, ...contractChanges.map(diagnosticForContractChange)]
+    .sort(compareGeneratedDiagnostics);
   const counts = countDiagnostics(diagnostics);
   const changedFiles = await compareArtifacts(
     root,
@@ -242,6 +242,7 @@ async function planGeneration(root, project, options, previous, fileState, diagn
     ids,
     order,
     built,
+    diagnostics,
     counts,
     orderContent,
     orderChanged,
@@ -312,25 +313,8 @@ export function buildArtifacts(project, order, options = {}) {
 }
 
 export function buildArtifactSet(project, order, options = {}) {
-  const orderMap = new Map(order.map((id, index) => [id, index]));
-  const cards = project.records
-    .filter((record) => record.card.id)
-    .map((record) => indexedCard(record))
-    .sort((left, right) => {
-      const orderDifference = (orderMap.get(left.id) ?? Number.MAX_SAFE_INTEGER) -
-        (orderMap.get(right.id) ?? Number.MAX_SAFE_INTEGER);
-      return orderDifference || compareText(left.id, right.id);
-    });
-
-  const index = {
-    schemaVersion: 1,
-    specVersion: SPEC_VERSION,
-    generatedBy: `llmnav@${PACKAGE_VERSION}`,
-    repositoryId: project.config.repositoryId,
-    contractFingerprints: buildContractFingerprints(project, cards),
-    sourceHash: sha256(cards.map((card) => `${card.hashes.semantic}:${card.hashes.structure}:${card.hashes.body}`).join("\n")),
-    cards,
-  };
+  const index = buildArtifactIndex(project, order);
+  const cards = index.cards;
   const { searchIndex, stats: searchStats } = buildInvertedIndex(index, options.previousSearchIndex);
   const fileState = options.fileState ?? buildFileStateFromProject(project);
   const graphBuild = buildRepositoryGraphIncremental(project, index, options.previousGraphState);
@@ -355,6 +339,37 @@ export function buildArtifactSet(project, order, options = {}) {
     }
   }
 
+  const { moduleManifest, promptBundle } = buildCatalogArtifacts(project, cards, cacheRoot, artifacts);
+  const manifest = buildArtifactManifest(project, index, { searchIndex, fileState, searchShards, moduleManifest }, artifacts);
+  artifacts.set(`${cacheRoot}/manifest.json`, stableStringify(manifest));
+  return { artifacts, index, searchIndex, searchStats, fileState, graph, graphState, graphStats, promptBundle, moduleManifest };
+}
+
+function buildArtifactIndex(project, order) {
+  const orderMap = new Map(order.map((id, index) => [id, index]));
+  const cards = project.records
+    .filter((record) => record.card.id)
+    .map((record) => indexedCard(record))
+    .sort((left, right) => {
+      const orderDifference = (orderMap.get(left.id) ?? Number.MAX_SAFE_INTEGER) -
+        (orderMap.get(right.id) ?? Number.MAX_SAFE_INTEGER);
+      return orderDifference || compareText(left.id, right.id);
+    });
+
+  const index = {
+    schemaVersion: 1,
+    specVersion: SPEC_VERSION,
+    generatedBy: `llmnav@${PACKAGE_VERSION}`,
+    repositoryId: project.config.repositoryId,
+    contractFingerprints: buildContractFingerprints(project, cards),
+    sourceHash: sha256(cards.map((card) => `${card.hashes.semantic}:${card.hashes.structure}:${card.hashes.body}`).join("\n")),
+    cards,
+  };
+  return index;
+}
+
+// Artifacts is the builder-owned accumulator, never a caller's input map.
+function buildCatalogArtifacts(project, cards, cacheRoot, artifacts) {
   const repositoryCards = cards.filter((card) =>
     project.config.generation.repositoryCatalogStabilities.includes(card.stability),
   );
@@ -382,6 +397,10 @@ export function buildArtifactSet(project, order, options = {}) {
   });
   artifacts.set(`${cacheRoot}/prompt-prefix.json`, renderPromptPrefixBundle(promptBundle));
 
+  return { moduleManifest, promptBundle };
+}
+
+function buildArtifactManifest(project, index, { searchIndex, fileState, searchShards, moduleManifest }, artifacts) {
   const contentHashes = Object.fromEntries(
     [...artifacts.entries()]
       .sort(([left], [right]) => compareText(left, right))
@@ -391,7 +410,7 @@ export function buildArtifactSet(project, order, options = {}) {
     schemaVersion: 1,
     specVersion: SPEC_VERSION,
     repositoryId: project.config.repositoryId,
-    cardCount: cards.length,
+    cardCount: index.cards.length,
     moduleCount: moduleManifest.length,
     sourceHash: index.sourceHash,
     searchCardSetHash: searchIndex.cardSetHash,
@@ -403,8 +422,7 @@ export function buildArtifactSet(project, order, options = {}) {
     searchShardSchemaVersion: searchShards.manifest ? SEARCH_SHARD_SCHEMA_VERSION : null,
     files: contentHashes,
   };
-  artifacts.set(`${cacheRoot}/manifest.json`, stableStringify(manifest));
-  return { artifacts, index, searchIndex, searchStats, fileState, graph, graphState, graphStats, promptBundle, moduleManifest };
+  return manifest;
 }
 
 function diagnosticForContractChange(change) {
@@ -430,6 +448,7 @@ function compareGeneratedDiagnostics(left, right) {
 
 function indexedCard(record) {
   const canonical = cardToCanonicalObject(record.card);
+  const imports = record.imports?.slice();
   const boundaries = detectBoundaries(record);
   const semanticPayload = stableJson(canonical);
   const structurePayload = stableJson({
@@ -442,7 +461,7 @@ function indexedCard(record) {
     exported: record.declaration?.exported ?? null,
     visibility: record.declaration?.visibility ?? null,
     receiver: record.declaration?.receiver ?? null,
-    imports: record.imports,
+    imports,
     boundaries,
   });
   return {
@@ -460,7 +479,7 @@ function indexedCard(record) {
       visibility: record.declaration?.visibility ?? null,
       receiver: record.declaration?.receiver ?? null,
     },
-    imports: record.imports,
+    imports,
     boundaries,
     hashes: {
       semantic: sha256(semanticPayload),

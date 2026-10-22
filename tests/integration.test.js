@@ -6,7 +6,7 @@ import test from "node:test";
 import { installAgentInstructions } from "../src/agents.js";
 import { evaluateProject } from "../src/evaluation.js";
 import { findProjectRoot } from "../src/files.js";
-import { generateProject } from "../src/generator.js";
+import { buildArtifactSet, generateProject } from "../src/generator.js";
 import { initializeProject } from "../src/initializer.js";
 import { scanProject } from "../src/project.js";
 import { buildContext, queryProject } from "../src/search.js";
@@ -53,6 +53,16 @@ test("initializes, generates, verifies, and searches a project", async (context)
   const generated = JSON.parse(await readFile(path.join(root, ".llmnav", "cache", "index.json"), "utf8"));
   assert.equal(generated.repositoryId, "demo-project");
   assert.equal(generated.cards.length, 1);
+
+  const project = await scanProject(root);
+  const order = project.records.map((record) => record.card.id);
+  const built = buildArtifactSet(project, order);
+  const imports = project.records[0].imports;
+  const before = [...imports];
+  built.index.cards[0].imports.push("caller-added-import");
+  assert.deepEqual(imports, before);
+  imports.push("source-added-import");
+  assert.deepEqual(built.index.cards[0].imports, [...before, "caller-added-import"]);
 });
 
 test("refuses a symlinked LLMNav control directory", async (context) => {
