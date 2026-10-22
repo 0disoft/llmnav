@@ -4,7 +4,7 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
-## Unreleased
+## [0.9.8] — 2026-10-22
 
 ### Fixed
 
