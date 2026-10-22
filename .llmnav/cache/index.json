@@ -1881,7 +1881,7 @@
         "source parsing"
       ],
       "hashes": {
-        "body": "0bbe92279b49be292547445e21c10acbe615ff19f689e1ef396124176d49dc9a",
+        "body": "bdbb7267c59c78d25c94136d30840ffd5c79514ad82ae3acfc74bba7ca825d1e",
         "semantic": "59aa3e9e793d505ecdf110fec023c201aaee0154d2f6c9cf71afe1bbf71a7be5",
         "structure": "e213e073414c75bc75df1c8669a7045096142b6c0845694191893d90bf23e3c2"
       },
@@ -2441,9 +2441,9 @@
     },
     "schemaVersion": 1
   },
-  "generatedBy": "llmnav@0.11.2",
+  "generatedBy": "llmnav@0.12.0",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "c09574d115ff79acad2a0b02e3c273b0657de9afda373e5fa786a89d023d068e",
+  "sourceHash": "a48feceddca25fa89664264b22d4c1ffcf698177d288e4cf0d052ea0f6cec88c",
   "specVersion": "1"
 }
