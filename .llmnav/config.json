@@ -10,6 +10,12 @@
   },
   "coverageRules": [
     {
+      "match": ["benchmarks/real-navigation.js"],
+      "name": "real-source retrieval evaluation",
+      "requiredFields": ["owns", "invariant"],
+      "scope": "module"
+    },
+    {
       "match": ["src/analysis.js", "src/adapters/process.js", "src/adapters/typescript.js", "src/adapters/typescript-worker.js", "src/adapters/go.js", "src/adapters/go-analyzer.go"],
       "name": "opt-in compiler analysis boundaries",
       "requiredFields": ["owns", "invariant"],

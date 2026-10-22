@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "notes": "Author-reviewed identifier tasks, frozen before measurement. This is a retrieval pilot, not a blind holdout or model coding trial.",
+  "repositories": [
+    {
+      "id": "buildmarks", "language": "typescript", "sourceRoots": ["src/scoring", "src/shared"],
+      "cases": [
+        { "id": "repository-assessment", "query": "scoreRepository", "pattern": "scoreRepository", "path": "src/scoring/score-repo.ts", "anchor": "export function scoreRepository(", "from": "scoreRepository", "to": "assessRepository" },
+        { "id": "weighted-overall", "query": "weightedRepositoryOverall", "pattern": "weightedRepositoryOverall", "path": "src/scoring/score-repo.ts", "anchor": "export function weightedRepositoryOverall(", "from": "scoreRepository", "to": "weightedRepositoryOverall" },
+        { "id": "private-validation", "query": "validatePrivateRepositoryRecord", "pattern": "validatePrivateRepositoryRecord", "path": "src/scoring/private-disclosure.ts", "anchor": "export function validatePrivateRepositoryRecord(", "from": "scoreRepository", "to": "validatePrivateRepositoryRecord" },
+        { "id": "evidence-builder", "query": "createEvidence", "pattern": "createEvidence", "path": "src/scoring/evidence.ts", "anchor": "export function createEvidence(", "from": "makeCriterionEvidence", "to": "createEvidence" }
+      ]
+    },
+    {
+      "id": "go-token", "language": "go", "sourceRoots": ["."],
+      "cases": [
+        { "id": "fileset-position", "query": "FileSet PositionFor", "pattern": "PositionFor", "path": "position.go", "anchor": "func (s *FileSet) PositionFor(", "from": "FileSet.Position", "to": "FileSet.PositionFor" },
+        { "id": "file-position", "query": "File PositionFor", "pattern": "PositionFor", "path": "position.go", "anchor": "func (f *File) PositionFor(", "from": "File.Position", "to": "File.PositionFor" },
+        { "id": "token-string", "query": "Token String", "pattern": "String", "path": "token.go", "anchor": "func (tok Token) String() string {" },
+        { "id": "fileset-add", "query": "FileSet AddFile", "pattern": "AddFile", "path": "position.go", "anchor": "func (s *FileSet) AddFile(" }
+      ]
+    }
+  ]
+}

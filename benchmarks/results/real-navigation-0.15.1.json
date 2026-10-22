@@ -1,0 +1,1206 @@
+{
+  "engineHash": "771524cc8eb1df612b3af24b36daad4ad8f901148c3950743df298c6d602fd8c",
+  "environment": {
+    "arch": "x64",
+    "filesystemCacheFlushed": false,
+    "node": "v24.18.0",
+    "platform": "win32"
+  },
+  "externalConditions": {
+    "serena": {
+      "reason": "No installed Serena or captured equivalent agent trial.",
+      "status": "held"
+    }
+  },
+  "harnessHash": "b35dc89f75d1179ed2814e1f93252b25c82933cc6e9693051130ae37082e77de",
+  "limitations": [
+    "Author-reviewed identifier and receiver-name tasks, not a sealed holdout or natural-language traffic.",
+    "Actual copied production source in two bounded scopes; all source files remain unannotated.",
+    "One lookup and up to five source-file inspections per condition. No autonomous code-edit completion is measured.",
+    "OS caches are not flushed. The condition order rotates by task; timings include each engine boundary, not a model round trip.",
+    "rg returns text match locations; discovery returns declarations/files. Definition rank measures an exact physical line, file rank deduplicates paths.",
+    "Compiler setup includes analysis and generation; maintenance adds an isolated function in a disposable copy. Human maintenance is unmeasured."
+  ],
+  "measuredAt": "2026-10-22T18:19:32.081Z",
+  "modelTrial": {
+    "humanCardAuthoringSeconds": null,
+    "humanMaintenanceSeconds": null,
+    "modelAndSettings": null,
+    "status": "held",
+    "taskCompletionRate": null,
+    "uncachedInputTokens": null
+  },
+  "packageVersion": "0.15.1",
+  "planHash": "acce8046400438ef47b5359c307c3081d8a6cf6fa85ca95e21f8af3add39e8aa",
+  "repositories": [
+    {
+      "compiler": {
+        "name": "typescript",
+        "version": "6.0.3"
+      },
+      "corpusHash": "8d05d2b68366d419e659210a0d99aac9eebc1ed1a413008f38246f1eea4dd9e7",
+      "definitions": 663,
+      "files": 13,
+      "id": "buildmarks",
+      "language": "typescript",
+      "maintenance": {
+        "mutation": "add isolated function in disposable copy",
+        "reanalysisAndGenerationMs": 3495.1923000000006,
+        "staleRejected": true
+      },
+      "originalsUnchanged": true,
+      "provenance": "4884a072fc847223c4d27db843f0338d8a0de4e6",
+      "referenceAssertions": [
+        {
+          "from": "scoreRepository",
+          "id": "repository-assessment",
+          "passed": true,
+          "to": "assessRepository"
+        },
+        {
+          "from": "scoreRepository",
+          "id": "weighted-overall",
+          "passed": true,
+          "to": "weightedRepositoryOverall"
+        },
+        {
+          "from": "scoreRepository",
+          "id": "private-validation",
+          "passed": true,
+          "to": "validatePrivateRepositoryRecord"
+        },
+        {
+          "from": "makeCriterionEvidence",
+          "id": "evidence-builder",
+          "passed": true,
+          "to": "createEvidence"
+        }
+      ],
+      "references": 1962,
+      "rows": [
+        {
+          "candidates": [
+            {
+              "line": 26,
+              "path": "src/scoring/score-repo.ts"
+            },
+            {
+              "line": 22,
+              "path": "src/scoring/score-user.ts"
+            },
+            {
+              "line": 66,
+              "path": "src/scoring/score-user.ts"
+            }
+          ],
+          "condition": "rg",
+          "definitionAt1": true,
+          "definitionAt5": true,
+          "definitionRank": 1,
+          "engineSourceReadBytes": null,
+          "expectedLine": 26,
+          "expectedPath": "src/scoring/score-repo.ts",
+          "fileAt1": true,
+          "fileAt5": true,
+          "fileRank": 1,
+          "inspectedFiles": [
+            "src/scoring/score-repo.ts"
+          ],
+          "inspectedSourceBytes": 2948,
+          "lookupMs": 90.97140000000036,
+          "query": "scoreRepository",
+          "responseBytes": 142,
+          "task": "repository-assessment",
+          "timeToFirstCorrectSourceMs": 92.08359999999993,
+          "toolCalls": 2
+        },
+        {
+          "candidates": [
+            {
+              "line": 26,
+              "path": "src/scoring/score-repo.ts",
+              "source": "declaration",
+              "symbol": "scoreRepository"
+            },
+            {
+              "line": 64,
+              "path": "src/scoring/score-user.ts",
+              "source": "declaration",
+              "symbol": "evaluated"
+            }
+          ],
+          "condition": "discovery",
+          "definitionAt1": true,
+          "definitionAt5": true,
+          "definitionRank": 1,
+          "engineSourceReadBytes": 67253,
+          "expectedLine": 26,
+          "expectedPath": "src/scoring/score-repo.ts",
+          "fileAt1": true,
+          "fileAt5": true,
+          "fileRank": 1,
+          "inspectedFiles": [
+            "src/scoring/score-repo.ts"
+          ],
+          "inspectedSourceBytes": 2948,
+          "lookupMs": 107.03520000000026,
+          "query": "scoreRepository",
+          "responseBytes": 683,
+          "task": "repository-assessment",
+          "timeToFirstCorrectSourceMs": 110.66510000000017,
+          "toolCalls": 2
+        },
+        {
+          "candidates": [
+            {
+              "line": 26,
+              "path": "src/scoring/score-repo.ts",
+              "source": "compiler",
+              "symbol": "scoreRepository"
+            }
+          ],
+          "condition": "compiler-discovery",
+          "definitionAt1": true,
+          "definitionAt5": true,
+          "definitionRank": 1,
+          "engineSourceReadBytes": 134506,
+          "expectedLine": 26,
+          "expectedPath": "src/scoring/score-repo.ts",
+          "fileAt1": true,
+          "fileAt5": true,
+          "fileRank": 1,
+          "inspectedFiles": [
+            "src/scoring/score-repo.ts"
+          ],
+          "inspectedSourceBytes": 2948,
+          "lookupMs": 96.79539999999997,
+          "query": "scoreRepository",
+          "responseBytes": 310,
+          "task": "repository-assessment",
+          "timeToFirstCorrectSourceMs": 98.81500000000051,
+          "toolCalls": 2
+        },
+        {
+          "candidates": [
+            {
+              "line": 70,
+              "path": "src/scoring/score-repo.ts",
+              "source": "declaration",
+              "symbol": "weightedRepositoryOverall"
+            },
+            {
+              "line": 37,
+              "path": "src/scoring/score-repo.ts",
+              "source": "declaration",
+              "symbol": "weightedOverall"
+            }
+          ],
+          "condition": "discovery",
+          "definitionAt1": true,
+          "definitionAt5": true,
+          "definitionRank": 1,
+          "engineSourceReadBytes": 67253,
+          "expectedLine": 70,
+          "expectedPath": "src/scoring/score-repo.ts",
+          "fileAt1": true,
+          "fileAt5": true,
+          "fileRank": 1,
+          "inspectedFiles": [
+            "src/scoring/score-repo.ts"
+          ],
+          "inspectedSourceBytes": 2948,
+          "lookupMs": 70.85559999999987,
+          "query": "weightedRepositoryOverall",
+          "responseBytes": 641,
+          "task": "weighted-overall",
+          "timeToFirstCorrectSourceMs": 73.08119999999963,
+          "toolCalls": 2
+        },
+        {
+          "candidates": [
+            {
+              "line": 70,
+              "path": "src/scoring/score-repo.ts",
+              "source": "compiler",
+              "symbol": "weightedRepositoryOverall"
+            }
+          ],
+          "condition": "compiler-discovery",
+          "definitionAt1": true,
+          "definitionAt5": true,
+          "definitionRank": 1,
+          "engineSourceReadBytes": 134506,
+          "expectedLine": 70,
+          "expectedPath": "src/scoring/score-repo.ts",
+          "fileAt1": true,
+          "fileAt5": true,
+          "fileRank": 1,
+          "inspectedFiles": [
+            "src/scoring/score-repo.ts"
+          ],
+          "inspectedSourceBytes": 2948,
+          "lookupMs": 95.36050000000068,
+          "query": "weightedRepositoryOverall",
+          "responseBytes": 330,
+          "task": "weighted-overall",
+          "timeToFirstCorrectSourceMs": 97.33800000000065,
+          "toolCalls": 2
+        },
+        {
+          "candidates": [
+            {
+              "line": 37,
+              "path": "src/scoring/score-repo.ts"
+            },
+            {
+              "line": 70,
+              "path": "src/scoring/score-repo.ts"
+            }
+          ],
+          "condition": "rg",
+          "definitionAt1": false,
+          "definitionAt5": true,
+          "definitionRank": 2,
+          "engineSourceReadBytes": null,
+          "expectedLine": 70,
+          "expectedPath": "src/scoring/score-repo.ts",
+          "fileAt1": true,
+          "fileAt5": true,
+          "fileRank": 1,
+          "inspectedFiles": [
+            "src/scoring/score-repo.ts"
+          ],
+          "inspectedSourceBytes": 2948,
+          "lookupMs": 92.89679999999953,
+          "query": "weightedRepositoryOverall",
+          "responseBytes": 95,
+          "task": "weighted-overall",
+          "timeToFirstCorrectSourceMs": 94.11279999999988,
+          "toolCalls": 2
+        },
+        {
+          "candidates": [
+            {
+              "line": 38,
+              "path": "src/scoring/private-disclosure.ts",
+              "source": "compiler",
+              "symbol": "validatePrivateRepositoryRecord"
+            }
+          ],
+          "condition": "compiler-discovery",
+          "definitionAt1": true,
+          "definitionAt5": true,
+          "definitionRank": 1,
+          "engineSourceReadBytes": 134506,
+          "expectedLine": 38,
+          "expectedPath": "src/scoring/private-disclosure.ts",
+          "fileAt1": true,
+          "fileAt5": true,
+          "fileRank": 1,
+          "inspectedFiles": [
+            "src/scoring/private-disclosure.ts"
+          ],
+          "inspectedSourceBytes": 2675,
+          "lookupMs": 93.5028999999995,
+          "query": "validatePrivateRepositoryRecord",
+          "responseBytes": 350,
+          "task": "private-validation",
+          "timeToFirstCorrectSourceMs": 95.53589999999986,
+          "toolCalls": 2
+        },
+        {
+          "candidates": [
+            {
+              "line": 12,
+              "path": "src/scoring/private-disclosure.ts"
+            },
+            {
+              "line": 38,
+              "path": "src/scoring/private-disclosure.ts"
+            },
+            {
+              "line": 10,
+              "path": "src/scoring/score-repo.ts"
+            },
+            {
+              "line": 30,
+              "path": "src/scoring/score-repo.ts"
+            }
+          ],
+          "condition": "rg",
+          "definitionAt1": false,
+          "definitionAt5": true,
+          "definitionRank": 2,
+          "engineSourceReadBytes": null,
+          "expectedLine": 38,
+          "expectedPath": "src/scoring/private-disclosure.ts",
+          "fileAt1": true,
+          "fileAt5": true,
+          "fileRank": 1,
+          "inspectedFiles": [
+            "src/scoring/private-disclosure.ts"
+          ],
+          "inspectedSourceBytes": 2675,
+          "lookupMs": 91.6922999999997,
+          "query": "validatePrivateRepositoryRecord",
+          "responseBytes": 205,
+          "task": "private-validation",
+          "timeToFirstCorrectSourceMs": 93.03679999999986,
+          "toolCalls": 2
+        },
+        {
+          "candidates": [
+            {
+              "line": 38,
+              "path": "src/scoring/private-disclosure.ts",
+              "source": "declaration",
+              "symbol": "validatePrivateRepositoryRecord"
+            },
+            {
+              "line": 11,
+              "path": "src/scoring/private-disclosure.ts",
+              "source": "declaration",
+              "symbol": "privateRepositories"
+            }
+          ],
+          "condition": "discovery",
+          "definitionAt1": true,
+          "definitionAt5": true,
+          "definitionRank": 1,
+          "engineSourceReadBytes": 67253,
+          "expectedLine": 38,
+          "expectedPath": "src/scoring/private-disclosure.ts",
+          "fileAt1": true,
+          "fileAt5": true,
+          "fileRank": 1,
+          "inspectedFiles": [
+            "src/scoring/private-disclosure.ts"
+          ],
+          "inspectedSourceBytes": 2675,
+          "lookupMs": 69.3118000000004,
+          "query": "validatePrivateRepositoryRecord",
+          "responseBytes": 763,
+          "task": "private-validation",
+          "timeToFirstCorrectSourceMs": 71.51249999999982,
+          "toolCalls": 2
+        },
+        {
+          "candidates": [
+            {
+              "line": 16,
+              "path": "src/scoring/assessment.ts"
+            },
+            {
+              "line": 238,
+              "path": "src/scoring/assessment.ts"
+            },
+            {
+              "line": 5,
+              "path": "src/scoring/evidence.ts"
+            }
+          ],
+          "condition": "rg",
+          "definitionAt1": false,
+          "definitionAt5": true,
+          "definitionRank": 3,
+          "engineSourceReadBytes": null,
+          "expectedLine": 5,
+          "expectedPath": "src/scoring/evidence.ts",
+          "fileAt1": false,
+          "fileAt5": true,
+          "fileRank": 2,
+          "inspectedFiles": [
+            "src/scoring/assessment.ts",
+            "src/scoring/evidence.ts"
+          ],
+          "inspectedSourceBytes": 13959,
+          "lookupMs": 106.27540000000045,
+          "query": "createEvidence",
+          "responseBytes": 140,
+          "task": "evidence-builder",
+          "timeToFirstCorrectSourceMs": 108.29440000000068,
+          "toolCalls": 3
+        },
+        {
+          "candidates": [
+            {
+              "line": 5,
+              "path": "src/scoring/evidence.ts",
+              "source": "declaration",
+              "symbol": "createEvidence"
+            }
+          ],
+          "condition": "discovery",
+          "definitionAt1": true,
+          "definitionAt5": true,
+          "definitionRank": 1,
+          "engineSourceReadBytes": 67253,
+          "expectedLine": 5,
+          "expectedPath": "src/scoring/evidence.ts",
+          "fileAt1": true,
+          "fileAt5": true,
+          "fileRank": 1,
+          "inspectedFiles": [
+            "src/scoring/evidence.ts"
+          ],
+          "inspectedSourceBytes": 466,
+          "lookupMs": 91.19220000000041,
+          "query": "createEvidence",
+          "responseBytes": 386,
+          "task": "evidence-builder",
+          "timeToFirstCorrectSourceMs": 93.45690000000013,
+          "toolCalls": 2
+        },
+        {
+          "candidates": [
+            {
+              "line": 5,
+              "path": "src/scoring/evidence.ts",
+              "source": "compiler",
+              "symbol": "createEvidence"
+            }
+          ],
+          "condition": "compiler-discovery",
+          "definitionAt1": true,
+          "definitionAt5": true,
+          "definitionRank": 1,
+          "engineSourceReadBytes": 134506,
+          "expectedLine": 5,
+          "expectedPath": "src/scoring/evidence.ts",
+          "fileAt1": true,
+          "fileAt5": true,
+          "fileRank": 1,
+          "inspectedFiles": [
+            "src/scoring/evidence.ts"
+          ],
+          "inspectedSourceBytes": 466,
+          "lookupMs": 87.22640000000047,
+          "query": "createEvidence",
+          "responseBytes": 305,
+          "task": "evidence-builder",
+          "timeToFirstCorrectSourceMs": 88.86560000000009,
+          "toolCalls": 2
+        }
+      ],
+      "setupMs": 3757.6032,
+      "sourceBytes": 67253,
+      "summary": [
+        {
+          "cases": 4,
+          "condition": "rg",
+          "definitionAt1": 1,
+          "definitionAt5": 4,
+          "fileAt1": 3,
+          "fileAt5": 4,
+          "inspectedSourceBytes": 22530,
+          "medianLookupMs": 92.29454999999962,
+          "toolCalls": 9
+        },
+        {
+          "cases": 4,
+          "condition": "discovery",
+          "definitionAt1": 4,
+          "definitionAt5": 4,
+          "fileAt1": 4,
+          "fileAt5": 4,
+          "inspectedSourceBytes": 9037,
+          "medianLookupMs": 81.02390000000014,
+          "toolCalls": 8
+        },
+        {
+          "cases": 4,
+          "condition": "compiler-discovery",
+          "definitionAt1": 4,
+          "definitionAt5": 4,
+          "fileAt1": 4,
+          "fileAt5": 4,
+          "inspectedSourceBytes": 9037,
+          "medianLookupMs": 94.43170000000009,
+          "toolCalls": 8
+        }
+      ]
+    },
+    {
+      "compiler": {
+        "name": "go/types",
+        "version": "go1.26.4"
+      },
+      "corpusHash": "ef917843f3cd187a6a0bcdd1082a13adfbefe2689c05bd31f99d9229d5fbdc27",
+      "definitions": 431,
+      "files": 4,
+      "id": "go-token",
+      "language": "go",
+      "maintenance": {
+        "mutation": "add isolated function in disposable copy",
+        "reanalysisAndGenerationMs": 4344.986599999998,
+        "staleRejected": true
+      },
+      "originalsUnchanged": true,
+      "provenance": "go version go1.26.4 windows/amd64",
+      "referenceAssertions": [
+        {
+          "from": "FileSet.Position",
+          "id": "fileset-position",
+          "passed": true,
+          "to": "FileSet.PositionFor"
+        },
+        {
+          "from": "File.Position",
+          "id": "file-position",
+          "passed": true,
+          "to": "File.PositionFor"
+        }
+      ],
+      "references": 1551,
+      "rows": [
+        {
+          "candidates": [
+            {
+              "line": 390,
+              "path": "position.go"
+            },
+            {
+              "line": 395,
+              "path": "position.go"
+            },
+            {
+              "line": 404,
+              "path": "position.go"
+            },
+            {
+              "line": 406,
+              "path": "position.go"
+            },
+            {
+              "line": 595,
+              "path": "position.go"
+            }
+          ],
+          "condition": "rg",
+          "definitionAt1": false,
+          "definitionAt5": false,
+          "definitionRank": null,
+          "engineSourceReadBytes": null,
+          "expectedLine": 599,
+          "expectedPath": "position.go",
+          "fileAt1": true,
+          "fileAt5": true,
+          "fileRank": 1,
+          "inspectedFiles": [
+            "position.go"
+          ],
+          "inspectedSourceBytes": 21038,
+          "lookupMs": 113.35919999999896,
+          "query": "FileSet PositionFor",
+          "responseBytes": 171,
+          "task": "fileset-position",
+          "timeToFirstCorrectSourceMs": 114.78259999999864,
+          "toolCalls": 2
+        },
+        {
+          "candidates": [
+            {
+              "line": 599,
+              "path": "position.go",
+              "source": "declaration",
+              "symbol": "PositionFor"
+            },
+            {
+              "line": 395,
+              "path": "position.go",
+              "source": "declaration",
+              "symbol": "PositionFor"
+            },
+            {
+              "line": 434,
+              "path": "position.go",
+              "source": "declaration",
+              "symbol": "FileSet"
+            },
+            {
+              "line": 442,
+              "path": "position.go",
+              "source": "declaration",
+              "symbol": "NewFileSet"
+            },
+            {
+              "line": 450,
+              "path": "position.go",
+              "source": "declaration",
+              "symbol": "Base"
+            }
+          ],
+          "condition": "discovery",
+          "definitionAt1": true,
+          "definitionAt5": true,
+          "definitionRank": 1,
+          "engineSourceReadBytes": 38125,
+          "expectedLine": 599,
+          "expectedPath": "position.go",
+          "fileAt1": true,
+          "fileAt5": true,
+          "fileRank": 1,
+          "inspectedFiles": [
+            "position.go"
+          ],
+          "inspectedSourceBytes": 21038,
+          "lookupMs": 47.254800000000614,
+          "query": "FileSet PositionFor",
+          "responseBytes": 1127,
+          "task": "fileset-position",
+          "timeToFirstCorrectSourceMs": 48.45480000000134,
+          "toolCalls": 2
+        },
+        {
+          "candidates": [
+            {
+              "line": 599,
+              "path": "position.go",
+              "source": "compiler",
+              "symbol": "FileSet.PositionFor"
+            },
+            {
+              "line": 395,
+              "path": "position.go",
+              "source": "compiler",
+              "symbol": "File.PositionFor"
+            },
+            {
+              "line": 434,
+              "path": "position.go",
+              "source": "compiler",
+              "symbol": "FileSet"
+            },
+            {
+              "line": 450,
+              "path": "position.go",
+              "source": "compiler",
+              "symbol": "FileSet.Base"
+            },
+            {
+              "line": 472,
+              "path": "position.go",
+              "source": "compiler",
+              "symbol": "FileSet.AddFile"
+            }
+          ],
+          "condition": "compiler-discovery",
+          "definitionAt1": true,
+          "definitionAt5": true,
+          "definitionRank": 1,
+          "engineSourceReadBytes": 76250,
+          "expectedLine": 599,
+          "expectedPath": "position.go",
+          "fileAt1": true,
+          "fileAt5": true,
+          "fileRank": 1,
+          "inspectedFiles": [
+            "position.go"
+          ],
+          "inspectedSourceBytes": 21038,
+          "lookupMs": 69.91040000000066,
+          "query": "FileSet PositionFor",
+          "responseBytes": 1277,
+          "task": "fileset-position",
+          "timeToFirstCorrectSourceMs": 72.43960000000152,
+          "toolCalls": 2
+        },
+        {
+          "candidates": [
+            {
+              "line": 395,
+              "path": "position.go",
+              "source": "declaration",
+              "symbol": "PositionFor"
+            },
+            {
+              "line": 599,
+              "path": "position.go",
+              "source": "declaration",
+              "symbol": "PositionFor"
+            },
+            {
+              "line": 104,
+              "path": "position.go",
+              "source": "declaration",
+              "symbol": "File"
+            },
+            {
+              "line": 434,
+              "path": "position.go",
+              "source": "declaration",
+              "symbol": "FileSet"
+            },
+            {
+              "line": 442,
+              "path": "position.go",
+              "source": "declaration",
+              "symbol": "NewFileSet"
+            }
+          ],
+          "condition": "discovery",
+          "definitionAt1": true,
+          "definitionAt5": true,
+          "definitionRank": 1,
+          "engineSourceReadBytes": 38125,
+          "expectedLine": 395,
+          "expectedPath": "position.go",
+          "fileAt1": true,
+          "fileAt5": true,
+          "fileRank": 1,
+          "inspectedFiles": [
+            "position.go"
+          ],
+          "inspectedSourceBytes": 21038,
+          "lookupMs": 52.15189999999893,
+          "query": "File PositionFor",
+          "responseBytes": 1111,
+          "task": "file-position",
+          "timeToFirstCorrectSourceMs": 53.52759999999944,
+          "toolCalls": 2
+        },
+        {
+          "candidates": [
+            {
+              "line": 395,
+              "path": "position.go",
+              "source": "compiler",
+              "symbol": "File.PositionFor"
+            },
+            {
+              "line": 599,
+              "path": "position.go",
+              "source": "compiler",
+              "symbol": "FileSet.PositionFor"
+            },
+            {
+              "line": 104,
+              "path": "position.go",
+              "source": "compiler",
+              "symbol": "File"
+            },
+            {
+              "line": 116,
+              "path": "position.go",
+              "source": "compiler",
+              "symbol": "File.Name"
+            },
+            {
+              "line": 121,
+              "path": "position.go",
+              "source": "compiler",
+              "symbol": "File.Base"
+            }
+          ],
+          "condition": "compiler-discovery",
+          "definitionAt1": true,
+          "definitionAt5": true,
+          "definitionRank": 1,
+          "engineSourceReadBytes": 76250,
+          "expectedLine": 395,
+          "expectedPath": "position.go",
+          "fileAt1": true,
+          "fileAt5": true,
+          "fileRank": 1,
+          "inspectedFiles": [
+            "position.go"
+          ],
+          "inspectedSourceBytes": 21038,
+          "lookupMs": 56.461199999999735,
+          "query": "File PositionFor",
+          "responseBytes": 1268,
+          "task": "file-position",
+          "timeToFirstCorrectSourceMs": 57.61200000000099,
+          "toolCalls": 2
+        },
+        {
+          "candidates": [
+            {
+              "line": 390,
+              "path": "position.go"
+            },
+            {
+              "line": 395,
+              "path": "position.go"
+            },
+            {
+              "line": 404,
+              "path": "position.go"
+            },
+            {
+              "line": 406,
+              "path": "position.go"
+            },
+            {
+              "line": 595,
+              "path": "position.go"
+            }
+          ],
+          "condition": "rg",
+          "definitionAt1": false,
+          "definitionAt5": true,
+          "definitionRank": 2,
+          "engineSourceReadBytes": null,
+          "expectedLine": 395,
+          "expectedPath": "position.go",
+          "fileAt1": true,
+          "fileAt5": true,
+          "fileRank": 1,
+          "inspectedFiles": [
+            "position.go"
+          ],
+          "inspectedSourceBytes": 21038,
+          "lookupMs": 93.4989000000005,
+          "query": "File PositionFor",
+          "responseBytes": 171,
+          "task": "file-position",
+          "timeToFirstCorrectSourceMs": 94.77640000000065,
+          "toolCalls": 2
+        },
+        {
+          "candidates": [
+            {
+              "line": 241,
+              "path": "token.go",
+              "source": "compiler",
+              "symbol": "Token.String"
+            },
+            {
+              "line": 33,
+              "path": "token.go",
+              "source": "compiler",
+              "symbol": "STRING"
+            },
+            {
+              "line": 44,
+              "path": "position.go",
+              "source": "compiler",
+              "symbol": "Position.String"
+            },
+            {
+              "line": 16,
+              "path": "token.go",
+              "source": "compiler",
+              "symbol": "Token"
+            },
+            {
+              "line": 266,
+              "path": "token.go",
+              "source": "compiler",
+              "symbol": "Token.Precedence"
+            }
+          ],
+          "condition": "compiler-discovery",
+          "definitionAt1": true,
+          "definitionAt5": true,
+          "definitionRank": 1,
+          "engineSourceReadBytes": 76250,
+          "expectedLine": 241,
+          "expectedPath": "token.go",
+          "fileAt1": true,
+          "fileAt5": true,
+          "fileRank": 1,
+          "inspectedFiles": [
+            "token.go"
+          ],
+          "inspectedSourceBytes": 6519,
+          "lookupMs": 57.33770000000004,
+          "query": "Token String",
+          "responseBytes": 1244,
+          "task": "token-string",
+          "timeToFirstCorrectSourceMs": 58.34530000000086,
+          "toolCalls": 2
+        },
+        {
+          "candidates": [
+            {
+              "line": 36,
+              "path": "position.go"
+            },
+            {
+              "line": 44,
+              "path": "position.go"
+            },
+            {
+              "line": 236,
+              "path": "token.go"
+            },
+            {
+              "line": 241,
+              "path": "token.go"
+            },
+            {
+              "line": 317,
+              "path": "token.go"
+            }
+          ],
+          "condition": "rg",
+          "definitionAt1": false,
+          "definitionAt5": true,
+          "definitionRank": 4,
+          "engineSourceReadBytes": null,
+          "expectedLine": 241,
+          "expectedPath": "token.go",
+          "fileAt1": false,
+          "fileAt5": true,
+          "fileRank": 2,
+          "inspectedFiles": [
+            "position.go",
+            "token.go"
+          ],
+          "inspectedSourceBytes": 27557,
+          "lookupMs": 97.25169999999889,
+          "query": "Token String",
+          "responseBytes": 160,
+          "task": "token-string",
+          "timeToFirstCorrectSourceMs": 99.26529999999912,
+          "toolCalls": 3
+        },
+        {
+          "candidates": [
+            {
+              "line": 241,
+              "path": "token.go",
+              "source": "declaration",
+              "symbol": "String"
+            },
+            {
+              "line": 44,
+              "path": "position.go",
+              "source": "declaration",
+              "symbol": "String"
+            },
+            {
+              "line": 16,
+              "path": "token.go",
+              "source": "declaration",
+              "symbol": "Token"
+            },
+            {
+              "line": 134,
+              "path": "token.go",
+              "source": "declaration",
+              "symbol": "tokens"
+            },
+            {
+              "line": 282,
+              "path": "token.go",
+              "source": "declaration",
+              "symbol": "keywords"
+            }
+          ],
+          "condition": "discovery",
+          "definitionAt1": true,
+          "definitionAt5": true,
+          "definitionRank": 1,
+          "engineSourceReadBytes": 38125,
+          "expectedLine": 241,
+          "expectedPath": "token.go",
+          "fileAt1": true,
+          "fileAt5": true,
+          "fileRank": 1,
+          "inspectedFiles": [
+            "token.go"
+          ],
+          "inspectedSourceBytes": 6519,
+          "lookupMs": 31.22019999999975,
+          "query": "Token String",
+          "responseBytes": 1038,
+          "task": "token-string",
+          "timeToFirstCorrectSourceMs": 32.12359999999899,
+          "toolCalls": 2
+        },
+        {
+          "candidates": [
+            {
+              "line": 73,
+              "path": "position.go"
+            },
+            {
+              "line": 102,
+              "path": "position.go"
+            },
+            {
+              "line": 105,
+              "path": "position.go"
+            },
+            {
+              "line": 107,
+              "path": "position.go"
+            },
+            {
+              "line": 115,
+              "path": "position.go"
+            }
+          ],
+          "condition": "rg",
+          "definitionAt1": false,
+          "definitionAt5": false,
+          "definitionRank": null,
+          "engineSourceReadBytes": null,
+          "expectedLine": 472,
+          "expectedPath": "position.go",
+          "fileAt1": true,
+          "fileAt5": true,
+          "fileRank": 1,
+          "inspectedFiles": [
+            "position.go"
+          ],
+          "inspectedSourceBytes": 21038,
+          "lookupMs": 86.52239999999983,
+          "query": "FileSet AddFile",
+          "responseBytes": 170,
+          "task": "fileset-add",
+          "timeToFirstCorrectSourceMs": 87.58739999999852,
+          "toolCalls": 2
+        },
+        {
+          "candidates": [
+            {
+              "line": 472,
+              "path": "position.go",
+              "source": "declaration",
+              "symbol": "AddFile"
+            },
+            {
+              "line": 434,
+              "path": "position.go",
+              "source": "declaration",
+              "symbol": "FileSet"
+            },
+            {
+              "line": 442,
+              "path": "position.go",
+              "source": "declaration",
+              "symbol": "NewFileSet"
+            },
+            {
+              "line": 450,
+              "path": "position.go",
+              "source": "declaration",
+              "symbol": "Base"
+            },
+            {
+              "line": 504,
+              "path": "position.go",
+              "source": "declaration",
+              "symbol": "AddExistingFiles"
+            }
+          ],
+          "condition": "discovery",
+          "definitionAt1": true,
+          "definitionAt5": true,
+          "definitionRank": 1,
+          "engineSourceReadBytes": 38125,
+          "expectedLine": 472,
+          "expectedPath": "position.go",
+          "fileAt1": true,
+          "fileAt5": true,
+          "fileRank": 1,
+          "inspectedFiles": [
+            "position.go"
+          ],
+          "inspectedSourceBytes": 21038,
+          "lookupMs": 27.288000000000466,
+          "query": "FileSet AddFile",
+          "responseBytes": 1108,
+          "task": "fileset-add",
+          "timeToFirstCorrectSourceMs": 28.57170000000042,
+          "toolCalls": 2
+        },
+        {
+          "candidates": [
+            {
+              "line": 472,
+              "path": "position.go",
+              "source": "compiler",
+              "symbol": "FileSet.AddFile"
+            },
+            {
+              "line": 434,
+              "path": "position.go",
+              "source": "compiler",
+              "symbol": "FileSet"
+            },
+            {
+              "line": 450,
+              "path": "position.go",
+              "source": "compiler",
+              "symbol": "FileSet.Base"
+            },
+            {
+              "line": 504,
+              "path": "position.go",
+              "source": "compiler",
+              "symbol": "FileSet.AddExistingFiles"
+            },
+            {
+              "line": 538,
+              "path": "position.go",
+              "source": "compiler",
+              "symbol": "FileSet.RemoveFile"
+            }
+          ],
+          "condition": "compiler-discovery",
+          "definitionAt1": true,
+          "definitionAt5": true,
+          "definitionRank": 1,
+          "engineSourceReadBytes": 76250,
+          "expectedLine": 472,
+          "expectedPath": "position.go",
+          "fileAt1": true,
+          "fileAt5": true,
+          "fileRank": 1,
+          "inspectedFiles": [
+            "position.go"
+          ],
+          "inspectedSourceBytes": 21038,
+          "lookupMs": 50.2437000000009,
+          "query": "FileSet AddFile",
+          "responseBytes": 1276,
+          "task": "fileset-add",
+          "timeToFirstCorrectSourceMs": 51.30969999999979,
+          "toolCalls": 2
+        }
+      ],
+      "setupMs": 4781.9884999999995,
+      "sourceBytes": 38125,
+      "summary": [
+        {
+          "cases": 4,
+          "condition": "rg",
+          "definitionAt1": 0,
+          "definitionAt5": 2,
+          "fileAt1": 3,
+          "fileAt5": 4,
+          "inspectedSourceBytes": 90671,
+          "medianLookupMs": 95.3752999999997,
+          "toolCalls": 9
+        },
+        {
+          "cases": 4,
+          "condition": "discovery",
+          "definitionAt1": 4,
+          "definitionAt5": 4,
+          "fileAt1": 4,
+          "fileAt5": 4,
+          "inspectedSourceBytes": 69633,
+          "medianLookupMs": 39.23750000000018,
+          "toolCalls": 8
+        },
+        {
+          "cases": 4,
+          "condition": "compiler-discovery",
+          "definitionAt1": 4,
+          "definitionAt5": 4,
+          "fileAt1": 4,
+          "fileAt5": 4,
+          "inspectedSourceBytes": 69633,
+          "medianLookupMs": 56.89944999999989,
+          "toolCalls": 8
+        }
+      ]
+    }
+  ],
+  "schemaVersion": 1
+}

@@ -57,3 +57,4 @@ llmnav.structure.go
 llmnav.structure.typescript
 llmnav.structure.typescript-worker
 llmnav.structure.go-worker
+llmnav.eval.real-navigation

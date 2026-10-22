@@ -13,3 +13,10 @@ owns conformance matrix validation, repository verdicts, language evidence cover
 excludes source mutation, cross-repository score averaging
 invariant A passing repository cannot hide a failing repository through aggregate metrics. Missing adoption or insufficient reviewed cases remains held rather than passing or failing.
 rel workflow>llmnav.eval.measure
+
+@llmnav.eval.real-navigation
+role Measure repeatable source navigation tasks on copied real TypeScript and Go code without altering original repositories.
+owns real-source corpus provenance, retrieval condition comparison, index maintenance measurements, held model evidence
+excludes model coding success claims, human authoring time estimates, original source mutation
+invariant Candidate retrieval measurements never stand in for model task completion or unmeasured human maintenance.
+rel workflow>llmnav.structure.analyze

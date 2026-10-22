@@ -236,6 +236,130 @@
       "sourceBytes": 7139
     },
     {
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
+              "model coding success claims",
+              "human authoring time estimates",
+              "original source mutation"
+            ],
+            "id": "llmnav.eval.real-navigation",
+            "invariant": [
+              "Candidate retrieval measurements never stand in for model task completion or unmeasured human maintenance."
+            ],
+            "owns": [
+              "real-source corpus provenance",
+              "retrieval condition comparison",
+              "index maintenance measurements",
+              "held model evidence"
+            ],
+            "rel": [
+              "workflow>llmnav.structure.analyze"
+            ],
+            "risk": [],
+            "role": "Measure repeatable source navigation tasks on copied real TypeScript and Go code without altering original repositories.",
+            "scope": "module",
+            "search": [
+              "real navigation comparison",
+              "TypeScript Go pilot",
+              "retrieval time evaluation"
+            ],
+            "stability": "architecture",
+            "unknown": []
+          },
+          "end": 646,
+          "endLine": 10,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.eval.real-navigation"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Measure repeatable source navigation tasks on copied real TypeScript and Go code without altering original repositories."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "real-source corpus provenance|retrieval condition comparison|index maintenance measurements|held model evidence"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "model coding success claims|human authoring time estimates|original source mutation"
+            },
+            {
+              "key": "search",
+              "line": 6,
+              "order": 4,
+              "value": "real navigation comparison|TypeScript Go pilot|retrieval time evaluation"
+            },
+            {
+              "key": "invariant",
+              "line": 7,
+              "order": 5,
+              "value": "Candidate retrieval measurements never stand in for model task completion or unmeasured human maintenance."
+            },
+            {
+              "key": "rel",
+              "line": 8,
+              "order": 6,
+              "value": "workflow>llmnav.structure.analyze"
+            },
+            {
+              "key": "stability",
+              "line": 9,
+              "order": 7,
+              "value": "architecture"
+            }
+          ],
+          "filePath": "benchmarks/real-navigation.js",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.eval.real-navigation\nrole=Measure repeatable source navigation tasks on copied real TypeScript and Go code without altering original repositories.\nowns=real-source corpus provenance|retrieval condition comparison|index maintenance measurements|held model evidence\nexcludes=model coding success claims|human authoring time estimates|original source mutation\nsearch=real navigation comparison|TypeScript Go pilot|retrieval time evaluation\ninvariant=Candidate retrieval measurements never stand in for model task completion or unmeasured human maintenance.\nrel=workflow>llmnav.structure.analyze\nstability=architecture\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "b35dc89f75d1179ed2814e1f93252b25c82933cc6e9693051130ae37082e77de",
+      "declarations": [
+        null
+      ],
+      "imports": [
+        "../src/adapters/process.js",
+        "../src/analysis.js",
+        "../src/config.js",
+        "../src/discovery.js",
+        "../src/generator.js",
+        "../src/graph-input.js",
+        "../src/spec.js",
+        "../src/util.js",
+        "node:assert/strict",
+        "node:child_process",
+        "node:fs/promises",
+        "node:os",
+        "node:path",
+        "node:perf_hooks",
+        "node:url"
+      ],
+      "path": "benchmarks/real-navigation.js",
+      "semanticBytes": 646,
+      "sourceBytes": 14054
+    },
+    {
       "blocks": [],
       "contentHash": "427208feeebd14f681c38c5e0096c33fef3d507f9a622adf7954ab62375880f6",
       "declarations": [],
@@ -1389,7 +1513,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "4b8fec793560fbdd3c990a9571b95fecc3b5840432e81dc8790d7d109c7d30ea",
+      "contentHash": "cba45c61f5c8dc3006738705d33f651866b84158a11d0590c28b9a5f13129676",
       "declarations": [
         null
       ],
@@ -1415,7 +1539,7 @@
       ],
       "path": "src/adapters/go-analyzer.go",
       "semanticBytes": 581,
-      "sourceBytes": 10188
+      "sourceBytes": 10975
     },
     {
       "blocks": [
@@ -1736,7 +1860,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "777ef4f3fbb12381d2be88cb2cdf1e314579179cf390d44f246cdae05aa84102",
+      "contentHash": "7e313c9278ee2361d0c06a6a2a8ed0e227e450533150b1388ad93c5d7254a4a0",
       "declarations": [
         null
       ],
@@ -1747,7 +1871,7 @@
       ],
       "path": "src/adapters/typescript-worker.js",
       "semanticBytes": 546,
-      "sourceBytes": 8169
+      "sourceBytes": 8548
     },
     {
       "blocks": [
@@ -6439,7 +6563,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "92004159a77e515f48c726c656eac58c4331e3e2e8c901d467bc4729c1664bc7",
+      "contentHash": "a9d56e1bb3d1e9baf5b991c29239436fb8b725d87e3513d9eb4a330fa298873f",
       "declarations": [
         null
       ],
@@ -6852,7 +6976,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "730ced04cc3f2ce4a03b5c70e4a7f9c4eea5f8608c774504e95aabdfeb4a3568",
+      "contentHash": "8d652d17f3a3f17d24c81a31c9fa168f6a74b798ddc0598f70392ee88b7711cc",
       "declarations": [],
       "imports": [
         "../src/analysis.js",
@@ -6870,7 +6994,7 @@
       ],
       "path": "tests/analysis.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 6740
+      "sourceBytes": 8726
     },
     {
       "blocks": [],
@@ -6913,7 +7037,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "5adf29da1f85bf2c46e08aa9e7900164b14e3a3161a63427752ec6f3e69d66ab",
+      "contentHash": "ec2c511bd9caafadbc19f7f7ce503763d0373325df14c3a5d4acb1e40bde4b4c",
       "declarations": [],
       "imports": [
         "../src/cli.js",
@@ -6928,7 +7052,7 @@
       ],
       "path": "tests/cli.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 3241
+      "sourceBytes": 4801
     },
     {
       "blocks": [],
@@ -7499,6 +7623,19 @@
       "path": "tests/read-operation.test.js",
       "semanticBytes": 0,
       "sourceBytes": 4952
+    },
+    {
+      "blocks": [],
+      "contentHash": "b16cbe2af1f326395278a325442c9d28a29c95ae285984a589a9733aceca4a5f",
+      "declarations": [],
+      "imports": [
+        "../benchmarks/real-navigation.js",
+        "node:assert/strict",
+        "node:test"
+      ],
+      "path": "tests/real-navigation.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 1183
     },
     {
       "blocks": [],

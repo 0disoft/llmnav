@@ -1387,6 +1387,118 @@
       "to": "llmnav/llmnav.search.query"
     },
     {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.eval.real-navigation",
+      "id": "ca2fdbf7c4df7555fb50eca68326a704c3158ad0dec80803803ff91c61af5982",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "benchmarks/real-navigation.js",
+        "source": "benchmarks/real-navigation.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.config.load"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.eval.real-navigation",
+      "id": "95682796a7f12a6eef724e80a1000df05c4433e310dc0fe7ec64afc5153af7de",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "benchmarks/real-navigation.js",
+        "source": "benchmarks/real-navigation.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.graph.import"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.eval.real-navigation",
+      "id": "81ece239ffd07973c26aa2de68f0f79ab926a0d88b5cd47df7bf6d851ef0d5bf",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "benchmarks/real-navigation.js",
+        "source": "benchmarks/real-navigation.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.index.generate"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.eval.real-navigation",
+      "id": "f8c7877c5e0ab06ae25f9670a85bbf5ebcae77d361c4ce52bc81fa213b8caa02",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "benchmarks/real-navigation.js",
+        "source": "benchmarks/real-navigation.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.search.discover"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.eval.real-navigation",
+      "id": "50509084c703e31be7d908cdc0a5adb41d5a69190fdeda725b088c9b2dbfe7cb",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "benchmarks/real-navigation.js",
+        "source": "benchmarks/real-navigation.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.spec.contract"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.eval.real-navigation",
+      "id": "bc6976136f86eef86e888737c7fd8c297dc84f61fb50cec1b8d4e77b6c474381",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "benchmarks/real-navigation.js",
+        "source": "benchmarks/real-navigation.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.structure.analyze"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.eval.real-navigation",
+      "id": "d10afb7d89c96176f25315cf75941569068c999aa70658a0014b7e7366c6b5a4",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "benchmarks/real-navigation.js",
+        "source": "benchmarks/real-navigation.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.structure.analyze"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.eval.real-navigation",
+      "id": "1674ce64f0af85d5d142db17842e2386c840da50d3210da72142243dcc67421f",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "benchmarks/real-navigation.js",
+        "source": "benchmarks/real-navigation.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.structure.compiler-process"
+    },
+    {
       "confidence": 1,
       "from": "llmnav/llmnav.graph.generate",
       "id": "12438d7cb3730894624f584434ad93949e5319749eb7e39a024aad823b1b0fd3",
@@ -4073,6 +4185,28 @@
     {
       "definitions": [],
       "external": false,
+      "key": "llmnav/llmnav.eval.real-navigation",
+      "location": {
+        "declarationLine": null,
+        "endLine": 10,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "benchmarks/real-navigation.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Measure repeatable source navigation tasks on copied real TypeScript and Go code without altering original repositories.",
+      "semanticId": "llmnav.eval.real-navigation",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
       "key": "llmnav/llmnav.graph.generate",
       "location": {
         "declarationLine": null,
@@ -4821,11 +4955,11 @@
   ],
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "639439991a34faf7e5f24d102f6ad7b61e13fdb285ddd08742081f08304ebdcd",
+  "sourceHash": "6c89d2dcf97e6a2a53a527e623a61a3c5cb9da541fbc0f3822917cc8952fd1c7",
   "stats": {
-    "edgeCount": 247,
+    "edgeCount": 255,
     "importedIndexCount": 0,
-    "nodeCount": 59,
+    "nodeCount": 60,
     "unresolvedNodeCount": 0
   }
 }

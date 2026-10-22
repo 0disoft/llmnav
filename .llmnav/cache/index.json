@@ -1895,7 +1895,7 @@
         "source parsing"
       ],
       "hashes": {
-        "body": "92004159a77e515f48c726c656eac58c4331e3e2e8c901d467bc4729c1664bc7",
+        "body": "a9d56e1bb3d1e9baf5b991c29239436fb8b725d87e3513d9eb4a330fa298873f",
         "semantic": "59aa3e9e793d505ecdf110fec023c201aaee0154d2f6c9cf71afe1bbf71a7be5",
         "structure": "e213e073414c75bc75df1c8669a7045096142b6c0845694191893d90bf23e3c2"
       },
@@ -2878,7 +2878,7 @@
         "project execution"
       ],
       "hashes": {
-        "body": "777ef4f3fbb12381d2be88cb2cdf1e314579179cf390d44f246cdae05aa84102",
+        "body": "7e313c9278ee2361d0c06a6a2a8ed0e227e450533150b1388ad93c5d7254a4a0",
         "semantic": "9174bc8af1e474db714ce23725d74727f07be95cb060cb71e5acf0d4f23d4ba5",
         "structure": "335e838d65e61e0d42ba37c2ebd07f873a34fd837da9ddd88c5fbd18a12b096b"
       },
@@ -2930,7 +2930,7 @@
         "runtime dispatch inference"
       ],
       "hashes": {
-        "body": "4b8fec793560fbdd3c990a9571b95fecc3b5840432e81dc8790d7d109c7d30ea",
+        "body": "cba45c61f5c8dc3006738705d33f651866b84158a11d0590c28b9a5f13129676",
         "semantic": "3454d028828a7674256e6fa59114c9c18227cfb7766281754f5e2023726dc78d",
         "structure": "faef68d008d7be090ba73b9d5b1a77f71b16f1aa6a2432405efd86baf020b765"
       },
@@ -2988,11 +2988,75 @@
         "Go receiver methods"
       ],
       "stability": "architecture"
+    },
+    {
+      "boundaries": [],
+      "excludes": [
+        "model coding success claims",
+        "human authoring time estimates",
+        "original source mutation"
+      ],
+      "hashes": {
+        "body": "b35dc89f75d1179ed2814e1f93252b25c82933cc6e9693051130ae37082e77de",
+        "semantic": "9a2e5bf028db47b4acce826b182866cee851464357c1de84507f90b023703c37",
+        "structure": "c0f116b9f72b14bd866f8b6d6b443b1701ed2a66e465a45af11d0ece1de1bfa7"
+      },
+      "id": "llmnav.eval.real-navigation",
+      "imports": [
+        "../src/adapters/process.js",
+        "../src/analysis.js",
+        "../src/config.js",
+        "../src/discovery.js",
+        "../src/generator.js",
+        "../src/graph-input.js",
+        "../src/spec.js",
+        "../src/util.js",
+        "node:assert/strict",
+        "node:child_process",
+        "node:fs/promises",
+        "node:os",
+        "node:path",
+        "node:perf_hooks",
+        "node:url"
+      ],
+      "invariant": [
+        "Candidate retrieval measurements never stand in for model task completion or unmeasured human maintenance."
+      ],
+      "location": {
+        "declarationLine": null,
+        "endLine": 10,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "benchmarks/real-navigation.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "owns": [
+        "real-source corpus provenance",
+        "retrieval condition comparison",
+        "index maintenance measurements",
+        "held model evidence"
+      ],
+      "rel": [
+        "workflow>llmnav.structure.analyze"
+      ],
+      "role": "Measure repeatable source navigation tasks on copied real TypeScript and Go code without altering original repositories.",
+      "scope": "module",
+      "search": [
+        "real navigation comparison",
+        "TypeScript Go pilot",
+        "retrieval time evaluation"
+      ],
+      "stability": "architecture"
     }
   ],
   "contractFingerprints": {
     "configuration": {
-      "sha256": "8d0c5245d38ce310714709d00eeb79d1707451a3d306c3ceaa59899c94539142"
+      "sha256": "5388fc5b2bafbf044a0ba52b5654dc137d7aaaa74f66931ddd6a334135a1d562"
     },
     "exportedApi": {
       "count": 5,
@@ -3000,9 +3064,9 @@
     },
     "schemaVersion": 1
   },
-  "generatedBy": "llmnav@0.15.0",
+  "generatedBy": "llmnav@0.15.1",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "099825ab5aa78a3cab67b3870cd2f4e7afbb7762ceb7c7a7cdc4f3e4be8a7b33",
+  "sourceHash": "d6d9f5a7f350611931381c7cd0e09f92ff06ef3825a44589092741f450003bf1",
   "specVersion": "1"
 }

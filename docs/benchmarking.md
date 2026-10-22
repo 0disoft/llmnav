@@ -128,6 +128,8 @@ Wall-clock speed is reported exactly as measured. It is not used to invent a spe
 
 ## Repository search evaluation
 
+The [real TypeScript and Go navigation pilot](real-navigation-pilot.md) compares eight identifier tasks on copied production sources using fixed-string rg, ordinary discovery and compiler discovery. It records declaration/file ranks, lookup and inspection costs, compiler setup and stale-input rejection. Serena and model coding-task comparisons remain held.
+
 The [historical navigation replay pilot](navigation-replay.md) compares six fixed task paraphrases with regex file discovery. It reports candidate ranks and explicit unmeasured agent metrics; it is not a substitute for end-to-end trials.
 
 Add real task descriptions to `.llmnav/eval/queries.jsonl`.

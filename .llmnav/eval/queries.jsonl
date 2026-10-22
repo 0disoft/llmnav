@@ -28,3 +28,4 @@
 {"query":"automatically refresh MCP indexes after source edits","expected":["llmnav.agent.freshness"]}
 {"query":"find source declarations before writing semantic cards","expected":["llmnav.search.discover"]}
 {"query":"resolve precise TypeScript and Go references using compiler adapters","expected":["llmnav.structure.analyze"]}
+{"query":"compare real TypeScript and Go source navigation with rg and precise discovery","expected":["llmnav.eval.real-navigation"]}
