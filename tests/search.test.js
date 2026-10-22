@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { queryIndex, tokenize } from "../src/search.js";
+import { queryIndex, queryPreparedIndex, tokenize } from "../src/search.js";
+import { buildInvertedIndex } from "../src/inverted-index.js";
 
 const index = {
   cards: [
@@ -66,4 +67,27 @@ test("detaches public results from the index snapshot", () => {
 test("clamps invalid result limits", () => {
   const results = queryIndex(index, "refresh token", { top: 0, lexicon: { aliases: {} } });
   assert.equal(results.length, 1);
+});
+
+test("caller-owned indexes reflect card edits, additions, and removals", () => {
+  const mutable = structuredClone(index);
+  assert.equal(queryIndex(mutable, "qzxalpha").length, 0);
+  mutable.cards[0].role = "Reserve qzxalpha credits before dispatch.";
+  assert.equal(queryIndex(mutable, "qzxalpha")[0].id, mutable.cards[0].id);
+  mutable.cards[0].role = "Reserve qzxbeta credits before dispatch.";
+  assert.equal(queryIndex(mutable, "qzxalpha").length, 0);
+  assert.equal(queryIndex(mutable, "qzxbeta")[0].id, mutable.cards[0].id);
+  mutable.cards.push({ ...structuredClone(mutable.cards[0]), id: "demo.added", role: "Reserve qzxgamma credits." });
+  assert.equal(queryIndex(mutable, "qzxgamma")[0].id, "demo.added");
+  mutable.cards.pop();
+  assert.equal(queryIndex(mutable, "qzxgamma").length, 0);
+});
+
+test("prepared queries do not retain stale token offsets for caller-owned search indexes", () => {
+  const mutable = structuredClone(index);
+  const { searchIndex } = buildInvertedIndex(mutable);
+  queryPreparedIndex(mutable, searchIndex, "refresh");
+  mutable.cards[0].role = "Reserve qx credits before dispatch.";
+  Object.assign(searchIndex, buildInvertedIndex(mutable).searchIndex);
+  assert.equal(queryPreparedIndex(mutable, searchIndex, "qx")[0].id, mutable.cards[0].id);
 });

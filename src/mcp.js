@@ -18,6 +18,7 @@ import { createIoError, DEFAULT_REQUEST_TIMEOUT_MS, toErrorPayload, withDeadline
 import { createProjectSession } from "./search.js";
 import { PACKAGE_VERSION } from "./spec.js";
 import { throwIfAborted } from "./abort.js";
+import { loadConfig } from "./config.js";
 
 export const MCP_PROTOCOL_VERSION = "2024-11-05";
 export const MCP_SERVER_NAME = "llmnav";
@@ -30,13 +31,7 @@ const INTERNAL_ERROR = -32603;
 
 // Artifacts a prepared session depends on; the stamp decides when it reloads.
 // The registry is included because active-ID merges rewrite it without a generation.
-const SESSION_STAMP_FILES = [
-  ".llmnav/cache/manifest.json",
-  ".llmnav/cache/index.json",
-  ".llmnav/cache/search-index.json",
-  ".llmnav/cache/graph.json",
-  ".llmnav/ids.jsonl",
-];
+const SESSION_CACHE_FILES = ["manifest.json", "index.json", "search-index.json", "graph.json"];
 
 export function createMcpServer(options = {}) {
   const root = options.root;
@@ -148,6 +143,7 @@ async function resolveSession(session, sessionCache) {
 
 export function createSessionCache(root, dependencies = {}) {
   const createSession = dependencies.createSession ?? createProjectSession;
+  const readStamp = dependencies.sessionStamp ?? sessionStamp;
   let session = null;
   let stamp = null;
   let loading = null;
@@ -163,7 +159,7 @@ export function createSessionCache(root, dependencies = {}) {
   };
 
   async function load() {
-    const nextStamp = await sessionStamp(root);
+    const nextStamp = await readStamp(root);
     if (session === null) {
       session = await createSession(root);
     } else if (nextStamp !== stamp) {
@@ -183,8 +179,16 @@ export function createSessionCache(root, dependencies = {}) {
  * `statFile` is injectable for tests.
  */
 export async function sessionStamp(root, statFile = statCacheFile) {
-  const parts = [];
-  for (const relativePath of SESSION_STAMP_FILES) {
+  const { config } = await loadConfig(root);
+  const cacheDirectory = config.generation.cacheDirectory.replaceAll("\\", "/");
+  const files = [
+    ...SESSION_CACHE_FILES.map((name) => `${cacheDirectory}/${name}`),
+    ".llmnav/config.json",
+    ".llmnav/lexicon.json",
+    ".llmnav/ids.jsonl",
+  ];
+  const parts = [`cache=${cacheDirectory}`];
+  for (const relativePath of files) {
     const name = path.posix.basename(relativePath);
     let info;
     try {

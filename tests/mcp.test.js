@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { EventEmitter, once } from "node:events";
-import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
@@ -212,7 +212,7 @@ test("cache stamps separate regenerations inside one millisecond", async (contex
   const baseStamp = await readStamp();
   assert.equal(
     baseStamp,
-    "manifest.json:1000000:10:7|index.json:1000000:20:7|search-index.json:1000000:30:7|graph.json:missing|ids.jsonl:missing",
+    "cache=.llmnav/cache|manifest.json:1000000:10:7|index.json:1000000:20:7|search-index.json:1000000:30:7|graph.json:missing|config.json:missing|lexicon.json:missing|ids.jsonl:missing",
   );
   assert.equal(await readStamp(), baseStamp);
 
@@ -224,6 +224,33 @@ test("cache stamps separate regenerations inside one millisecond", async (contex
   // Registering active IDs rewrites the registry without touching the cache.
   files.set("ids.jsonl", { mtimeNs: 1_000_000n, size: 40n, ino: 7n });
   assert.match(await readStamp(), /\|ids\.jsonl:1000000:40:7$/u);
+  const beforeLexicon = await readStamp();
+  files.set("lexicon.json", { mtimeNs: 2_000_000n, size: 40n, ino: 7n });
+  assert.notEqual(await readStamp(), beforeLexicon);
+});
+
+test("MCP refreshes lexicon-only changes and generations in a configured cache directory", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-mcp-cache-inputs-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await createProject(root);
+  const server = createMcpServer({ root });
+  assert.deepEqual((await callTool(server, 1, "llmnav_query", { task: "quuxzz" })).data, []);
+  await writeFile(path.join(root, ".llmnav", "lexicon.json"), JSON.stringify({ version: 1, aliases: { quuxzz: "auth.session.rotate" } }));
+  assert.equal((await callTool(server, 2, "llmnav_query", { task: "quuxzz" })).data[0].id, "auth.session.rotate");
+
+  const configPath = path.join(root, ".llmnav", "config.json");
+  const config = JSON.parse(await readFile(configPath, "utf8"));
+  config.generation.cacheDirectory = ".llmnav/custom-cache";
+  await writeFile(configPath, JSON.stringify(config));
+  assert.equal((await generateProject(root)).ok, true);
+  await callTool(server, 3, "llmnav_query", { task: "quuxzz" });
+  const sourcePath = path.join(root, "src", "rotate.ts");
+  const source = await readFile(sourcePath, "utf8");
+  await writeFile(sourcePath, source.replace("Rotate one refresh-token family and reject replayed tokens.", "Reserve qzxbeta credits before dispatch."));
+  assert.equal((await generateProject(root)).ok, true);
+  const result = (await callTool(server, 4, "llmnav_query", { task: "qzxbeta" })).data;
+  assert.equal(result[0].id, "auth.session.rotate");
+  assert.deepEqual(result, await queryProject(root, "qzxbeta"));
 });
 
 test("a failed artifact stat is reported instead of looking missing", async (context) => {

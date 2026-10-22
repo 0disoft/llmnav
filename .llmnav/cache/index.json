@@ -685,7 +685,7 @@
         "source mutation"
       ],
       "hashes": {
-        "body": "22b4b6eae125f48a2a676ec0d00d72159355d8b456ba87a90c34beda886a8a20",
+        "body": "29a8dbefc25e45aaa7939f8f20b8a78659902be930bf7d33d356b91e97285440",
         "semantic": "945f325a2ad2abfa71212b02dd952c071d47ed6d3848a16d247afd48dbe5ced6",
         "structure": "a53c3b192c4f1a53461232c4516ebbfd79337f70a6fb27f2e6325213050a6cb6"
       },
@@ -2209,14 +2209,15 @@
         "index preparation"
       ],
       "hashes": {
-        "body": "068d3447783702cee2efeb7084c0bf08fdcdf9e007b331c945367831fc68b090",
+        "body": "4fba35eb1d2b3c6c60ca0bdd857d5cdbd7f990ec41d3277e47cad7063cb2cb0a",
         "semantic": "a1ec177829cdd462b6ea996d78d53c2c9071291f1dd14202e05d1236559a8973",
-        "structure": "4b31d696a2490cf8cbc5395ff64ce3f7c94db22c5794b3f548cdd02cd3f4d7dc"
+        "structure": "1290cacf3e12de1cb5657b88a670ed8bd1d375705129900c46e0ae8897b5a5a3"
       },
       "id": "llmnav.agent.mcp",
       "imports": [
         "./abort.js",
         "./agent-protocol.js",
+        "./config.js",
         "./errors.js",
         "./search.js",
         "./spec.js",
@@ -2499,6 +2500,6 @@
   "generatedBy": "llmnav@0.13.0",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "5c674113cd67f860f64c922c84c1b3bb3eb8ebc9423e563ac832980edeee54ca",
+  "sourceHash": "3f6a7578d7e14a2fb1cac67d1a765000139e9bd031318f7c18e58312da1e1c65",
   "specVersion": "1"
 }

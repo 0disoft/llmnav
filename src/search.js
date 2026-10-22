@@ -29,7 +29,6 @@ import { loadPromptPrefixBundleLocked } from "./prompt-bundle.js";
 import { recoverGenerationTransaction, withGenerationLock } from "./transaction.js";
 import { findGraphNode, isCompatibleRepositoryGraph, renderGraphNode, resolveGraphNode } from "./graph.js";
 
-const preparedIndexCache = new WeakMap();
 const preparedSearchIndexCache = new WeakMap();
 const sessionGraphAdjacencyCache = new WeakMap();
 const sessionSearchMetadataCache = new WeakMap();
@@ -190,6 +189,7 @@ async function loadSessionSnapshot(root, options = {}) {
   // Only session-owned graphs are cached: public query inputs may be mutable.
   if (snapshot.graph) sessionGraphAdjacencyCache.set(snapshot.graph, buildGraphAdjacency(snapshot.graph));
   sessionSearchMetadataCache.set(snapshot.index, prepareSearchMetadata(snapshot.index, snapshot.lexicon, snapshot.graph, true));
+  preparedSearchIndexCache.set(snapshot.searchIndex, prepareCompactSearchIndex(snapshot.searchIndex));
   return snapshot;
 }
 
@@ -254,14 +254,7 @@ async function loadProjectSnapshot(root, options = {}) {
 }
 
 export function queryIndex(index, query, options = {}) {
-  let searchIndex = options.invertedIndex;
-  if (!searchIndex) {
-    searchIndex = preparedIndexCache.get(index);
-    if (!searchIndex) {
-      searchIndex = buildInvertedIndex(index).searchIndex;
-      preparedIndexCache.set(index, searchIndex);
-    }
-  }
+  const searchIndex = options.invertedIndex ?? buildInvertedIndex(index).searchIndex;
   return detachSearchResults(queryPreparedIndex(index, searchIndex, query, options));
 }
 
@@ -390,7 +383,6 @@ function prepareCompactSearchIndex(searchIndex) {
   prepared = {
     tokenIndex: new Map((searchIndex.tokens ?? []).map((token, index) => [token, index])),
   };
-  preparedSearchIndexCache.set(searchIndex, prepared);
   return prepared;
 }
 

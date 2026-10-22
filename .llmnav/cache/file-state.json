@@ -4011,13 +4011,14 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "068d3447783702cee2efeb7084c0bf08fdcdf9e007b331c945367831fc68b090",
+      "contentHash": "4fba35eb1d2b3c6c60ca0bdd857d5cdbd7f990ec41d3277e47cad7063cb2cb0a",
       "declarations": [
         null
       ],
       "imports": [
         "./abort.js",
         "./agent-protocol.js",
+        "./config.js",
         "./errors.js",
         "./search.js",
         "./spec.js",
@@ -4028,7 +4029,7 @@
       ],
       "path": "src/mcp.js",
       "semanticBytes": 531,
-      "sourceBytes": 9599
+      "sourceBytes": 9922
     },
     {
       "blocks": [
@@ -5249,7 +5250,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "22b4b6eae125f48a2a676ec0d00d72159355d8b456ba87a90c34beda886a8a20",
+      "contentHash": "29a8dbefc25e45aaa7939f8f20b8a78659902be930bf7d33d356b91e97285440",
       "declarations": [
         null
       ],
@@ -5269,7 +5270,7 @@
       ],
       "path": "src/search.js",
       "semanticBytes": 464,
-      "sourceBytes": 33591
+      "sourceBytes": 33426
     },
     {
       "blocks": [],
@@ -6201,7 +6202,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "a893c3806cce92139a56332e2b0b36ec90a9993cc801056d25a519f6c95d5d4e",
+      "contentHash": "32446553b54df3fd4bf88ff473af4014039ae08e49633a14678da0b371e69c9f",
       "declarations": [],
       "imports": [
         "../src/agent-protocol.js",
@@ -6222,7 +6223,7 @@
       ],
       "path": "tests/mcp.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 13976
+      "sourceBytes": 15798
     },
     {
       "blocks": [],
@@ -6448,16 +6449,17 @@
     },
     {
       "blocks": [],
-      "contentHash": "e61aa79501859478327bbc09683afd985858df17333c480c364f89ad18da3ac2",
+      "contentHash": "deade7ebea471e7388aba0eef92bac566c34150f7f4cf333773bd96834d9c724",
       "declarations": [],
       "imports": [
+        "../src/inverted-index.js",
         "../src/search.js",
         "node:assert/strict",
         "node:test"
       ],
       "path": "tests/search.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 2776
+      "sourceBytes": 4148
     },
     {
       "blocks": [],

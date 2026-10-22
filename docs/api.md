@@ -254,7 +254,7 @@ const results = queryPreparedIndex(index, searchIndex, "reserve credits", {
 console.log(metrics.documentTokenizations); // 0
 ```
 
-`queryIndex(index, query)` builds and weakly caches an in-memory inverted index when one is not supplied.
+`queryIndex(index, query)` builds an in-memory inverted index when one is not supplied, so edits to caller-owned cards are visible on the next call. For repeated queries, use a prepared index or a project session; only session-owned token lookup tables are cached. Callers supplying an explicit inverted index must rebuild it after changing cards.
 
 `queryIndexLegacy(index, query)` retains the v0.1-compatible per-query retokenization path for regression tests and migration measurement. New integrations should not use it in production.
 
@@ -386,6 +386,8 @@ await session.refresh(); // after generation or checkout changes
 ```
 
 `query`, `show`, and `context` reuse the loaded index, postings, graph, lexicon, and registry. `refresh()` replaces the complete snapshot; it never mutates one layer in place. The `check` operation still scans current source and does not use session data.
+
+The MCP server refreshes sessions when configuration, aliases, registry records, or generated search artifacts change. Its artifact stamp follows `generation.cacheDirectory`, including non-default cache locations.
 
 Pass `{ withPromptBundle: true }` to `createProjectSession` when a host needs prompt partitions and navigation from the same generation. The returned session exposes `promptBundle` and a content-derived `generationHash`; `refresh()` replaces both alongside the search snapshot. The hash identifies generated cache content, not whether ungenerated source edits exist in the working tree.
 
