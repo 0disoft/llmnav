@@ -5258,7 +5258,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "a9742bec544d1e90008cbfd066c5aec085e2c44a7bfa526dda9c9655ffc208f8",
+      "contentHash": "b3e4b3404fff4ec0120bf063945c3cf53cced573977ad87305f422c09dba2eee",
       "declarations": [],
       "imports": [
         "node:crypto",
@@ -5267,7 +5267,7 @@
       ],
       "path": "src/util.js",
       "semanticBytes": 0,
-      "sourceBytes": 9529
+      "sourceBytes": 10151
     },
     {
       "blocks": [
@@ -5591,6 +5591,24 @@
       "path": "tests/editor.test.js",
       "semanticBytes": 0,
       "sourceBytes": 2729
+    },
+    {
+      "blocks": [],
+      "contentHash": "c81a130a27ee81b78364f42de05d86475c3f1a2ccf794e7fe2d0e51313361cb1",
+      "declarations": [],
+      "imports": [
+        "../src/config.js",
+        "../src/files.js",
+        "../src/util.js",
+        "node:assert/strict",
+        "node:fs/promises",
+        "node:os",
+        "node:path",
+        "node:test"
+      ],
+      "path": "tests/file-selection.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 3378
     },
     {
       "blocks": [],

@@ -235,22 +235,37 @@ export function escapeRegExp(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&");
 }
 
+/**
+ * Translate a repository-relative glob into a matcher.
+ *
+ * A pattern without "/" matches a file name at any depth, so the documented
+ * defaults such as "*.min.js" also cover generated bundles in subdirectories.
+ * A pattern with "/" is anchored at the repository root.
+ *
+ * "**" spans directories only when it occupies a whole path segment; anywhere
+ * else it behaves like "*" and never crosses a separator.
+ */
 export function globToRegExp(glob) {
   const normalized = toPosix(glob);
-  let pattern = "^";
+  const anchored = normalized.includes("/");
+  let pattern = anchored ? "^" : "(?:^|/)";
   for (let index = 0; index < normalized.length; index += 1) {
     const character = normalized[index];
-    const next = normalized[index + 1];
-    if (character === "*" && next === "*") {
+    if (character === "*") {
+      const startsSegment = index === 0 || normalized[index - 1] === "/";
       const after = normalized[index + 2];
-      if (after === "/") {
-        pattern += "(?:.*/)?";
-        index += 2;
-      } else {
-        pattern += ".*";
-        index += 1;
+      if (normalized[index + 1] === "*" && startsSegment) {
+        if (after === "/") {
+          pattern += "(?:.*/)?";
+          index += 2;
+          continue;
+        }
+        if (after === undefined) {
+          pattern += ".*";
+          index += 1;
+          continue;
+        }
       }
-    } else if (character === "*") {
       pattern += "[^/]*";
     } else if (character === "?") {
       pattern += "[^/]";

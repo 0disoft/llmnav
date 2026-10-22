@@ -74,7 +74,9 @@ Every source root must remain inside the repository and cannot be a symbolic lin
 
 `includeExtensions` is an allowlist. LLMNav does not scan Markdown or YAML by default because documentation examples routinely contain card syntax.
 
-`excludeDirectories` matches directory names at any depth. Defaults exclude dependency and tool output including `node_modules`, `.bun-cache`, `.pnpm-store`, `.cache`, build directories, and language targets. `excludeFiles` uses repository-relative globs with `*`, `?`, and `**`.
+`excludeDirectories` matches directory names at any depth. Defaults exclude dependency and tool output including `node_modules`, `.bun-cache`, `.pnpm-store`, `.cache`, build directories, and language targets.
+
+`excludeFiles` supports `*`, `?`, and `**`. A pattern without `/` matches a file name at any depth, so the default `*.min.js` also excludes `src/vendor/app.min.js`. A pattern with `/` is anchored at the repository root, so `src/generated/*.js` does not match `tools/src/generated/api.js`. `**` spans directories only when it occupies a whole path segment: `src/**` matches every file below `src`, and `a/**/c.ts` matches both `a/c.ts` and `a/b/c.ts`. Anywhere else, `**` behaves like `*` and never crosses `/`. Character classes and negation are not supported.
 
 ## Coverage rules
 
