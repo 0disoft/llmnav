@@ -3,7 +3,8 @@ import { lstat, mkdir, open, readFile, realpath, rename, rm } from "node:fs/prom
 import path from "node:path";
 import { TOKEN_ESTIMATION } from "./policy.js";
 import { DEFAULT_RUNTIME } from "./runtime.js";
-import { abortable, throwIfAborted } from "./abort.js";
+import { throwIfAborted } from "./abort.js";
+import { runRead } from "./read-operation.js";
 
 export function normalizeNewlines(value) {
   return value.replace(/\r\n?/gu, "\n");
@@ -117,7 +118,9 @@ export function offsetAtLine(source, targetLine) {
 export async function readText(filePath, fallback = undefined, options = {}) {
   throwIfAborted(options.signal);
   try {
-    return await abortable((options.io?.readFile ?? readFile)(filePath, "utf8"), options.signal);
+    return await runRead("read file", ({ signal }) => options.io?.readFile
+      ? options.io.readFile(filePath, "utf8", { signal })
+      : readFile(filePath, { encoding: "utf8", signal }), { ...options.readPolicy, signal: options.signal });
   } catch (error) {
     throwIfAborted(options.signal);
     if (fallback !== undefined && error && typeof error === "object" && error.code === "ENOENT") {

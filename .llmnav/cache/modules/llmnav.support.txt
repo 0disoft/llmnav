@@ -28,3 +28,9 @@ role Run independent filesystem work with a bounded number of in-flight tasks wh
 owns bounded asynchronous map, deterministic failure selection, concurrency limit validation
 excludes retry policy, thread pools, request scheduling
 invariant Results keep input order and the lowest failing index is reported regardless of completion order.
+
+@llmnav.support.read-operation
+role Bound idempotent reads with cooperative cancellation and opt-in transient retries.
+owns read deadlines, read retry scheduling, retry jitter
+excludes write retries, transaction recovery, shared cache ownership
+invariant Cancellation and deadline failures never start another attempt.

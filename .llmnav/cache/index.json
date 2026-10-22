@@ -835,7 +835,7 @@
         "cache directory commit"
       ],
       "hashes": {
-        "body": "4df5e8654068ed69b464039592fa41f0a9e17e86996d238decd3d4d6c9451e7f",
+        "body": "f94d00806f9e3207035daea94c7d59c4250af43061b2e02bf2bc114c9eb280d4",
         "semantic": "26e0abf92c39ff07a7eb622d795d5ecbc83c7704b7c1ed09cd3ad339e3c04865",
         "structure": "4533f320f5c701808b979357ece450b56bdbc35f1117a5d53a2556e684a33657"
       },
@@ -1675,9 +1675,9 @@
         "cache generation"
       ],
       "hashes": {
-        "body": "500a9e506be573d7a1475262971f2ad928867c46215a57837d84715063dd0f36",
+        "body": "508c928b788f65921a579323924707e3ee3476c008abb1dcb19d1a3d6beb3bd8",
         "semantic": "c7cfa511ec9a14754b58e0f03bae113bd850ef9c716034a56d82449368d41af2",
-        "structure": "352c8ccb45a3ece68dbb4fb66ae09796efcd874a9c56d6425f6fea0e110962f6"
+        "structure": "517aaddbddf27c31e036025d481e979e53150796b717f0201c2bf800f623eb90"
       },
       "id": "llmnav.project.scan",
       "imports": [
@@ -1689,8 +1689,7 @@
         "./module-resolution.js",
         "./parser.js",
         "./registry.js",
-        "./util.js",
-        "node:fs/promises"
+        "./util.js"
       ],
       "invariant": [
         "Generated paths and structural metadata remain derived data and are never written into source cards."
@@ -1836,9 +1835,9 @@
         "generated cache formatting"
       ],
       "hashes": {
-        "body": "3e7af368c2c33741ca1350df43a0119e3c34bff2fb45c26d8d9dd54e0ffc7069",
+        "body": "a0f870b646f759771e80ac7f2d78ab2f7c3b00180ab3cbe47225867e10f10ea8",
         "semantic": "96da0bbe3ce024aae971854f5333d10bf58c99073f1236d1be40b435a0d7191b",
-        "structure": "74cd50e96af6524cc22e1c39e5849f4ecdbe57892df1eceda3e231daad5b24e3"
+        "structure": "dc1237f3835a25375141f1cea90bdac0eb8cca91c439326de38eb186159a5035"
       },
       "id": "llmnav.source.format",
       "imports": [
@@ -1846,8 +1845,7 @@
         "./files.js",
         "./parser.js",
         "./transaction.js",
-        "./util.js",
-        "node:fs/promises"
+        "./util.js"
       ],
       "invariant": [
         "Check mode reports non-canonical files without writing source files."
@@ -1889,7 +1887,7 @@
         "source parsing"
       ],
       "hashes": {
-        "body": "d81ac21e322abd6ebaf83cedf4624992b9d5dc3875d0789aa2369a679cc20ae4",
+        "body": "551dfa2d0219a7eaff33d56c324c84c52b29710cb368d7a11bd0b0cf89a837f8",
         "semantic": "59aa3e9e793d505ecdf110fec023c201aaee0154d2f6c9cf71afe1bbf71a7be5",
         "structure": "e213e073414c75bc75df1c8669a7045096142b6c0845694191893d90bf23e3c2"
       },
@@ -2158,12 +2156,13 @@
         "semantic card generation"
       ],
       "hashes": {
-        "body": "96caa6ce44000cd5f6ca6ab135b1666b5a5b422748347cb365848c2744906c9b",
+        "body": "3f89d3b154823254124a655c1c2ccf1891c8e6cbe0ac864fe3c259886ad61589",
         "semantic": "98dd8a524ca973c2bb5cb1bcb0a442fbfffa3f5bceb5556a796c1411f1a22272",
-        "structure": "920841a19639da5b84d897845c266296dc50e4f80c60052ef0b1e2fad9750715"
+        "structure": "81b6e4fc335e6cea24b365fd8ecb0a6d79eafcc6a923b6b4d454d684a3de0f60"
       },
       "id": "llmnav.structure.modules",
       "imports": [
+        "./abort.js",
         "./util.js",
         "node:fs/promises",
         "node:path"
@@ -2211,7 +2210,7 @@
         "index preparation"
       ],
       "hashes": {
-        "body": "7c01e6270ef09930429b153d150e646a7e1b58742167f532def594794f8f2236",
+        "body": "a2c24d353c34b9b348c9e5ec4f03a08c129c27ef4dbbd39b87997868c7b09ac9",
         "semantic": "a1ec177829cdd462b6ea996d78d53c2c9071291f1dd14202e05d1236559a8973",
         "structure": "e75cbc520dab8d8605e294471af8ac9338ee534acad9e4770753577627f6021c"
       },
@@ -2405,7 +2404,7 @@
         "retry scheduling"
       ],
       "hashes": {
-        "body": "7ea911e08ac3faaabdc3f7c426521b89034896286176b13a324b0578458dfd43",
+        "body": "7f6446cec1cd1a31615e91760d29727064b3ea185a8a122c31ee79ca914c55da",
         "semantic": "d6cbc36ba531885f4ba3fda92bab5467687d9266cb42bc2114e6c278b7200850",
         "structure": "c8ec99a69c18ae22d0dc73d3921b769fc4fafe0264ee238395d6d9cad6a4b7a7"
       },
@@ -2491,11 +2490,60 @@
         "ordered async map"
       ],
       "stability": "architecture"
+    },
+    {
+      "boundaries": [],
+      "excludes": [
+        "write retries",
+        "transaction recovery",
+        "shared cache ownership"
+      ],
+      "hashes": {
+        "body": "43cbaf8836ff449f39906eadfaadf73de4f4d95746d33db49bcf243d5e0cafbf",
+        "semantic": "871790ac29a679da0d369d443cd5008c54f31c8796969bb7c2d0fd8bd0cfb796",
+        "structure": "f97e069c08bbfae77bb63590a210eb52eb41030f1f9aef65b27f35ad3a98e3ca"
+      },
+      "id": "llmnav.support.read-operation",
+      "imports": [
+        "./abort.js",
+        "./errors.js",
+        "./runtime.js"
+      ],
+      "invariant": [
+        "Cancellation and deadline failures never start another attempt."
+      ],
+      "location": {
+        "declarationLine": null,
+        "endLine": 9,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/read-operation.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "owns": [
+        "read deadlines",
+        "read retry scheduling",
+        "retry jitter"
+      ],
+      "role": "Bound idempotent reads with cooperative cancellation and opt-in transient retries.",
+      "scope": "module",
+      "search": [
+        "read retry",
+        "exponential backoff",
+        "read timeout",
+        "read cancellation"
+      ],
+      "stability": "architecture"
     }
   ],
   "contractFingerprints": {
     "configuration": {
-      "sha256": "9dea81dac9c5c873b5ae7f41c351ddc9251a70aa5482ba5e02561b2be4b6722a"
+      "sha256": "83149a897607287d8f97b183650f7a6402922453908b068255a722b465c42d68"
     },
     "exportedApi": {
       "count": 5,
@@ -2503,9 +2551,9 @@
     },
     "schemaVersion": 1
   },
-  "generatedBy": "llmnav@0.13.3",
+  "generatedBy": "llmnav@0.13.4",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "d58131e820c1166140de11bb3adc3ea5e42681c0efea6a45d4528b3290d07ad0",
+  "sourceHash": "a7347e6af7e9792079084bf9a19e3dcc60ab8a78167c34f80b4c1c447a5bc432",
   "specVersion": "1"
 }

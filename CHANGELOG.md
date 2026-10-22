@@ -4,6 +4,18 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.13.4] — 2026-10-23
+
+### Fixed
+
+* Bound shared MCP session loads independently of request deadlines; cancel abandoned loads, detach timed-out refreshes, and prevent late snapshot publication.
+* Forward cancellation to native file reads and preserve original timeout and shutdown reasons.
+* Preserve write, handle-close, and cleanup failures together, serialize bounded aggregate causes, and retain JSON parse causes.
+
+### Added
+
+* `runRead` and optional file `readPolicy` with a 15-second deadline, zero retries by default, and opt-in capped exponential backoff with jitter for transient idempotent reads. Write workflows remain single-attempt.
+
 ## [0.13.3] — 2026-10-23
 
 ### Fixed

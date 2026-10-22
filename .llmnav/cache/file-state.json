@@ -2817,7 +2817,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "7ea911e08ac3faaabdc3f7c426521b89034896286176b13a324b0578458dfd43",
+      "contentHash": "7f6446cec1cd1a31615e91760d29727064b3ea185a8a122c31ee79ca914c55da",
       "declarations": [
         null
       ],
@@ -2827,7 +2827,7 @@
       ],
       "path": "src/errors.js",
       "semanticBytes": 453,
-      "sourceBytes": 5017
+      "sourceBytes": 5050
     },
     {
       "blocks": [
@@ -3141,7 +3141,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "3e7af368c2c33741ca1350df43a0119e3c34bff2fb45c26d8d9dd54e0ffc7069",
+      "contentHash": "a0f870b646f759771e80ac7f2d78ab2f7c3b00180ab3cbe47225867e10f10ea8",
       "declarations": [
         null
       ],
@@ -3150,12 +3150,11 @@
         "./files.js",
         "./parser.js",
         "./transaction.js",
-        "./util.js",
-        "node:fs/promises"
+        "./util.js"
       ],
       "path": "src/formatter.js",
       "semanticBytes": 461,
-      "sourceBytes": 1849
+      "sourceBytes": 1806
     },
     {
       "blocks": [
@@ -3606,7 +3605,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "4df5e8654068ed69b464039592fa41f0a9e17e86996d238decd3d4d6c9451e7f",
+      "contentHash": "f94d00806f9e3207035daea94c7d59c4250af43061b2e02bf2bc114c9eb280d4",
       "declarations": [
         null
       ],
@@ -3625,22 +3624,22 @@
       ],
       "path": "src/incremental.js",
       "semanticBytes": 381,
-      "sourceBytes": 12956
+      "sourceBytes": 12925
     },
     {
       "blocks": [],
-      "contentHash": "ea810efe01eb83600a6ef6c8e723b7fd309406b3ae253018addd980c7d956c04",
+      "contentHash": "af920f87699dd324f94baa625aa92a5d1a73c5bfa45d6dbcc16a010687f61eab",
       "declarations": [],
       "imports": [
         "./spec.js"
       ],
       "path": "src/index.d.ts",
       "semanticBytes": 0,
-      "sourceBytes": 34302
+      "sourceBytes": 34838
     },
     {
       "blocks": [],
-      "contentHash": "e5900b7ef0ad831ebced4b99fdfa3ab6fdff961aba22a7d93a7075e63116f9bb",
+      "contentHash": "7ee7ba145cedd1f86ff171b6a08785847e51a65e008a1cf23c3160143ff60049",
       "declarations": [],
       "imports": [
         "./abort.js",
@@ -3668,6 +3667,7 @@
         "./parser.js",
         "./project.js",
         "./prompt-bundle.js",
+        "./read-operation.js",
         "./registry.js",
         "./runtime.js",
         "./sarif.js",
@@ -3680,7 +3680,7 @@
       ],
       "path": "src/index.js",
       "semanticBytes": 0,
-      "sourceBytes": 4053
+      "sourceBytes": 4100
     },
     {
       "blocks": [
@@ -4013,7 +4013,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "7c01e6270ef09930429b153d150e646a7e1b58742167f532def594794f8f2236",
+      "contentHash": "a2c24d353c34b9b348c9e5ec4f03a08c129c27ef4dbbd39b87997868c7b09ac9",
       "declarations": [
         null
       ],
@@ -4031,7 +4031,7 @@
       ],
       "path": "src/mcp.js",
       "semanticBytes": 531,
-      "sourceBytes": 11378
+      "sourceBytes": 13159
     },
     {
       "blocks": [
@@ -4269,18 +4269,19 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "96caa6ce44000cd5f6ca6ab135b1666b5a5b422748347cb365848c2744906c9b",
+      "contentHash": "3f89d3b154823254124a655c1c2ccf1891c8e6cbe0ac864fe3c259886ad61589",
       "declarations": [
         null
       ],
       "imports": [
+        "./abort.js",
         "./util.js",
         "node:fs/promises",
         "node:path"
       ],
       "path": "src/module-resolution.js",
       "semanticBytes": 609,
-      "sourceBytes": 5536
+      "sourceBytes": 5679
     },
     {
       "blocks": [
@@ -4596,7 +4597,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "500a9e506be573d7a1475262971f2ad928867c46215a57837d84715063dd0f36",
+      "contentHash": "508c928b788f65921a579323924707e3ee3476c008abb1dcb19d1a3d6beb3bd8",
       "declarations": [
         null
       ],
@@ -4609,12 +4610,11 @@
         "./module-resolution.js",
         "./parser.js",
         "./registry.js",
-        "./util.js",
-        "node:fs/promises"
+        "./util.js"
       ],
       "path": "src/project.js",
       "semanticBytes": 510,
-      "sourceBytes": 3573
+      "sourceBytes": 3495
     },
     {
       "blocks": [
@@ -4735,6 +4735,110 @@
       "path": "src/prompt-bundle.js",
       "semanticBytes": 520,
       "sourceBytes": 5827
+    },
+    {
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
+              "write retries",
+              "transaction recovery",
+              "shared cache ownership"
+            ],
+            "id": "llmnav.support.read-operation",
+            "invariant": [
+              "Cancellation and deadline failures never start another attempt."
+            ],
+            "owns": [
+              "read deadlines",
+              "read retry scheduling",
+              "retry jitter"
+            ],
+            "rel": [],
+            "risk": [],
+            "role": "Bound idempotent reads with cooperative cancellation and opt-in transient retries.",
+            "scope": "module",
+            "search": [
+              "read retry",
+              "exponential backoff",
+              "read timeout",
+              "read cancellation"
+            ],
+            "stability": "architecture",
+            "unknown": []
+          },
+          "end": 430,
+          "endLine": 9,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.support.read-operation"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Bound idempotent reads with cooperative cancellation and opt-in transient retries."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "read deadlines|read retry scheduling|retry jitter"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "write retries|transaction recovery|shared cache ownership"
+            },
+            {
+              "key": "search",
+              "line": 6,
+              "order": 4,
+              "value": "read retry|exponential backoff|read timeout|read cancellation"
+            },
+            {
+              "key": "invariant",
+              "line": 7,
+              "order": 5,
+              "value": "Cancellation and deadline failures never start another attempt."
+            },
+            {
+              "key": "stability",
+              "line": 8,
+              "order": 6,
+              "value": "architecture"
+            }
+          ],
+          "filePath": "src/read-operation.js",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.support.read-operation\nrole=Bound idempotent reads with cooperative cancellation and opt-in transient retries.\nowns=read deadlines|read retry scheduling|retry jitter\nexcludes=write retries|transaction recovery|shared cache ownership\nsearch=read retry|exponential backoff|read timeout|read cancellation\ninvariant=Cancellation and deadline failures never start another attempt.\nstability=architecture\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "43cbaf8836ff449f39906eadfaadf73de4f4d95746d33db49bcf243d5e0cafbf",
+      "declarations": [
+        null
+      ],
+      "imports": [
+        "./abort.js",
+        "./errors.js",
+        "./runtime.js"
+      ],
+      "path": "src/read-operation.js",
+      "semanticBytes": 430,
+      "sourceBytes": 3544
     },
     {
       "blocks": [
@@ -5393,7 +5497,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "d81ac21e322abd6ebaf83cedf4624992b9d5dc3875d0789aa2369a679cc20ae4",
+      "contentHash": "551dfa2d0219a7eaff33d56c324c84c52b29710cb368d7a11bd0b0cf89a837f8",
       "declarations": [
         null
       ],
@@ -5606,11 +5710,12 @@
     },
     {
       "blocks": [],
-      "contentHash": "66075b465eca02b4fe1f2c1daeb2485b371ef6aa0bb2a64c269d2bf00e540ce6",
+      "contentHash": "2089030500dc3a6797a42d55bea3f7cd3f5c2d35a7dda294bb53e6e4f6e2a13f",
       "declarations": [],
       "imports": [
         "./abort.js",
         "./policy.js",
+        "./read-operation.js",
         "./runtime.js",
         "node:crypto",
         "node:fs/promises",
@@ -5618,7 +5723,7 @@
       ],
       "path": "src/util.js",
       "semanticBytes": 0,
-      "sourceBytes": 12577
+      "sourceBytes": 12758
     },
     {
       "blocks": [
@@ -5969,7 +6074,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "eb52bc61596653c97017f4a75dcc3be5c1cdbbfbd1934bad482248fab5cad5ad",
+      "contentHash": "67f852886426849dff1d110ddd8203118db19bec47b639dbf2079e8493d6bb68",
       "declarations": [],
       "imports": [
         "../src/errors.js",
@@ -5978,7 +6083,7 @@
       ],
       "path": "tests/errors.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 6254
+      "sourceBytes": 6448
     },
     {
       "blocks": [],
@@ -6380,6 +6485,21 @@
     },
     {
       "blocks": [],
+      "contentHash": "2de1cb06c5ed66a663ad6748a5ee598263db2fe6b90f656b64003487af6b8f34",
+      "declarations": [],
+      "imports": [
+        "../src/index.js",
+        "../src/util.js",
+        "node:assert/strict",
+        "node:events",
+        "node:test"
+      ],
+      "path": "tests/read-operation.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 4952
+    },
+    {
+      "blocks": [],
       "contentHash": "9a2344682cf5db270551de96c82d01d513bd0c6f152555069aa33b6141271314",
       "declarations": [],
       "imports": [
@@ -6468,6 +6588,20 @@
       "path": "tests/search.test.js",
       "semanticBytes": 0,
       "sourceBytes": 6449
+    },
+    {
+      "blocks": [],
+      "contentHash": "42c9dc3cd84f9640fb4f5c275e71b505e43e248c546d8b28c6dbea3f542f2af4",
+      "declarations": [],
+      "imports": [
+        "../src/mcp.js",
+        "node:assert/strict",
+        "node:events",
+        "node:test"
+      ],
+      "path": "tests/session-cache.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 3993
     },
     {
       "blocks": [],

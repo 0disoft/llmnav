@@ -23,3 +23,4 @@
 {"query":"measure cross repository language coverage without averaging failures away","expected":["llmnav.eval.conformance"]}
 {"query":"check and transactionally upgrade incompatible generated cache formats","expected":["llmnav.project.migrate"]}
 {"query":"explain why one source file has no llmnav annotation and show its audit score or disposition","expected":["llmnav.audit.coverage"]}
+{"query":"retry idempotent reads with exponential backoff jitter and cancellation","expected":["llmnav.support.read-operation"]}

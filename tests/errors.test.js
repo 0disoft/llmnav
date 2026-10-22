@@ -79,6 +79,9 @@ test("aggregate failures retain their original errors in bounded wire details", 
   const error = new AggregateError([disk, cleanup], "write and cleanup failed");
   const payload = toErrorPayload(error);
   assert.deepEqual(payload.errors.map(chain => chain[0].code), ["ENOSPC", "EACCES"]);
+  const shared = toErrorPayload(new AggregateError([disk], "shared cause", { cause: disk }));
+  assert.equal(shared.cause[0].code, "ENOSPC");
+  assert.equal(shared.errors[0][0].code, "ENOSPC");
   error.errors.push(error);
   assert.doesNotThrow(() => JSON.stringify(toErrorPayload(error)));
   let nested = error;

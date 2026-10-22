@@ -9,11 +9,10 @@ rel=workflow>llmnav.syntax.parse
 stability=contract
 */
 
-import { readFile } from "node:fs/promises";
 import { loadConfig } from "./config.js";
 import { collectSourceFiles } from "./files.js";
 import { canonicalizeSource } from "./parser.js";
-import { atomicWrite, relativePosix } from "./util.js";
+import { atomicWrite, readText, relativePosix } from "./util.js";
 import { withGenerationLock } from "./transaction.js";
 
 export async function formatProject(root, options = {}) {
@@ -27,7 +26,7 @@ async function formatProjectLocked(root, options) {
   const changedFiles = [];
   const errors = [];
   for (const filePath of files) {
-    const source = await readFile(filePath, "utf8");
+    const source = await readText(filePath);
     const relativePath = relativePosix(root, filePath);
     const result = canonicalizeSource(source, relativePath);
     errors.push(...result.errors.map((error) => ({ file: relativePath, ...error })));

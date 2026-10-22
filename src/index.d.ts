@@ -606,8 +606,22 @@ export interface Scheduler {
 
 export interface ReadOptions {
   signal?: AbortSignalLike;
-  io?: { readFile?(path: string, encoding: "utf8"): Promise<string> };
+  readPolicy?: ReadPolicy;
+  io?: { readFile?(path: string, encoding: "utf8", options?: { signal: AbortSignalLike }): Promise<string> };
 }
+
+export interface ReadPolicy {
+  timeoutMs?: number;
+  maxRetries?: number;
+  baseDelayMs?: number;
+  maxDelayMs?: number;
+  random?(): number;
+  retryWhen?(error: unknown): boolean;
+  scheduler?: Scheduler;
+}
+
+/** Idempotent reads only; defaults to a 15-second total deadline and zero retries. */
+export function runRead<T>(label: string, read: (options: { signal: AbortSignalLike }) => T | Promise<T>, options?: ReadPolicy & { signal?: AbortSignalLike }): Promise<T>;
 
 export const ABORT_ERROR_NAME: string;
 export function createAbortError(signal?: AbortSignalLike): Error;

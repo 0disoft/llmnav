@@ -2746,6 +2746,20 @@
     },
     {
       "confidence": 0.85,
+      "from": "llmnav/llmnav.structure.modules",
+      "id": "392a24dd419a9860985e0bba93601a17e4ee12a0ea515862b526281347b84faa",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/module-resolution.js",
+        "source": "src/module-resolution.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.support.abort"
+    },
+    {
+      "confidence": 0.85,
       "from": "llmnav/llmnav.support.concurrency",
       "id": "f7bb11e206bd56454126f0b74c63d5a12ddc587781600710a60d9375e498179c",
       "kind": "imports",
@@ -2827,6 +2841,48 @@
         "type": "source-card"
       },
       "to": "llmnav/llmnav.search.query"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.support.read-operation",
+      "id": "12ce8fe9d50524570ff1e0a2d92d87ed4f4ec0973b75596230f503f148d707c4",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/read-operation.js",
+        "source": "src/read-operation.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.support.abort"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.support.read-operation",
+      "id": "3c39306f9afca0a63e974709af21afcad97c11cde019688f3e028d4cb3eb4551",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/read-operation.js",
+        "source": "src/read-operation.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.support.errors"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.support.read-operation",
+      "id": "00edfe812b42ece0ae9d0e42afc7e3b7b589810b1da30ccf5513563863b7888d",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/read-operation.js",
+        "source": "src/read-operation.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.support.runtime"
     },
     {
       "confidence": 0.85,
@@ -3963,6 +4019,28 @@
     {
       "definitions": [],
       "external": false,
+      "key": "llmnav/llmnav.support.read-operation",
+      "location": {
+        "declarationLine": null,
+        "endLine": 9,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/read-operation.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Bound idempotent reads with cooperative cancellation and opt-in transient retries.",
+      "semanticId": "llmnav.support.read-operation",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
       "key": "llmnav/llmnav.support.runtime",
       "location": {
         "declarationLine": null,
@@ -4007,11 +4085,11 @@
   ],
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "20c09fab06b8217db620a420e46cb8f1fcdc7b79127a8a8423744f17588a8337",
+  "sourceHash": "25cf391d4e61ed9b408fb5873c1f1fb87257bd8a6ec3bf8a2781444544a3c156",
   "stats": {
-    "edgeCount": 203,
+    "edgeCount": 207,
     "importedIndexCount": 0,
-    "nodeCount": 50,
+    "nodeCount": 51,
     "unresolvedNodeCount": 0
   }
 }

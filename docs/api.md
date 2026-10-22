@@ -169,7 +169,7 @@ A generation that is waiting for the lock also stops waiting when its signal abo
 
 `formatProject` serializes source rewrites with the repository generation lock. A source change detected immediately before replacement rejects with `LLMNAV_WRITE_CONFLICT`; retry reads and formats the current file. Check mode remains read-only. Editors and other tools that bypass this lock must be coordinated separately: the filesystem replacement does not provide CAS against nonparticipating writers.
 
-For deterministic tests, lock options accept `scheduler.now`, a monotonic millisecond clock. Polling is clamped to the remaining timeout; zero permits one immediate acquisition attempt. `loadConfig`, `loadSearchData`, `queryProject`, `createProjectSession`, `scanProject`, and `scanProjectIncremental` accept an optional `io.readFile(path, "utf8")` hook. Omitted hooks keep filesystem reads and path-safety checks intact.
+For deterministic tests, lock options accept `scheduler.now`, a monotonic millisecond clock. Polling is clamped to the remaining timeout; zero permits one immediate acquisition attempt. `loadConfig`, `loadSearchData`, `queryProject`, `createProjectSession`, `scanProject`, and `scanProjectIncremental` accept an optional `io.readFile(path, "utf8", { signal })` hook. Existing two-argument hooks remain supported. Native reads receive the signal, and omitted hooks keep path-safety checks intact.
 
 ## Report failures with a cause and a deadline
 
@@ -204,6 +204,26 @@ const result = await withDeadline("query request", DEFAULT_REQUEST_TIMEOUT_MS, q
 A deadline rejects with `code: "LNV102"` and `retryable: false`; it does not cancel the underlying promise, so a timed-out read is abandoned rather than guaranteed stopped. `timeoutMs: 0` disables the deadline. The MCP server applies the same deadline per tool call through `requestTimeoutMs`.
 
 Aggregate failures also include an optional `errors` array of cause chains. Nested aggregates share a 32-error budget, with at most eight entries per aggregate and eight levels of nesting. Atomic writes preserve write, close, and temporary-file cleanup errors together; parser wrappers retain the original syntax error as `cause`.
+
+`runRead(label, read, options)` supplies a native signal to an idempotent read and cancels it on timeout or caller cancellation. Its default total deadline is 15000 ms and default retry count is zero. Set `timeoutMs: 0` to disable its timer. File-read APIs accept the same policy in `readPolicy`; their existing caller `signal` controls cancellation.
+
+```js
+import { runRead } from "llmnav";
+
+const value = await runRead("read metadata", ({ signal }) => adapter.read({ signal }), {
+  signal: callerSignal,
+  timeoutMs: 5000,
+  maxRetries: 2,
+  baseDelayMs: 25,
+  maxDelayMs: 250,
+});
+```
+
+Retries use capped exponential backoff with full jitter. The total deadline includes every attempt and wait; cancellation, timeouts, and permanent failures stop retries. The default retry predicate allows only `EBUSY`, `EAGAIN`, `EMFILE`, and `ENFILE`. Permission errors require an explicit operation-specific `retryWhen` policy. `maxRetries` ranges from zero to ten; `random` and `scheduler` are injectable for tests. Adapters must honor the supplied signal. An adapter that ignores cancellation can keep running after its caller stops waiting, so timeouts never retry that attempt.
+
+Use this wrapper only around individual idempotent reads. Search/session loading also acquires locks and recovers transactions, so its entire workflow must not be replayed as a read. Generation, initialization, formatting, and registry writes retain zero workflow retries; their existing rename/remove retries belong to the owned transaction recovery protocol.
+
+MCP shared session loads have a separate 15000 ms deadline, configurable with `sessionLoadTimeoutMs`. A request timeout leaves other subscribers' work running. A shared-load timeout cancels its own signal, detaches the old session, and permits the next request to load again; late abandoned loads cannot publish snapshots. Server shutdown cancels shared loading with the original reason.
 
 ## Build and update an inverted index
 

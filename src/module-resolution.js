@@ -10,14 +10,16 @@ rel=workflow>llmnav.graph.generate
 stability=architecture
 */
 
-import { lstat, readFile } from "node:fs/promises";
+import { lstat } from "node:fs/promises";
 import path from "node:path";
-import { compareText, toPosix } from "./util.js";
+import { compareText, readText, toPosix } from "./util.js";
+import { abortable, throwIfAborted } from "./abort.js";
 
 export const MODULE_RESOLUTION_SCHEMA_VERSION = 1;
 export const MODULE_RESOLVER_VERSION = 1;
 
-export async function loadModuleResolution(root, fileRecords = []) {
+export async function loadModuleResolution(root, fileRecords = [], options = {}) {
+  throwIfAborted(options.signal);
   const directories = new Set([""]);
   for (const record of fileRecords) {
     const file = toPosix(record.relativePath ?? "");
@@ -37,14 +39,14 @@ export async function loadModuleResolution(root, fileRecords = []) {
     const absoluteFile = path.join(root, ...relativeFile.split("/"));
     let details;
     try {
-      details = await lstat(absoluteFile);
+      details = await abortable(lstat(absoluteFile), options.signal);
     } catch (error) {
       if (error && typeof error === "object" && error.code === "ENOENT") continue;
       throw error;
     }
     if (details.isSymbolicLink()) throw new Error(`Go module file ${JSON.stringify(relativeFile)} is a symbolic link.`);
     if (!details.isFile()) continue;
-    const modulePath = parseGoModulePath(await readFile(absoluteFile, "utf8"));
+    const modulePath = parseGoModulePath(await readText(absoluteFile, undefined, options));
     if (modulePath) goModules.push({ directory, modulePath });
   }
   goModules.sort((left, right) => compareText(left.directory, right.directory) || compareText(left.modulePath, right.modulePath));

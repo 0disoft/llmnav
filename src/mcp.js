@@ -16,7 +16,7 @@ import { executeAgentOperation, getAgentToolDefinitions } from "./agent-protocol
 import { createIoError, DEFAULT_REQUEST_TIMEOUT_MS, toErrorPayload, withDeadline } from "./errors.js";
 import { createProjectSession } from "./search.js";
 import { PACKAGE_VERSION } from "./spec.js";
-import { assertAbortSignal, createAbortError, throwIfAborted } from "./abort.js";
+import { abortable, assertAbortSignal, createAbortError, throwIfAborted } from "./abort.js";
 import { loadConfig } from "./config.js";
 import { MAX_TIMER_DELAY_MS } from "./runtime.js";
 
@@ -40,7 +40,12 @@ export function createMcpServer(options = {}) {
   }
   const session = options.session ?? null;
   const sessionCache = options.session === undefined
-    ? createSessionCache(root, { createSession: options.createSession })
+    ? createSessionCache(root, {
+      createSession: options.createSession,
+      loadTimeoutMs: options.sessionLoadTimeoutMs,
+      signal: options.signal,
+      scheduler: options.scheduler,
+    })
     : null;
   const tools = getAgentToolDefinitions().map(toMcpTool);
   const requestTimeoutMs = options.requestTimeoutMs ?? DEFAULT_REQUEST_TIMEOUT_MS;
@@ -105,7 +110,7 @@ async function callTool(id, params, root, session, sessionCache, requestTimeoutM
   try {
     throwIfAborted(options.signal);
     const operation = Promise.resolve().then(async () => {
-      const activeSession = await resolveSession(session, sessionCache);
+      const activeSession = await resolveSession(session, sessionCache, controller.signal);
       throwIfAborted(controller.signal);
       return executeAgentOperation(root, params.name, input, {
         ...(activeSession === null ? {} : { session: activeSession }),
@@ -114,6 +119,7 @@ async function callTool(id, params, root, session, sessionCache, requestTimeoutM
     });
     envelope = await withDeadline(`${params.name} request`, requestTimeoutMs, operation, options);
   } catch (error) {
+    controller.abort(error);
     return failure(
       id,
       INTERNAL_ERROR,
@@ -134,38 +140,67 @@ function hasToolName(params) {
     typeof params.name === "string" && params.name.length > 0;
 }
 
-async function resolveSession(session, sessionCache) {
+async function resolveSession(session, sessionCache, signal) {
   if (sessionCache === null) return session;
   // A failed snapshot load is reported by the caller: reusing a stale snapshot
   // silently answers with data that no longer matches the repository.
-  return sessionCache.current();
+  return sessionCache.current({ signal });
 }
 
 export function createSessionCache(root, dependencies = {}) {
   const createSession = dependencies.createSession ?? createProjectSession;
   const readStamp = dependencies.sessionStamp ?? sessionStamp;
+  const timeoutMs = dependencies.loadTimeoutMs ?? DEFAULT_REQUEST_TIMEOUT_MS;
+  if (!Number.isInteger(timeoutMs) || timeoutMs < 0 || timeoutMs > MAX_TIMER_DELAY_MS) {
+    throw new TypeError("Session loadTimeoutMs must be an integer between 0 and 2147483647.");
+  }
+  assertAbortSignal(dependencies.signal);
   let session = null;
   let stamp = null;
   let loading = null;
   return {
-    current() {
-      // Concurrent calls share one load: a burst of tool calls must not each
-      // rebuild the prepared index from disk.
-      loading ??= load().finally(() => {
-        loading = null;
-      });
-      return loading;
+    current(options = {}) {
+      assertAbortSignal(options.signal);
+      throwIfAborted(options.signal);
+      throwIfAborted(dependencies.signal);
+      loading ??= startLoad();
+      // A request may stop waiting without cancelling other subscribers.
+      return options.signal === undefined ? loading.promise : abortable(loading.promise, options.signal);
     },
   };
 
-  async function load() {
-    const nextStamp = await readStamp(root);
-    if (session === null) {
-      session = await createSession(root);
-    } else if (nextStamp !== stamp) {
-      // Generation rewrites the artifacts; reuse the prepared snapshot only while they are untouched.
-      await session.refresh();
-    }
+  function startLoad() {
+    const controller = new AbortController();
+    const onAbort = () => controller.abort(createAbortError(dependencies.signal));
+    dependencies.signal?.addEventListener("abort", onAbort);
+    if (dependencies.signal?.aborted) onAbort();
+    const record = { promise: null };
+    const work = Promise.resolve().then(() => load(controller.signal));
+    record.promise = withDeadline("MCP session load", timeoutMs, work, {
+      signal: controller.signal, scheduler: dependencies.scheduler,
+    }).catch(error => {
+      controller.abort(error);
+      // Detach a possibly half-refreshed instance before admitting a new load.
+      session = null;
+      stamp = null;
+      throw error;
+    }).finally(() => {
+      dependencies.signal?.removeEventListener?.("abort", onAbort);
+      if (loading === record) loading = null;
+    });
+    return record;
+  }
+
+  async function load(signal) {
+    const previous = session;
+    const previousStamp = stamp;
+    const nextStamp = await abortable(readStamp(root, undefined, { signal }), signal);
+    throwIfAborted(signal);
+    const next = previous ?? await createSession(root, { signal });
+    if (previous !== null && nextStamp !== previousStamp) await previous.refresh({ signal });
+    // A late completion from an abandoned load cannot publish its snapshot.
+    throwIfAborted(signal);
+    session = next;
     stamp = nextStamp;
     return session;
   }
@@ -178,8 +213,8 @@ export function createSessionCache(root, dependencies = {}) {
  * lands inside the same millisecond with an identical byte count is still seen.
  * `statFile` is injectable for tests.
  */
-export async function sessionStamp(root, statFile = statCacheFile) {
-  const { config } = await loadConfig(root);
+export async function sessionStamp(root, statFile = statCacheFile, options = {}) {
+  const { config } = await loadConfig(root, options);
   const cacheDirectory = config.generation.cacheDirectory.replaceAll("\\", "/");
   const files = [
     ...SESSION_CACHE_FILES.map((name) => `${cacheDirectory}/${name}`),
@@ -192,10 +227,11 @@ export async function sessionStamp(root, statFile = statCacheFile) {
     const name = path.posix.basename(relativePath);
     let info;
     try {
-      info = await statFile(path.join(root, relativePath));
+      info = await abortable(statFile(path.join(root, relativePath)), options.signal);
     } catch (error) {
       // A stat that fails for any reason other than absence must not look like a
       // missing artifact, or the session silently stops noticing regeneration.
+      throwIfAborted(options.signal);
       throw createIoError("stat", name, error);
     }
     parts.push(info === null ? `${name}:missing` : `${name}:${info.mtimeNs}:${info.size}:${info.ino}`);

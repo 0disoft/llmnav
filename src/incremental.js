@@ -8,9 +8,9 @@ rel=workflow>llmnav.index.generate
 stability=architecture
 */
 
-import { readFile, stat } from "node:fs/promises";
+import { stat } from "node:fs/promises";
 import path from "node:path";
-import { abortable, throwIfAborted } from "./abort.js";
+import { throwIfAborted } from "./abort.js";
 import { DEFAULT_IO_CONCURRENCY, mapWithConcurrency } from "./concurrency.js";
 import { loadConfig } from "./config.js";
 import { createDeclarationScanContext, findAttachedDeclaration, extractImports } from "./declaration.js";
@@ -59,7 +59,7 @@ export async function scanProjectIncremental(root, options = {}) {
 
   const { fileState, statHints } = buildIncrementalArtifacts(scan);
   const registry = await loadRegistry(root, options);
-  const moduleResolution = await loadModuleResolution(root, scan.fileRecords);
+  const moduleResolution = await loadModuleResolution(root, scan.fileRecords, options);
   throwIfAborted(options.signal);
   const project = {
     root,
@@ -84,14 +84,14 @@ async function loadIncrementalState(root, config, cacheDirectory, options) {
   await assertNoSymlinkTraversal(root, fileStatePath, relativePosix(root, fileStatePath));
   const fileStateSource = options.previousState
     ? renderFileState(options.previousState)
-    : await readText(fileStatePath, null);
+    : await readText(fileStatePath, null, options);
   let previousState = null;
   try {
     previousState = fileStateSource === null ? null : JSON.parse(fileStateSource);
   } catch (error) {
     if (!(error instanceof SyntaxError)) throw error;
   }
-  const manifest = await readJsonSafe(path.join(cacheDirectory, "manifest.json"), null);
+  const manifest = await readJsonSafe(path.join(cacheDirectory, "manifest.json"), null, options);
   const previousStateHash = fileStateSource === null ? null : sha256(fileStateSource);
   const fileStateKey = `${relativePosix(root, cacheDirectory)}/file-state.json`;
   const trustedPreviousState = usableFileState(previousState) &&
@@ -102,7 +102,7 @@ async function loadIncrementalState(root, config, cacheDirectory, options) {
   await assertNoSymlinkTraversal(root, hintsPath, relativePosix(root, hintsPath));
   const previousHints = options.useStatHints === false
     ? null
-    : await readJsonSafe(hintsPath, null);
+    : await readJsonSafe(hintsPath, null, options);
   const previousFiles = trustedPreviousState ? mapStateFiles(previousState.files) : new Map();
   const hintFiles = trustedPreviousState && usableStatHints(previousHints) &&
     previousHints.fileStateHash === previousStateHash ? previousHints.files : {};
@@ -162,7 +162,7 @@ async function reuseOrParseFile(scan, { absolutePath, relativePath, fingerprint,
     fingerprintsEqual(previousHint, fingerprint)) {
     return { stateFile: previousFile, counters: { reusedFiles: 1, reusedFilesByStat: 1, cardsReused: previousFile.blocks.length } };
   }
-  const source = await abortable((scan.options.io?.readFile ?? readFile)(absolutePath, "utf8"), scan.options.signal);
+  const source = await readText(absolutePath, undefined, scan.options);
   const bytesRead = Buffer.byteLength(source);
   const contentHash = sha256(source);
   if (previousFile?.contentHash === contentHash) {

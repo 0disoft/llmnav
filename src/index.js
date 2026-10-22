@@ -1,4 +1,5 @@
 export { ABORT_ERROR_NAME, createAbortError, throwIfAborted } from "./abort.js";
+export { runRead } from "./read-operation.js";
 export {
   causeChain,
   createIoError,

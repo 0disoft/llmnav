@@ -10,6 +10,12 @@
   },
   "coverageRules": [
     {
+      "match": ["src/read-operation.js"],
+      "name": "idempotent read resilience",
+      "requiredFields": ["owns", "invariant"],
+      "scope": "module"
+    },
+    {
       "match": [
         "src/config.js"
       ],

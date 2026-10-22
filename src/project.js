@@ -10,8 +10,7 @@ rel=workflow>llmnav.syntax.parse
 stability=architecture
 */
 
-import { readFile } from "node:fs/promises";
-import { abortable, throwIfAborted } from "./abort.js";
+import { throwIfAborted } from "./abort.js";
 import { DEFAULT_IO_CONCURRENCY, mapWithConcurrency } from "./concurrency.js";
 import { loadConfig } from "./config.js";
 import { createDeclarationScanContext, findAttachedDeclaration, extractImports } from "./declaration.js";
@@ -19,7 +18,7 @@ import { collectSourceFiles } from "./files.js";
 import { parseLlmnavBlocks } from "./parser.js";
 import { loadRegistry } from "./registry.js";
 import { loadModuleResolution } from "./module-resolution.js";
-import { relativePosix, sha256 } from "./util.js";
+import { readText, relativePosix, sha256 } from "./util.js";
 
 export async function scanProject(root, options = {}) {
   throwIfAborted(options.signal);
@@ -31,7 +30,7 @@ export async function scanProject(root, options = {}) {
   });
   const scanned = await mapWithConcurrency(files, ioConcurrency, async (absolutePath) => {
     throwIfAborted(options.signal);
-    const source = await abortable((options.io?.readFile ?? readFile)(absolutePath, "utf8"), options.signal);
+    const source = await readText(absolutePath, undefined, options);
     const relativePath = relativePosix(root, absolutePath);
     const blocks = parseLlmnavBlocks(source, relativePath);
     return {
@@ -84,7 +83,7 @@ export async function scanProject(root, options = {}) {
   }
 
   const registry = options.registry ?? await loadRegistry(root, options);
-  const moduleResolution = await loadModuleResolution(root, fileRecords);
+  const moduleResolution = await loadModuleResolution(root, fileRecords, options);
   throwIfAborted(options.signal);
   return {
     root,
