@@ -91,6 +91,18 @@ test("resolves full Go module imports to cards in the imported package", () => {
   assert.equal(edge.provenance.type, "local-import");
 });
 
+test("Go imports without a module card retain all symbol targets and deterministic edge order", () => {
+  const cards = [
+    card("entry.one", "cmd/main.go", [], ["example.com/app/lib", "example.com/app/lib"]),
+    card("lib.z", "lib/z.go"), card("lib.a", "lib/a.go"),
+  ];
+  const before = structuredClone(cards);
+  const project = { moduleResolution: { schemaVersion: 1, goModules: [{ directory: "", modulePath: "example.com/app" }] } };
+  const graph = buildRepositoryGraph(project, { repositoryId: "fixture", cards });
+  assert.deepEqual(graph.edges.map(edge => edge.to), ["fixture/lib.a", "fixture/lib.z"]);
+  assert.deepEqual(cards, before);
+});
+
 function card(id, file, rel = [], imports = [], options = {}) {
   return {
     id,

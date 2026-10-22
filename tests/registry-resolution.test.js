@@ -3,7 +3,7 @@ import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
-import { ensureActiveIds, loadRegistry, resolveRegistryId } from "../src/registry.js";
+import { cyclicRegistryIds, ensureActiveIds, loadRegistry, resolveRegistryId } from "../src/registry.js";
 import { scanProject } from "../src/project.js";
 
 test("multi-target replacements remain explicit instead of choosing the first entry", () => {
@@ -81,3 +81,44 @@ test("scanning accepts a registry prepared by the caller", async (context) => {
 function registryFrom(records) {
   return { records, byId: new Map(records.map((record) => [record.id, record])) };
 }
+
+test("long redirect chains resolve without recursive stack growth", () => {
+  const records = Array.from({ length: 20000 }, (_, index) => ({
+    id: `node.${index}`, state: "redirect", to: `node.${index + 1}`,
+  }));
+  records.push({ id: "node.20000", state: "active" });
+  const registry = registryFrom(records);
+  const resolved = resolveRegistryId(registry, "node.0");
+  assert.equal(resolved.id, "node.20000");
+  assert.equal(resolved.chain.length, records.length);
+  assert.equal(cyclicRegistryIds(registry).size, 0);
+  records[records.length - 1].state = "redirect";
+  records[records.length - 1].to = "node.19999";
+  assert.deepEqual(resolveRegistryId(registry, "node.0").chain, ["node.19999", "node.20000", "node.19999"]);
+  assert.equal(cyclicRegistryIds(registry).size, records.length);
+});
+
+test("reconverging replacements preserve candidate order without reporting shared nodes as cycles", () => {
+  const records = [{ id: "end", state: "active" }];
+  for (let index = 100; index >= 0; index--) {
+    const by = index === 100 ? ["end"] : [`left.${index + 1}`, `right.${index + 1}`];
+    records.push({ id: `left.${index}`, state: "replaced", by }, { id: `right.${index}`, state: "replaced", by });
+  }
+  const registry = registryFrom(records);
+  assert.deepEqual(resolveRegistryId(registry, "left.0"), {
+    id: "left.0", state: "ambiguous", chain: ["left.0"], candidates: ["left.1", "right.1"],
+  });
+  assert.equal(cyclicRegistryIds(registry).size, 0);
+});
+
+test("cycle diagnostics include incoming branches and retain the first cycle witness", () => {
+  const registry = registryFrom([
+    { id: "root", state: "replaced", by: ["second", "first", "missing"] },
+    { id: "first", state: "redirect", to: "first" },
+    { id: "second", state: "redirect", to: "second" },
+    { id: "safe", state: "replaced", by: ["missing", "retired"] },
+    { id: "retired", state: "retired" },
+  ]);
+  assert.deepEqual(resolveRegistryId(registry, "root"), { id: "second", state: "cycle", chain: ["second", "second"] });
+  assert.deepEqual([...cyclicRegistryIds(registry)], ["root", "first", "second"]);
+});

@@ -28,7 +28,7 @@ import {
   STABILITIES,
 } from "./spec.js";
 import { formatLlmnavBlock } from "./parser.js";
-import { resolveRegistryId } from "./registry.js";
+import { cyclicRegistryIds, resolveRegistryId } from "./registry.js";
 import { compareText, matchesAnyGlob, unique } from "./util.js";
 
 export function validateProject(project) {
@@ -443,6 +443,7 @@ function relationTargetError(project, idRecords, relation) {
 }
 
 function validateRegistry(project, idRecords, diagnostics) {
+  const cyclicIds = cyclicRegistryIds(project.registry);
   for (const [id, record] of idRecords) {
     const registryRecord = project.registry.byId.get(id);
     if (registryRecord && registryRecord.state !== "active") {
@@ -477,8 +478,7 @@ function validateRegistry(project, idRecords, diagnostics) {
       }
     }
     if (registryRecord.state === "redirect" || registryRecord.state === "replaced") {
-      const resolved = resolveRegistryId(project.registry, registryRecord.id);
-      if (resolved.state === "cycle") {
+      if (cyclicIds.has(registryRecord.id)) {
         diagnostics.push(
           diagnostic(
             "error",

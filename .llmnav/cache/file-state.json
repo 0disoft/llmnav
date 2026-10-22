@@ -3503,7 +3503,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "25ec917a8453944a4509e75ef2ca613f18061145e1197cea7b7a47dd03157a30",
+      "contentHash": "33fd697768f0fa80f4b59bb2ed6994a0739c1c1a904a6a655ddc104f0242221a",
       "declarations": [
         null
       ],
@@ -3514,7 +3514,7 @@
       ],
       "path": "src/graph.js",
       "semanticBytes": 548,
-      "sourceBytes": 16887
+      "sourceBytes": 16879
     },
     {
       "blocks": [
@@ -4937,7 +4937,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "4f150fd6ba594f9ce73bc3625afa8a54dc1a1472d55154fc12936366a2b5d2a2",
+      "contentHash": "b13b2f1354afb0835aad4e0ce8f9ca677b9ff4f8019c8b47e7da1ae35ca4818a",
       "declarations": [
         null
       ],
@@ -4949,7 +4949,7 @@
       ],
       "path": "src/registry.js",
       "semanticBytes": 462,
-      "sourceBytes": 6423
+      "sourceBytes": 8295
     },
     {
       "blocks": [
@@ -5814,7 +5814,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "75db13c48235775ce487f4b7c6384e23cefd31cdad3ffa3b07634305055c76ee",
+      "contentHash": "e09c23ce92344f70e513f0983dd2b3d86022063c05b52ce2e4063869e68c8ccf",
       "declarations": [
         null
       ],
@@ -5827,7 +5827,7 @@
       ],
       "path": "src/validator.js",
       "semanticBytes": 359,
-      "sourceBytes": 21944
+      "sourceBytes": 21947
     },
     {
       "blocks": [],
@@ -6180,7 +6180,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "0cb572a4f1813f6f74444e3c7320fbb1768de32c4f832c08cf0c5fb635e52099",
+      "contentHash": "0b615161d21bb97246f8e50cee7669584b25e6a8c83d5d693be80cd1c8a99f3d",
       "declarations": [],
       "imports": [
         "../src/graph.js",
@@ -6189,7 +6189,7 @@
       ],
       "path": "tests/graph.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 4510
+      "sourceBytes": 5164
     },
     {
       "blocks": [],
@@ -6500,7 +6500,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "9a2344682cf5db270551de96c82d01d513bd0c6f152555069aa33b6141271314",
+      "contentHash": "c695834b5011709a3964eafba6d7af0412dc2bece1915d0a2c6739ed1bfa5ac2",
       "declarations": [],
       "imports": [
         "../src/project.js",
@@ -6513,7 +6513,7 @@
       ],
       "path": "tests/registry-resolution.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 3480
+      "sourceBytes": 5605
     },
     {
       "blocks": [],

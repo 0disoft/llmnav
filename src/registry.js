@@ -118,23 +118,89 @@ export function renderRegistryRecords(records) {
 }
 
 export function resolveRegistryId(registry, id) {
-  return resolveRegistryPath(registry, id, []);
+  const chain = [];
+  const positions = new Map();
+  let current = id;
+  for (;;) {
+    if (positions.has(current)) return cycleResult(current, chain, positions);
+    positions.set(current, chain.length);
+    chain.push(current);
+    const record = registry.byId.get(current);
+    if (!record) return { id: current, state: "unknown", chain };
+    const targets = registryTargets(record);
+    if (targets.length === 1) {
+      current = targets[0];
+      continue;
+    }
+    if (record.state === "replaced" && Array.isArray(record.by)) {
+      const cycle = firstRegistryCycle(registry, targets, chain, positions);
+      return cycle ?? { id: current, state: "ambiguous", chain, candidates: [...record.by] };
+    }
+    return { id: current, state: record.state ?? "unknown", chain };
+  }
 }
 
-function resolveRegistryPath(registry, current, path) {
-  const cycleIndex = path.indexOf(current);
-  if (cycleIndex >= 0) return { id: current, state: "cycle", chain: [...path.slice(cycleIndex), current] };
-  const chain = [...path, current];
-  const record = registry.byId.get(current);
-  if (!record) return { id: current, state: "unknown", chain };
-  if (record.state === "active") return { id: current, state: "active", chain };
-  if (record.state === "redirect" && record.to) return resolveRegistryPath(registry, record.to, chain);
-  if (record.state === "replaced" && Array.isArray(record.by)) {
-    if (record.by.length === 1) return resolveRegistryPath(registry, record.by[0], chain);
-    const outcomes = record.by.map((target) => resolveRegistryPath(registry, target, chain));
-    const cycle = outcomes.find((outcome) => outcome.state === "cycle");
-    if (cycle) return cycle;
-    return { id: current, state: "ambiguous", chain, candidates: [...record.by] };
+function registryTargets(record) {
+  if (record?.state === "redirect" && record.to) return [record.to];
+  return record?.state === "replaced" && Array.isArray(record.by) ? record.by : [];
+}
+
+function cycleResult(current, chain, positions) {
+  return { id: current, state: "cycle", chain: [...chain.slice(positions.get(current)), current] };
+}
+
+function firstRegistryCycle(registry, targets, chain, positions) {
+  const stack = [{ targets, cursor: 0, owner: null }];
+  const finished = new Set();
+  while (stack.length > 0) {
+    const frame = stack[stack.length - 1];
+    if (frame.cursor === frame.targets.length) {
+      stack.pop();
+      if (frame.owner !== null) {
+        positions.delete(frame.owner);
+        chain.pop();
+        finished.add(frame.owner);
+      }
+      continue;
+    }
+    const current = frame.targets[frame.cursor++];
+    if (positions.has(current)) return cycleResult(current, chain, positions);
+    if (finished.has(current)) continue;
+    const next = registryTargets(registry.byId.get(current));
+    if (next.length === 0) {
+      finished.add(current);
+      continue;
+    }
+    positions.set(current, chain.length);
+    chain.push(current);
+    stack.push({ targets: next, cursor: 0, owner: current });
   }
-  return { id: current, state: record.state ?? "unknown", chain };
+  return null;
+}
+
+/** IDs that can reach a cycle, including incoming redirects and replacements. */
+export function cyclicRegistryIds(registry) {
+  const remaining = new Map();
+  const incoming = new Map();
+  const queue = [];
+  for (const [id, record] of registry.byId) {
+    let count = 0;
+    for (const target of registryTargets(record)) {
+      if (!registry.byId.has(target)) continue;
+      count++;
+      const sources = incoming.get(target) ?? [];
+      sources.push(id);
+      incoming.set(target, sources);
+    }
+    remaining.set(id, count);
+    if (count === 0) queue.push(id);
+  }
+  for (let cursor = 0; cursor < queue.length; cursor++) {
+    for (const source of incoming.get(queue[cursor]) ?? []) {
+      const count = remaining.get(source) - 1;
+      remaining.set(source, count);
+      if (count === 0) queue.push(source);
+    }
+  }
+  return new Set([...remaining].filter(([, count]) => count > 0).map(([id]) => id));
 }

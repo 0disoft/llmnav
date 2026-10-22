@@ -426,16 +426,18 @@ function groupCardsByModule(cards) {
     records.push(card);
     output.set(key, records);
   }
-  for (const records of output.values()) records.sort((left, right) => compareText(left.id, right.id));
+  for (const [key, records] of output) {
+    records.sort((left, right) => compareText(left.id, right.id));
+    const moduleCards = records.filter((card) => card.scope === "module");
+    if (moduleCards.length > 0) output.set(key, moduleCards);
+  }
   return output;
 }
 
 function resolveLocalImport(sourcePath, specifier, cardsByPath, cardsByModule, moduleResolution) {
-  const goTarget = resolveGoImportModule(sourcePath, specifier, moduleResolution, new Set(cardsByModule.keys()));
+  const goTarget = resolveGoImportModule(sourcePath, specifier, moduleResolution, cardsByModule);
   if (goTarget) {
-    const cards = cardsByModule.get(goTarget) ?? [];
-    const moduleCards = cards.filter((card) => card.scope === "module");
-    return moduleCards.length > 0 ? moduleCards : cards;
+    return cardsByModule.get(goTarget) ?? [];
   }
   if (!specifier.startsWith(".")) return [];
   const base = path.posix.normalize(path.posix.join(path.posix.dirname(toPosix(sourcePath)), specifier));
