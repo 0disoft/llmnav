@@ -10,6 +10,7 @@ stability=contract
 */
 
 import path from "node:path";
+import { DEFAULT_IO_CONCURRENCY, mapWithConcurrency } from "./concurrency.js";
 import { loadConfig } from "./config.js";
 import { generateProject } from "./generator.js";
 import { usableFileState } from "./incremental.js";
@@ -17,7 +18,7 @@ import { verifySearchIndex } from "./inverted-index.js";
 import { recoverGenerationTransaction } from "./transaction.js";
 import { readJson, readJsonSafe, readText, sha256 } from "./util.js";
 
-export async function doctorProject(root) {
+export async function doctorProject(root, options = {}) {
   const checks = [];
   let config;
   try {
@@ -90,17 +91,20 @@ export async function doctorProject(root) {
     checks.push(fail("manifest", `${config.generation.cacheDirectory}/manifest.json is missing`));
   } else if (manifest) {
     let valid = true;
-    for (const [relativePath, expectedHash] of Object.entries(manifest.files ?? {})) {
+    const manifestEntries = Object.entries(manifest.files ?? {});
+    const manifestChecks = await mapWithConcurrency(manifestEntries, options.ioConcurrency ?? DEFAULT_IO_CONCURRENCY, async ([relativePath, expectedHash]) => {
       const content = await readText(path.join(root, relativePath), null);
-      if (content === null || sha256(content) !== expectedHash) {
-        valid = false;
-        checks.push(fail("manifest", `${relativePath} does not match its manifest hash`));
-      }
+      return content === null || sha256(content) !== expectedHash;
+    });
+    for (const [index, [relativePath]] of manifestEntries.entries()) {
+      if (!manifestChecks[index]) continue;
+      valid = false;
+      checks.push(fail("manifest", `${relativePath} does not match its manifest hash`));
     }
     if (valid) checks.push(pass("manifest", "generated cache hashes are valid"));
   }
 
-  const generated = await generateProject(root, { check: true, incremental: false });
+  const generated = await generateProject(root, { check: true, incremental: false, ioConcurrency: options.ioConcurrency });
   checks.push(
     generated.ok
       ? pass("generated", "generated files match a full source rebuild")

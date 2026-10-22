@@ -4,6 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { DEFAULT_IO_CONCURRENCY, mapWithConcurrency } from "../src/concurrency.js";
+import { generateProject } from "../src/generator.js";
 import { initializeProject } from "../src/initializer.js";
 import { scanProject } from "../src/project.js";
 
@@ -74,4 +75,27 @@ test("scans the same project regardless of io concurrency", async (context) => {
   );
   assert.deepEqual(parallel.records.map((record) => record.card.id), serial.records.map((record) => record.card.id));
   await assert.rejects(() => scanProject(root, { ioConcurrency: 0 }), /positive integer/u);
+});
+
+test("a stale cache reports changed files in one deterministic order", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-check-order-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await mkdir(path.join(root, "src"), { recursive: true });
+  await writeFile(path.join(root, "package.json"), `${JSON.stringify({ name: "check-order-fixture", type: "module" }, null, 2)}\n`);
+  await writeFile(path.join(root, "src", "main.js"), "export function boot() { return true; }\n");
+  await initializeProject(root, { agents: ["none"] });
+  assert.equal((await generateProject(root)).ok, true);
+
+  const cache = path.join(root, ".llmnav", "cache");
+  await writeFile(path.join(cache, "zzz-extra.txt"), "stale\n");
+  await writeFile(path.join(cache, "aaa-extra.txt"), "stale\n");
+
+  const serial = await generateProject(root, { check: true, incremental: false, ioConcurrency: 1 });
+  const parallel = await generateProject(root, { check: true, incremental: false, ioConcurrency: 4 });
+  assert.equal(serial.ok, false);
+  assert.deepEqual(parallel.changedFiles, serial.changedFiles);
+  assert.deepEqual(
+    serial.changedFiles.filter((file) => file.endsWith("-extra.txt")),
+    [".llmnav/cache/aaa-extra.txt", ".llmnav/cache/zzz-extra.txt"],
+  );
 });

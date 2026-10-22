@@ -840,7 +840,7 @@ export function selectAuditCandidates(result: AuditResult, minimumPriority?: Aud
 export function explainProjectFile(root: string, file: string): Promise<FileExplanationResult>;
 export function findAttachedDeclaration(source: string, block: LlmnavBlock, filePath: string): Declaration | null;
 export function extractImports(source: string, filePath: string): string[];
-export function doctorProject(root: string): Promise<{ ok: boolean; checks: Array<{ name: string; ok: boolean; message: string }> }>;
+export function doctorProject(root: string, options?: { ioConcurrency?: number }): Promise<{ ok: boolean; checks: Array<{ name: string; ok: boolean; message: string }> }>;
 export function migrateProject(root: string, options?: { write?: boolean; failpoint?: string; renameOptions?: Record<string, unknown>; lockOptions?: GenerationLockOptions; runtime?: Runtime; signal?: AbortSignalLike; onTransactionPhase?: (phase: string) => void | Promise<void> }): Promise<MigrationResult>;
 export function evaluateProject(root: string, options?: { top?: number; file?: string; minimumCases?: number }): Promise<EvaluationResult>;
 export function collectSourceFiles(root: string, config: LlmnavConfig, requestedPaths?: string[], options?: { signal?: AbortSignalLike; ioConcurrency?: number }): Promise<string[]>;

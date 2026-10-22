@@ -465,6 +465,20 @@
     {
       "confidence": 0.85,
       "from": "llmnav/llmnav.audit.coverage",
+      "id": "8fe808844e013f002e8bbed2fb7f400a601ec2ffa1696a2f36663c4d6f90b423",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/audit.js",
+        "source": "src/audit.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.support.concurrency"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.audit.coverage",
       "id": "670ed5b71f892bd1683feb66be81de025fb7711fe381e7d267d773ff9abeb3c8",
       "kind": "imports",
       "provenance": {
@@ -965,6 +979,20 @@
         "type": "local-import"
       },
       "to": "llmnav/llmnav.index.transaction"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.diagnostics.doctor",
+      "id": "a8824730893b2602b5df180e296c971398d6ba651ef872d1e96d06eb92c6e4b8",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/doctor.js",
+        "source": "src/doctor.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.support.concurrency"
     },
     {
       "confidence": 1,
@@ -1539,6 +1567,20 @@
         "type": "local-import"
       },
       "to": "llmnav/llmnav.support.abort"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.index.generate",
+      "id": "b373ecaaef5a74d8562edb09d85f389896fb6ca74fa7b3ec942911d0c64cf047",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/generator.js",
+        "source": "src/generator.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.support.concurrency"
     },
     {
       "confidence": 0.85,
@@ -3867,9 +3909,9 @@
   ],
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "603fee9828b23941d6103f241bda3937072a9faa91463969d587e2e5b9eb9a59",
+  "sourceHash": "766ac93f6f771bf4693ec290747ad99b35de3b915757ede58056d6f6031c4d60",
   "stats": {
-    "edgeCount": 193,
+    "edgeCount": 196,
     "importedIndexCount": 0,
     "nodeCount": 50,
     "unresolvedNodeCount": 0

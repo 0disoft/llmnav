@@ -12,6 +12,7 @@ stability=contract
 import path from "node:path";
 import { throwIfAborted } from "./abort.js";
 import { detectBoundaries } from "./boundaries.js";
+import { DEFAULT_IO_CONCURRENCY, mapWithConcurrency } from "./concurrency.js";
 import { moduleKeyForFile, resolveGoImportModule } from "./module-resolution.js";
 import { scanProject } from "./project.js";
 import { AUDIT_LIMITS } from "./policy.js";
@@ -97,7 +98,7 @@ async function analyzeAuditProject(root, options = {}) {
   const filesByModule = groupFilesByModule(coverage.fileByPath);
   const moduleKeys = new Set(filesByModule.keys());
   const importedBy = buildImportedBy(filesByModule, coverage.fileByPath, project.moduleResolution, moduleKeys);
-  const { entrypoints, publicApiPaths } = await collectNavigationSignals(root, coverage.fileByPath);
+  const { entrypoints, publicApiPaths } = await collectNavigationSignals(root, coverage.fileByPath, options);
   const candidates = rankCandidates({ filesByModule, coverage, importedBy, entrypoints, publicApiPaths, signal: options.signal });
   candidates.sort(compareAuditCandidates);
   const { activeCandidates, dispositions } = applyDispositions(project, candidates, coverage);
@@ -149,8 +150,8 @@ function buildImportedBy(filesByModule, fileByPath, moduleResolution, moduleKeys
   return importedBy;
 }
 
-async function collectNavigationSignals(root, fileByPath) {
-  const entrypoints = await collectWorkspacePackageEntrypoints(root, fileByPath);
+async function collectNavigationSignals(root, fileByPath, options) {
+  const entrypoints = await collectWorkspacePackageEntrypoints(root, fileByPath, options);
   collectGoEntrypoints(fileByPath, entrypoints);
   return { entrypoints, publicApiPaths: collectPublicApiPaths(entrypoints, fileByPath) };
 }
@@ -441,7 +442,7 @@ function buildCoverageSuggestion(file) {
   };
 }
 
-async function collectWorkspacePackageEntrypoints(root, fileByPath) {
+async function collectWorkspacePackageEntrypoints(root, fileByPath, options) {
   const packageDirectories = new Set([""]);
   for (const file of fileByPath.keys()) {
     let directory = path.posix.dirname(file);
@@ -452,9 +453,15 @@ async function collectWorkspacePackageEntrypoints(root, fileByPath) {
       directory = parent;
     }
   }
+  const directories = [...packageDirectories].sort(compareText);
+  const packageJsons = await mapWithConcurrency(
+    directories,
+    options.ioConcurrency ?? DEFAULT_IO_CONCURRENCY,
+    (directory) => readJsonSafe(path.join(root, directory, "package.json"), null),
+  );
   const entrypoints = new Set();
-  for (const directory of [...packageDirectories].sort(compareText)) {
-    const packageJson = await readJsonSafe(path.join(root, directory, "package.json"), null);
+  for (const [index, directory] of directories.entries()) {
+    const packageJson = packageJsons[index];
     if (!packageJson || typeof packageJson !== "object") continue;
     for (const entrypoint of collectPackageEntrypoints(packageJson, fileByPath, directory)) entrypoints.add(entrypoint);
   }

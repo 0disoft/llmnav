@@ -1715,13 +1715,14 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "65399d12b001b5582dd03c9d5e70f75f144711efe947eb6e24ca07725f77d3aa",
+      "contentHash": "0374f9eeb9643058f7af15eae289f4ba8f989c576befc6d804758def436769d0",
       "declarations": [
         null
       ],
       "imports": [
         "./abort.js",
         "./boundaries.js",
+        "./concurrency.js",
         "./module-resolution.js",
         "./policy.js",
         "./project.js",
@@ -1730,7 +1731,7 @@
       ],
       "path": "src/audit.js",
       "semanticBytes": 577,
-      "sourceBytes": 27087
+      "sourceBytes": 27414
     },
     {
       "blocks": [
@@ -2602,11 +2603,12 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "9b5a187a958472e5ca164a0dab7d86103159af68e4e9966516a2f37a84de225e",
+      "contentHash": "2fe554a09f5ab2794d871d5b26e66ca6a10e5135ec3ff5581999b6a754dfc62e",
       "declarations": [
         null
       ],
       "imports": [
+        "./concurrency.js",
         "./config.js",
         "./generator.js",
         "./incremental.js",
@@ -2617,7 +2619,7 @@
       ],
       "path": "src/doctor.js",
       "semanticBytes": 485,
-      "sourceBytes": 5665
+      "sourceBytes": 6047
     },
     {
       "blocks": [
@@ -3262,7 +3264,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "56d10902e48ce1ca5c7487284b1aab22e21683c40a39efcb99ad45d1b8da78b7",
+      "contentHash": "6728d59a5416919134fdee9d166c3ce2886231539c64859461f295f597f5a389",
       "declarations": [
         null
       ],
@@ -3272,6 +3274,7 @@
         "./agents.js",
         "./boundaries.js",
         "./changes.js",
+        "./concurrency.js",
         "./config.js",
         "./contracts.js",
         "./graph-input.js",
@@ -3292,7 +3295,7 @@
       ],
       "path": "src/generator.js",
       "semanticBytes": 476,
-      "sourceBytes": 22433
+      "sourceBytes": 22758
     },
     {
       "blocks": [
@@ -3623,14 +3626,14 @@
     },
     {
       "blocks": [],
-      "contentHash": "2e47348daa40d243cbbd16bc98363b429e3c011687e543f64866244151fa6f49",
+      "contentHash": "5dbe3b58dc0e5131182968414d3cb00f17e7cbf0112f8451471e6a4a82cb71bd",
       "declarations": [],
       "imports": [
         "./spec.js"
       ],
       "path": "src/index.d.ts",
       "semanticBytes": 0,
-      "sourceBytes": 33096
+      "sourceBytes": 33134
     },
     {
       "blocks": [],
@@ -5843,10 +5846,11 @@
     },
     {
       "blocks": [],
-      "contentHash": "07d000bab1708a5c3855bb647b8cc43441838797106c98326168d14a1675f5f4",
+      "contentHash": "842a39be47212d1d6201360c8edc2fcd90c2d45cee3dae94bc2b5f75c7561f78",
       "declarations": [],
       "imports": [
         "../src/concurrency.js",
+        "../src/generator.js",
         "../src/initializer.js",
         "../src/project.js",
         "node:assert/strict",
@@ -5857,7 +5861,7 @@
       ],
       "path": "tests/concurrency.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 3446
+      "sourceBytes": 4796
     },
     {
       "blocks": [],

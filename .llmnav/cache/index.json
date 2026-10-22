@@ -511,9 +511,9 @@
         "agent search decisions"
       ],
       "hashes": {
-        "body": "56d10902e48ce1ca5c7487284b1aab22e21683c40a39efcb99ad45d1b8da78b7",
+        "body": "6728d59a5416919134fdee9d166c3ce2886231539c64859461f295f597f5a389",
         "semantic": "7052622c9732ab29e37c3ab87f848188e931f601684e811e7bb8adef31fbfe85",
-        "structure": "9a0f6533552a700901d005e54958d56c10a2a7ce9c901e3942a85ad8273d7eef"
+        "structure": "aa3268053c71247ce97d79c75afc0dcdd2c67104a70f35b1691e7e003012be63"
       },
       "id": "llmnav.index.generate",
       "imports": [
@@ -522,6 +522,7 @@
         "./agents.js",
         "./boundaries.js",
         "./changes.js",
+        "./concurrency.js",
         "./config.js",
         "./contracts.js",
         "./graph-input.js",
@@ -1617,12 +1618,13 @@
         "package publication"
       ],
       "hashes": {
-        "body": "9b5a187a958472e5ca164a0dab7d86103159af68e4e9966516a2f37a84de225e",
+        "body": "2fe554a09f5ab2794d871d5b26e66ca6a10e5135ec3ff5581999b6a754dfc62e",
         "semantic": "79dcec1cffe55f939095de489e1c4344383086fa5614b85991f7345f2a60ec90",
-        "structure": "f2761fda111812a2a8ac2232a3156bae67a8092aac391324d9403cbaeb82059b"
+        "structure": "ca6bdbb82ad1878125db365ecccbcf94cb604e09ec1817d24fb010c119bb078f"
       },
       "id": "llmnav.diagnostics.doctor",
       "imports": [
+        "./concurrency.js",
         "./config.js",
         "./generator.js",
         "./incremental.js",
@@ -1980,14 +1982,15 @@
         "semantic role generation"
       ],
       "hashes": {
-        "body": "65399d12b001b5582dd03c9d5e70f75f144711efe947eb6e24ca07725f77d3aa",
+        "body": "0374f9eeb9643058f7af15eae289f4ba8f989c576befc6d804758def436769d0",
         "semantic": "47c79f36d71a39ad0b795700686fce0f12733568534f1a69dca05cc3cc8348c7",
-        "structure": "63b2f15828293156f5c02a00fd4c7d58578a3ee9cd6439ee8a1c6904d7e43fb6"
+        "structure": "dadebd4777277877a18dfc53ddf5c741022f38159a84c18b7a153dadfe9b5e77"
       },
       "id": "llmnav.audit.coverage",
       "imports": [
         "./abort.js",
         "./boundaries.js",
+        "./concurrency.js",
         "./module-resolution.js",
         "./policy.js",
         "./project.js",
@@ -2493,6 +2496,6 @@
   "generatedBy": "llmnav@0.12.0",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "ada145cfeb3aaad8c9f06453b50e76707ba58e45ff06bca4e1074baa143af1a5",
+  "sourceHash": "ee0114fd7ebe92c361264f0cb42475f6939ec0b6f5bc96d2bb1a0bfe86ed31f9",
   "specVersion": "1"
 }

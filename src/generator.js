@@ -14,6 +14,7 @@ stability=architecture
 import { readdir } from "node:fs/promises";
 import path from "node:path";
 import { assertAbortSignal, throwIfAborted } from "./abort.js";
+import { DEFAULT_IO_CONCURRENCY, mapWithConcurrency } from "./concurrency.js";
 import { cardToCanonicalObject } from "./parser.js";
 import { scanProject } from "./project.js";
 import { mergeActiveIds, renderRegistryRecords } from "./registry.js";
@@ -222,7 +223,12 @@ async function planGeneration(root, project, options, previous, fileState, diagn
   for (const change of contractChanges) diagnostics.push(diagnosticForContractChange(change));
   diagnostics.sort(compareGeneratedDiagnostics);
   const counts = countDiagnostics(diagnostics);
-  const changedFiles = await compareArtifacts(root, project.config.generation.cacheDirectory, built.artifacts);
+  const changedFiles = await compareArtifacts(
+    root,
+    project.config.generation.cacheDirectory,
+    built.artifacts,
+    options.ioConcurrency ?? DEFAULT_IO_CONCURRENCY,
+  );
   const orderContent = renderOrder(order);
   const orderChanged = await compareOne(path.join(root, ".llmnav", "order.lock"), orderContent);
   if (orderChanged) changedFiles.push(".llmnav/order.lock");
@@ -540,10 +546,13 @@ function renderOrder(order) {
   return order.length > 0 ? `${order.join("\n")}\n` : "";
 }
 
-async function compareArtifacts(root, cacheDirectory, artifacts) {
+async function compareArtifacts(root, cacheDirectory, artifacts, ioConcurrency) {
+  const entries = [...artifacts];
+  const differences = await mapWithConcurrency(entries, ioConcurrency, ([relativePath, content]) =>
+    compareOne(path.join(root, relativePath), content));
   const changed = [];
-  for (const [relativePath, content] of artifacts) {
-    if (await compareOne(path.join(root, relativePath), content)) changed.push(toPosix(relativePath));
+  for (const [index, [relativePath]] of entries.entries()) {
+    if (differences[index]) changed.push(toPosix(relativePath));
   }
   const actualFiles = await listFiles(path.join(root, cacheDirectory));
   const expected = new Set([...artifacts.keys()].map((item) => toPosix(item)));
