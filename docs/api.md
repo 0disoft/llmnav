@@ -225,6 +225,10 @@ Use this wrapper only around individual idempotent reads. Search/session loading
 
 MCP shared session loads have a separate 15000 ms deadline, configurable with `sessionLoadTimeoutMs`. A request timeout leaves other subscribers' work running. A shared-load timeout cancels its own signal, detaches the old session, and permits the next request to load again; late abandoned loads cannot publish snapshots. Server shutdown cancels shared loading with the original reason.
 
+Generation verification uses at most eight concurrent file reads, preserves sorted failure precedence, and completes pending reads before rollback. Each staged artifact is read once for exact-byte and manifest verification; installed files are independently reread after the directory swap. Go module discovery uses the scan's `ioConcurrency` limit and retains sorted module output and metadata symlink checks.
+
+Registry resolution uses an explicit traversal stack and path-position lookup, so long redirect chains do not consume the JavaScript call stack. Shared acyclic replacement branches are visited once per resolution. Multi-target candidates retain their input order and remain ambiguous; cycle results retain the first depth-first witness. Validation classifies cycle-reaching IDs in linear graph work without constructing a result chain for every ID.
+
 ## Build and update an inverted index
 
 ```js

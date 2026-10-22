@@ -4,6 +4,15 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.13.5] — 2026-10-23
+
+### Changed
+
+* Reuse module membership and preselected Go import targets instead of rebuilding them for each import, retaining target ordering and edge deduplication.
+* Resolve registry paths iteratively and classify all cycle-reaching IDs in one graph pass, preserving replacement ambiguity and the first cycle witness.
+* Read each generated artifact once per verification phase with bounded concurrency. Reuse staged exact-byte proofs only within staging; independently recheck installed files before commit and retain deterministic error selection.
+* Discover Go module metadata with the configured I/O concurrency limit and avoid revisiting shared ancestor directories.
+
 ## [0.13.4] — 2026-10-23
 
 ### Fixed

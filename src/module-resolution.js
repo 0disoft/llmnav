@@ -14,6 +14,7 @@ import { lstat } from "node:fs/promises";
 import path from "node:path";
 import { compareText, readText, toPosix } from "./util.js";
 import { abortable, throwIfAborted } from "./abort.js";
+import { DEFAULT_IO_CONCURRENCY, mapWithConcurrency } from "./concurrency.js";
 
 export const MODULE_RESOLUTION_SCHEMA_VERSION = 1;
 export const MODULE_RESOLVER_VERSION = 1;
@@ -26,6 +27,7 @@ export async function loadModuleResolution(root, fileRecords = [], options = {})
     if (!file.endsWith(".go")) continue;
     let directory = path.posix.dirname(file);
     while (directory !== "." && directory !== "") {
+      if (directories.has(directory)) break;
       directories.add(directory);
       const parent = path.posix.dirname(directory);
       if (parent === directory || parent === ".") break;
@@ -33,27 +35,31 @@ export async function loadModuleResolution(root, fileRecords = [], options = {})
     }
   }
 
-  const goModules = [];
-  for (const directory of [...directories].sort(compareDirectories)) {
-    const relativeFile = directory ? `${directory}/go.mod` : "go.mod";
-    const absoluteFile = path.join(root, ...relativeFile.split("/"));
-    let details;
-    try {
-      details = await abortable(lstat(absoluteFile), options.signal);
-    } catch (error) {
-      if (error && typeof error === "object" && error.code === "ENOENT") continue;
-      throw error;
-    }
-    if (details.isSymbolicLink()) throw new Error(`Go module file ${JSON.stringify(relativeFile)} is a symbolic link.`);
-    if (!details.isFile()) continue;
-    const modulePath = parseGoModulePath(await readText(absoluteFile, undefined, options));
-    if (modulePath) goModules.push({ directory, modulePath });
-  }
+  const discovered = await mapWithConcurrency([...directories].sort(compareDirectories),
+    options.ioConcurrency ?? DEFAULT_IO_CONCURRENCY, directory => readGoModule(root, directory, options), { signal: options.signal });
+  const goModules = discovered.filter(Boolean);
   goModules.sort((left, right) => compareText(left.directory, right.directory) || compareText(left.modulePath, right.modulePath));
   return {
     schemaVersion: MODULE_RESOLUTION_SCHEMA_VERSION,
     goModules,
   };
+}
+
+async function readGoModule(root, directory, options) {
+  const relativeFile = directory ? `${directory}/go.mod` : "go.mod";
+  const absoluteFile = path.join(root, ...relativeFile.split("/"));
+  let details;
+  try {
+    details = await abortable(lstat(absoluteFile), options.signal);
+  } catch (error) {
+    throwIfAborted(options.signal);
+    if (error && typeof error === "object" && error.code === "ENOENT") return null;
+    throw error;
+  }
+  if (details.isSymbolicLink()) throw new Error(`Go module file ${JSON.stringify(relativeFile)} is a symbolic link.`);
+  if (!details.isFile()) return null;
+  const modulePath = parseGoModulePath(await readText(absoluteFile, undefined, options));
+  return modulePath ? { directory, modulePath } : null;
 }
 
 export function parseGoModulePath(source) {

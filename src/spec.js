@@ -10,7 +10,7 @@ rel=workflow>llmnav.rules.validate
 stability=contract
 */
 
-export const PACKAGE_VERSION = "0.13.4";
+export const PACKAGE_VERSION = "0.13.5";
 export const SPEC_VERSION = "1";
 
 export const SCOPES = Object.freeze(["file", "module", "symbol"]);

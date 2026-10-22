@@ -937,13 +937,14 @@
         "source indexing"
       ],
       "hashes": {
-        "body": "8bdeab05aa3ff2495bbb3f93a7f6ac76d82a8b0fcca57fd08110bed11fdba5b6",
+        "body": "bbd4fabaf034517e5b9f590898603b6523c5462bec79c9663b48d3e7cfec0275",
         "semantic": "ce2cf8943f71d053f8cba914886bae20316e5b6106857f52abc4d8a59afb1ef1",
-        "structure": "5de94f39bf7e761651c8294ee0af6202e494f6eb4a3f829ad9e27414fc3d9848"
+        "structure": "677f00986f2ceb7d0738a5e37c9169503d3467c02fbf9381706760de68cb7efc"
       },
       "id": "llmnav.index.transaction",
       "imports": [
         "./abort.js",
+        "./concurrency.js",
         "./runtime.js",
         "./util.js",
         "node:fs/promises",
@@ -1887,7 +1888,7 @@
         "source parsing"
       ],
       "hashes": {
-        "body": "551dfa2d0219a7eaff33d56c324c84c52b29710cb368d7a11bd0b0cf89a837f8",
+        "body": "310059f45a8755e950bc5849b6691ff276080aba15967dbc69daeb556b88cff4",
         "semantic": "59aa3e9e793d505ecdf110fec023c201aaee0154d2f6c9cf71afe1bbf71a7be5",
         "structure": "e213e073414c75bc75df1c8669a7045096142b6c0845694191893d90bf23e3c2"
       },
@@ -2156,13 +2157,14 @@
         "semantic card generation"
       ],
       "hashes": {
-        "body": "3f89d3b154823254124a655c1c2ccf1891c8e6cbe0ac864fe3c259886ad61589",
+        "body": "b5ea0130f2cac716aa737297b3e7a9fe5189ca4fd346485f455b16d09f257a82",
         "semantic": "98dd8a524ca973c2bb5cb1bcb0a442fbfffa3f5bceb5556a796c1411f1a22272",
-        "structure": "81b6e4fc335e6cea24b365fd8ecb0a6d79eafcc6a923b6b4d454d684a3de0f60"
+        "structure": "7a93cedd6c91f4dee71d28696e8e0b157e33b94d48938d7942a4979e771332d1"
       },
       "id": "llmnav.structure.modules",
       "imports": [
         "./abort.js",
+        "./concurrency.js",
         "./util.js",
         "node:fs/promises",
         "node:path"
@@ -2551,9 +2553,9 @@
     },
     "schemaVersion": 1
   },
-  "generatedBy": "llmnav@0.13.4",
+  "generatedBy": "llmnav@0.13.5",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "de21fe1e2ca27a38307deb5859f23ea1623ad019a1bc75145883fc8cbf8ebe05",
+  "sourceHash": "de58efa66fa9c2d727148a7ab7a6e4c9381cd37d264023dffb5762e8228fefc8",
   "specVersion": "1"
 }
