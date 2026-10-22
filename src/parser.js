@@ -217,176 +217,212 @@ function parseUnterminatedBlockComments(source, filePath, parsedBlocks, literalM
   return blocks;
 }
 
+const LITERAL_STATE_SCANNERS = {
+  "line-comment": scanLineComment,
+  "block-comment": scanBlockComment,
+  "html-comment": scanHtmlComment,
+  "triple-single": scanTripleSingle,
+  "triple-double": scanTripleDouble,
+  regex: scanRegexLiteral,
+  "rust-raw": scanRustRawString,
+  single: scanQuotedLiteral,
+  double: scanQuotedLiteral,
+  backtick: scanQuotedLiteral,
+};
+
 function buildLiteralMask(source, filePath) {
-  const extension = filePath.toLowerCase().match(/\.[a-z0-9]+$/u)?.[0] ?? "";
-  const hashComments = [".py", ".rb", ".sh", ".bash", ".zsh"].includes(extension);
-  const dashComments = extension === ".sql";
-  const tripleQuotes = extension === ".py";
-  const javascript = JAVASCRIPT_EXTENSIONS.has(extension);
-  let regexAllowed = true;
-  let regexCharacterClass = false;
-  let previousToken = "";
-  const controlParentheses = [];
-  const expressionBraces = [];
-  let state = "normal";
-  let escaped = false;
-  let rustRawTerminator = "";
+  const scan = createLiteralScan(source, filePath);
   const mask = new Uint8Array(source.length);
-
-  for (let index = 0; index < source.length; index += 1) {
-    mask[index] = state === "normal" ? 0 : 1;
-    const character = source[index];
-    const next = source[index + 1];
-    const nextTwo = source.slice(index, index + 3);
-    const nextFour = source.slice(index, index + 4);
-
-    if (state === "line-comment") {
-      if (character === "\n") state = "normal";
-      continue;
-    }
-    if (state === "block-comment") {
-      if (character === "*" && next === "/") {
-        state = "normal";
-        index += 1;
-      }
-      continue;
-    }
-    if (state === "html-comment") {
-      if (source.slice(index, index + 3) === "-->") {
-        state = "normal";
-        index += 2;
-      }
-      continue;
-    }
-    if (state === "triple-single") {
-      if (nextTwo === "'''") {
-        state = "normal";
-        index += 2;
-      }
-      continue;
-    }
-    if (state === "triple-double") {
-      if (nextTwo === '"""') {
-        state = "normal";
-        index += 2;
-      }
-      continue;
-    }
-    if (state === "regex") {
-      if (character === "\n" || character === "\r") {
-        state = "normal";
-        escaped = false;
-      } else if (escaped) escaped = false;
-      else if (character === "\\") escaped = true;
-      else if (character === "[") regexCharacterClass = true;
-      else if (character === "]") regexCharacterClass = false;
-      else if (character === "/" && !regexCharacterClass) {
-        state = "normal";
-        regexAllowed = false;
-        previousToken = "value";
-      }
-      continue;
-    }
-    if (state === "rust-raw") {
-      if (source.startsWith(rustRawTerminator, index)) {
-        state = "normal";
-        index += rustRawTerminator.length - 1;
-      }
-      continue;
-    }
-    if (state === "single" || state === "double" || state === "backtick") {
-      if (escaped) {
-        escaped = false;
-        continue;
-      }
-      if (character === "\\" && (state !== "backtick" || extension !== ".go")) {
-        escaped = true;
-        continue;
-      }
-      const terminator = state === "single" ? "'" : state === "double" ? '"' : "`";
-      if (character === terminator) {
-        state = "normal";
-        regexAllowed = false;
-        previousToken = "value";
-      }
-      continue;
-    }
-
-    const rawTerminator = extension === ".rs" ? rustRawStringTerminator(source, index) : null;
-    if (rawTerminator !== null) {
-      state = "rust-raw";
-      rustRawTerminator = rawTerminator;
-    } else if (nextFour === "<!--") {
-      state = "html-comment";
-      index += 3;
-    } else if (character === "/" && next === "*") {
-      state = "block-comment";
-      index += 1;
-    } else if (character === "/" && next === "/") {
-      state = "line-comment";
-      index += 1;
-    } else if (javascript && character === "/" && regexAllowed) {
-      state = "regex";
-      regexCharacterClass = false;
-      escaped = false;
-    } else if (hashComments && character === "#") {
-      state = "line-comment";
-    } else if (dashComments && character === "-" && next === "-") {
-      state = "line-comment";
-      index += 1;
-    } else if (tripleQuotes && nextTwo === "'''") {
-      state = "triple-single";
-      index += 2;
-    } else if (tripleQuotes && nextTwo === '"""') {
-      state = "triple-double";
-      index += 2;
-    } else if (character === "'" && (extension !== ".rs" || looksLikeRustCharacterLiteral(source, index))) {
-      state = "single";
-      escaped = false;
-    } else if (character === '"') {
-      state = "double";
-      escaped = false;
-    } else if (character === "`") {
-      state = "backtick";
-      escaped = false;
-    } else if (javascript && !/\s/u.test(character)) {
-      // Track lexical expression position without rescanning prefixes. Comments do
-      // not change it; a control-condition ')' permits a following regex statement.
-      if (/[A-Za-z_$]/u.test(character)) {
-        const start = index;
-        const memberName = previousToken === ".";
-        while (index + 1 < source.length && /[\w$]/u.test(source[index + 1])) index += 1;
-        previousToken = source.slice(start, index + 1);
-        regexAllowed = !memberName && REGEX_PREFIX_KEYWORDS.has(previousToken);
-      } else if (character === "(") {
-        controlParentheses.push(CONTROL_PAREN_KEYWORDS.has(previousToken));
-        regexAllowed = true;
-        previousToken = character;
-      } else if (character === ")") {
-        regexAllowed = controlParentheses.pop() === true;
-        previousToken = character;
-      } else if (character === "{") {
-        expressionBraces.push(regexAllowed && !["", ";", "else", "do", "try", "finally", ")"].includes(previousToken));
-        regexAllowed = true;
-        previousToken = character;
-      } else if (character === "}") {
-        regexAllowed = expressionBraces.pop() !== true;
-        previousToken = character;
-      } else if ((character === "+" || character === "-") && next === character) {
-        previousToken = character + next;
-        index += 1;
-      } else if (character === "=" && next === ">") {
-        regexAllowed = true;
-        previousToken = "=>";
-        index += 1;
-      } else {
-        regexAllowed = "=(:,!&|?;[+-*%~^>/".includes(character);
-        previousToken = character;
-      }
-    }
+  for (scan.index = 0; scan.index < source.length; scan.index += 1) {
+    mask[scan.index] = scan.state === "normal" ? 0 : 1;
+    const scanner = LITERAL_STATE_SCANNERS[scan.state];
+    if (scanner) scanner(scan);
+    else scanNormalUnit(scan);
   }
-
   return mask;
+}
+
+function createLiteralScan(source, filePath) {
+  const extension = filePath.toLowerCase().match(/\.[a-z0-9]+$/u)?.[0] ?? "";
+  return {
+    source,
+    index: 0,
+    extension,
+    hashComments: [".py", ".rb", ".sh", ".bash", ".zsh"].includes(extension),
+    dashComments: extension === ".sql",
+    tripleQuotes: extension === ".py",
+    javascript: JAVASCRIPT_EXTENSIONS.has(extension),
+    regexAllowed: true,
+    regexCharacterClass: false,
+    previousToken: "",
+    controlParentheses: [],
+    expressionBraces: [],
+    state: "normal",
+    escaped: false,
+    rustRawTerminator: "",
+  };
+}
+
+function scanLineComment(scan) {
+  if (scan.source[scan.index] === "\n") scan.state = "normal";
+}
+
+function scanBlockComment(scan) {
+  if (scan.source[scan.index] === "*" && scan.source[scan.index + 1] === "/") {
+    scan.state = "normal";
+    scan.index += 1;
+  }
+}
+
+function scanHtmlComment(scan) {
+  if (scan.source.startsWith("-->", scan.index)) {
+    scan.state = "normal";
+    scan.index += 2;
+  }
+}
+
+function scanTripleSingle(scan) {
+  scanTripleQuote(scan, "'''");
+}
+
+function scanTripleDouble(scan) {
+  scanTripleQuote(scan, '"""');
+}
+
+function scanTripleQuote(scan, terminator) {
+  if (scan.source.startsWith(terminator, scan.index)) {
+    scan.state = "normal";
+    scan.index += 2;
+  }
+}
+
+function scanRegexLiteral(scan) {
+  const character = scan.source[scan.index];
+  if (character === "\n" || character === "\r") {
+    scan.state = "normal";
+    scan.escaped = false;
+  } else if (scan.escaped) scan.escaped = false;
+  else if (character === "\\") scan.escaped = true;
+  else if (character === "[") scan.regexCharacterClass = true;
+  else if (character === "]") scan.regexCharacterClass = false;
+  else if (character === "/" && !scan.regexCharacterClass) {
+    scan.state = "normal";
+    scan.regexAllowed = false;
+    scan.previousToken = "value";
+  }
+}
+
+function scanRustRawString(scan) {
+  if (scan.source.startsWith(scan.rustRawTerminator, scan.index)) {
+    scan.state = "normal";
+    scan.index += scan.rustRawTerminator.length - 1;
+  }
+}
+
+function scanQuotedLiteral(scan) {
+  const character = scan.source[scan.index];
+  if (scan.escaped) {
+    scan.escaped = false;
+    return;
+  }
+  if (character === "\\" && (scan.state !== "backtick" || scan.extension !== ".go")) {
+    scan.escaped = true;
+    return;
+  }
+  const terminator = scan.state === "single" ? "'" : scan.state === "double" ? '"' : "`";
+  if (character === terminator) {
+    scan.state = "normal";
+    scan.regexAllowed = false;
+    scan.previousToken = "value";
+  }
+}
+
+function scanNormalUnit(scan) {
+  const { source, index } = scan;
+  const character = source[index];
+  const next = source[index + 1];
+  const rawTerminator = scan.extension === ".rs" ? rustRawStringTerminator(source, index) : null;
+  if (rawTerminator !== null) {
+    scan.state = "rust-raw";
+    scan.rustRawTerminator = rawTerminator;
+  } else if (source.startsWith("<!--", index)) {
+    scan.state = "html-comment";
+    scan.index += 3;
+  } else if (character === "/" && next === "*") {
+    scan.state = "block-comment";
+    scan.index += 1;
+  } else if (character === "/" && next === "/") {
+    scan.state = "line-comment";
+    scan.index += 1;
+  } else if (scan.javascript && character === "/" && scan.regexAllowed) {
+    scan.state = "regex";
+    scan.regexCharacterClass = false;
+    scan.escaped = false;
+  } else if (scan.hashComments && character === "#") {
+    scan.state = "line-comment";
+  } else if (scan.dashComments && character === "-" && next === "-") {
+    scan.state = "line-comment";
+    scan.index += 1;
+  } else if (scan.tripleQuotes && source.startsWith("'''", index)) {
+    scan.state = "triple-single";
+    scan.index += 2;
+  } else if (scan.tripleQuotes && source.startsWith('"""', index)) {
+    scan.state = "triple-double";
+    scan.index += 2;
+  } else if (character === "'" && (scan.extension !== ".rs" || looksLikeRustCharacterLiteral(source, index))) {
+    scan.state = "single";
+    scan.escaped = false;
+  } else if (character === '"') {
+    scan.state = "double";
+    scan.escaped = false;
+  } else if (character === "`") {
+    scan.state = "backtick";
+    scan.escaped = false;
+  } else {
+    scanJavaScriptToken(scan);
+  }
+}
+
+function scanJavaScriptToken(scan) {
+  if (!scan.javascript) return;
+  const { source } = scan;
+  const index = scan.index;
+  const character = source[index];
+  const next = source[index + 1];
+  if (/\s/u.test(character)) return;
+  // Track lexical expression position without rescanning prefixes. Comments do
+  // not change it; a control-condition ')' permits a following regex statement.
+  if (/[A-Za-z_$]/u.test(character)) {
+    const start = index;
+    const memberName = scan.previousToken === ".";
+    while (scan.index + 1 < source.length && /[\w$]/u.test(source[scan.index + 1])) scan.index += 1;
+    scan.previousToken = source.slice(start, scan.index + 1);
+    scan.regexAllowed = !memberName && REGEX_PREFIX_KEYWORDS.has(scan.previousToken);
+  } else if (character === "(") {
+    scan.controlParentheses.push(CONTROL_PAREN_KEYWORDS.has(scan.previousToken));
+    scan.regexAllowed = true;
+    scan.previousToken = character;
+  } else if (character === ")") {
+    scan.regexAllowed = scan.controlParentheses.pop() === true;
+    scan.previousToken = character;
+  } else if (character === "{") {
+    scan.expressionBraces.push(scan.regexAllowed && !["", ";", "else", "do", "try", "finally", ")"].includes(scan.previousToken));
+    scan.regexAllowed = true;
+    scan.previousToken = character;
+  } else if (character === "}") {
+    scan.regexAllowed = scan.expressionBraces.pop() !== true;
+    scan.previousToken = character;
+  } else if ((character === "+" || character === "-") && next === character) {
+    scan.previousToken = character + next;
+    scan.index += 1;
+  } else if (character === "=" && next === ">") {
+    scan.regexAllowed = true;
+    scan.previousToken = "=>";
+    scan.index += 1;
+  } else {
+    scan.regexAllowed = "=(:,!&|?;[+-*%~^>/".includes(character);
+    scan.previousToken = character;
+  }
 }
 
 function rustRawStringTerminator(source, index) {
