@@ -1924,7 +1924,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "b828e2547a0df057782b03209d4c38eb40b045d98a65a94a45fad1e70972332a",
+      "contentHash": "790719c9493a40085f0ee84a0884b45e28a091454d682fe8b3bed7617addd9eb",
       "declarations": [
         null
       ],
@@ -1933,7 +1933,7 @@
       ],
       "path": "src/changes.js",
       "semanticBytes": 400,
-      "sourceBytes": 5840
+      "sourceBytes": 6516
     },
     {
       "blocks": [
@@ -5700,10 +5700,12 @@
     },
     {
       "blocks": [],
-      "contentHash": "c5ecd6b0cc99c2e7bc5c42f89758571600a135d270bf285e5fb7b956f103bb77",
+      "contentHash": "8f8171235ff2979892337c2625f761f03467240227d0bd37a3ff064ad8f6ce2e",
       "declarations": [],
       "imports": [
+        "../src/changes.js",
         "../src/initializer.js",
+        "../src/util.js",
         "node:assert/strict",
         "node:child_process",
         "node:fs/promises",
@@ -5714,7 +5716,7 @@
       ],
       "path": "tests/change-output.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 2516
+      "sourceBytes": 4244
     },
     {
       "blocks": [],

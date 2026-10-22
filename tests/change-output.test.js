@@ -5,7 +5,9 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
+import { describeAffectedBoundaries } from "../src/changes.js";
 import { initializeProject } from "../src/initializer.js";
+import { compareText } from "../src/util.js";
 
 const cli = fileURLToPath(new URL("../bin/llmnav.js", import.meta.url));
 
@@ -46,4 +48,39 @@ test("generate --json reports changed cards, boundaries, and affected catalogs",
   assert.equal(output.incremental.files.parsedFiles, 1);
   assert.equal(output.incremental.cards.indexedCards, 1);
   assert.equal(output.transaction.committed, true);
+});
+
+test("affected boundaries index dependents from both index generations", () => {
+  const config = { generation: { moduleDepth: 2 } };
+  const target = "core.target";
+  const card = (id, relations = []) => ({ id, rel: relations, boundaries: [], stability: "implementation" });
+  const previousCards = [card(target, [])];
+  const currentCards = [card(target, [])];
+  for (let index = 0; index < 140; index += 1) {
+    const id = `feature.user${String(index).padStart(3, "0")}`;
+    previousCards.push(card(id, [`uses>${target}`]));
+    if (index % 2 === 0) currentCards.push(card(id, [`uses>${target}`]));
+  }
+  // The relation was dropped in the current index; the previous declaration still counts.
+  previousCards.push(card("core.legacy", [`uses>${target}`]));
+  currentCards.push(card("core.legacy", []));
+  for (let index = 0; index < 120; index += 1) {
+    currentCards.push(card(`noise.entry${String(index).padStart(3, "0")}`, ["uses>other.target"]));
+  }
+
+  const [boundary] = describeAffectedBoundaries(
+    [{ id: target, change: "modified", dimensions: ["body"] }],
+    config,
+    { cards: previousCards },
+    { cards: currentCards },
+  );
+  const reference = [...new Set(
+    [...previousCards, ...currentCards]
+      .filter((item) => (item.rel ?? []).some((relation) => relation.endsWith(`>${target}`)))
+      .map((item) => item.id),
+  )].sort(compareText);
+  assert.deepEqual(boundary.dependentIds, reference);
+  assert.equal(boundary.dependentIds.length, 141);
+  assert.ok(boundary.dependentIds.includes("core.legacy"));
+  assert.ok(!boundary.dependentIds.some((id) => id.startsWith("noise.")));
 });

@@ -76,7 +76,11 @@ export function describeAffectedCatalogs(changedFiles, cacheDirectory, config, p
 export function describeAffectedBoundaries(changedCards, config, previousIndex, currentIndex) {
   const previous = new Map((previousIndex?.cards ?? []).map((card) => [card.id, card]));
   const current = new Map((currentIndex?.cards ?? []).map((card) => [card.id, card]));
-  const allCards = [...previous.values(), ...current.values()];
+  // One reverse pass over both index generations turns the per-change dependent scan
+  // into a lookup, which keeps a wide refactor from going quadratic (changedCards x cards).
+  // Both generations are scanned because a card whose relations changed must still report
+  // the dependents it declared in the previous index.
+  const dependents = buildDependentIndex([...previous.values(), ...current.values()]);
 
   return changedCards.map((change) => {
     const before = previous.get(change.id);
@@ -90,11 +94,7 @@ export function describeAffectedBoundaries(changedCards, config, previousIndex, 
       }
     }
     const relatedIds = relationTargets(before, after);
-    const dependentIds = [...new Set(
-      allCards
-        .filter((card) => (card.rel ?? []).some((relation) => relationTarget(relation) === change.id))
-        .map((card) => card.id),
-    )].sort(compareText);
+    const dependentIds = [...(dependents.get(change.id) ?? [])].sort(compareText);
 
     return {
       id: change.id,
@@ -154,6 +154,23 @@ function cardSnapshot(card) {
         }
       : null,
   };
+}
+
+function buildDependentIndex(cards) {
+  const dependents = new Map();
+  for (const card of cards) {
+    for (const relation of card.rel ?? []) {
+      const target = relationTarget(relation);
+      if (target === null || !card.id) continue;
+      let sources = dependents.get(target);
+      if (sources === undefined) {
+        sources = new Set();
+        dependents.set(target, sources);
+      }
+      sources.add(card.id);
+    }
+  }
+  return dependents;
 }
 
 function relationTargets(...cards) {
