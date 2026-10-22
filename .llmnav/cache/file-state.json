@@ -1714,7 +1714,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "877e9ff057af02de9d25d7c9be6231a31a658c1e2c60d52f2a7113b74c8fb72e",
+      "contentHash": "e0c51e676d24494e0934e94ac12dd5c79f8a7a4a83761001b0f8ecbcde26703c",
       "declarations": [
         null
       ],
@@ -1729,7 +1729,7 @@
       ],
       "path": "src/audit.js",
       "semanticBytes": 577,
-      "sourceBytes": 24624
+      "sourceBytes": 26546
     },
     {
       "blocks": [

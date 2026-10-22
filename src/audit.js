@@ -92,6 +92,26 @@ export async function explainProjectFile(root, inputPath) {
 async function analyzeAuditProject(root, options = {}) {
   throwIfAborted(options.signal);
   const project = await scanProject(root, { signal: options.signal });
+  const coverage = buildCoverageIndexes(project);
+  const filesByModule = groupFilesByModule(coverage.fileByPath);
+  const moduleKeys = new Set(filesByModule.keys());
+  const importedBy = buildImportedBy(filesByModule, coverage.fileByPath, project.moduleResolution, moduleKeys);
+  const { entrypoints, publicApiPaths } = await collectNavigationSignals(root, coverage.fileByPath);
+  const candidates = rankCandidates({ filesByModule, coverage, importedBy, entrypoints, publicApiPaths, signal: options.signal });
+  candidates.sort(compareAuditCandidates);
+  const { activeCandidates, dispositions } = applyDispositions(project, candidates, coverage);
+  const summary = summarizeAudit(coverage, activeCandidates, dispositions);
+  const result = {
+    schemaVersion: AUDIT_SCHEMA_VERSION,
+    repositoryId: project.config.repositoryId,
+    summary,
+    candidates: activeCandidates,
+    dispositions,
+  };
+  return { project, fileByPath: coverage.fileByPath, candidates, result };
+}
+
+function buildCoverageIndexes(project) {
   const fileByPath = new Map(
     project.fileRecords.map((record) => [toPosix(record.relativePath), record]),
   );
@@ -110,122 +130,153 @@ async function analyzeAuditProject(root, options = {}) {
       .filter((record) => record.card.scope === "module")
       .map((record) => moduleKeyForFile(record.relativePath)),
   );
-  const filesByModule = groupFilesByModule(fileByPath);
-  const moduleKeys = new Set(filesByModule.keys());
+  return { fileByPath, cardedFilePaths, exactCardPaths, coveredModules };
+}
+
+function buildImportedBy(filesByModule, fileByPath, moduleResolution, moduleKeys) {
   const importedBy = new Map([...moduleKeys].map((key) => [key, new Set()]));
   for (const [sourceKey, files] of filesByModule) {
     const targets = new Set();
     for (const [file, record] of files) {
       for (const specifier of record.imports) {
-        const target = resolveImportedModule(file, specifier, fileByPath, project.moduleResolution, moduleKeys);
+        const target = resolveImportedModule(file, specifier, fileByPath, moduleResolution, moduleKeys);
         if (target) targets.add(target);
       }
     }
     for (const target of targets) importedBy.get(target)?.add(sourceKey);
   }
+  return importedBy;
+}
 
+async function collectNavigationSignals(root, fileByPath) {
   const entrypoints = await collectWorkspacePackageEntrypoints(root, fileByPath);
   collectGoEntrypoints(fileByPath, entrypoints);
-  const publicApiPaths = collectPublicApiPaths(entrypoints, fileByPath);
+  return { entrypoints, publicApiPaths: collectPublicApiPaths(entrypoints, fileByPath) };
+}
+
+function rankCandidates({ filesByModule, coverage, importedBy, entrypoints, publicApiPaths, signal }) {
   const candidates = [];
-
-  for (const [moduleKey, files] of [...filesByModule.entries()].sort(([left], [right]) => compareText(left, right))) {
-    throwIfAborted(options.signal);
-    if (coveredModules.has(moduleKey)) continue;
-    const selectableFiles = files.filter(([file]) => !exactCardPaths.has(file) && !/\.d\.[cm]?ts$/u.test(file));
-    if (selectableFiles.length === 0) continue;
-    const productionFiles = selectableFiles.filter(([file]) => !NON_PRODUCTION_PATH_PATTERN.test(file));
-    const analyzedFiles = productionFiles.length > 0 ? productionFiles : selectableFiles;
-    const file = selectRepresentativeFile(analyzedFiles, entrypoints);
-    const record = fileByPath.get(file);
-    const boundaries = [...new Set(analyzedFiles.flatMap(([candidate, item]) => detectBoundaries({
-      relativePath: candidate,
-      card: { effect: [], risk: [] },
-      source: item.source ?? "",
-    }).map((boundary) => boundary.kind)))].sort(compareText);
-    const exportedDeclarations = analyzedFiles.reduce(
-      (sum, [candidate, item]) => sum + countExportedDeclarations(item.source ?? "", candidate),
-      0,
-    );
-    const entrypoint = analyzedFiles.some(([candidate]) => entrypoints.has(candidate));
-    const publicApi = analyzedFiles.some(([candidate]) => publicApiPaths.has(candidate) && !entrypoints.has(candidate));
-    const importers = importedBy.get(moduleKey)?.size ?? 0;
-    const reexportBarrel = analyzedFiles.length === 1 && isReexportBarrel(record.source ?? "", file);
-    const isGoModule = moduleKey.startsWith("go:");
-    const moduleName = isGoModule ? moduleKey.slice(3) : file;
-    const basename = path.posix.basename(moduleName, path.posix.extname(moduleName)).toLowerCase();
-    const broadUtility = UTILITY_NAME_PATTERN.test(basename) ||
-      (!isGoModule && exportedDeclarations >= 10 && importers <= 1 && !entrypoint && !publicApi && boundaries.length === 0);
-    const nonProduction = productionFiles.length === 0;
-    const largeSource = analyzedFiles.reduce((sum, [, item]) => sum + item.sourceBytes, 0) >= LARGE_SOURCE_BYTES;
-    const hasSignal = entrypoint || publicApi || boundaries.length > 0 || importers > 0 || exportedDeclarations > 0 || largeSource;
-    if (!hasSignal) continue;
-
-    let score = 0;
-    const reasons = ["missing-module-card"];
-    if (entrypoint) {
-      score += 50;
-      reasons.push("package-entrypoint");
-    }
-    if (publicApi) {
-      score += 45;
-      reasons.push("public-api-reexport");
-    }
-    for (const boundary of boundaries) {
-      score += boundary === "command" ? 40 : 30;
-      reasons.push(`${boundary}-boundary`);
-    }
-    if (importers > 0) {
-      score += Math.min(30, importers * 5);
-      reasons.push(`imported-by:${importers}`);
-    }
-    if (exportedDeclarations > 0) {
-      score += 10;
-      reasons.push(`exported-declarations:${exportedDeclarations}`);
-    }
-    if (largeSource) {
-      score += 10;
-      reasons.push("large-source");
-    }
-    if (broadUtility) {
-      score -= 30;
-      reasons.push("broad-utility-penalty");
-    }
-    if (nonProduction) {
-      score -= 40;
-      reasons.push("non-production-penalty");
-    }
-    if (reexportBarrel) {
-      score -= 60;
-      reasons.push("reexport-barrel-penalty");
-    }
-    score = Math.max(0, score);
-    if (score === 0) continue;
-    const priority = score >= 60 ? "high" : score >= 30 ? "medium" : "low";
-    candidates.push({
-      path: file,
-      priority,
-      score,
-      reasons,
-      signals: {
-        packageEntrypoint: entrypoint,
-        publicApi,
-        exportedDeclarations,
-        importedBy: importers,
-        boundaries,
-        largeSource,
-        broadUtility,
-        nonProduction,
-        reexportBarrel,
-      },
-      suggestedCoverageRule: priority === "low" ? null : buildCoverageSuggestion(file),
-    });
+  const modules = [...filesByModule.entries()].sort(([left], [right]) => compareText(left, right));
+  for (const [moduleKey, files] of modules) {
+    throwIfAborted(signal);
+    const candidate = rankModuleCandidate(moduleKey, files, coverage, importedBy, entrypoints, publicApiPaths);
+    if (candidate !== null) candidates.push(candidate);
   }
+  return candidates;
+}
 
-  candidates.sort((left, right) =>
-    priorityRank(left.priority) - priorityRank(right.priority) ||
-    right.score - left.score ||
-    compareText(left.path, right.path));
+function rankModuleCandidate(moduleKey, files, coverage, importedBy, entrypoints, publicApiPaths) {
+  if (coverage.coveredModules.has(moduleKey)) return null;
+  const selectableFiles = files.filter(([file]) => !coverage.exactCardPaths.has(file) && !/\.d\.[cm]?ts$/u.test(file));
+  if (selectableFiles.length === 0) return null;
+  const productionFiles = selectableFiles.filter(([file]) => !NON_PRODUCTION_PATH_PATTERN.test(file));
+  const analyzedFiles = productionFiles.length > 0 ? productionFiles : selectableFiles;
+  const file = selectRepresentativeFile(analyzedFiles, entrypoints);
+  const record = coverage.fileByPath.get(file);
+  const boundaries = [...new Set(analyzedFiles.flatMap(([candidate, item]) => detectBoundaries({
+    relativePath: candidate,
+    card: { effect: [], risk: [] },
+    source: item.source ?? "",
+  }).map((boundary) => boundary.kind)))].sort(compareText);
+  const exportedDeclarations = analyzedFiles.reduce(
+    (sum, [candidate, item]) => sum + countExportedDeclarations(item.source ?? "", candidate),
+    0,
+  );
+  const entrypoint = analyzedFiles.some(([candidate]) => entrypoints.has(candidate));
+  const publicApi = analyzedFiles.some(([candidate]) => publicApiPaths.has(candidate) && !entrypoints.has(candidate));
+  const importers = importedBy.get(moduleKey)?.size ?? 0;
+  const reexportBarrel = analyzedFiles.length === 1 && isReexportBarrel(record.source ?? "", file);
+  const isGoModule = moduleKey.startsWith("go:");
+  const moduleName = isGoModule ? moduleKey.slice(3) : file;
+  const basename = path.posix.basename(moduleName, path.posix.extname(moduleName)).toLowerCase();
+  const broadUtility = UTILITY_NAME_PATTERN.test(basename) ||
+    (!isGoModule && exportedDeclarations >= 10 && importers <= 1 && !entrypoint && !publicApi && boundaries.length === 0);
+  const nonProduction = productionFiles.length === 0;
+  const largeSource = analyzedFiles.reduce((sum, [, item]) => sum + item.sourceBytes, 0) >= LARGE_SOURCE_BYTES;
+  const hasSignal = entrypoint || publicApi || boundaries.length > 0 || importers > 0 || exportedDeclarations > 0 || largeSource;
+  if (!hasSignal) return null;
+  const { score, reasons } = scoreAuditSignals({
+    entrypoint,
+    publicApi,
+    boundaries,
+    importers,
+    exportedDeclarations,
+    largeSource,
+    broadUtility,
+    nonProduction,
+    reexportBarrel,
+  });
+  if (score === 0) return null;
+  const priority = priorityForScore(score);
+  return {
+    path: file,
+    priority,
+    score,
+    reasons,
+    signals: {
+      packageEntrypoint: entrypoint,
+      publicApi,
+      exportedDeclarations,
+      importedBy: importers,
+      boundaries,
+      largeSource,
+      broadUtility,
+      nonProduction,
+      reexportBarrel,
+    },
+    suggestedCoverageRule: priority === "low" ? null : buildCoverageSuggestion(file),
+  };
+}
+
+function scoreAuditSignals(signals) {
+  let score = 0;
+  const reasons = ["missing-module-card"];
+  if (signals.entrypoint) {
+    score += 50;
+    reasons.push("package-entrypoint");
+  }
+  if (signals.publicApi) {
+    score += 45;
+    reasons.push("public-api-reexport");
+  }
+  for (const boundary of signals.boundaries) {
+    score += boundary === "command" ? 40 : 30;
+    reasons.push(`${boundary}-boundary`);
+  }
+  if (signals.importers > 0) {
+    score += Math.min(30, signals.importers * 5);
+    reasons.push(`imported-by:${signals.importers}`);
+  }
+  if (signals.exportedDeclarations > 0) {
+    score += 10;
+    reasons.push(`exported-declarations:${signals.exportedDeclarations}`);
+  }
+  if (signals.largeSource) {
+    score += 10;
+    reasons.push("large-source");
+  }
+  if (signals.broadUtility) {
+    score -= 30;
+    reasons.push("broad-utility-penalty");
+  }
+  if (signals.nonProduction) {
+    score -= 40;
+    reasons.push("non-production-penalty");
+  }
+  if (signals.reexportBarrel) {
+    score -= 60;
+    reasons.push("reexport-barrel-penalty");
+  }
+  return { score: Math.max(0, score), reasons };
+}
+
+function priorityForScore(score) {
+  if (score >= 60) return "high";
+  if (score >= 30) return "medium";
+  return "low";
+}
+
+function applyDispositions(project, candidates, coverage) {
   const candidateByPath = new Map(candidates.map((candidate) => [candidate.path, candidate]));
   const dispositions = [...project.config.audit.dispositions]
     .sort((left, right) => compareText(left.path, right.path))
@@ -245,14 +296,18 @@ async function analyzeAuditProject(root, options = {}) {
         path: disposition.path,
         reason: disposition.reason,
         status: "stale",
-        staleReason: classifyStaleDisposition(disposition.path, fileByPath, exactCardPaths, coveredModules),
+        staleReason: classifyStaleDisposition(disposition.path, coverage.fileByPath, coverage.exactCardPaths, coverage.coveredModules),
       };
     });
   const activeCandidates = candidates.filter((candidate) => candidateByPath.has(candidate.path));
-  const summary = {
-    analyzedFiles: fileByPath.size,
-    cardedFiles: cardedFilePaths.size,
-    filesWithoutModuleCards: fileByPath.size - cardedFilePaths.size,
+  return { activeCandidates, dispositions };
+}
+
+function summarizeAudit(coverage, activeCandidates, dispositions) {
+  return {
+    analyzedFiles: coverage.fileByPath.size,
+    cardedFiles: coverage.cardedFilePaths.size,
+    filesWithoutModuleCards: coverage.fileByPath.size - coverage.cardedFilePaths.size,
     candidates: activeCandidates.length,
     high: activeCandidates.filter((candidate) => candidate.priority === "high").length,
     medium: activeCandidates.filter((candidate) => candidate.priority === "medium").length,
@@ -261,14 +316,12 @@ async function analyzeAuditProject(root, options = {}) {
     suppressedCandidates: dispositions.filter((disposition) => disposition.status === "suppressed").length,
     staleDispositions: dispositions.filter((disposition) => disposition.status === "stale").length,
   };
-  const result = {
-    schemaVersion: AUDIT_SCHEMA_VERSION,
-    repositoryId: project.config.repositoryId,
-    summary,
-    candidates: activeCandidates,
-    dispositions,
-  };
-  return { project, fileByPath, candidates, result };
+}
+
+function compareAuditCandidates(left, right) {
+  return priorityRank(left.priority) - priorityRank(right.priority) ||
+    right.score - left.score ||
+    compareText(left.path, right.path);
 }
 
 function normalizeExplanationPath(root, inputPath) {
