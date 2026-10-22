@@ -70,17 +70,33 @@ export function validateProject(project) {
   return diagnostics;
 }
 
+// Stage order is intentional: cheap structural checks run before config-dependent lint rules,
+// and the returned diagnostics keep the order tests and CLI output already rely on.
 function validateRecord(record, config) {
   const diagnostics = [];
-  const { block, card, relativePath, declaration } = record;
+  validateBlockHeader(record, diagnostics);
+  validateBlockEntries(record, diagnostics);
+  validateCardIdentity(record, diagnostics);
+  validateDuplicateValues(record, diagnostics);
+  validateRole(record, config, diagnostics);
+  validateSearch(record, config, diagnostics);
+  validateInvariants(record, config, diagnostics);
+  validateEffects(record, config, diagnostics);
+  validateRisks(record, config, diagnostics);
+  validateRelationsForRecord(record, config, diagnostics);
+  validateCardLimits(record, config, diagnostics);
+  validateFormatting(record, config, diagnostics);
+  return diagnostics;
+}
+
+function validateBlockHeader(record, diagnostics) {
+  const { block, card, relativePath } = record;
   for (const syntaxError of block.syntaxErrors) {
     diagnostics.push(diagnostic("error", "LNV011", syntaxError.message, relativePath, syntaxError.line));
   }
-
   if (!SCOPES.includes(block.scope)) {
     diagnostics.push(diagnostic("error", "LNV011", `Unknown scope ${block.scope}.`, relativePath, block.startLine));
   }
-
   for (const unknown of card.unknown) {
     const code = FORBIDDEN_VOLATILE_KEYS.includes(unknown.key) ? "LNV003" : "LNV005";
     const message =
@@ -89,7 +105,10 @@ function validateRecord(record, config) {
         : `Unknown field ${unknown.key}; allowed fields are ${ALLOWED_KEYS.join(", ")}.`;
     diagnostics.push(diagnostic("error", code, message, relativePath, unknown.line));
   }
+}
 
+function validateBlockEntries(record, diagnostics) {
+  const { block, relativePath } = record;
   const presentKeys = new Set(block.entries.map((entry) => entry.key));
   for (const entry of block.entries) {
     if (!entry.value.trim()) {
@@ -106,13 +125,11 @@ function validateRecord(record, config) {
       }
     }
   }
-
   for (const key of REQUIRED_KEYS) {
     if (!presentKeys.has(key)) {
       diagnostics.push(diagnostic("error", "LNV001", `Missing required field ${key}.`, relativePath, block.startLine));
     }
   }
-
   const counts = new Map();
   for (const entry of block.entries) counts.set(entry.key, (counts.get(entry.key) ?? 0) + 1);
   for (const key of ["id", "role", "owns", "excludes", "search", "effect", "risk", "stability"]) {
@@ -122,7 +139,10 @@ function validateRecord(record, config) {
       );
     }
   }
+}
 
+function validateCardIdentity(record, diagnostics) {
+  const { card, block, relativePath } = record;
   if (card.id && !ID_PATTERN.test(card.id)) {
     diagnostics.push(
       diagnostic(
@@ -134,15 +154,10 @@ function validateRecord(record, config) {
       ),
     );
   }
+}
 
-  validateDuplicateValues(record, diagnostics);
-  validateRole(record, config, diagnostics);
-  validateSearch(record, config, diagnostics);
-  validateInvariants(record, config, diagnostics);
-  validateEffects(record, config, diagnostics);
-  validateRisks(record, config, diagnostics);
-  validateRelationsForRecord(record, config, diagnostics);
-
+function validateCardLimits(record, config, diagnostics) {
+  const { card, block, relativePath, declaration } = record;
   if (card.stability && !STABILITIES.includes(card.stability)) {
     diagnostics.push(
       diagnostic(
@@ -154,7 +169,6 @@ function validateRecord(record, config) {
       ),
     );
   }
-
   const limit = config.lint.maxBlockBytes[block.scope];
   const bytes = Buffer.byteLength(block.raw);
   if (limit && bytes > limit) {
@@ -162,7 +176,6 @@ function validateRecord(record, config) {
       diagnostic("error", "LNV013", `${block.scope} block is ${bytes} bytes; limit is ${limit}.`, relativePath, block.startLine),
     );
   }
-
   if (block.scope === "symbol" && !declaration) {
     diagnostics.push(
       diagnostic(
@@ -174,7 +187,10 @@ function validateRecord(record, config) {
       ),
     );
   }
+}
 
+function validateFormatting(record, config, diagnostics) {
+  const { block, relativePath } = record;
   if (config.lint.requireCanonicalOrder) {
     const positions = block.entries
       .filter((entry) => KEY_ORDER.includes(entry.key))
@@ -185,7 +201,6 @@ function validateRecord(record, config) {
       );
     }
   }
-
   if (config.lint.requireCanonicalFormatting) {
     const expected = formatLlmnavBlock(block).trim();
     if (block.raw.trim() !== expected) {
@@ -194,8 +209,6 @@ function validateRecord(record, config) {
       );
     }
   }
-
-  return diagnostics;
 }
 
 

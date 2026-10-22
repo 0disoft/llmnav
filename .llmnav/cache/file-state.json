@@ -5479,7 +5479,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "b2869988488aea2a6c8345ff34e3b2570c4fe16d50bcbdf6ecae592b6293a15b",
+      "contentHash": "431020561dd227207c74d01e9bf9d80c67db009d3fcd9fa635b694b1c24c1fad",
       "declarations": [
         null
       ],
@@ -5492,7 +5492,7 @@
       ],
       "path": "src/validator.js",
       "semanticBytes": 359,
-      "sourceBytes": 21275
+      "sourceBytes": 22149
     },
     {
       "blocks": [],
