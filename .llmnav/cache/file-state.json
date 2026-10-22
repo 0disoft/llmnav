@@ -5029,7 +5029,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "aa62395881cbcac2f3ffa23fcecf03c179d24c0d625edad302e8513d12169286",
+      "contentHash": "62ea5bc392cd0097ec6fef499c2fc251b5468a1ed2d53b5c1bb5a52512dc4020",
       "declarations": [
         null
       ],
@@ -5049,7 +5049,7 @@
       ],
       "path": "src/search.js",
       "semanticBytes": 464,
-      "sourceBytes": 32103
+      "sourceBytes": 32778
     },
     {
       "blocks": [],
@@ -6167,7 +6167,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "21319204c3d5880cd78b60ed8d0c1eb228c8b9b7cc2f2d06eb63b7cac71d98ed",
+      "contentHash": "e61aa79501859478327bbc09683afd985858df17333c480c364f89ad18da3ac2",
       "declarations": [],
       "imports": [
         "../src/search.js",
@@ -6176,7 +6176,7 @@
       ],
       "path": "tests/search.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 2143
+      "sourceBytes": 2776
     },
     {
       "blocks": [],

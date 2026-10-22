@@ -141,7 +141,7 @@ export async function queryProject(root, query, options = {}) {
   throwIfAborted(options.signal);
   const { index, lexicon, searchIndex, graph } = await loadSearchData(root);
   throwIfAborted(options.signal);
-  return queryPreparedIndex(index, searchIndex, query, { ...options, lexicon, graph });
+  return detachSearchResults(queryPreparedIndex(index, searchIndex, query, { ...options, lexicon, graph }));
 }
 
 export async function createProjectSession(root, options = {}) {
@@ -151,7 +151,7 @@ export async function createProjectSession(root, options = {}) {
     root,
     ...(withPromptBundle ? { promptBundle: snapshot.promptBundle, generationHash: snapshot.generationHash } : {}),
     query(query, options = {}) {
-      return structuredClone(queryPreparedIndex(snapshot.index, snapshot.searchIndex, query, {
+      return detachSearchResults(queryPreparedIndex(snapshot.index, snapshot.searchIndex, query, {
         ...options,
         lexicon: snapshot.lexicon,
         graph: snapshot.graph,
@@ -244,9 +244,16 @@ export function queryIndex(index, query, options = {}) {
       preparedIndexCache.set(index, searchIndex);
     }
   }
-  return queryPreparedIndex(index, searchIndex, query, options);
+  return detachSearchResults(queryPreparedIndex(index, searchIndex, query, options));
 }
 
+/**
+ * Search an already prepared index.
+ *
+ * This is the lowest-level query primitive: results borrow the card objects owned
+ * by `index`, so callers that keep the index alive must clone what they expose or
+ * use `queryIndex` / `createProjectSession`, which detach their results.
+ */
 export function queryPreparedIndex(index, searchIndex, query, options = {}) {
   const top = boundedInteger(options.top, SEARCH_LIMITS.top.default, SEARCH_LIMITS.top.minimum, SEARCH_LIMITS.top.maximum);
   const lexicon = options.lexicon ?? { aliases: {} };
@@ -464,17 +471,27 @@ export function queryIndexLegacy(index, query, options = {}) {
     }
   }
 
-  return results
-    .sort((left, right) => right.score - left.score || compareText(left.card.id, right.card.id))
-    .slice(0, top)
-    .map((result) => ({
-      id: result.card.id,
-      score: Number(result.score.toFixed(SEARCH_RANK.scorePrecision)),
-      reasons: [...new Set(result.reasons)].slice(0, SEARCH_RANK.reasonLimit),
-      role: result.card.role,
-      location: result.card.location,
-      card: result.card,
-    }));
+  return detachSearchResults(
+    results
+      .sort((left, right) => right.score - left.score || compareText(left.card.id, right.card.id))
+      .slice(0, top)
+      .map((result) => ({
+        id: result.card.id,
+        score: Number(result.score.toFixed(SEARCH_RANK.scorePrecision)),
+        reasons: [...new Set(result.reasons)].slice(0, SEARCH_RANK.reasonLimit),
+        role: result.card.role,
+        location: result.card.location,
+        card: result.card,
+      })),
+  );
+}
+
+// Public results must never alias a live index snapshot: callers may edit role, location, or reasons.
+function detachSearchResults(results) {
+  return results.map((result) => {
+    const card = structuredClone(result.card);
+    return { ...result, location: card.location, card };
+  });
 }
 
 export async function showProjectCard(root, id) {

@@ -52,6 +52,17 @@ test("tokenizer emits CJK n-grams", () => {
 });
 
 
+test("detaches public results from the index snapshot", () => {
+  const [result] = queryIndex(index, "replayed refresh token", { top: 3, lexicon: { aliases: {} } });
+  assert.notEqual(result.card, index.cards[0]);
+  result.card.role = "mutated by the caller";
+  result.location.path = "mutated.ts";
+  assert.equal(index.cards[0].role, "Rotate one refresh-token family atomically and reject replayed tokens.");
+  assert.equal(index.cards[0].location.path, "src/auth/rotate.ts");
+  const [again] = queryIndex(index, "replayed refresh token", { top: 3, lexicon: { aliases: {} } });
+  assert.equal(again.role, index.cards[0].role);
+});
+
 test("clamps invalid result limits", () => {
   const results = queryIndex(index, "refresh token", { top: 0, lexicon: { aliases: {} } });
   assert.equal(results.length, 1);
