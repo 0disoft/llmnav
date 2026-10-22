@@ -12,6 +12,7 @@ stability=contract
 import { lstat, readdir, stat } from "node:fs/promises";
 import path from "node:path";
 import { throwIfAborted } from "./abort.js";
+import { DEFAULT_IO_CONCURRENCY, mapWithConcurrency } from "./concurrency.js";
 import { compareText, matchesAnyGlob, relativePosix, toPosix } from "./util.js";
 
 export async function findProjectRoot(start = process.cwd()) {
@@ -55,7 +56,10 @@ export async function collectSourceFiles(root, config, requestedPaths = [], opti
       if (details.isFile()) {
         if (shouldIncludeFile(root, absolute, config)) files.set(absolute, true);
       } else if (details.isDirectory()) {
-        await walkDirectory(root, absolute, config, files, options.signal);
+        await walkDirectory(root, absolute, config, files, {
+          signal: options.signal,
+          ioConcurrency: options.ioConcurrency ?? DEFAULT_IO_CONCURRENCY,
+        });
       }
     } catch (error) {
       if (!error || typeof error !== "object" || error.code !== "ENOENT") throw error;
@@ -70,21 +74,39 @@ function assertInsideRoot(root, absolutePath, sourcePath) {
   throw new Error(`Source path ${JSON.stringify(sourcePath)} escapes the repository root.`);
 }
 
-async function walkDirectory(root, directory, config, files, signal) {
+async function walkDirectory(root, directory, config, files, options) {
+  let pending = [directory];
+  while (pending.length > 0) {
+    throwIfAborted(options.signal);
+    const batches = await mapWithConcurrency(pending, options.ioConcurrency, (current) =>
+      readDirectory(root, current, config, options.signal), { signal: options.signal });
+    const next = [];
+    for (const batch of batches) {
+      for (const absolute of batch.files) files.set(absolute, true);
+      next.push(...batch.directories);
+    }
+    next.sort(compareText);
+    pending = next;
+  }
+}
+
+async function readDirectory(root, directory, config, signal) {
+  throwIfAborted(signal);
   const entries = await readdir(directory, { withFileTypes: true });
   entries.sort((left, right) => compareText(left.name, right.name));
+  const batch = { files: [], directories: [] };
   for (const entry of entries) {
-    throwIfAborted(signal);
     const absolute = path.join(directory, entry.name);
     const relative = relativePosix(root, absolute);
     if (entry.isDirectory()) {
       if (config.excludeDirectories.includes(entry.name)) continue;
       if (relative.startsWith(`${toPosix(config.generation.cacheDirectory)}/`)) continue;
-      await walkDirectory(root, absolute, config, files, signal);
+      batch.directories.push(absolute);
     } else if (entry.isFile() && shouldIncludeFile(root, absolute, config)) {
-      files.set(absolute, true);
+      batch.files.push(absolute);
     }
   }
+  return batch;
 }
 
 function shouldIncludeFile(root, absolutePath, config) {

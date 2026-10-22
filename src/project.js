@@ -12,6 +12,7 @@ stability=architecture
 
 import { readFile } from "node:fs/promises";
 import { throwIfAborted } from "./abort.js";
+import { DEFAULT_IO_CONCURRENCY, mapWithConcurrency } from "./concurrency.js";
 import { loadConfig } from "./config.js";
 import { createDeclarationScanContext, findAttachedDeclaration, extractImports } from "./declaration.js";
 import { collectSourceFiles } from "./files.js";
@@ -22,30 +23,45 @@ import { relativePosix, sha256 } from "./util.js";
 
 export async function scanProject(root, options = {}) {
   const { config, configPath } = await loadConfig(root);
-  const files = await collectSourceFiles(root, config, options.paths ?? [], { signal: options.signal });
+  const ioConcurrency = options.ioConcurrency ?? DEFAULT_IO_CONCURRENCY;
+  const files = await collectSourceFiles(root, config, options.paths ?? [], {
+    signal: options.signal,
+    ioConcurrency,
+  });
+  const scanned = await mapWithConcurrency(files, ioConcurrency, async (absolutePath) => {
+    throwIfAborted(options.signal);
+    const source = await readFile(absolutePath, "utf8");
+    const relativePath = relativePosix(root, absolutePath);
+    const blocks = parseLlmnavBlocks(source, relativePath);
+    return {
+      absolutePath,
+      relativePath,
+      source,
+      blocks,
+      contentHash: sha256(source),
+      imports: extractImports(source, relativePath),
+      declarationScanContext: createDeclarationScanContext(source),
+    };
+  }, { signal: options.signal });
   const records = [];
   const fileRecords = [];
   let sourceBytes = 0;
   let semanticBytes = 0;
 
-  for (const absolutePath of files) {
+  for (const { absolutePath, relativePath, source, blocks, contentHash, imports, declarationScanContext } of scanned) {
     throwIfAborted(options.signal);
-    const source = await readFile(absolutePath, "utf8");
-    const relativePath = relativePosix(root, absolutePath);
-    const blocks = parseLlmnavBlocks(source, relativePath);
-    const contentHash = sha256(source);
-    sourceBytes += Buffer.byteLength(source);
-    semanticBytes += blocks.reduce((sum, block) => sum + Buffer.byteLength(block.raw), 0);
-    const imports = extractImports(source, relativePath);
-    const declarationScanContext = createDeclarationScanContext(source);
+    const fileBytes = Buffer.byteLength(source);
+    const fileSemanticBytes = blocks.reduce((sum, block) => sum + Buffer.byteLength(block.raw), 0);
+    sourceBytes += fileBytes;
+    semanticBytes += fileSemanticBytes;
     const fileRecord = {
       absolutePath,
       relativePath,
       source,
       contentHash,
       bodyHash: contentHash,
-      sourceBytes: Buffer.byteLength(source),
-      semanticBytes: blocks.reduce((sum, block) => sum + Buffer.byteLength(block.raw), 0),
+      sourceBytes: fileBytes,
+      semanticBytes: fileSemanticBytes,
       blocks,
       imports,
     };

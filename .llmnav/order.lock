@@ -47,3 +47,4 @@ llmnav.support.runtime
 llmnav.support.abort
 llmnav.support.policy
 llmnav.support.errors
+llmnav.support.concurrency

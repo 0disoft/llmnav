@@ -1655,6 +1655,20 @@
     {
       "confidence": 0.85,
       "from": "llmnav/llmnav.index.incremental",
+      "id": "23932c96b8840ea47231496f3b4a2b1dd4174dc9b2e908b4c3df07930b9a7811",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/incremental.js",
+        "source": "src/incremental.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.support.concurrency"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.index.incremental",
       "id": "ec846714e8b1df18ec82c4f99f741e3a758003ad2494949a3a8ce5cb6f2c7135",
       "kind": "imports",
       "provenance": {
@@ -2103,6 +2117,20 @@
     {
       "confidence": 0.85,
       "from": "llmnav/llmnav.project.scan",
+      "id": "1c6cfe6b59b9a61c444a3fa60400ecaaa52e633ad430ec2945bc7ad7d4a85d7a",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/project.js",
+        "source": "src/project.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.support.concurrency"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.project.scan",
       "id": "abd5074665c983c6a436efaf1df7bcc65834974507395109b3d1be74e9dd2f4d",
       "kind": "imports",
       "provenance": {
@@ -2452,6 +2480,20 @@
     },
     {
       "confidence": 0.85,
+      "from": "llmnav/llmnav.source.discover",
+      "id": "b58bcf287f64a41123d4497c4d0c8a61ee37247f0e0eca0e004fc2e57ad631ae",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/files.js",
+        "source": "src/files.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.support.concurrency"
+    },
+    {
+      "confidence": 0.85,
       "from": "llmnav/llmnav.source.format",
       "id": "54f15e35dbb213cb0151750aa91383efc632211aeefd2db7bf50d25bd5245259",
       "kind": "imports",
@@ -2575,6 +2617,20 @@
         "type": "source-card"
       },
       "to": "llmnav/llmnav.project.scan"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.support.concurrency",
+      "id": "f7bb11e206bd56454126f0b74c63d5a12ddc587781600710a60d9375e498179c",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/concurrency.js",
+        "source": "src/concurrency.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.support.abort"
     },
     {
       "confidence": 0.85,
@@ -3701,6 +3757,28 @@
     {
       "definitions": [],
       "external": false,
+      "key": "llmnav/llmnav.support.concurrency",
+      "location": {
+        "declarationLine": null,
+        "endLine": 9,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/concurrency.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Run independent filesystem work with a bounded number of in-flight tasks while keeping results ordered.",
+      "semanticId": "llmnav.support.concurrency",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
       "key": "llmnav/llmnav.support.errors",
       "location": {
         "declarationLine": null,
@@ -3789,11 +3867,11 @@
   ],
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "9818e30a7554e53c15ca07a2b5912365aad28c5d60db1067d3e512060248a4aa",
+  "sourceHash": "603fee9828b23941d6103f241bda3937072a9faa91463969d587e2e5b9eb9a59",
   "stats": {
-    "edgeCount": 189,
+    "edgeCount": 193,
     "importedIndexCount": 0,
-    "nodeCount": 49,
+    "nodeCount": 50,
     "unresolvedNodeCount": 0
   }
 }

@@ -834,13 +834,14 @@
         "cache directory commit"
       ],
       "hashes": {
-        "body": "3fa7627aa99d7dd353cea0f7ec491a7ea7dfd1354ea2adcc7569a2d62b868e33",
+        "body": "f4b0ec1d07e4f9e67eea0669c489333021022ab1c5da75bc600760c758bdef4d",
         "semantic": "26e0abf92c39ff07a7eb622d795d5ecbc83c7704b7c1ed09cd3ad339e3c04865",
-        "structure": "d03a4559c819fe6738538d7228758b12722ccd5d4e8f0b93ce02795fbbd717fa"
+        "structure": "4533f320f5c701808b979357ece450b56bdbc35f1117a5d53a2556e684a33657"
       },
       "id": "llmnav.index.incremental",
       "imports": [
         "./abort.js",
+        "./concurrency.js",
         "./config.js",
         "./declaration.js",
         "./files.js",
@@ -1670,13 +1671,14 @@
         "cache generation"
       ],
       "hashes": {
-        "body": "997eb182366aecb2f7ad26f7390074bc97702ba7804869b0174196c3321d089e",
+        "body": "2aa73790a772b6583cf35b679a38401299955b7a54cba420eec57a3bae224cce",
         "semantic": "c7cfa511ec9a14754b58e0f03bae113bd850ef9c716034a56d82449368d41af2",
-        "structure": "d0a6a1248c27baccb0d69a888c3425fd9ef4a080888650f959f70f37ff940ee1"
+        "structure": "352c8ccb45a3ece68dbb4fb66ae09796efcd874a9c56d6425f6fea0e110962f6"
       },
       "id": "llmnav.project.scan",
       "imports": [
         "./abort.js",
+        "./concurrency.js",
         "./config.js",
         "./declaration.js",
         "./files.js",
@@ -1778,13 +1780,14 @@
         "generated artifact selection"
       ],
       "hashes": {
-        "body": "f8911bdf8681b77d2bb2763578f0af0f9dc517fc346b975ff032a9e555188d3a",
+        "body": "a84cd02677032c6348e29c59cb183bc214afd4d9228073c27f8beb1a7a1b2a49",
         "semantic": "c4bc743c8234815ec4eb769379036544321fbbbedfeeb363c580bb1658320a33",
-        "structure": "22a3ff9f20dd020969fdb2fcb0ecca8ecc70735d7aef3b2da2c283a10e56e8bb"
+        "structure": "41ab60f39516b3c84d5f12f567dfee581cd6351517842d0f142034010e2febdf"
       },
       "id": "llmnav.source.discover",
       "imports": [
         "./abort.js",
+        "./concurrency.js",
         "./util.js",
         "node:fs/promises",
         "node:path"
@@ -1977,7 +1980,7 @@
         "semantic role generation"
       ],
       "hashes": {
-        "body": "e6b6c71ecd0d2573135c150b572a385ebd42f18f3382b61b207b2e52f6dabb7c",
+        "body": "65399d12b001b5582dd03c9d5e70f75f144711efe947eb6e24ca07725f77d3aa",
         "semantic": "47c79f36d71a39ad0b795700686fce0f12733568534f1a69dca05cc3cc8348c7",
         "structure": "63b2f15828293156f5c02a00fd4c7d58578a3ee9cd6439ee8a1c6904d7e43fb6"
       },
@@ -2429,6 +2432,52 @@
         "operation deadline"
       ],
       "stability": "contract"
+    },
+    {
+      "boundaries": [],
+      "excludes": [
+        "retry policy",
+        "thread pools",
+        "request scheduling"
+      ],
+      "hashes": {
+        "body": "a33122d3f0c1fa5d2283a71470df07f05804e86e7dd06b0f671f6f0fea8c9c29",
+        "semantic": "157138aea5e71ca3d02cd96529aa28144a40e4ba8daeb4f68e69f2d79cb9e824",
+        "structure": "4c7fb349a66718add4d2b5b294c8705ae003016a2bb5d159489eecd3854bd311"
+      },
+      "id": "llmnav.support.concurrency",
+      "imports": [
+        "./abort.js"
+      ],
+      "invariant": [
+        "Results keep input order and the lowest failing index is reported regardless of completion order."
+      ],
+      "location": {
+        "declarationLine": null,
+        "endLine": 9,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/concurrency.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "owns": [
+        "bounded asynchronous map",
+        "deterministic failure selection",
+        "concurrency limit validation"
+      ],
+      "role": "Run independent filesystem work with a bounded number of in-flight tasks while keeping results ordered.",
+      "scope": "module",
+      "search": [
+        "bounded concurrency",
+        "parallel filesystem reads",
+        "ordered async map"
+      ],
+      "stability": "architecture"
     }
   ],
   "contractFingerprints": {
@@ -2444,6 +2493,6 @@
   "generatedBy": "llmnav@0.12.0",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "a293a60c630a59f98a737d5f0fd238cc63e644a92b5ab96fe2f454d5031b48ed",
+  "sourceHash": "ada145cfeb3aaad8c9f06453b50e76707ba58e45ff06bca4e1074baa143af1a5",
   "specVersion": "1"
 }

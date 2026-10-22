@@ -1715,7 +1715,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "e6b6c71ecd0d2573135c150b572a385ebd42f18f3382b61b207b2e52f6dabb7c",
+      "contentHash": "65399d12b001b5582dd03c9d5e70f75f144711efe947eb6e24ca07725f77d3aa",
       "declarations": [
         null
       ],
@@ -1730,7 +1730,7 @@
       ],
       "path": "src/audit.js",
       "semanticBytes": 577,
-      "sourceBytes": 27049
+      "sourceBytes": 27087
     },
     {
       "blocks": [
@@ -2083,6 +2083,107 @@
       "path": "src/cli.js",
       "semanticBytes": 508,
       "sourceBytes": 23108
+    },
+    {
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
+              "retry policy",
+              "thread pools",
+              "request scheduling"
+            ],
+            "id": "llmnav.support.concurrency",
+            "invariant": [
+              "Results keep input order and the lowest failing index is reported regardless of completion order."
+            ],
+            "owns": [
+              "bounded asynchronous map",
+              "deterministic failure selection",
+              "concurrency limit validation"
+            ],
+            "rel": [],
+            "risk": [],
+            "role": "Run independent filesystem work with a bounded number of in-flight tasks while keeping results ordered.",
+            "scope": "module",
+            "search": [
+              "bounded concurrency",
+              "parallel filesystem reads",
+              "ordered async map"
+            ],
+            "stability": "architecture",
+            "unknown": []
+          },
+          "end": 507,
+          "endLine": 9,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.support.concurrency"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Run independent filesystem work with a bounded number of in-flight tasks while keeping results ordered."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "bounded asynchronous map|deterministic failure selection|concurrency limit validation"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "retry policy|thread pools|request scheduling"
+            },
+            {
+              "key": "search",
+              "line": 6,
+              "order": 4,
+              "value": "bounded concurrency|parallel filesystem reads|ordered async map"
+            },
+            {
+              "key": "invariant",
+              "line": 7,
+              "order": 5,
+              "value": "Results keep input order and the lowest failing index is reported regardless of completion order."
+            },
+            {
+              "key": "stability",
+              "line": 8,
+              "order": 6,
+              "value": "architecture"
+            }
+          ],
+          "filePath": "src/concurrency.js",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.support.concurrency\nrole=Run independent filesystem work with a bounded number of in-flight tasks while keeping results ordered.\nowns=bounded asynchronous map|deterministic failure selection|concurrency limit validation\nexcludes=retry policy|thread pools|request scheduling\nsearch=bounded concurrency|parallel filesystem reads|ordered async map\ninvariant=Results keep input order and the lowest failing index is reported regardless of completion order.\nstability=architecture\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "a33122d3f0c1fa5d2283a71470df07f05804e86e7dd06b0f671f6f0fea8c9c29",
+      "declarations": [
+        null
+      ],
+      "imports": [
+        "./abort.js"
+      ],
+      "path": "src/concurrency.js",
+      "semanticBytes": 507,
+      "sourceBytes": 1643
     },
     {
       "blocks": [
@@ -2924,19 +3025,20 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "f8911bdf8681b77d2bb2763578f0af0f9dc517fc346b975ff032a9e555188d3a",
+      "contentHash": "a84cd02677032c6348e29c59cb183bc214afd4d9228073c27f8beb1a7a1b2a49",
       "declarations": [
         null
       ],
       "imports": [
         "./abort.js",
+        "./concurrency.js",
         "./util.js",
         "node:fs/promises",
         "node:path"
       ],
       "path": "src/files.js",
       "semanticBytes": 485,
-      "sourceBytes": 3999
+      "sourceBytes": 4785
     },
     {
       "blocks": [
@@ -3498,12 +3600,13 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "3fa7627aa99d7dd353cea0f7ec491a7ea7dfd1354ea2adcc7569a2d62b868e33",
+      "contentHash": "f4b0ec1d07e4f9e67eea0669c489333021022ab1c5da75bc600760c758bdef4d",
       "declarations": [
         null
       ],
       "imports": [
         "./abort.js",
+        "./concurrency.js",
         "./config.js",
         "./declaration.js",
         "./files.js",
@@ -3516,18 +3619,18 @@
       ],
       "path": "src/incremental.js",
       "semanticBytes": 381,
-      "sourceBytes": 12250
+      "sourceBytes": 12770
     },
     {
       "blocks": [],
-      "contentHash": "83dcb99fba64e3a9ce22a61207f0573d394678b04ae57ff181d737509e6d0362",
+      "contentHash": "2e47348daa40d243cbbd16bc98363b429e3c011687e543f64866244151fa6f49",
       "declarations": [],
       "imports": [
         "./spec.js"
       ],
       "path": "src/index.d.ts",
       "semanticBytes": 0,
-      "sourceBytes": 32950
+      "sourceBytes": 33096
     },
     {
       "blocks": [],
@@ -4482,12 +4585,13 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "997eb182366aecb2f7ad26f7390074bc97702ba7804869b0174196c3321d089e",
+      "contentHash": "2aa73790a772b6583cf35b679a38401299955b7a54cba420eec57a3bae224cce",
       "declarations": [
         null
       ],
       "imports": [
         "./abort.js",
+        "./concurrency.js",
         "./config.js",
         "./declaration.js",
         "./files.js",
@@ -4499,7 +4603,7 @@
       ],
       "path": "src/project.js",
       "semanticBytes": 510,
-      "sourceBytes": 2914
+      "sourceBytes": 3423
     },
     {
       "blocks": [
@@ -5736,6 +5840,24 @@
       "path": "tests/cli.test.js",
       "semanticBytes": 0,
       "sourceBytes": 3218
+    },
+    {
+      "blocks": [],
+      "contentHash": "07d000bab1708a5c3855bb647b8cc43441838797106c98326168d14a1675f5f4",
+      "declarations": [],
+      "imports": [
+        "../src/concurrency.js",
+        "../src/initializer.js",
+        "../src/project.js",
+        "node:assert/strict",
+        "node:fs/promises",
+        "node:os",
+        "node:path",
+        "node:test"
+      ],
+      "path": "tests/concurrency.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 3446
     },
     {
       "blocks": [],

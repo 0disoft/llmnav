@@ -176,3 +176,9 @@ role Keep one source of truth for search ranking weights and bounded input defau
 owns search ranking weights, search input limits, audit input limits
 excludes query execution, configuration loading, agent transport
 rel workflow>llmnav.search.query, workflow>llmnav.agent.tool-schema, workflow>llmnav.audit.coverage
+
+@llmnav.support.concurrency
+role Run independent filesystem work with a bounded number of in-flight tasks while keeping results ordered.
+owns bounded asynchronous map, deterministic failure selection, concurrency limit validation
+excludes retry policy, thread pools, request scheduling
+invariant Results keep input order and the lowest failing index is reported regardless of completion order.

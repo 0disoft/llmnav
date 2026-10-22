@@ -47,3 +47,4 @@
 {"id":"llmnav.support.abort","state":"active"}
 {"id":"llmnav.support.policy","state":"active"}
 {"id":"llmnav.support.errors","state":"active"}
+{"id":"llmnav.support.concurrency","state":"active"}

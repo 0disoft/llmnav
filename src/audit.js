@@ -92,7 +92,7 @@ export async function explainProjectFile(root, inputPath) {
 
 async function analyzeAuditProject(root, options = {}) {
   throwIfAborted(options.signal);
-  const project = await scanProject(root, { signal: options.signal });
+  const project = await scanProject(root, { signal: options.signal, ioConcurrency: options.ioConcurrency });
   const coverage = buildCoverageIndexes(project);
   const filesByModule = groupFilesByModule(coverage.fileByPath);
   const moduleKeys = new Set(filesByModule.keys());

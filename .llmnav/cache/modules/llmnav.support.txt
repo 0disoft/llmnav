@@ -22,3 +22,9 @@ role Describe failures with a stable code, retry classification, cause chain, an
 owns error codes, cause chains, retry classification, operation deadlines
 excludes diagnostics reporting, CLI formatting, retry scheduling
 invariant Every wrapped failure keeps the original error as its cause.
+
+@llmnav.support.concurrency
+role Run independent filesystem work with a bounded number of in-flight tasks while keeping results ordered.
+owns bounded asynchronous map, deterministic failure selection, concurrency limit validation
+excludes retry policy, thread pools, request scheduling
+invariant Results keep input order and the lowest failing index is reported regardless of completion order.
