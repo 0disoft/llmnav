@@ -271,7 +271,7 @@
       "hashes": {
         "body": "c5cb47f5977f2a4b300d2586e0caf417c5885760fcc1aafdfe5f7ede02d82fa8",
         "semantic": "c01b2ebbd877ed11aba267fbfa7a7a5d6b25e98512d8b07d607516159e7acefc",
-        "structure": "1ba034e6d6e99cd12ba0f1df1beaa78a172a44e6f322e3cc696977802a604d06"
+        "structure": "ae2b711a5d32404830baec38cd8b1d5ae9c2879dd4d37a3d12a40f655f6c549a"
       },
       "id": "example.privacy.export.prepare",
       "imports": [
@@ -288,7 +288,7 @@
         "language": "python",
         "path": "examples/python/export_job.py",
         "receiver": null,
-        "signature": "def prepare_export(account_id: str) -> ExportJob: return ExportJob(job_id=f\"job",
+        "signature": "def prepare_export(account_id: str) -> ExportJob",
         "startLine": 20,
         "symbol": "prepare_export",
         "visibility": "public"
@@ -313,7 +313,7 @@
       "hashes": {
         "body": "f98584754c8b75c3d04d668ade1de00c9ecb2221674a7571d2bad383ebdd9637",
         "semantic": "3d3d742230ed78e848032539d73960dffe14fd5e6366a2c6eda3d00abe73c62e",
-        "structure": "4b4d283c88fd662b7b2b4585f3bfeae840d5710c49f84efc4c5a8b8c156e6e51"
+        "structure": "874e5c6c756de2b5260bf75415690325fe8220ec3c663bfa21ffac1b62f37858"
       },
       "id": "example.privacy.export.prepare-contract",
       "imports": [
@@ -327,7 +327,7 @@
         "language": "python",
         "path": "examples/python/export_job.py",
         "receiver": null,
-        "signature": "def assert_prepare_export_contract() -> None: \"\"\"Replace with repository-specific tests.\"\"\"",
+        "signature": "def assert_prepare_export_contract() -> None",
         "startLine": 35,
         "symbol": "assert_prepare_export_contract",
         "visibility": "public"
@@ -1556,7 +1556,7 @@
         "type-system resolution"
       ],
       "hashes": {
-        "body": "4c8a045c0c331b053bf3beef7de989666606dcab4c9ad22cf779403836e6c384",
+        "body": "b71603053fa0a473e260cd01c0f59f66f7dfd7a39f3e7250800f834da8feb95c",
         "semantic": "a23716e9b8875db627bcaf423c48724cbebc2d4b7eb086b35379cc85525af93a",
         "structure": "7d48e8fccd0be05c2233ec45943a2f0dbabedc7c64e024fc9af9058e5f2d9b58"
       },
@@ -2183,13 +2183,13 @@
     },
     "exportedApi": {
       "count": 5,
-      "sha256": "453ba480305042543c7b2d91cf2cfb84d7caf7a44049cdc86415aefe4dd0e38a"
+      "sha256": "1fb36f3bb2c7713d2af53b5a54c910c30502c598165c305ed5069796cbd6813a"
     },
     "schemaVersion": 1
   },
   "generatedBy": "llmnav@0.9.7",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "52481b4dbb5443ff2f9d325c2db5c4daa165593ac77e96f40fb3b19c985d74c2",
+  "sourceHash": "dc717ae48f966daa95e40f73af971648af956a7ffb027d3b7383a0967a5a7cb4",
   "specVersion": "1"
 }

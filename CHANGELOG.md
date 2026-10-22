@@ -8,6 +8,8 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 
 ### Fixed
 
+* End declaration bodies at the real body brace instead of the first brace of a parameter or return type, so TypeScript object parameters, destructured props, object return types, generic constraints, and Go `interface{}` bodies produce distinct body hashes and appear in generation change reports instead of looking unchanged.
+* Keep declaration signatures whole across type annotations, and stop Python signatures at the header colon instead of a brace inside a string literal.
 * Serialize initialization and the following generation under one generation lock, so concurrent `init` or `generate` runs cannot overwrite each other, and let a rerun reclaim a lock whose owner process was killed.
 * Check all selected agent instruction files before bootstrap writes and reject duplicate closing markers; malformed later adapters no longer leave earlier instructions or forced configuration partially updated.
 * Preserve team instructions before managed agent blocks when the generated heading is missing, renamed, or separated from the marker by unrelated text.

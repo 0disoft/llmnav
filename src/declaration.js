@@ -45,6 +45,10 @@ const DECLARATION_PATTERNS = {
 const JAVASCRIPT_REGEX_PREFIX_KEYWORDS = new Set([
   "case", "delete", "do", "else", "in", "instanceof", "new", "return", "throw", "typeof", "void", "yield",
 ]);
+// A brace group at depth zero that closes onto one of these characters annotates or initializes
+// the declaration instead of forming its body. "(" is excluded on purpose: a closing brace followed
+// by "(" is an automatically-inserted-semicolon call, not a type continuation.
+const DECLARATION_CONTINUATION_CHARACTERS = new Set(["[", "{", "}", ")", "]", ",", ":", ".", "=", "|", "&", "<", ">", "?"]);
 
 export function createDeclarationScanContext(source) {
   return {
@@ -69,7 +73,7 @@ export function findAttachedDeclaration(source, block, filePath, scanContext = c
     const match = candidate.match(definition.pattern);
     if (!match) continue;
     const declarationOffset = block.end + skipped;
-    const signature = extractSignature(collapsed);
+    const signature = extractSignature(collapsed, language);
     const exported = isExportedDeclaration(language, match[1], signature);
     const endOffset = findDeclarationEnd(source, declarationOffset, family, scanContext);
     if (endOffset === null) return null;
@@ -125,11 +129,114 @@ function skipTrivia(value) {
   return consumed;
 }
 
-function extractSignature(collapsed) {
+function extractSignature(collapsed, language) {
   if (!collapsed) return "";
-  const boundaries = [collapsed.indexOf("{"), collapsed.indexOf("=>")].filter((index) => index >= 0);
-  const end = boundaries.length > 0 ? Math.min(...boundaries) : Math.min(collapsed.length, 500);
+  const end = language === "python" ? findPythonHeaderEnd(collapsed) : findSignatureEnd(collapsed);
   return collapsed.slice(0, end).trim().replace(/[;:]$/u, "");
+}
+
+function findPythonHeaderEnd(value) {
+  let state = "normal";
+  let escaped = false;
+  let parentheses = 0;
+  let brackets = 0;
+  for (let index = 0; index < value.length; index += 1) {
+    const character = value[index];
+    if (state !== "normal") {
+      if (escaped) escaped = false;
+      else if (character === "\\") escaped = true;
+      else if (character === state) state = "normal";
+      continue;
+    }
+    if (character === '"' || character === "'" || character === "`") {
+      state = character;
+    } else if (character === "(") {
+      parentheses += 1;
+    } else if (character === ")") {
+      parentheses = Math.max(0, parentheses - 1);
+    } else if (character === "[") {
+      brackets += 1;
+    } else if (character === "]") {
+      brackets = Math.max(0, brackets - 1);
+    } else if (character === ":" && parentheses === 0 && brackets === 0) {
+      return index;
+    }
+  }
+  return Math.min(value.length, 500);
+}
+
+function findSignatureEnd(value) {
+  let state = "normal";
+  let escaped = false;
+  let parentheses = 0;
+  let brackets = 0;
+  for (let index = 0; index < value.length; index += 1) {
+    const character = value[index];
+    if (state !== "normal") {
+      if (escaped) escaped = false;
+      else if (character === "\\") escaped = true;
+      else if (character === state) state = "normal";
+      continue;
+    }
+    if (character === '"' || character === "'" || character === "`") {
+      state = character;
+      continue;
+    }
+    if (character === "(") {
+      parentheses += 1;
+      continue;
+    }
+    if (character === ")") {
+      parentheses = Math.max(0, parentheses - 1);
+      continue;
+    }
+    if (character === "[") {
+      brackets += 1;
+      continue;
+    }
+    if (character === "]") {
+      brackets = Math.max(0, brackets - 1);
+      continue;
+    }
+    if (parentheses !== 0 || brackets !== 0) continue;
+    if (character === "=" && value[index + 1] === ">") return index;
+    if (character !== "{") continue;
+    const close = findSignatureBraceEnd(value, index);
+    if (close < 0) return index;
+    if (!DECLARATION_CONTINUATION_CHARACTERS.has(nextSignatureCharacter(value, close + 1))) return index;
+    index = close;
+  }
+  return Math.min(value.length, 500);
+}
+
+function findSignatureBraceEnd(value, open) {
+  let depth = 0;
+  let state = "normal";
+  let escaped = false;
+  for (let index = open; index < value.length; index += 1) {
+    const character = value[index];
+    if (state !== "normal") {
+      if (escaped) escaped = false;
+      else if (character === "\\") escaped = true;
+      else if (character === state) state = "normal";
+      continue;
+    }
+    if (character === '"' || character === "'" || character === "`") {
+      state = character;
+    } else if (character === "{") {
+      depth += 1;
+    } else if (character === "}") {
+      depth -= 1;
+      if (depth === 0) return index;
+    }
+  }
+  return -1;
+}
+
+function nextSignatureCharacter(value, offset) {
+  let cursor = offset;
+  while (cursor < value.length && value[cursor] === " ") cursor += 1;
+  return value[cursor] ?? "";
 }
 
 function languageFamily(extension) {
@@ -235,13 +342,18 @@ function findDeclarationEnd(source, start, family, scanContext) {
     if (character === "]") brackets = Math.max(0, brackets - 1);
     if (character === "{") {
       braces += 1;
-      openedBody = true;
-    } else if (character === "}" && openedBody) {
+      if (!openedBody && parentheses === 0 && brackets === 0) openedBody = true;
+    } else if (character === "}" && braces > 0) {
       braces -= 1;
-      if (braces === 0) return index + 1;
-    } else if (character === ";" && !openedBody && parentheses === 0 && brackets === 0) {
+      if (!openedBody || braces !== 0) continue;
+      const next = nextSignificantCharacter(source, index + 1, scanContext);
+      if (next.exhausted) return null;
+      if (!DECLARATION_CONTINUATION_CHARACTERS.has(next.character)) return index + 1;
+      // This brace group closed a type annotation or an initializer, not the declaration body.
+      index = next.offset - 1;
+    } else if (character === ";" && braces === 0 && parentheses === 0 && brackets === 0) {
       return index + 1;
-    } else if (character === "\n" && !openedBody && parentheses === 0 && brackets === 0) {
+    } else if (character === "\n" && braces === 0 && parentheses === 0 && brackets === 0) {
       const continuation = declarationContinuesBefore(source, start, index, scanContext);
       const next = nextSignificantCharacter(source, index + 1, scanContext);
       if (continuation === null || next.exhausted) return null;
@@ -316,11 +428,25 @@ function declarationContinuesBefore(source, start, offset, scanContext) {
 
 function nextSignificantCharacter(source, offset, scanContext) {
   let cursor = offset;
-  while (cursor < source.length && /\s/u.test(source[cursor])) {
-    if (!consumeDeclarationScan(scanContext)) return { character: "", exhausted: true };
-    cursor += 1;
+  for (;;) {
+    while (cursor < source.length && /\s/u.test(source[cursor])) {
+      if (!consumeDeclarationScan(scanContext)) return { character: "", offset: cursor, exhausted: true };
+      cursor += 1;
+    }
+    if (source[cursor] === "/" && source[cursor + 1] === "/") {
+      const lineEnd = source.indexOf("\n", cursor);
+      if (lineEnd < 0) return { character: "", offset: source.length, exhausted: false };
+      cursor = lineEnd + 1;
+      continue;
+    }
+    if (source[cursor] === "/" && source[cursor + 1] === "*") {
+      const blockEnd = source.indexOf("*/", cursor + 2);
+      if (blockEnd < 0) return { character: "", offset: source.length, exhausted: false };
+      cursor = blockEnd + 2;
+      continue;
+    }
+    return { character: source[cursor] ?? "", offset: cursor, exhausted: false };
   }
-  return { character: source[cursor] ?? "", exhausted: false };
 }
 
 function looksLikeRustCharacterLiteral(source, offset) {

@@ -791,7 +791,7 @@
           "line": 31,
           "offset": 937,
           "receiver": null,
-          "signature": "def prepare_export(account_id: str) -> ExportJob: return ExportJob(job_id=f\"job",
+          "signature": "def prepare_export(account_id: str) -> ExportJob",
           "symbol": "prepare_export",
           "visibility": "public"
         },
@@ -804,7 +804,7 @@
           "line": 42,
           "offset": 1305,
           "receiver": null,
-          "signature": "def assert_prepare_export_contract() -> None: \"\"\"Replace with repository-specific tests.\"\"\"",
+          "signature": "def assert_prepare_export_contract() -> None",
           "symbol": "assert_prepare_export_contract",
           "visibility": "public"
         }
@@ -2246,7 +2246,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "4c8a045c0c331b053bf3beef7de989666606dcab4c9ad22cf779403836e6c384",
+      "contentHash": "b71603053fa0a473e260cd01c0f59f66f7dfd7a39f3e7250800f834da8feb95c",
       "declarations": [
         null
       ],
@@ -2256,7 +2256,7 @@
       ],
       "path": "src/declaration.js",
       "semanticBytes": 477,
-      "sourceBytes": 15223
+      "sourceBytes": 19593
     },
     {
       "blocks": [
@@ -5162,7 +5162,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "75035e83f46c5f105da8c2ce62f2acc93582f4124a345162bf3ed1798ae1293f",
+      "contentHash": "cb63959dab7a2c15bdf6adc4147fab87c21fea5e86f240538822e5181c236b59",
       "declarations": [],
       "imports": [
         "../src/boundaries.js",
@@ -5178,7 +5178,7 @@
       ],
       "path": "tests/declaration-structure.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 6579
+      "sourceBytes": 13676
     },
     {
       "blocks": [],

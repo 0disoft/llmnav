@@ -2462,7 +2462,7 @@
         "language": "python",
         "path": "examples/python/export_job.py",
         "receiver": null,
-        "signature": "def prepare_export(account_id: str) -> ExportJob: return ExportJob(job_id=f\"job",
+        "signature": "def prepare_export(account_id: str) -> ExportJob",
         "startLine": 20,
         "symbol": "prepare_export",
         "visibility": "public"
@@ -2496,7 +2496,7 @@
         "language": "python",
         "path": "examples/python/export_job.py",
         "receiver": null,
-        "signature": "def assert_prepare_export_contract() -> None: \"\"\"Replace with repository-specific tests.\"\"\"",
+        "signature": "def assert_prepare_export_contract() -> None",
         "startLine": 35,
         "symbol": "assert_prepare_export_contract",
         "visibility": "public"
@@ -3301,7 +3301,7 @@
   ],
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "62fa3895702f53113a8f027e53c951a5995089089068f95034c78b9fa5d3fb8f",
+  "sourceHash": "fffc0e7e030edf6bf7f4fb5fcece486c9b0eb989318a1a6d71c1f12078cddfc7",
   "stats": {
     "edgeCount": 162,
     "importedIndexCount": 0,

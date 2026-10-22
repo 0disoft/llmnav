@@ -83,6 +83,14 @@ test("Python declaration hashes include the complete indented body", () => {
   assert.notEqual(firstDeclaration.bodyHash, secondDeclaration.bodyHash);
 });
 
+test("Python signatures end at the header colon instead of a brace inside a literal", () => {
+  const source = `${card("python.emit")}def emit(payload: dict[str, int]) -> None:\n    label = f"payload:{payload}"\n    return None\n`;
+  const [block] = parseLlmnavBlocks(source, "emit.py");
+  const declaration = findAttachedDeclaration(source, block, "emit.py");
+  assert.equal(declaration.signature, "def emit(payload: dict[str, int]) -> None");
+  assert.equal(declaration.endOffset, source.length);
+});
+
 test("JavaScript import extraction ignores unrelated string literals and comments", () => {
   const source = `import value from "./value.js";\nimport {\n  multiline,\n} from "./multiline.js";\nexport { other } from "./other.js";\nconst lazy = import("./lazy.js");\nconst required = require("./required.cjs");\nconst label = "LLMNav";\n// require("./comment.js")\nconst url = "https://example.test";\n`;
   assert.deepEqual(extractImports(source, "source.js"), [
@@ -102,6 +110,130 @@ test("shared declaration scan contexts cap aggregate malformed-source work", () 
   assert.equal(findAttachedDeclaration(source, block, "broken.js", scanContext)?.symbol, "broken");
   assert.equal(findAttachedDeclaration(source, block, "broken.js", scanContext)?.symbol, "broken");
   assert.equal(findAttachedDeclaration(source, block, "broken.js", scanContext), null);
+});
+
+test("declaration bodies include type annotations and initializers that contain braces", () => {
+  const fixtures = [
+    {
+      name: "TypeScript object parameter",
+      filePath: "src/authorize.ts",
+      signature: "export function authorize(user: { role: string }): boolean",
+      first: `${card("api.authorize")}export function authorize(user: { role: string }): boolean {\n  return true;\n}\n`,
+      second: `${card("api.authorize")}export function authorize(user: { role: string }): boolean {\n  return false;\n}\n`,
+    },
+    {
+      name: "TSX destructured props",
+      filePath: "src/page.tsx",
+      signature: "export default function Page({ id }: { id: string })",
+      first: `${card("ui.page")}export default function Page({ id }: { id: string }) {\n  return null;\n}\n`,
+      second: `${card("ui.page")}export default function Page({ id }: { id: string }) {\n  return String(id);\n}\n`,
+    },
+    {
+      name: "TypeScript object return type",
+      filePath: "src/status.ts",
+      signature: "export function make(): { ok: boolean }",
+      first: `${card("api.status.make")}export function make(): { ok: boolean } {\n  return { ok: true };\n}\n`,
+      second: `${card("api.status.make")}export function make(): { ok: boolean } {\n  return { ok: false };\n}\n`,
+    },
+    {
+      name: "TypeScript generic constraint",
+      filePath: "src/pick.ts",
+      signature: "export function pick<T extends {}>(value: T)",
+      first: `${card("util.pick")}export function pick<T extends {}>(value: T) {\n  return value;\n}\n`,
+      second: `${card("util.pick")}export function pick<T extends {}>(value: T) {\n  return [value];\n}\n`,
+    },
+    {
+      name: "Go empty interface parameter",
+      filePath: "src/handle.go",
+      signature: "func Handle(payload interface{}) error",
+      first: `${card("api.handle")}func Handle(payload interface{}) error {\n\treturn nil\n}\n`,
+      second: `${card("api.handle")}func Handle(payload interface{}) error {\n\treturn failed("payload")\n}\n`,
+    },
+    {
+      name: "TypeScript control parameter",
+      filePath: "src/control.ts",
+      signature: "export function control(user: string): boolean",
+      first: `${card("api.control")}export function control(user: string): boolean {\n  return true;\n}\n`,
+      second: `${card("api.control")}export function control(user: string): boolean {\n  return false;\n}\n`,
+    },
+    {
+      name: "multiline TypeScript return type",
+      filePath: "src/build.ts",
+      signature: "export function build(): { ok: boolean; }",
+      first: `${card("api.build")}export function build(): {\n  ok: boolean;\n} {\n  return { ok: true };\n}\n`,
+      second: `${card("api.build")}export function build(): {\n  ok: boolean;\n} {\n  return { ok: false };\n}\n`,
+    },
+    {
+      name: "TypeScript arrow with object body",
+      filePath: "src/arrow.ts",
+      signature: "export const build = (): { ok: boolean }",
+      first: `${card("api.arrow.build")}export const build = (): { ok: boolean } => {\n  return { ok: true };\n};\n`,
+      second: `${card("api.arrow.build")}export const build = (): { ok: boolean } => {\n  return { ok: false };\n};\n`,
+    },
+  ];
+
+  for (const fixture of fixtures) {
+    const [firstBlock] = parseLlmnavBlocks(fixture.first, fixture.filePath);
+    const [secondBlock] = parseLlmnavBlocks(fixture.second, fixture.filePath);
+    const firstDeclaration = findAttachedDeclaration(fixture.first, firstBlock, fixture.filePath);
+    const secondDeclaration = findAttachedDeclaration(fixture.second, secondBlock, fixture.filePath);
+    assert.equal(firstDeclaration.endOffset, fixture.first.lastIndexOf("}") + 1, fixture.name);
+    assert.equal(firstDeclaration.signature, fixture.signature, fixture.name);
+    assert.equal(secondDeclaration.signature, fixture.signature, fixture.name);
+    assert.notEqual(firstDeclaration.bodyHash, secondDeclaration.bodyHash, fixture.name);
+  }
+});
+
+test("declaration boundaries stop before statement continuations and following declarations", () => {
+  const fixtures = [
+    {
+      filePath: "src/asi-call.ts",
+      source: `${card("parser.asi.call")}export function first() {\n  return 1;\n}\n(async () => {\n  waitForFirst();\n})();\n`,
+      expectedEnd: "  return 1;\n}",
+    },
+    {
+      filePath: "src/asi-array.ts",
+      source: `${card("parser.asi.array")}export function second() {\n  return 2;\n}\n;[3].forEach((value) => {\n  recordSecond(value);\n});\n`,
+      expectedEnd: "  return 2;\n}",
+    },
+    {
+      filePath: "src/flags.ts",
+      source: `${card("parser.flags")}export type Flags = { ok: boolean };\nexport const afterTypeAlias = 1;\n`,
+      expectedEnd: "{ ok: boolean }",
+    },
+    {
+      filePath: "src/shape.ts",
+      source: `${card("parser.shape")}export interface Shape {\n  area(): number;\n}\nexport function area(shape: Shape) {\n  return shape.area();\n}\n`,
+      expectedEnd: "  area(): number;\n}",
+    },
+  ];
+
+  for (const fixture of fixtures) {
+    const [block] = parseLlmnavBlocks(fixture.source, fixture.filePath);
+    const declaration = findAttachedDeclaration(fixture.source, block, fixture.filePath);
+    const expectedEnd = fixture.source.indexOf(fixture.expectedEnd) + fixture.expectedEnd.length;
+    assert.equal(declaration.endOffset, expectedEnd, fixture.filePath);
+    assert.match(declaration.bodyHash, /^[a-f0-9]{64}$/u, fixture.filePath);
+  }
+});
+
+test("object-typed declaration bodies surface as body changes in generation reports", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-declaration-object-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await writeFile(path.join(root, "package.json"), '{"name":"declaration-object-fixture"}\n');
+  await mkdir(path.join(root, "src"), { recursive: true });
+  const sourcePath = path.join(root, "src", "authorize.ts");
+  await writeFile(sourcePath, `${card("api.authorize.user")}export function authorize(user: { role: string }): boolean {\n  return true;\n}\n`);
+  const initialized = await initializeProject(root, { agents: ["none"] });
+  assert.equal(initialized.ok, true);
+
+  const source = await readFile(sourcePath, "utf8");
+  await writeFile(sourcePath, source.replace("return true;", "return user.role === \"admin\";"));
+  const generated = await generateProject(root);
+  const change = generated.changedCards.find((item) => item.id === "api.authorize.user");
+  assert.ok(change);
+  assert.deepEqual(change.dimensions, ["body"]);
+  assert.equal(generated.affectedBoundaries.some((item) => item.id === "api.authorize.user"), true);
 });
 
 function card(id) {

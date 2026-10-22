@@ -251,7 +251,7 @@
           "to": "llmnav/example.privacy.export.prepare-contract"
         }
       ],
-      "inputHash": "27414652ff4c9e56eb8fc49f27190b5d72e0bd32f1ee3b70ad13c0bcb699a40d",
+      "inputHash": "280056c748bbc20cd26560e7d81c246b8716ae9a956ce00bffa6b4635ef585b4",
       "key": "card:llmnav/example.privacy.export.prepare",
       "nodes": [
         {
@@ -278,7 +278,7 @@
             "language": "python",
             "path": "examples/python/export_job.py",
             "receiver": null,
-            "signature": "def prepare_export(account_id: str) -> ExportJob: return ExportJob(job_id=f\"job",
+            "signature": "def prepare_export(account_id: str) -> ExportJob",
             "startLine": 20,
             "symbol": "prepare_export",
             "visibility": "public"
@@ -297,11 +297,11 @@
           "semanticId": "example.privacy.export.prepare-contract"
         }
       ],
-      "outputHash": "293aed9b9e809653c6ea9c30b828e1043bdee5a855b9eeadecb21df6d8576dbe"
+      "outputHash": "63e6a67dd47e53bd6d45c8ca4b4405b45b0c5bdbfe2b14a3d109ed06428ad5a4"
     },
     {
       "edges": [],
-      "inputHash": "92bec8394e73bdc26ed660375439daa570f9a4a7681f76dde3c2851f2775a4f6",
+      "inputHash": "92309b57b5363a3cdebe7b28f2830ff9f7fccb03f33fd15ae5078e100727073c",
       "key": "card:llmnav/example.privacy.export.prepare-contract",
       "nodes": [
         {
@@ -328,7 +328,7 @@
             "language": "python",
             "path": "examples/python/export_job.py",
             "receiver": null,
-            "signature": "def assert_prepare_export_contract() -> None: \"\"\"Replace with repository-specific tests.\"\"\"",
+            "signature": "def assert_prepare_export_contract() -> None",
             "startLine": 35,
             "symbol": "assert_prepare_export_contract",
             "visibility": "public"
@@ -338,7 +338,7 @@
           "semanticId": "example.privacy.export.prepare-contract"
         }
       ],
-      "outputHash": "b5ca8118d78b760a47f2ef5678eff14589f1e59b85e3933a6c96e91316664732"
+      "outputHash": "88948988837aad2e001ceb684ac9f0ef4ad179a22a62f112a579e05a385a06b4"
     },
     {
       "edges": [
