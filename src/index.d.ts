@@ -618,6 +618,7 @@ export interface ErrorCauseLink {
   name: string | null;
   code: string | null;
   message: string;
+  errors?: ErrorCauseLink[][];
 }
 
 /** Machine-readable failure details carried by MCP and agent envelopes. */
@@ -625,6 +626,7 @@ export interface ErrorPayload {
   code: string | null;
   retryable: boolean;
   cause: ErrorCauseLink[];
+  errors?: ErrorCauseLink[][];
 }
 
 export const ERROR_CODES: {

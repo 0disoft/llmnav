@@ -2817,7 +2817,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "22f4fe8939c20973f9821ab6babad2136f92ae84891bfa788406e8bd651fce8e",
+      "contentHash": "7ea911e08ac3faaabdc3f7c426521b89034896286176b13a324b0578458dfd43",
       "declarations": [
         null
       ],
@@ -2827,7 +2827,7 @@
       ],
       "path": "src/errors.js",
       "semanticBytes": 453,
-      "sourceBytes": 4616
+      "sourceBytes": 5017
     },
     {
       "blocks": [
@@ -3629,14 +3629,14 @@
     },
     {
       "blocks": [],
-      "contentHash": "fff32986d8c0b11e8b84bb3789458b0738a3c897df4598705a685ef792b5ff30",
+      "contentHash": "ea810efe01eb83600a6ef6c8e723b7fd309406b3ae253018addd980c7d956c04",
       "declarations": [],
       "imports": [
         "./spec.js"
       ],
       "path": "src/index.d.ts",
       "semanticBytes": 0,
-      "sourceBytes": 34240
+      "sourceBytes": 34302
     },
     {
       "blocks": [],
@@ -3786,7 +3786,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "ee9ad898bf15e1d9bf82e1cf617046ce7da8766808ad2b3e9223e2bc80d80cfa",
+      "contentHash": "5b37d2b44fb6fdeb05a64f5b7fc7f26b373fd13eb3eabeece4a3c0b448b621db",
       "declarations": [
         null
       ],
@@ -3801,7 +3801,7 @@
       ],
       "path": "src/initializer.js",
       "semanticBytes": 493,
-      "sourceBytes": 7233
+      "sourceBytes": 7300
     },
     {
       "blocks": [
@@ -4722,7 +4722,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "22f330c95c5d45f66b92656cee02cfb2b64a3aef26acffa49b29af8b6a0a7c95",
+      "contentHash": "fbabe73f6815a33d532e602ddd561f2a9335319b462e38ae3f82d9a8d0eae322",
       "declarations": [
         null
       ],
@@ -4734,7 +4734,7 @@
       ],
       "path": "src/prompt-bundle.js",
       "semanticBytes": 520,
-      "sourceBytes": 5801
+      "sourceBytes": 5827
     },
     {
       "blocks": [
@@ -5589,7 +5589,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "1214eae5e7704b7c236e2c493d1958dc14f3be9c1a13c18e248f7cd71e499c93",
+      "contentHash": "8bdeab05aa3ff2495bbb3f93a7f6ac76d82a8b0fcca57fd08110bed11fdba5b6",
       "declarations": [
         null
       ],
@@ -5602,11 +5602,11 @@
       ],
       "path": "src/transaction.js",
       "semanticBytes": 393,
-      "sourceBytes": 37409
+      "sourceBytes": 37376
     },
     {
       "blocks": [],
-      "contentHash": "f1cbba9661dd110451d2ba63523ea91e5c39a30e808db395006df58472f67d43",
+      "contentHash": "66075b465eca02b4fe1f2c1daeb2485b371ef6aa0bb2a64c269d2bf00e540ce6",
       "declarations": [],
       "imports": [
         "./abort.js",
@@ -5618,7 +5618,7 @@
       ],
       "path": "src/util.js",
       "semanticBytes": 0,
-      "sourceBytes": 11857
+      "sourceBytes": 12577
     },
     {
       "blocks": [
@@ -5969,7 +5969,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "17e0b2dfca4b0b65670ae79820768128f8f7faa009924c358ba910415e940b96",
+      "contentHash": "eb52bc61596653c97017f4a75dcc3be5c1cdbbfbd1934bad482248fab5cad5ad",
       "declarations": [],
       "imports": [
         "../src/errors.js",
@@ -5978,7 +5978,7 @@
       ],
       "path": "tests/errors.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 5511
+      "sourceBytes": 6254
     },
     {
       "blocks": [],
@@ -6000,9 +6000,10 @@
     },
     {
       "blocks": [],
-      "contentHash": "31f021b5b13d0f138733dbbc7c60b1554fd3fbdcfe28e1bf03c5e5dbe283c9ca",
+      "contentHash": "0b29216e17e82eb44ce15d8d5b6f5767f8e84a5a27cb65c025629310f320df46",
       "declarations": [],
       "imports": [
+        "../src/errors.js",
         "../src/formatter.js",
         "../src/incremental.js",
         "../src/initializer.js",
@@ -6019,7 +6020,7 @@
       ],
       "path": "tests/filesystem-safety.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 9722
+      "sourceBytes": 11283
     },
     {
       "blocks": [],

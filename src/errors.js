@@ -72,16 +72,24 @@ export function createIoError(operation, target, cause) {
 
 /** Flatten a cause chain, oldest errors last, with bounded depth. */
 export function causeChain(error) {
+  return collectCauses(error, { seen: new Set(), remaining: 32 }, 0);
+}
+
+function collectCauses(error, budget, depth) {
   const chain = [];
-  const seen = new Set();
   let current = error;
-  while (current !== null && current !== undefined && typeof current === "object" && !seen.has(current) && chain.length < 8) {
-    seen.add(current);
-    chain.push({
+  while (current !== null && typeof current === "object" && !budget.seen.has(current) && chain.length < 8 && depth < 8 && budget.remaining > 0) {
+    budget.seen.add(current);
+    budget.remaining -= 1;
+    const link = {
       name: typeof current.name === "string" ? current.name : null,
       code: errorCode(current),
       message: typeof current.message === "string" ? current.message : String(current),
-    });
+    };
+    if (current instanceof AggregateError) {
+      link.errors = current.errors.slice(0, 8).map((cause) => collectCauses(cause, budget, depth + 1));
+    }
+    chain.push(link);
     current = current.cause;
   }
   return chain;
@@ -94,6 +102,7 @@ export function toErrorPayload(error) {
     code: chain[0]?.code ?? null,
     retryable: isRetryableError(error),
     cause: chain.slice(1),
+    ...(chain[0]?.errors === undefined ? {} : { errors: chain[0].errors }),
   };
 }
 

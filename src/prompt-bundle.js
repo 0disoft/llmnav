@@ -77,8 +77,8 @@ export async function loadPromptPrefixBundleLocked(root, lock) {
   let bundle;
   try {
     bundle = JSON.parse(content);
-  } catch {
-    throw new Error(`Malformed generated prompt bundle ${relativePath}.`);
+  } catch (error) {
+    throw new Error(`Malformed generated prompt bundle ${relativePath}.`, { cause: error });
   }
   if (!isCompatiblePromptPrefixBundle(bundle, config.repositoryId)) {
     throw new Error(`Incompatible generated prompt bundle ${relativePath}.`);

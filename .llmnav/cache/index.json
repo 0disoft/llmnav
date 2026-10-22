@@ -581,7 +581,7 @@
         "automatic annotation"
       ],
       "hashes": {
-        "body": "ee9ad898bf15e1d9bf82e1cf617046ce7da8766808ad2b3e9223e2bc80d80cfa",
+        "body": "5b37d2b44fb6fdeb05a64f5b7fc7f26b373fd13eb3eabeece4a3c0b448b621db",
         "semantic": "ade205cf2bc9147662a917f6a2063498c11ad767e21307e363e85effa3f91455",
         "structure": "abe92e87f0692370a352bfd2b4227d079aa8e1c55f8bd08f60e815d202cd259b"
       },
@@ -937,7 +937,7 @@
         "source indexing"
       ],
       "hashes": {
-        "body": "1214eae5e7704b7c236e2c493d1958dc14f3be9c1a13c18e248f7cd71e499c93",
+        "body": "8bdeab05aa3ff2495bbb3f93a7f6ac76d82a8b0fcca57fd08110bed11fdba5b6",
         "semantic": "ce2cf8943f71d053f8cba914886bae20316e5b6106857f52abc4d8a59afb1ef1",
         "structure": "5de94f39bf7e761651c8294ee0af6202e494f6eb4a3f829ad9e27414fc3d9848"
       },
@@ -1374,7 +1374,7 @@
         "source discovery"
       ],
       "hashes": {
-        "body": "22f330c95c5d45f66b92656cee02cfb2b64a3aef26acffa49b29af8b6a0a7c95",
+        "body": "fbabe73f6815a33d532e602ddd561f2a9335319b462e38ae3f82d9a8d0eae322",
         "semantic": "017f482c228aa90c44fa6dc5c28dc170cd578730c84d09de7b1d13b2616f065a",
         "structure": "bca3ff4f06072f7b5ca7cfa3805990cc20a941b10601bcb2947d4a1f50a7d38c"
       },
@@ -2405,7 +2405,7 @@
         "retry scheduling"
       ],
       "hashes": {
-        "body": "22f4fe8939c20973f9821ab6babad2136f92ae84891bfa788406e8bd651fce8e",
+        "body": "7ea911e08ac3faaabdc3f7c426521b89034896286176b13a324b0578458dfd43",
         "semantic": "d6cbc36ba531885f4ba3fda92bab5467687d9266cb42bc2114e6c278b7200850",
         "structure": "c8ec99a69c18ae22d0dc73d3921b769fc4fafe0264ee238395d6d9cad6a4b7a7"
       },
@@ -2506,6 +2506,6 @@
   "generatedBy": "llmnav@0.13.3",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "07d64c41386bd287fac7f0a7986813ba55173ed529b98e3d165e4483fdeac194",
+  "sourceHash": "d58131e820c1166140de11bb3adc3ea5e42681c0efea6a45d4528b3290d07ad0",
   "specVersion": "1"
 }

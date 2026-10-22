@@ -21,6 +21,7 @@ import {
   sha256,
   stableStringify,
   toPosix,
+  writeFileAndClose,
 } from "./util.js";
 import { abortable, assertAbortSignal, throwIfAborted } from "./abort.js";
 import { DEFAULT_RUNTIME, MAX_TIMER_DELAY_MS, resolveScheduler } from "./runtime.js";
@@ -152,12 +153,7 @@ export async function acquireGenerationLock(root, options = {}) {
 }
 
 async function writeLockCandidate(handle, record) {
-  try {
-    await handle.writeFile(stableStringify(record));
-    await handle.sync();
-  } finally {
-    await handle.close();
-  }
+  await writeFileAndClose(handle, stableStringify(record), { sync: true });
 }
 
 async function waitForLockPoll(delay, sleepImpl, signal) {

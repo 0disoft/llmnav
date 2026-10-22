@@ -139,8 +139,8 @@ async function readPackageManifest(root, validateScripts) {
   const text = await readText(packagePath, null);
   if (text === null) return null;
   let parsed;
-  try { parsed = JSON.parse(text); } catch {
-    throw packageUsageError("package.json must contain a valid JSON object. Correct it and rerun llmnav init.");
+  try { parsed = JSON.parse(text); } catch (error) {
+    throw packageUsageError("package.json must contain a valid JSON object. Correct it and rerun llmnav init.", error);
   }
   const object = (value) => value !== null && typeof value === "object" && !Array.isArray(value);
   if (!object(parsed)) throw packageUsageError("package.json must contain a JSON object. Correct it and rerun llmnav init.");
@@ -150,8 +150,8 @@ async function readPackageManifest(root, validateScripts) {
   return parsed;
 }
 
-function packageUsageError(message) {
-  const error = new Error(message);
+function packageUsageError(message, cause) {
+  const error = new Error(message, cause === undefined ? undefined : { cause });
   error.exitCode = 2;
   return error;
 }

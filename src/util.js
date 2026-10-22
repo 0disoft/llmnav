@@ -155,11 +155,7 @@ export async function atomicWrite(root, filePath, content, options = {}) {
   try {
     const handle = await (options.io?.open ?? open)(temporaryPath, "wx");
     owned = true;
-    try {
-      await handle.writeFile(content, "utf8");
-    } finally {
-      await handle.close();
-    }
+    await writeFileAndClose(handle, content);
     await options.beforeCommit?.({ filePath, temporaryPath });
     await assertNoSymlinkTraversal(root, filePath, label);
     const currentIdentity = await directoryIdentity(root, parent, label);
@@ -173,10 +169,32 @@ export async function atomicWrite(root, filePath, content, options = {}) {
   } catch (error) {
     // A failed write can still leave a partial temporary file (ENOSPC, EIO).
     if (owned && await parentHasIdentity(root, parent, parentIdentity)) {
-      await (options.io?.rm ?? rm)(temporaryPath, { force: true });
+      try {
+        await (options.io?.rm ?? rm)(temporaryPath, { force: true });
+      } catch (cleanupError) {
+        throw new AggregateError([error, cleanupError], "Atomic write failed and temporary-file cleanup also failed.", { cause: error });
+      }
     }
     throw error;
   }
+}
+
+/** Close an owned handle without replacing a write or sync failure. */
+export async function writeFileAndClose(handle, content, { sync = false } = {}) {
+  const failures = [];
+  try {
+    await handle.writeFile(content, "utf8");
+    if (sync) await handle.sync();
+  } catch (error) {
+    failures.push(error);
+  }
+  try {
+    await handle.close();
+  } catch (error) {
+    failures.push(error);
+  }
+  if (failures.length === 1) throw failures[0];
+  if (failures.length > 1) throw new AggregateError(failures, "File write failed and handle closure also failed.", { cause: failures[0] });
 }
 
 async function directoryIdentity(root, directory, label) {

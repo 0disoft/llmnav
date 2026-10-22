@@ -73,6 +73,19 @@ test("a deadline reports a timeout without cancelling the work", async () => {
   });
 });
 
+test("aggregate failures retain their original errors in bounded wire details", () => {
+  const disk = Object.assign(new Error("disk full"), { code: "ENOSPC" });
+  const cleanup = Object.assign(new Error("cleanup denied"), { code: "EACCES" });
+  const error = new AggregateError([disk, cleanup], "write and cleanup failed");
+  const payload = toErrorPayload(error);
+  assert.deepEqual(payload.errors.map(chain => chain[0].code), ["ENOSPC", "EACCES"]);
+  error.errors.push(error);
+  assert.doesNotThrow(() => JSON.stringify(toErrorPayload(error)));
+  let nested = error;
+  for (let index = 0; index < 100; index++) nested = new AggregateError([nested, nested], "nested");
+  assert.ok(JSON.stringify(toErrorPayload(nested)).length < 5000);
+});
+
 test("a cause cycle still yields a finite chain", () => {
   const first = new Error("first");
   const second = new Error("second", { cause: first });

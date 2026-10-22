@@ -203,6 +203,8 @@ const result = await withDeadline("query request", DEFAULT_REQUEST_TIMEOUT_MS, q
 
 A deadline rejects with `code: "LNV102"` and `retryable: false`; it does not cancel the underlying promise, so a timed-out read is abandoned rather than guaranteed stopped. `timeoutMs: 0` disables the deadline. The MCP server applies the same deadline per tool call through `requestTimeoutMs`.
 
+Aggregate failures also include an optional `errors` array of cause chains. Nested aggregates share a 32-error budget, with at most eight entries per aggregate and eight levels of nesting. Atomic writes preserve write, close, and temporary-file cleanup errors together; parser wrappers retain the original syntax error as `cause`.
+
 ## Build and update an inverted index
 
 ```js

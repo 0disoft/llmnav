@@ -9,8 +9,38 @@ import { formatProject } from "../src/formatter.js";
 import { initializeProject } from "../src/initializer.js";
 import { ensureActiveIds, loadRegistry } from "../src/registry.js";
 import { loadSearchData } from "../src/search.js";
-import { atomicWrite } from "../src/util.js";
+import { atomicWrite, writeFileAndClose } from "../src/util.js";
 import { createRuntime } from "../src/runtime.js";
+import { toErrorPayload } from "../src/errors.js";
+
+test("write, close, and temporary cleanup failures retain every original error", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-atomic-causes-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  const disk = Object.assign(new Error("disk full"), { code: "ENOSPC" });
+  const close = Object.assign(new Error("close failed"), { code: "EIO" });
+  const cleanup = Object.assign(new Error("cleanup denied"), { code: "EACCES" });
+  let closed = 0;
+  await assert.rejects(() => atomicWrite(root, path.join(root, "target"), "next", {
+    io: {
+      open: async () => ({ writeFile: async () => { throw disk; }, close: async () => { closed++; throw close; } }),
+      rm: async () => { throw cleanup; },
+    },
+  }), error => {
+    assert.equal(error.errors[0].errors[0], disk);
+    assert.equal(error.errors[0].errors[1], close);
+    assert.equal(error.errors[1], cleanup);
+    const wire = JSON.stringify(toErrorPayload(error));
+    for (const code of ["ENOSPC", "EIO", "EACCES"]) assert.ok(wire.includes(code));
+    return true;
+  });
+  assert.equal(closed, 1);
+  await assert.rejects(() => writeFileAndClose({ writeFile: async () => {}, close: async () => { throw close; } }, ""), error => error === close);
+  let failed = false;
+  await writeFileAndClose({ writeFile: async () => { throw undefined; }, close: async () => {} }, "").catch(error => {
+    failed = true; assert.equal(error, undefined);
+  });
+  assert.equal(failed, true);
+});
 
 test("formatting rejects concurrent edits instead of overwriting current source", async (context) => {
   const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-format-conflict-"));
