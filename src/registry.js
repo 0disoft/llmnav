@@ -11,6 +11,7 @@ stability=contract
 
 import path from "node:path";
 import { ID_PATTERN } from "./spec.js";
+import { withGenerationLock } from "./transaction.js";
 import { assertNoSymlinkTraversal, atomicWrite, parseJsonLines, readText } from "./util.js";
 
 const REGISTRY_STATES = new Set(["active", "redirect", "replaced", "retired"]);
@@ -72,13 +73,28 @@ export async function loadRegistry(root) {
   return { registryPath, records: [...byId.values()], byId, errors };
 }
 
-export async function ensureActiveIds(root, registry, ids) {
+export async function ensureActiveIds(root, registry, ids, options = {}) {
   const registryPath = path.join(root, ".llmnav", "ids.jsonl");
   if (path.resolve(registry.registryPath) !== path.resolve(registryPath)) {
     throw new Error("Registry path does not belong to the requested project root.");
   }
+  if (options.lockOwnerId !== undefined) {
+    return mergeActiveIdsUnderLock(root, registryPath, registry, ids);
+  }
+  return withGenerationLock(
+    root,
+    () => mergeActiveIdsUnderLock(root, registryPath, registry, ids),
+    options.lockOptions,
+  );
+}
+
+async function mergeActiveIdsUnderLock(root, registryPath, registry, ids) {
   await assertNoSymlinkTraversal(root, registryPath, ".llmnav/ids.jsonl");
-  const { records, changed } = mergeActiveIds(registry, ids);
+  // Re-read inside the lock: the caller's snapshot may predate another writer,
+  // and the registry is briefly absent while generation swaps control artifacts.
+  const current = await loadRegistry(root);
+  const base = current.errors.length === 0 ? current : registry;
+  const { records, changed } = mergeActiveIds(base, ids);
   if (changed) await atomicWrite(root, registryPath, renderRegistryRecords(records));
   return { records, changed };
 }

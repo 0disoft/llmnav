@@ -1726,13 +1726,14 @@
         "search ranking"
       ],
       "hashes": {
-        "body": "6503ea5ecc05e7f366a1fe7f53901b65b2b2ad461a75d618586ee90e8c9d9637",
+        "body": "5b43b986760f0a9cb77706efff2252d8700f93dd9994d118d8a423c4c8fb71db",
         "semantic": "549b068d1ff836ecb828e847dcdd342ecd26a6c1023d4ea6e714f68daa76a733",
-        "structure": "791c0de573b9ac2639fdd5cc24ffe66715313f7016730e897af08056f8b4e32a"
+        "structure": "6793e0299206c78c48522d092c69db3ceda6a79311a8a5d6909cf74836cf78bd"
       },
       "id": "llmnav.registry.ids",
       "imports": [
         "./spec.js",
+        "./transaction.js",
         "./util.js",
         "node:path"
       ],
@@ -2390,6 +2391,6 @@
   "generatedBy": "llmnav@0.11.1",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "359722ac21ef4d868580dd332c2da67e80ad693f2f253a30c98fde8fecc15555",
+  "sourceHash": "16d04d0ee48abe2ba54213410a37efd5ced42882b26881e93095554e02dac0c3",
   "specVersion": "1"
 }

@@ -4334,6 +4334,20 @@
         {
           "confidence": 0.85,
           "from": "llmnav/llmnav.registry.ids",
+          "id": "b7543bf471cfa6e2a6bf3dd6d8304864556d48f69df0ac5929ad14fd7c065ca1",
+          "kind": "imports",
+          "provenance": {
+            "generator": "llmnav",
+            "line": null,
+            "path": "src/registry.js",
+            "source": "src/registry.js",
+            "type": "local-import"
+          },
+          "to": "llmnav/llmnav.index.transaction"
+        },
+        {
+          "confidence": 0.85,
+          "from": "llmnav/llmnav.registry.ids",
           "id": "f71ad87155dba43e07e3c026f3fd57ed17688d0400c28be1817a649337f75560",
           "kind": "imports",
           "provenance": {
@@ -4346,7 +4360,7 @@
           "to": "llmnav/llmnav.spec.contract"
         }
       ],
-      "inputHash": "2d8010acc5a855bb3dc7144627fe5cb4038a2d9d3fcb6de5f66b24033f63cd2a",
+      "inputHash": "ffe806b3fb33d467a61c9fba58b6e06ac4386cbc6ea6f4446b22523f6ac9e142",
       "key": "card:llmnav/llmnav.registry.ids",
       "nodes": [
         {
@@ -4357,6 +4371,15 @@
           "repositoryId": "llmnav",
           "role": null,
           "semanticId": "llmnav.index.generate"
+        },
+        {
+          "definitions": [],
+          "external": false,
+          "key": "llmnav/llmnav.index.transaction",
+          "location": null,
+          "repositoryId": "llmnav",
+          "role": null,
+          "semanticId": "llmnav.index.transaction"
         },
         {
           "definitions": [],
@@ -4389,7 +4412,7 @@
           "semanticId": "llmnav.spec.contract"
         }
       ],
-      "outputHash": "b9716dd8d3b8f6ade0d0249f8eefd929918fdd62edc0c1960a934d7eee263f1a"
+      "outputHash": "305d19a4c96789a7f061ee8f0c324a9886c0228a0c4de85359727a2972d63da4"
     },
     {
       "edges": [

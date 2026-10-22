@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
+import { mkdtemp, rm } from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
 import test from "node:test";
-import { resolveRegistryId } from "../src/registry.js";
+import { ensureActiveIds, loadRegistry, resolveRegistryId } from "../src/registry.js";
 
 test("multi-target replacements remain explicit instead of choosing the first entry", () => {
   const registry = registryFrom([
@@ -40,6 +43,22 @@ test("cycles hidden in one replacement branch are detected", () => {
     state: "cycle",
     chain: ["old.name", "cycle.name", "old.name"],
   });
+});
+
+test("merging active IDs re-reads the registry inside the generation lock", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-registry-"));
+  context.after(async () => {
+    assert.equal(path.dirname(root), path.resolve(os.tmpdir()));
+    assert.ok(path.basename(root).startsWith("llmnav-registry-"));
+    await rm(root, { recursive: true, force: true });
+  });
+  const first = await loadRegistry(root);
+  const stale = await loadRegistry(root);
+  await ensureActiveIds(root, first, ["alpha.one"]);
+  await ensureActiveIds(root, stale, ["beta.two"]);
+  const final = await loadRegistry(root);
+  assert.deepEqual(final.records.map((record) => record.id), ["alpha.one", "beta.two"]);
+  assert.deepEqual(final.errors, []);
 });
 
 function registryFrom(records) {

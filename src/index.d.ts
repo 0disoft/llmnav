@@ -819,7 +819,7 @@ export function cardToCanonicalObject(card: LlmnavCard): Record<string, string |
 export function formatLlmnavBlock(block: LlmnavBlock): string;
 export function parseLlmnavBlocks(source: string, filePath?: string): LlmnavBlock[];
 export function scanProject(root: string, options?: { paths?: string[]; signal?: AbortSignalLike }): Promise<ScannedProject>;
-export function ensureActiveIds(root: string, registry: Registry, ids: string[]): Promise<{ records: RegistryRecord[]; changed: boolean }>;
+export function ensureActiveIds(root: string, registry: Registry, ids: string[], options?: { lockOwnerId?: string; lockOptions?: GenerationLockOptions }): Promise<{ records: RegistryRecord[]; changed: boolean }>;
 export function mergeActiveIds(registry: Registry, ids: string[]): { records: RegistryRecord[]; changed: boolean };
 export function renderRegistryRecords(records: RegistryRecord[]): string;
 export function loadRegistry(root: string): Promise<Registry>;
