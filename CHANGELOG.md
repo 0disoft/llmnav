@@ -4,6 +4,16 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.11.2] — 2026-10-22
+
+### Fixed
+
+* Merge active semantic IDs inside the generation lock and re-read the registry there, so two concurrent generations can no longer drop each other's newly registered IDs.
+* Retry releasing the generation lock and force-drop a lock that still names this process, so one failed release cannot block every later generation; when both the generation and the release fail, both errors are reported instead of the release masking the original failure.
+* Load one prepared session per concurrent MCP burst and wait for output drain before reading the next request, so bursts no longer multiply index loads and a slow or closed stdout no longer grows an unbounded buffer.
+* Remove the partially written temporary file when an atomic write fails, so failed writes leave no orphaned `*.tmp-*` files.
+* Resolve relations during agent check against the prepared session registry, include the registry in the MCP session stamp, and plan plus apply a migration under a single generation lock, so checks cannot read a half-swapped registry and a concurrent generation cannot invalidate a migration plan.
+
 ## [0.11.1] — 2026-10-22
 
 ### Changed
