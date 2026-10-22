@@ -388,6 +388,39 @@ test("recovery rejects journal paths outside the owning transaction directory", 
   assert.equal(await readFile(sentinelPath, "utf8"), "must-stay\n");
 });
 
+test("committed recovery prefers cache, then stage, then backup before cleaning the journal", async (context) => {
+  for (const [present, action, selected] of [
+    [["cache", "stage", "backup"], "finalized-committed-cache", "cache"],
+    [["stage", "backup"], "installed-committed-stage", "stage"],
+    [["backup"], "restored-backup-after-missing-commit", "backup"],
+    [[], "cleanup", null],
+  ]) {
+    const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-committed-recovery-"));
+    context.after(() => rm(root, { recursive: true, force: true }));
+    const transactionDirectory = ".llmnav/.transactions/tx";
+    await mkdir(path.join(root, transactionDirectory), { recursive: true });
+    const paths = { cache: ".llmnav/cache", stage: `${transactionDirectory}/stage`, backup: `${transactionDirectory}/backup` };
+    for (const name of present) {
+      await mkdir(path.join(root, paths[name]), { recursive: true });
+      await writeFile(path.join(root, paths[name], "sentinel"), name);
+    }
+    await writeFile(path.join(root, ".llmnav/generation-transaction.json"), JSON.stringify({
+      schemaVersion: 1,
+      cacheDirectory: paths.cache,
+      transactionDirectory,
+      stageDirectory: paths.stage,
+      backupDirectory: paths.backup,
+      hadExistingCache: true,
+      phase: "committed",
+    }));
+    assert.deepEqual(await recoverGenerationTransaction(root, { cacheDirectory: paths.cache }), { recovered: true, action });
+    if (selected) assert.equal(await readFile(path.join(root, paths.cache, "sentinel"), "utf8"), selected);
+    else await assert.rejects(() => access(path.join(root, paths.cache)), { code: "ENOENT" });
+    await assert.rejects(() => access(path.join(root, transactionDirectory)), { code: "ENOENT" });
+    await assert.rejects(() => access(path.join(root, ".llmnav/generation-transaction.json")), { code: "ENOENT" });
+  }
+});
+
 test("staging rejects artifact paths that normalize outside the cache", async (context) => {
   const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-transaction-artifact-traversal-"));
   context.after(() => rm(root, { recursive: true, force: true }));

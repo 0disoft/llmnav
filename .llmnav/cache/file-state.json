@@ -5585,7 +5585,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "fd78d7c0f8b06a3a40d0618da1bedad51a5bc6c2cc09bb734c334073e2775734",
+      "contentHash": "3e61ffc009c0e83f1cbed29543cec2754904a3efa5d04eca9d730c75ea9b4f45",
       "declarations": [
         null
       ],
@@ -5598,7 +5598,7 @@
       ],
       "path": "src/transaction.js",
       "semanticBytes": 393,
-      "sourceBytes": 34412
+      "sourceBytes": 34912
     },
     {
       "blocks": [],
@@ -6478,7 +6478,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "91fbe93202ed81c2d6d2a893fbfd82b9224974ddd5d472df565c6bdc7f3d7109",
+      "contentHash": "54bfed28dcbabb17dd7bcc90aca4c0e1d81cbd1a4c9120ead50bbb7a8ed1fe13",
       "declarations": [],
       "imports": [
         "../src/generator.js",
@@ -6497,7 +6497,7 @@
       ],
       "path": "tests/transaction.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 30762
+      "sourceBytes": 32603
     },
     {
       "blocks": [],

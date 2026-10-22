@@ -131,12 +131,7 @@ export async function acquireGenerationLock(root, options = {}) {
   try {
     const handle = await openImpl(candidatePath, "wx");
     candidateCreated = true;
-    try {
-      await handle.writeFile(stableStringify({ schemaVersion: 1, ownerId, pid: runtime.pid }));
-      await handle.sync();
-    } finally {
-      await handle.close();
-    }
+    await writeLockCandidate(handle, { schemaVersion: 1, ownerId, pid: runtime.pid });
 
     for (let attempt = 0; delays === undefined || attempt < delays.length; attempt += 1) {
       const remaining = timeoutMs - (scheduler.now() - started);
@@ -145,40 +140,11 @@ export async function acquireGenerationLock(root, options = {}) {
       // Waiting for a held lock must stay cancellable; a poll interval bounds
       // how late the cancellation is observed.
       throwIfAborted(signal);
-      if (delay > 0) {
-        const waiting = new AbortController();
-        try {
-          await abortable(sleepImpl(delay, { signal: waiting.signal }), signal);
-        } finally {
-          waiting.abort();
-        }
-      }
+      if (delay > 0) await waitForLockPoll(delay, sleepImpl, signal);
       throwIfAborted(signal);
       if (attempt > 0 && scheduler.now() - started > timeoutMs) break;
-      try {
-        await linkImpl(candidatePath, lockPath);
+      if (await tryPublishGenerationLock(candidatePath, lockPath, runtime, linkImpl)) {
         return { root, lockPath, ownerId, runtime };
-      } catch (error) {
-        if (error && typeof error === "object" && LOCK_LINK_CAPABILITY_ERRORS.has(error.code)) {
-          throw new Error(
-            `Cannot publish the LLMNav generation lock (${error.code}). The repository filesystem must support hard links and permit their creation. Check filesystem permissions or move the repository to a filesystem with hard-link support.`,
-            { cause: error },
-          );
-        }
-        if (!error || typeof error !== "object" || error.code !== "EEXIST") throw error;
-        const observed = await readLockRecord(lockPath);
-        if (observed.missing) continue;
-        if (!isOwnedLockRecord(observed.record)) throw invalidOwnerRecordError();
-        if (!runtime.isProcessAlive(observed.record.pid)) {
-          await removeOwnedLock(lockPath, observed.record.ownerId, runtime);
-          // Reclaiming a dead owner must not cost another full poll interval.
-          try {
-            await linkImpl(candidatePath, lockPath);
-            return { root, lockPath, ownerId, runtime };
-          } catch (retryError) {
-            if (!retryError || typeof retryError !== "object" || retryError.code !== "EEXIST") throw retryError;
-          }
-        }
       }
     }
     const observed = await readLockRecord(lockPath);
@@ -188,6 +154,52 @@ export async function acquireGenerationLock(root, options = {}) {
   } finally {
     // Candidate cleanup must not turn successful acquisition into a leaked lock.
     if (candidateCreated) await removeWithRetry(candidatePath).catch(() => {});
+  }
+}
+
+async function writeLockCandidate(handle, record) {
+  try {
+    await handle.writeFile(stableStringify(record));
+    await handle.sync();
+  } finally {
+    await handle.close();
+  }
+}
+
+async function waitForLockPoll(delay, sleepImpl, signal) {
+  const waiting = new AbortController();
+  try {
+    await abortable(sleepImpl(delay, { signal: waiting.signal }), signal);
+  } finally {
+    waiting.abort();
+  }
+}
+
+async function tryPublishGenerationLock(candidatePath, lockPath, runtime, linkImpl) {
+  try {
+    await linkImpl(candidatePath, lockPath);
+    return true;
+  } catch (error) {
+    if (error && typeof error === "object" && LOCK_LINK_CAPABILITY_ERRORS.has(error.code)) {
+      throw new Error(
+        `Cannot publish the LLMNav generation lock (${error.code}). The repository filesystem must support hard links and permit their creation. Check filesystem permissions or move the repository to a filesystem with hard-link support.`,
+        { cause: error },
+      );
+    }
+    if (!error || typeof error !== "object" || error.code !== "EEXIST") throw error;
+  }
+  const observed = await readLockRecord(lockPath);
+  if (observed.missing) return false;
+  if (!isOwnedLockRecord(observed.record)) throw invalidOwnerRecordError();
+  if (runtime.isProcessAlive(observed.record.pid)) return false;
+  await removeOwnedLock(lockPath, observed.record.ownerId, runtime);
+  // Reclaiming a dead owner must not cost another full poll interval.
+  try {
+    await linkImpl(candidatePath, lockPath);
+    return true;
+  } catch (error) {
+    if (!error || typeof error !== "object" || error.code !== "EEXIST") throw error;
+    return false;
   }
 }
 
@@ -397,34 +409,12 @@ export async function recoverGenerationTransaction(root, options = {}) {
   await assertNoSymlinkTraversal(root, transactionPath, journal.transactionDirectory);
   await assertNoSymlinkTraversal(root, stagePath, journal.stageDirectory);
   await assertNoSymlinkTraversal(root, backupPath, journal.backupDirectory);
-  let action = "cleanup";
-
+  const paths = { cachePath, stagePath, backupPath };
+  const action = journal.phase === "committed"
+    ? await recoverCommittedCache(paths, options.renameOptions)
+    : await recoverUncommittedCache(paths, journal, options.renameOptions);
   if (journal.phase === "committed") {
-    if (await pathExists(cachePath)) {
-      action = "finalized-committed-cache";
-    } else if (await pathExists(stagePath)) {
-      await renameWithRetry(stagePath, cachePath, options.renameOptions);
-      action = "installed-committed-stage";
-    } else if (await pathExists(backupPath)) {
-      await renameWithRetry(backupPath, cachePath, options.renameOptions);
-      action = "restored-backup-after-missing-commit";
-    }
     await finalizeCommittedControlArtifacts(root, journal.controlArtifacts ?? [], options.renameOptions);
-  } else if (await pathExists(backupPath)) {
-    if (await pathExists(cachePath)) await removeWithRetry(cachePath, options.renameOptions);
-    await renameWithRetry(backupPath, cachePath, options.renameOptions);
-    action = "restored-previous-cache";
-  } else if (journal.hadExistingCache && await pathExists(cachePath)) {
-    action = "kept-existing-cache";
-  } else if (!journal.hadExistingCache && await pathExists(cachePath)) {
-    await verifyCommittedCache(cachePath, journal.cacheDirectory);
-    action = "kept-first-generated-cache";
-  } else if (!journal.hadExistingCache && await pathExists(stagePath)) {
-    await verifyCommittedCache(stagePath, journal.cacheDirectory);
-    await renameWithRetry(stagePath, cachePath, options.renameOptions);
-    action = "completed-first-generation";
-  } else {
-    action = "removed-incomplete-transaction";
   }
 
   if (journal.phase !== "committed") {
@@ -435,6 +425,38 @@ export async function recoverGenerationTransaction(root, options = {}) {
   await removeWithRetry(journalPath, options.renameOptions);
   await cleanupEmptyTransactionsDirectory(path.dirname(transactionPath));
   return { recovered: true, action };
+}
+
+async function recoverCommittedCache({ cachePath, stagePath, backupPath }, renameOptions) {
+  if (await pathExists(cachePath)) return "finalized-committed-cache";
+  if (await pathExists(stagePath)) {
+    await renameWithRetry(stagePath, cachePath, renameOptions);
+    return "installed-committed-stage";
+  }
+  if (await pathExists(backupPath)) {
+    await renameWithRetry(backupPath, cachePath, renameOptions);
+    return "restored-backup-after-missing-commit";
+  }
+  return "cleanup";
+}
+
+async function recoverUncommittedCache({ cachePath, stagePath, backupPath }, journal, renameOptions) {
+  if (await pathExists(backupPath)) {
+    if (await pathExists(cachePath)) await removeWithRetry(cachePath, renameOptions);
+    await renameWithRetry(backupPath, cachePath, renameOptions);
+    return "restored-previous-cache";
+  }
+  if (journal.hadExistingCache && await pathExists(cachePath)) return "kept-existing-cache";
+  if (!journal.hadExistingCache && await pathExists(cachePath)) {
+    await verifyCommittedCache(cachePath, journal.cacheDirectory);
+    return "kept-first-generated-cache";
+  }
+  if (!journal.hadExistingCache && await pathExists(stagePath)) {
+    await verifyCommittedCache(stagePath, journal.cacheDirectory);
+    await renameWithRetry(stagePath, cachePath, renameOptions);
+    return "completed-first-generation";
+  }
+  return "removed-incomplete-transaction";
 }
 
 export async function renameWithRetry(source, destination, options = {}) {
