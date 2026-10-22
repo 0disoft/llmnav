@@ -9,6 +9,7 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 ### Fixed
 
 * Exclude LLMNav's runtime scratch, state, transaction and cache directories from source collection, including explicit source paths, so local tooling cannot contaminate generated cache snapshots.
+* Canonicalize Go project, package and selected-source identities together so Windows short-path aliases do not trigger false repository-escape errors.
 
 ### Documentation
 

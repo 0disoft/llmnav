@@ -1,10 +1,11 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { analyzeProject, writeAnalysis } from "../src/analysis.js";
+import { analyzeGo } from "../src/adapters/go.js";
 import { discoverProject } from "../src/discovery.js";
 import { generateProject } from "../src/generator.js";
 import { showProjectCard, buildContext } from "../src/search.js";
@@ -101,4 +102,19 @@ test("Go type-checks local packages and separates methods and function-value sha
   }
   normalizeGraphInput(result.graph);
   assert.equal(result.diagnostics.length, 0);
+  const alias = `${root}-alias`;
+  await symlink(root, alias, process.platform === "win32" ? "junction" : "dir");
+  context.after(() => rm(alias, { recursive: true, force: true }));
+  // Exercise the compiler boundary directly: project scanning intentionally
+  // rejects symlinked source roots, independently of compiler path identity.
+  const aliased = await analyzeGo(alias, [path.join(alias, "main.go"), path.join(alias, "lib/lib.go")]);
+  const aliasedCaller = aliased.declarations.find(item => item.symbol === "Invoke");
+  const aliasedTarget = aliased.declarations.find(item => item.symbol === "Rotate" && item.path === "lib/lib.go");
+  assert.equal(aliasedCaller.path, "main.go");
+  assert.equal(aliasedCaller.line, 4);
+  assert.ok(aliased.references.some(edge => edge.from === aliasedCaller.key && edge.to === aliasedTarget.key && edge.kind === "calls"));
+  const outside = `${root}-outside.go`;
+  await writeFile(outside, "package fixture\n");
+  context.after(() => rm(outside, { force: true }));
+  await assert.rejects(analyzeGo(root, [outside]), /source symlink escapes repository/u);
 });

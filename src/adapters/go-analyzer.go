@@ -89,10 +89,24 @@ func run() error {
 	if err := json.NewDecoder(os.Stdin).Decode(&input); err != nil {
 		return err
 	}
+	// Normalize every identity before comparing paths. On Windows, temporary
+	// directories may use 8.3 aliases while EvalSymlinks returns long names.
+	root, err := filepath.EvalSymlinks(input.Root)
+	if err != nil {
+		return err
+	}
+	input.Root = root
 	a := &analyzer{request: input, fset: token.NewFileSet(), listed: map[string]listedPackage{}, packages: map[string]*types.Package{}, infos: map[string]*types.Info{}, syntax: map[string][]*ast.File{}, checking: map[string]bool{}, selected: map[string]bool{}, objects: map[types.Object]string{}, owners: map[ast.Node]string{}}
 	a.report = report{Compiler: map[string]string{"name": "go/types", "version": runtime.Version()}, Declarations: []declaration{}, References: []reference{}, Diagnostics: []string{}, Inputs: []string{}}
 	for _, file := range input.Files {
-		a.selected[filepath.Clean(file)] = true
+		canonical, err := filepath.EvalSymlinks(file)
+		if err != nil {
+			return err
+		}
+		if !a.inside(canonical) {
+			return fmt.Errorf("source symlink escapes repository: %s", file)
+		}
+		a.selected[filepath.Clean(canonical)] = true
 	}
 	decoder := json.NewDecoder(strings.NewReader(input.Listing))
 	for {
@@ -103,6 +117,13 @@ func run() error {
 		}
 		if err != nil {
 			return err
+		}
+		if pkg.Dir != "" {
+			canonical, err := filepath.EvalSymlinks(pkg.Dir)
+			if err != nil {
+				return err
+			}
+			pkg.Dir = canonical
 		}
 		a.listed[pkg.ImportPath] = pkg
 	}

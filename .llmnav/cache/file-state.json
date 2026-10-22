@@ -1465,7 +1465,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "cba45c61f5c8dc3006738705d33f651866b84158a11d0590c28b9a5f13129676",
+      "contentHash": "d5450dfd1a25d3043968b1deb143a2e7f51c42affc13e90fbb76f25d3f9e5424",
       "declarations": [
         null
       ],
@@ -1491,7 +1491,7 @@
       ],
       "path": "src/adapters/go-analyzer.go",
       "semanticBytes": 581,
-      "sourceBytes": 10975
+      "sourceBytes": 11553
     },
     {
       "blocks": [
@@ -6928,9 +6928,10 @@
     },
     {
       "blocks": [],
-      "contentHash": "8d652d17f3a3f17d24c81a31c9fa168f6a74b798ddc0598f70392ee88b7711cc",
+      "contentHash": "8cb128704ecbfda50931fd75b1085882b549b22cd61d2f7335f1b98b71a28aca",
       "declarations": [],
       "imports": [
+        "../src/adapters/go.js",
         "../src/analysis.js",
         "../src/config.js",
         "../src/discovery.js",
@@ -6946,7 +6947,7 @@
       ],
       "path": "tests/analysis.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 8726
+      "sourceBytes": 9883
     },
     {
       "blocks": [],

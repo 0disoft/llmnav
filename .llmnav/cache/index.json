@@ -2930,7 +2930,7 @@
         "runtime dispatch inference"
       ],
       "hashes": {
-        "body": "cba45c61f5c8dc3006738705d33f651866b84158a11d0590c28b9a5f13129676",
+        "body": "d5450dfd1a25d3043968b1deb143a2e7f51c42affc13e90fbb76f25d3f9e5424",
         "semantic": "3454d028828a7674256e6fa59114c9c18227cfb7766281754f5e2023726dc78d",
         "structure": "faef68d008d7be090ba73b9d5b1a77f71b16f1aa6a2432405efd86baf020b765"
       },
@@ -3067,6 +3067,6 @@
   "generatedBy": "llmnav@0.15.2",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "f119799719bb9a154de18cf74a6320b321b41e914aaebb6e7e8fe47086462fae",
+  "sourceHash": "72f40cc31246fc2e61449dbdddfed5dd3821e2b749c85ba2d4ae54d7be747ab9",
   "specVersion": "1"
 }
