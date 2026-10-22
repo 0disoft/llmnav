@@ -1,7 +1,7 @@
 /* llmnav/1 module
 id=llmnav.agent.protocol
 role=Execute bounded repository navigation operations through one provider-neutral result envelope.
-owns=operation validation|operation dispatch|provider-neutral result envelope
+owns=operation validation|operation dispatch|operation handler table|provider-neutral result envelope
 excludes=provider SDK transport|repository discovery|source mutation
 search=agent tool schema|provider neutral tools|tool dispatcher|agent operation protocol
 rel=workflow>llmnav.search.query
@@ -21,6 +21,15 @@ import { AUDIT_LIMITS, SEARCH_LIMITS } from "./policy.js";
 export { AGENT_TOOL_SCHEMA_VERSION, getAgentToolDefinitions } from "./agent-tools.js";
 export const AGENT_OPERATION_SCHEMA_VERSION = 1;
 
+// Public wire contract: hosts branch on these codes, so keep them in one table.
+export const AGENT_OPERATION_ERROR_CODES = Object.freeze({
+  unknownOperation: "LNVAP001",
+  invalidInput: "LNVAP002",
+  notFound: "LNVAP404",
+  ambiguous: "LNVAP409",
+  internal: "LNVAP500",
+});
+
 const DEFINITIONS = getAgentToolDefinitions();
 
 const OPERATIONS = new Map([
@@ -32,76 +41,141 @@ const OPERATIONS = new Map([
   ["llmnav_audit", "audit"],
 ]);
 
+// Validation runs once in resolveRequest; handlers only execute work and report failure kinds.
+const OPERATION_HANDLERS = new Map([
+  ["query", handleQuery],
+  ["show", handleShow],
+  ["context", handleContext],
+  ["check", handleCheck],
+  ["explain", handleExplain],
+  ["audit", handleAudit],
+]);
+
 export async function executeAgentOperation(root, name, input = {}, options = {}) {
+  const request = resolveRequest(name, input);
+  if (request.failure) return request.failure;
+  try {
+    const outcome = await OPERATION_HANDLERS.get(request.operation)(input, root, options);
+    if (outcome.failure) {
+      return failure(request.operation, outcome.failure.code, outcome.failure.message, outcome.failure.data ?? null);
+    }
+    return success(request.operation, outcome.data, outcome.ok !== false);
+  } catch (error) {
+    return failure(request.operation, errorCodeFor(error), errorMessage(error), null);
+  }
+}
+
+function resolveRequest(name, input) {
   const canonicalName = String(name);
   const operation = OPERATIONS.get(canonicalName);
-  if (!operation) return failure("unknown", "LNVAP001", `Unknown agent operation ${JSON.stringify(name)}.`);
+  if (!operation) {
+    return {
+      failure: failure(
+        "unknown",
+        AGENT_OPERATION_ERROR_CODES.unknownOperation,
+        `Unknown agent operation ${JSON.stringify(name)}.`,
+      ),
+    };
+  }
   const definition = DEFINITIONS.find((item) => item.name === canonicalName);
   const validationError = validateInput(definition.inputSchema, input);
-  if (validationError) return failure(operation, "LNVAP002", validationError);
-
-  try {
-    if (operation === "query") {
-      return success(operation, options.session
-        ? options.session.query(input.task.trim(), { top: input.top ?? SEARCH_LIMITS.top.default })
-        : await queryProject(root, input.task.trim(), { top: input.top ?? SEARCH_LIMITS.top.default }));
-    }
-    if (operation === "show") {
-      const result = options.session
-        ? options.session.show(input.id.trim())
-        : await showProjectCard(root, input.id.trim());
-      if (!result.card && !result.node) {
-        const state = result.resolvedFrom?.state;
-        if (state === "ambiguous") return failure(operation, "LNVAP409", `Ambiguous semantic ID ${input.id}; qualify or replace it with one candidate.`, result);
-        if (state === "cycle") return failure(operation, "LNVAP500", `Registry cycle prevents resolving semantic ID ${input.id}.`, result);
-        return failure(operation, "LNVAP404", `Unknown or inactive semantic ID ${input.id}.`, result);
-      }
-      return success(operation, result);
-    }
-    if (operation === "context") {
-      const contextOptions = {
-        depth: input.depth ?? SEARCH_LIMITS.depth.default,
-        budget: input.budget ?? SEARCH_LIMITS.budget.default,
-        maxEdges: input.maxEdges ?? SEARCH_LIMITS.maxEdges.default,
-      };
-      return success(operation, options.session
-        ? options.session.context(input.id.trim(), contextOptions)
-        : await buildContext(root, input.id.trim(), contextOptions));
-    }
-    if (operation === "audit") {
-      const minimumPriority = input.priority ?? "low";
-      const result = await auditProject(root);
-      const selected = selectAuditCandidates(result, minimumPriority, input.top ?? AUDIT_LIMITS.top.default);
-      return success(operation, {
-        repositoryId: result.repositoryId,
-        minimumPriority,
-        summary: result.summary,
-        candidates: selected.candidates.map(toAuditCandidate),
-        matched: selected.matched,
-        truncated: selected.truncated,
-      });
-    }
-    if (operation === "explain") {
-      return success(operation, await explainProjectFile(root, input.file.trim()));
-    }
-    const project = await scanProject(root, { paths: input.paths ?? [] });
-    const graphInputs = await loadGraphInputs(root, project.config);
-    const diagnostics = [...validateProject(project), ...graphInputs.diagnostics].sort(compareDiagnostics);
-    const counts = countDiagnostics(diagnostics);
-    return {
-      schemaVersion: AGENT_OPERATION_SCHEMA_VERSION,
-      operation,
-      ok: counts.error === 0,
-      data: { counts, diagnostics, cardCount: project.records.length },
-      error: null,
-    };
-  } catch (error) {
-    if (error instanceof SemanticIdLookupError) {
-      return failure(operation, error.reason === "not_found" ? "LNVAP404" :
-        error.reason === "ambiguous" ? "LNVAP409" : "LNVAP500", error.message);
-    }
-    return failure(operation, "LNVAP500", error instanceof Error ? error.message : String(error));
+  if (validationError) {
+    return { failure: failure(operation, AGENT_OPERATION_ERROR_CODES.invalidInput, validationError) };
   }
+  return { operation };
+}
+
+async function handleQuery(input, root, options) {
+  const task = input.task.trim();
+  const top = input.top ?? SEARCH_LIMITS.top.default;
+  const data = options.session
+    ? await options.session.query(task, { top })
+    : await queryProject(root, task, { top });
+  return { data };
+}
+
+async function handleShow(input, root, options) {
+  const result = options.session
+    ? await options.session.show(input.id.trim())
+    : await showProjectCard(root, input.id.trim());
+  if (result.card || result.node) return { data: result };
+  const state = result.resolvedFrom?.state;
+  if (state === "ambiguous") {
+    return {
+      failure: {
+        code: AGENT_OPERATION_ERROR_CODES.ambiguous,
+        message: `Ambiguous semantic ID ${input.id}; qualify or replace it with one candidate.`,
+        data: result,
+      },
+    };
+  }
+  if (state === "cycle") {
+    return {
+      failure: {
+        code: AGENT_OPERATION_ERROR_CODES.internal,
+        message: `Registry cycle prevents resolving semantic ID ${input.id}.`,
+        data: result,
+      },
+    };
+  }
+  return {
+    failure: {
+      code: AGENT_OPERATION_ERROR_CODES.notFound,
+      message: `Unknown or inactive semantic ID ${input.id}.`,
+      data: result,
+    },
+  };
+}
+
+async function handleContext(input, root, options) {
+  const contextOptions = {
+    depth: input.depth ?? SEARCH_LIMITS.depth.default,
+    budget: input.budget ?? SEARCH_LIMITS.budget.default,
+    maxEdges: input.maxEdges ?? SEARCH_LIMITS.maxEdges.default,
+  };
+  const data = options.session
+    ? await options.session.context(input.id.trim(), contextOptions)
+    : await buildContext(root, input.id.trim(), contextOptions);
+  return { data };
+}
+
+async function handleAudit(input, root) {
+  const minimumPriority = input.priority ?? "low";
+  const result = await auditProject(root);
+  const selected = selectAuditCandidates(result, minimumPriority, input.top ?? AUDIT_LIMITS.top.default);
+  return {
+    data: {
+      repositoryId: result.repositoryId,
+      minimumPriority,
+      summary: result.summary,
+      candidates: selected.candidates.map(toAuditCandidate),
+      matched: selected.matched,
+      truncated: selected.truncated,
+    },
+  };
+}
+
+async function handleExplain(input, root) {
+  return { data: await explainProjectFile(root, input.file.trim()) };
+}
+
+async function handleCheck(input, root) {
+  const project = await scanProject(root, { paths: input.paths ?? [] });
+  const graphInputs = await loadGraphInputs(root, project.config);
+  const diagnostics = [...validateProject(project), ...graphInputs.diagnostics].sort(compareDiagnostics);
+  const counts = countDiagnostics(diagnostics);
+  return { data: { counts, diagnostics, cardCount: project.records.length }, ok: counts.error === 0 };
+}
+
+function errorCodeFor(error) {
+  if (!(error instanceof SemanticIdLookupError)) return AGENT_OPERATION_ERROR_CODES.internal;
+  if (error.reason === "not_found") return AGENT_OPERATION_ERROR_CODES.notFound;
+  if (error.reason === "ambiguous") return AGENT_OPERATION_ERROR_CODES.ambiguous;
+  return AGENT_OPERATION_ERROR_CODES.internal;
+}
+
+function errorMessage(error) {
+  return error instanceof Error ? error.message : String(error);
 }
 
 function validateInput(schema, input) {
@@ -136,8 +210,8 @@ function validateProperty(key, value, schema) {
   return null;
 }
 
-function success(operation, data) {
-  return { schemaVersion: AGENT_OPERATION_SCHEMA_VERSION, operation, ok: true, data, error: null };
+function success(operation, data, ok = true) {
+  return { schemaVersion: AGENT_OPERATION_SCHEMA_VERSION, operation, ok, data, error: null };
 }
 
 function failure(operation, code, message, data = null) {

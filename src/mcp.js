@@ -77,39 +77,47 @@ async function handleMessage(message, root, session, sessionCache, tools) {
   if (message.method === "ping") return success(id, {});
   if (message.method === "tools/list") return success(id, { tools });
 
-  if (message.method === "tools/call") {
-    const params = message.params;
-    if (params === null || typeof params !== "object" || Array.isArray(params) || typeof params.name !== "string" || params.name.length === 0) {
-      return failure(id, INVALID_PARAMS, "Invalid params: tools/call requires a tool name.");
-    }
-    const input = params.arguments === undefined ? {} : params.arguments;
-    let activeSession = session;
-    if (sessionCache !== null) {
-      try {
-        activeSession = await sessionCache.current();
-      } catch {
-        // A missing or half-written cache keeps the previous behaviour: one snapshot load per call.
-        activeSession = null;
-      }
-    }
-    let envelope;
-    try {
-      envelope = await executeAgentOperation(
-        root,
-        params.name,
-        input,
-        activeSession === null ? {} : { session: activeSession },
-      );
-    } catch (error) {
-      return failure(id, INTERNAL_ERROR, error instanceof Error ? error.message : String(error));
-    }
-    return success(id, {
-      content: [{ type: "text", text: JSON.stringify(envelope) }],
-      isError: envelope.ok !== true,
-    });
-  }
+  if (message.method === "tools/call") return callTool(id, message.params, root, session, sessionCache);
 
   return failure(id, METHOD_NOT_FOUND, `Method not found: ${message.method}`);
+}
+
+async function callTool(id, params, root, session, sessionCache) {
+  if (!hasToolName(params)) {
+    return failure(id, INVALID_PARAMS, "Invalid params: tools/call requires a tool name.");
+  }
+  const input = params.arguments === undefined ? {} : params.arguments;
+  const activeSession = await resolveSession(session, sessionCache);
+  let envelope;
+  try {
+    envelope = await executeAgentOperation(
+      root,
+      params.name,
+      input,
+      activeSession === null ? {} : { session: activeSession },
+    );
+  } catch (error) {
+    return failure(id, INTERNAL_ERROR, error instanceof Error ? error.message : String(error));
+  }
+  return success(id, {
+    content: [{ type: "text", text: JSON.stringify(envelope) }],
+    isError: envelope.ok !== true,
+  });
+}
+
+function hasToolName(params) {
+  return params !== null && typeof params === "object" && !Array.isArray(params) &&
+    typeof params.name === "string" && params.name.length > 0;
+}
+
+async function resolveSession(session, sessionCache) {
+  if (sessionCache === null) return session;
+  try {
+    return await sessionCache.current();
+  } catch {
+    // A missing or half-written cache keeps the previous behaviour: one snapshot load per call.
+    return null;
+  }
 }
 
 function createSessionCache(root) {

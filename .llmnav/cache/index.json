@@ -1314,8 +1314,8 @@
         "source mutation"
       ],
       "hashes": {
-        "body": "65aa4f61808c5d385fd6a5696dab9f4acacc1147c558c92c08e2ae4be487c83f",
-        "semantic": "3476901cdb633f3bc0fbcfdff78aa789b36c8d885a6137bf5cab66f763ca9486",
+        "body": "9efdf40b51ced992bd805765631f65f32402ff396d4a4773bf304072d179d018",
+        "semantic": "ce30fe54e5dab8eb3cda8e1e6afdcee3489c3f62267d99ff85257f4c819d21a4",
         "structure": "e2ebafd67f7b7afa843ab30ea2d66cd74a0893a2f6b0875d2e452d8eebd15e63"
       },
       "id": "llmnav.agent.protocol",
@@ -1344,6 +1344,7 @@
       "owns": [
         "operation validation",
         "operation dispatch",
+        "operation handler table",
         "provider-neutral result envelope"
       ],
       "rel": [
@@ -2198,7 +2199,7 @@
         "index preparation"
       ],
       "hashes": {
-        "body": "b3d35df52ee84e646864e5c92dd7f6cbc34ddce87e75af63fd611c17a7e4aeaa",
+        "body": "d114cc47c989ba216d3e8c9e18d1ff44f3de1db5328d9c196073359bb17ffc86",
         "semantic": "a1ec177829cdd462b6ea996d78d53c2c9071291f1dd14202e05d1236559a8973",
         "structure": "f0a2187617b9c7a9a4adf2d2ae1948a6206b5e969a20febe645e9e3868152dd4"
       },
@@ -2389,6 +2390,6 @@
   "generatedBy": "llmnav@0.11.0",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "81bcf80ed51108ebc2b85ef8b883ac8c29581f5447d10565c8e6ddfa8a26ddf4",
+  "sourceHash": "b274a0b199cb061929d94b1f029b7f9d8cd99984951d2621a174daa010786119",
   "specVersion": "1"
 }

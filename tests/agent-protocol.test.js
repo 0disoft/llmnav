@@ -3,7 +3,11 @@ import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
-import { executeAgentOperation, getAgentToolDefinitions } from "../src/agent-protocol.js";
+import {
+  AGENT_OPERATION_ERROR_CODES,
+  executeAgentOperation,
+  getAgentToolDefinitions,
+} from "../src/agent-protocol.js";
 import { AUDIT_PRIORITIES, auditProject } from "../src/audit.js";
 import { initializeProject } from "../src/initializer.js";
 import { createProjectSession } from "../src/search.js";
@@ -144,6 +148,72 @@ test("returns stable protocol failures for invalid input and missing IDs", async
 
   const unknown = await executeAgentOperation(root, "provider_specific_tool", {});
   assert.equal(unknown.error.code, "LNVAP001");
+});
+
+test("keeps the documented envelope shape and error code table", async () => {
+  assert.deepEqual(AGENT_OPERATION_ERROR_CODES, {
+    unknownOperation: "LNVAP001",
+    invalidInput: "LNVAP002",
+    notFound: "LNVAP404",
+    ambiguous: "LNVAP409",
+    internal: "LNVAP500",
+  });
+
+  const unknown = await executeAgentOperation(".", "nope", {});
+  assert.deepEqual(unknown, {
+    schemaVersion: 1,
+    operation: "unknown",
+    ok: false,
+    data: null,
+    error: { code: "LNVAP001", message: 'Unknown agent operation "nope".' },
+  });
+
+  const invalid = await executeAgentOperation(".", "llmnav_query", {});
+  assert.equal(invalid.ok, false);
+  assert.equal(invalid.operation, "query");
+  assert.equal(invalid.data, null);
+  assert.deepEqual(invalid.error, { code: "LNVAP002", message: "Missing required input field(s): task." });
+});
+
+test("maps handler outcomes and thrown errors onto the operation envelope", async () => {
+  const empty = await executeAgentOperation(".", "llmnav_query", { task: "anything" }, { session: { query: () => [] } });
+  assert.deepEqual(empty, { schemaVersion: 1, operation: "query", ok: true, data: [], error: null });
+
+  const throwing = { query() { throw new Error("snapshot store unavailable"); } };
+  const internal = await executeAgentOperation(".", "llmnav_query", { task: "token" }, { session: throwing });
+  assert.equal(internal.ok, false);
+  assert.equal(internal.error.code, "LNVAP500");
+  assert.equal(internal.error.message, "snapshot store unavailable");
+  assert.equal(internal.data, null);
+
+  const ambiguousResult = { resolvedFrom: { state: "ambiguous" } };
+  const ambiguous = await executeAgentOperation(
+    ".",
+    "llmnav_show",
+    { id: "old.capability" },
+    { session: { show: () => ambiguousResult } },
+  );
+  assert.deepEqual(ambiguous, {
+    schemaVersion: 1,
+    operation: "show",
+    ok: false,
+    data: ambiguousResult,
+    error: {
+      code: "LNVAP409",
+      message: "Ambiguous semantic ID old.capability; qualify or replace it with one candidate.",
+    },
+  });
+
+  const cycleResult = { resolvedFrom: { state: "cycle" } };
+  const cycle = await executeAgentOperation(".", "llmnav_show", { id: "loop.capability" }, { session: { show: () => cycleResult } });
+  assert.equal(cycle.error.code, "LNVAP500");
+  assert.match(cycle.error.message, /Registry cycle prevents resolving semantic ID loop\.capability/u);
+  assert.equal(cycle.data, cycleResult);
+
+  const missingResult = { resolvedFrom: { state: "missing" } };
+  const missing = await executeAgentOperation(".", "llmnav_show", { id: "missing.capability" }, { session: { show: () => missingResult } });
+  assert.equal(missing.error.code, "LNVAP404");
+  assert.equal(missing.data, missingResult);
 });
 
 async function createAuditProject(root) {

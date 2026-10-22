@@ -49,7 +49,7 @@
     "llmnav.support.runtime",
     "llmnav.syntax.parse"
   ],
-  "cardSetHash": "d1c22979acde1f5d5b89067553b49fb7a627782c5a6b74910e64e48552e2693d",
+  "cardSetHash": "02d75f617ab70ab45222eb37a1a7123acb309338e71011c9e08124f5d809520a",
   "documentCount": 48,
   "documents": [
     [
@@ -180,7 +180,7 @@
       ]
     ],
     [
-      "330c3ed8aae2b5d47bda14b40ad339de7f2c5778188a669932dee4b6b3e8ba26",
+      "c3e722f7557e397fdb6f53cd315ae41f252c0110fea4c28610c2178507fa73f3",
       [
         "execute bounded repository navigation operations through one provider-neutral result envelope.",
         "agent tool schema",
@@ -189,6 +189,7 @@
         "agent operation protocol",
         "operation validation",
         "operation dispatch",
+        "operation handler table",
         "provider-neutral result envelope"
       ]
     ],
@@ -5607,6 +5608,15 @@
     ],
     [
       [
+        11,
+        [
+          3,
+          1
+        ]
+      ]
+    ],
+    [
+      [
         0,
         [
           5,
@@ -8462,7 +8472,7 @@
           2,
           1,
           3,
-          2
+          3
         ]
       ],
       [
@@ -12635,6 +12645,13 @@
     ],
     [
       [
+        11,
+        [
+          3,
+          1
+        ]
+      ],
+      [
         21,
         [
           3,
@@ -14176,6 +14193,7 @@
     "graph",
     "graphs",
     "guarantees",
+    "handler",
     "has",
     "hash",
     "hashes",

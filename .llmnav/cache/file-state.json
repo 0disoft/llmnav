@@ -1305,6 +1305,7 @@
             "owns": [
               "operation validation",
               "operation dispatch",
+              "operation handler table",
               "provider-neutral result envelope"
             ],
             "rel": [
@@ -1324,7 +1325,7 @@
             "stability": "contract",
             "unknown": []
           },
-          "end": 504,
+          "end": 528,
           "endLine": 11,
           "entries": [
             {
@@ -1343,7 +1344,7 @@
               "key": "owns",
               "line": 4,
               "order": 2,
-              "value": "operation validation|operation dispatch|provider-neutral result envelope"
+              "value": "operation validation|operation dispatch|operation handler table|provider-neutral result envelope"
             },
             {
               "key": "excludes",
@@ -1386,7 +1387,7 @@
           "indent": "",
           "newline": "\n",
           "prefix": null,
-          "raw": "/* llmnav/1 module\nid=llmnav.agent.protocol\nrole=Execute bounded repository navigation operations through one provider-neutral result envelope.\nowns=operation validation|operation dispatch|provider-neutral result envelope\nexcludes=provider SDK transport|repository discovery|source mutation\nsearch=agent tool schema|provider neutral tools|tool dispatcher|agent operation protocol\nrel=workflow>llmnav.search.query\nrel=workflow>llmnav.rules.validate\nrel=workflow>llmnav.audit.coverage\nstability=contract\n*/",
+          "raw": "/* llmnav/1 module\nid=llmnav.agent.protocol\nrole=Execute bounded repository navigation operations through one provider-neutral result envelope.\nowns=operation validation|operation dispatch|operation handler table|provider-neutral result envelope\nexcludes=provider SDK transport|repository discovery|source mutation\nsearch=agent tool schema|provider neutral tools|tool dispatcher|agent operation protocol\nrel=workflow>llmnav.search.query\nrel=workflow>llmnav.rules.validate\nrel=workflow>llmnav.audit.coverage\nstability=contract\n*/",
           "scope": "module",
           "specVersion": "1",
           "start": 0,
@@ -1395,7 +1396,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "65aa4f61808c5d385fd6a5696dab9f4acacc1147c558c92c08e2ae4be487c83f",
+      "contentHash": "9efdf40b51ced992bd805765631f65f32402ff396d4a4773bf304072d179d018",
       "declarations": [
         null
       ],
@@ -1409,8 +1410,8 @@
         "./validator.js"
       ],
       "path": "src/agent-protocol.js",
-      "semanticBytes": 504,
-      "sourceBytes": 7237
+      "semanticBytes": 528,
+      "sourceBytes": 8791
     },
     {
       "blocks": [
@@ -3797,7 +3798,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "b3d35df52ee84e646864e5c92dd7f6cbc34ddce87e75af63fd611c17a7e4aeaa",
+      "contentHash": "d114cc47c989ba216d3e8c9e18d1ff44f3de1db5328d9c196073359bb17ffc86",
       "declarations": [
         null
       ],
@@ -3811,7 +3812,7 @@
       ],
       "path": "src/mcp.js",
       "semanticBytes": 531,
-      "sourceBytes": 6514
+      "sourceBytes": 6697
     },
     {
       "blocks": [
@@ -5551,7 +5552,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "3ac7ae8024c4bfa4279e907798d4735895c25c379c36f0fb2fab214c221a3ee2",
+      "contentHash": "22a50cfbcaa548a6f1125fd75ee7bc5137130c37ed94f61e3aa17d95eaa9288e",
       "declarations": [],
       "imports": [
         "../src/agent-protocol.js",
@@ -5566,7 +5567,7 @@
       ],
       "path": "tests/agent-protocol.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 8224
+      "sourceBytes": 10985
     },
     {
       "blocks": [],
