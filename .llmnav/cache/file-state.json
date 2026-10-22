@@ -3792,7 +3792,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "0a51121e53ddb91b574f21bd95b972ce5c2b4f0b4746a4f7691ba61b8e1eb85d",
+      "contentHash": "b3d35df52ee84e646864e5c92dd7f6cbc34ddce87e75af63fd611c17a7e4aeaa",
       "declarations": [
         null
       ],
@@ -3806,7 +3806,7 @@
       ],
       "path": "src/mcp.js",
       "semanticBytes": 531,
-      "sourceBytes": 6083
+      "sourceBytes": 6514
     },
     {
       "blocks": [
@@ -5817,7 +5817,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "373ccfab29c6844d90f3d049b7678e99d57cf1587c5010e051447287500cf63c",
+      "contentHash": "80fcb7d8d1dbb85cd0ab67840dbc4654c0f6218073857cae6f593226c3ddb736",
       "declarations": [],
       "imports": [
         "../src/agent-protocol.js",
@@ -5837,7 +5837,7 @@
       ],
       "path": "tests/mcp.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 7718
+      "sourceBytes": 8873
     },
     {
       "blocks": [],

@@ -130,17 +130,28 @@ function createSessionCache(root) {
   };
 }
 
-async function sessionStamp(root) {
+/**
+ * Identify the cache generation a prepared session was loaded from.
+ *
+ * Nanosecond timestamps and the file index are included, so a regeneration that
+ * lands inside the same millisecond with an identical byte count is still seen.
+ * `statFile` is injectable for tests.
+ */
+export async function sessionStamp(root, statFile = statCacheFile) {
   const parts = [];
   for (const name of SESSION_STAMP_FILES) {
-    try {
-      const info = await stat(path.join(root, ".llmnav", "cache", name));
-      parts.push(`${name}:${info.mtimeMs}:${info.size}`);
-    } catch {
-      parts.push(`${name}:missing`);
-    }
+    const info = await statFile(path.join(root, ".llmnav", "cache", name));
+    parts.push(info === null ? `${name}:missing` : `${name}:${info.mtimeNs}:${info.size}:${info.ino}`);
   }
   return parts.join("|");
+}
+
+async function statCacheFile(filePath) {
+  try {
+    return await stat(filePath, { bigint: true });
+  } catch {
+    return null;
+  }
 }
 
 function toMcpTool(definition) {

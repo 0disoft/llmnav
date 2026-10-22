@@ -6,7 +6,7 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
-import { createMcpServer, MCP_PROTOCOL_VERSION, MCP_SERVER_NAME } from "../src/mcp.js";
+import { createMcpServer, MCP_PROTOCOL_VERSION, MCP_SERVER_NAME, sessionStamp } from "../src/mcp.js";
 import { getAgentToolDefinitions } from "../src/agent-protocol.js";
 import { generateProject } from "../src/generator.js";
 import { initializeProject } from "../src/initializer.js";
@@ -126,6 +126,28 @@ export function issueInvoice(): void {}
   assert.ok(refreshed.data.some((card) => card.id === "auth.billing.issue"));
   const direct = await queryProject(root, "billing invoice", { top: 3 });
   assert.deepEqual(refreshed.data.map((card) => card.id), direct.map((card) => card.id));
+});
+
+test("cache stamps separate regenerations inside one millisecond", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-mcp-stamp-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  const filePathFor = (filePath) => path.basename(filePath);
+  const files = new Map([
+    ["manifest.json", { mtimeNs: 1_000_000n, size: 10n, ino: 7n }],
+    ["index.json", { mtimeNs: 1_000_000n, size: 20n, ino: 7n }],
+    ["search-index.json", { mtimeNs: 1_000_000n, size: 30n, ino: 7n }],
+    ["graph.json", null],
+  ]);
+  const readStamp = () => sessionStamp(root, async (filePath) => files.get(filePathFor(filePath)) ?? null);
+
+  const baseStamp = await readStamp();
+  assert.equal(baseStamp, "manifest.json:1000000:10:7|index.json:1000000:20:7|search-index.json:1000000:30:7|graph.json:missing");
+  assert.equal(await readStamp(), baseStamp);
+
+  files.set("search-index.json", { mtimeNs: 1_000_001n, size: 30n, ino: 7n });
+  assert.notEqual(await readStamp(), baseStamp);
+  files.set("search-index.json", { mtimeNs: 1_000_000n, size: 30n, ino: 8n });
+  assert.notEqual(await readStamp(), baseStamp);
 });
 
 async function callTool(server, id, name, args) {
