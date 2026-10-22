@@ -245,8 +245,12 @@ func (a *analyzer) collect(name string) {
 					if len(stack) > 0 {
 						owner := stack[len(stack)-1]
 						switch owner.(type) {
-						case *ast.FuncDecl, *ast.TypeSpec, *ast.ValueSpec:
+						case *ast.FuncDecl, *ast.TypeSpec:
 							a.owners[owner] = key
+						case *ast.ValueSpec:
+							if ownsValue(owner.(*ast.ValueSpec), stack) {
+								a.owners[owner] = key
+							}
 						}
 					}
 				}
@@ -272,6 +276,39 @@ func objectKind(object types.Object) string {
 		return "variable"
 	default:
 		return "binding"
+	}
+}
+
+// Ordinary local initializers execute in their enclosing callable. Function
+// literals keep a value owner so their deferred body uses do not leak outward.
+func ownsValue(value *ast.ValueSpec, stack []ast.Node) bool {
+	for _, expression := range value.Values {
+		if _, ok := expression.(*ast.FuncLit); ok {
+			return true
+		}
+	}
+	for _, node := range stack {
+		switch node.(type) {
+		case *ast.FuncDecl, *ast.FuncLit:
+			return false
+		}
+	}
+	return true
+}
+
+// Explicit type arguments and parentheses wrap the callee without changing it.
+func callTarget(expression ast.Expr) ast.Expr {
+	for {
+		switch node := expression.(type) {
+		case *ast.IndexExpr:
+			expression = node.X
+		case *ast.IndexListExpr:
+			expression = node.X
+		case *ast.ParenExpr:
+			expression = node.X
+		default:
+			return expression
+		}
 	}
 }
 func (a *analyzer) references(name string) {
@@ -301,19 +338,18 @@ func (a *analyzer) references(name string) {
 					}
 					if from != "" && from != to {
 						kind := "references"
-						if len(stack) > 0 {
-							parent := stack[len(stack)-1]
-							if call, ok := parent.(*ast.CallExpr); ok && call.Fun == id {
-								if _, ok := info.Uses[id].(*types.Func); ok {
+						if _, ok := info.Uses[id].(*types.Func); ok {
+							for i := len(stack) - 1; i >= 0; i-- {
+								call, ok := stack[i].(*ast.CallExpr)
+								if !ok {
+									continue
+								}
+								target := callTarget(call.Fun)
+								selector, member := target.(*ast.SelectorExpr)
+								if target == id || member && selector.Sel == id {
 									kind = "calls"
 								}
-							}
-							if selector, ok := parent.(*ast.SelectorExpr); ok && selector.Sel == id && len(stack) > 1 {
-								if call, ok := stack[len(stack)-2].(*ast.CallExpr); ok && call.Fun == selector {
-									if _, ok := info.Uses[id].(*types.Func); ok {
-										kind = "calls"
-									}
-								}
+								break
 							}
 						}
 						pos := a.fset.PositionFor(id.Pos(), false)

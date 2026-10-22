@@ -90,9 +90,7 @@ function analyze(request) {
         if (symbol?.flags & ts.SymbolFlags.Alias) symbol = checker.getAliasedSymbol(symbol);
         const to = bySymbol.get(symbol) ?? symbol?.declarations?.map(declaration => byDeclaration.get(declaration)).find(Boolean), from = nearestUseOwner(node);
         if (from && to && from !== to) {
-          const parent = node.parent;
-          const call = ts.isCallExpression(parent) && parent.expression === node ||
-            ts.isPropertyAccessExpression(parent) && ts.isCallExpression(parent.parent) && parent.parent.expression === parent;
+          const call = isCallTarget(node);
           references.push({ from, to, kind: call ? "calls" : "references", path: relative(source.fileName), line: source.getLineAndCharacterOfPosition(node.getStart(source)).line + 1 });
         }
       }
@@ -102,6 +100,15 @@ function analyze(request) {
   }
   return { compiler: { name: "typescript", version: ts.version }, declarations, references, diagnostics, inputs: [...inputs].map(relative) };
   function relative(file) { return path.relative(root, file).split(path.sep).join("/"); }
+  function isCallTarget(node) {
+    let expression = node;
+    if (ts.isPropertyAccessExpression(node.parent) && node.parent.name === node) expression = node.parent;
+    while (expression.parent && (ts.isParenthesizedExpression(expression.parent) || ts.isNonNullExpression(expression.parent) ||
+      ts.isAsExpression(expression.parent) || ts.isTypeAssertionExpression(expression.parent) || ts.isSatisfiesExpression(expression.parent))) {
+      expression = expression.parent;
+    }
+    return ts.isCallExpression(expression.parent) && expression.parent.expression === expression;
+  }
   function nearestOwner(node) { for (let current = node; current; current = current.parent) if (owners.has(current)) return owners.get(current); return null; }
   function nearestUseOwner(node) {
     for (let current = node; current; current = current.parent) {

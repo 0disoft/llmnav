@@ -4,6 +4,13 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.15.1] — 2026-10-23
+
+### Fixed
+
+* Classify TypeScript method receivers as references and unwrap explicit callee expressions when identifying calls.
+* Attribute Go local variable initializers to the enclosing callable and recognize generic and parenthesized call targets.
+
 ## [0.15.0] — 2026-10-23
 
 ### Added

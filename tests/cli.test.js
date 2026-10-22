@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
@@ -74,4 +74,28 @@ test("generate --full bypasses incremental accelerators", async (context) => {
   });
   assert.equal(result.status, 0, result.stderr);
   assert.equal(JSON.parse(result.stdout).incremental.enabled, false);
+});
+
+test("analyze --json publishes a compiler graph and precise discovery returns usable IDs", async context => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-cli-analysis-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await writeFile(path.join(root, "source.mts"), "export function target() { return 1; }\nexport function caller() { return target(); }\n");
+  await initializeProject(root, { agents: ["none"] });
+  const configPath = path.join(root, ".llmnav/config.json");
+  const config = JSON.parse(await readFile(configPath, "utf8"));
+  config.graph = { indexFiles: [".llmnav/imports/code.json"] };
+  await writeFile(configPath, JSON.stringify(config));
+  const cli = fileURLToPath(new URL("../bin/llmnav.js", import.meta.url));
+  const run = args => {
+    const result = spawnSync(process.execPath, [cli, ...args, "--root", root, "--json"], { encoding: "utf8", windowsHide: true, timeout: 30000 });
+    assert.equal(result.status, 0, result.stderr);
+    return JSON.parse(result.stdout);
+  };
+  const analyzed = run(["analyze", "--language", "typescript", "--output", ".llmnav/imports/code.json"]);
+  assert.equal(analyzed.graph.schemaVersion, 2);
+  assert.deepEqual(JSON.parse(await readFile(path.join(root, ".llmnav/imports/code.json"), "utf8")), analyzed.graph);
+  assert.equal(run(["generate"]).ok, true);
+  const target = run(["discover", "target", "--precise"]).results[0];
+  assert.equal(target.source, "compiler");
+  assert.equal(run(["show", target.id]).node.definitions[0].symbol, "target");
 });
