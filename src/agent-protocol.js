@@ -17,6 +17,7 @@ import { countDiagnostics, validateProject } from "./validator.js";
 import { getAgentToolDefinitions } from "./agent-tools.js";
 import { auditProject, explainProjectFile, selectAuditCandidates } from "./audit.js";
 import { AUDIT_LIMITS, SEARCH_LIMITS } from "./policy.js";
+import { toErrorPayload } from "./errors.js";
 
 export { AGENT_TOOL_SCHEMA_VERSION, getAgentToolDefinitions } from "./agent-tools.js";
 export const AGENT_OPERATION_SCHEMA_VERSION = 1;
@@ -61,7 +62,7 @@ export async function executeAgentOperation(root, name, input = {}, options = {}
     }
     return success(request.operation, outcome.data, outcome.ok !== false);
   } catch (error) {
-    return failure(request.operation, errorCodeFor(error), errorMessage(error), null);
+    return failure(request.operation, errorCodeFor(error), errorMessage(error), null, toErrorPayload(error));
   }
 }
 
@@ -218,8 +219,9 @@ function success(operation, data, ok = true) {
   return { schemaVersion: AGENT_OPERATION_SCHEMA_VERSION, operation, ok, data, error: null };
 }
 
-function failure(operation, code, message, data = null) {
-  return { schemaVersion: AGENT_OPERATION_SCHEMA_VERSION, operation, ok: false, data, error: { code, message } };
+function failure(operation, code, message, data = null, details = undefined) {
+  const error = details === undefined ? { code, message } : { code, message, data: details };
+  return { schemaVersion: AGENT_OPERATION_SCHEMA_VERSION, operation, ok: false, data, error };
 }
 
 function toAuditCandidate(candidate) {

@@ -31,7 +31,7 @@
     ],
     "volatileContextAfter": true
   },
-  "bundleHash": "a2a601460a942cf3917f096b2e6ef5ed956730bc357b0ccd9e45a9e19794a920",
+  "bundleHash": "57c7ad35271e7dc5aa32874df4d7dc06aff32c9dd3bad310b258de7cda1f2501",
   "partitions": [
     {
       "cacheBoundaryAfter": true,
@@ -243,10 +243,10 @@
     {
       "cacheBoundaryAfter": true,
       "cacheScope": "module",
-      "content": "llmnav-catalog/1 repository=llmnav catalog=llmnav.support\nRead semantic cards before opening source. Resolve current paths and signatures with llmnav query or show.\n\n@llmnav.support.runtime\nrole Supply injectable clock, process identity, randomness, sleep, environment, and liveness probes for deterministic tests.\nowns runtime injection, deterministic identity, process liveness\nexcludes filesystem access, generation policy\n\n@llmnav.support.abort\nrole Expose cooperative cancellation checks so long scans, queries, and generations can stop at bounded checkpoints.\nowns abort checks, abort error normalization\nexcludes cancellation sources, retry policy\n\n@llmnav.support.policy\nrole Keep one source of truth for search ranking weights and bounded input defaults.\nowns search ranking weights, search input limits, audit input limits\nexcludes query execution, configuration loading, agent transport\nrel workflow>llmnav.search.query, workflow>llmnav.agent.tool-schema, workflow>llmnav.audit.coverage\n",
-      "contentHash": "e45ead791d8d3209a1bb75764c86209b8dbfb23ec96df4162e4235132ef26ecf",
+      "content": "llmnav-catalog/1 repository=llmnav catalog=llmnav.support\nRead semantic cards before opening source. Resolve current paths and signatures with llmnav query or show.\n\n@llmnav.support.runtime\nrole Supply injectable clock, process identity, randomness, sleep, environment, and liveness probes for deterministic tests.\nowns runtime injection, deterministic identity, process liveness\nexcludes filesystem access, generation policy\n\n@llmnav.support.abort\nrole Expose cooperative cancellation checks so long scans, queries, and generations can stop at bounded checkpoints.\nowns abort checks, abort error normalization\nexcludes cancellation sources, retry policy\n\n@llmnav.support.policy\nrole Keep one source of truth for search ranking weights and bounded input defaults.\nowns search ranking weights, search input limits, audit input limits\nexcludes query execution, configuration loading, agent transport\nrel workflow>llmnav.search.query, workflow>llmnav.agent.tool-schema, workflow>llmnav.audit.coverage\n\n@llmnav.support.errors\nrole Describe failures with a stable code, retry classification, cause chain, and bounded operation deadline.\nowns error codes, cause chains, retry classification, operation deadlines\nexcludes diagnostics reporting, CLI formatting, retry scheduling\ninvariant Every wrapped failure keeps the original error as its cause.\n",
+      "contentHash": "6eb30071f673f8ff083c2c04ad5917c3bdc0d928e3e404e53af5d34758ee672b",
       "contentType": "text/plain",
-      "estimatedTokens": 250,
+      "estimatedTokens": 336,
       "id": "module:llmnav.support"
     },
     {

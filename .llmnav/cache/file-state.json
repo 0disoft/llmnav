@@ -1396,13 +1396,14 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "1a90169061599accd2d150c776acfdd75b40acceebda6700ae9f3251c713cb6c",
+      "contentHash": "9912093c85d779e9379df5fcec7c9c308aee213db8fd8b392fc3e5942bdbbfc9",
       "declarations": [
         null
       ],
       "imports": [
         "./agent-tools.js",
         "./audit.js",
+        "./errors.js",
         "./graph-input.js",
         "./policy.js",
         "./project.js",
@@ -1411,7 +1412,7 @@
       ],
       "path": "src/agent-protocol.js",
       "semanticBytes": 528,
-      "sourceBytes": 8945
+      "sourceBytes": 9110
     },
     {
       "blocks": [
@@ -2625,6 +2626,110 @@
           "card": {
             "effect": [],
             "excludes": [
+              "diagnostics reporting",
+              "CLI formatting",
+              "retry scheduling"
+            ],
+            "id": "llmnav.support.errors",
+            "invariant": [
+              "Every wrapped failure keeps the original error as its cause."
+            ],
+            "owns": [
+              "error codes",
+              "cause chains",
+              "retry classification",
+              "operation deadlines"
+            ],
+            "rel": [],
+            "risk": [],
+            "role": "Describe failures with a stable code, retry classification, cause chain, and bounded operation deadline.",
+            "scope": "module",
+            "search": [
+              "error cause",
+              "retryable failure",
+              "error code chain",
+              "operation deadline"
+            ],
+            "stability": "contract",
+            "unknown": []
+          },
+          "end": 453,
+          "endLine": 9,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.support.errors"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Describe failures with a stable code, retry classification, cause chain, and bounded operation deadline."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "error codes|cause chains|retry classification|operation deadlines"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "diagnostics reporting|CLI formatting|retry scheduling"
+            },
+            {
+              "key": "search",
+              "line": 6,
+              "order": 4,
+              "value": "error cause|retryable failure|error code chain|operation deadline"
+            },
+            {
+              "key": "invariant",
+              "line": 7,
+              "order": 5,
+              "value": "Every wrapped failure keeps the original error as its cause."
+            },
+            {
+              "key": "stability",
+              "line": 8,
+              "order": 6,
+              "value": "contract"
+            }
+          ],
+          "filePath": "src/errors.js",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.support.errors\nrole=Describe failures with a stable code, retry classification, cause chain, and bounded operation deadline.\nowns=error codes|cause chains|retry classification|operation deadlines\nexcludes=diagnostics reporting|CLI formatting|retry scheduling\nsearch=error cause|retryable failure|error code chain|operation deadline\ninvariant=Every wrapped failure keeps the original error as its cause.\nstability=contract\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "fc1a4ea9ca377058330137828d99b3b2e3dca6e2e8bb82a5ebfa9fecbfc81be0",
+      "declarations": [
+        null
+      ],
+      "imports": [
+        "./abort.js",
+        "node:timers"
+      ],
+      "path": "src/errors.js",
+      "semanticBytes": 453,
+      "sourceBytes": 4692
+    },
+    {
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
               "benchmark task execution",
               "model quality scoring"
             ],
@@ -3055,7 +3160,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "ded2f83a93966b790ee6dbb2466261b57fe48589ca767c614796777dbc78847f",
+      "contentHash": "56d10902e48ce1ca5c7487284b1aab22e21683c40a39efcb99ad45d1b8da78b7",
       "declarations": [
         null
       ],
@@ -3085,7 +3190,7 @@
       ],
       "path": "src/generator.js",
       "semanticBytes": 476,
-      "sourceBytes": 22410
+      "sourceBytes": 22433
     },
     {
       "blocks": [
@@ -3415,18 +3520,18 @@
     },
     {
       "blocks": [],
-      "contentHash": "87bcfc98b1a48d73e137e97250230e1072fcbc1488d72da6318e343ef5033295",
+      "contentHash": "83dcb99fba64e3a9ce22a61207f0573d394678b04ae57ff181d737509e6d0362",
       "declarations": [],
       "imports": [
         "./spec.js"
       ],
       "path": "src/index.d.ts",
       "semanticBytes": 0,
-      "sourceBytes": 31588
+      "sourceBytes": 32950
     },
     {
       "blocks": [],
-      "contentHash": "0a5c1ce5cac22ee6c1399408abbb6b8990c34031e58560317c53046ae717eb72",
+      "contentHash": "e5900b7ef0ad831ebced4b99fdfa3ab6fdff961aba22a7d93a7075e63116f9bb",
       "declarations": [],
       "imports": [
         "./abort.js",
@@ -3440,6 +3545,7 @@
         "./declaration.js",
         "./doctor.js",
         "./editor.js",
+        "./errors.js",
         "./evaluation.js",
         "./files.js",
         "./formatter.js",
@@ -3465,7 +3571,7 @@
       ],
       "path": "src/index.js",
       "semanticBytes": 0,
-      "sourceBytes": 3848
+      "sourceBytes": 4053
     },
     {
       "blocks": [
@@ -3798,12 +3904,13 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "22b2cd98f0f6032faa3e9b8ae936b99fb7ca20c0819913967afc1717660637c6",
+      "contentHash": "30e931ee27f08827b27321f7504bcda9792b66377401da56b8a68d2fed6b8e4e",
       "declarations": [
         null
       ],
       "imports": [
         "./agent-protocol.js",
+        "./errors.js",
         "./search.js",
         "./spec.js",
         "node:events",
@@ -3813,7 +3920,7 @@
       ],
       "path": "src/mcp.js",
       "semanticBytes": 531,
-      "sourceBytes": 8075
+      "sourceBytes": 9217
     },
     {
       "blocks": [
@@ -3926,7 +4033,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "6ebeea5b352e87b5692d98268636ef1a9b4e32e758b776304ff1af7862c53c43",
+      "contentHash": "b241fa28810430267b31aa5da3736b2e26a2202ffbe8a8e8dc56cb895e9d4d5a",
       "declarations": [
         null
       ],
@@ -3944,7 +4051,7 @@
       ],
       "path": "src/migration.js",
       "semanticBytes": 567,
-      "sourceBytes": 8546
+      "sourceBytes": 8569
     },
     {
       "blocks": [
@@ -5032,7 +5139,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "738998de8610029c4c92c37114c27f9be6bbf30df2a5a241d2d993140efebd95",
+      "contentHash": "70b5698ab8affbaa6edf878f1403d316d384203e20684905bbdc6016395082db",
       "declarations": [
         null
       ],
@@ -5052,7 +5159,7 @@
       ],
       "path": "src/search.js",
       "semanticBytes": 464,
-      "sourceBytes": 32936
+      "sourceBytes": 33132
     },
     {
       "blocks": [],
@@ -5365,7 +5472,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "0881c9827f1428576fcd84811b0ce9a9d0a51116ef94106250df565e563d77f8",
+      "contentHash": "7c24d2bf238bf0f5f853cc9873143644c38f6539e6776f948d2078eb5380e5f2",
       "declarations": [
         null
       ],
@@ -5378,7 +5485,7 @@
       ],
       "path": "src/transaction.js",
       "semanticBytes": 393,
-      "sourceBytes": 32693
+      "sourceBytes": 32939
     },
     {
       "blocks": [],
@@ -5555,7 +5662,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "3a92221ac30a0f35b6fd1c3c9000fec5907ee5028ba37da8bce7360a827798d4",
+      "contentHash": "e272c1ea6f365e976d9cf1dd64bd139d0668284e3b60bdab5fe2dfd52446bfac",
       "declarations": [],
       "imports": [
         "../src/agent-protocol.js",
@@ -5570,7 +5677,7 @@
       ],
       "path": "tests/agent-protocol.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 11942
+      "sourceBytes": 12028
     },
     {
       "blocks": [],
@@ -5715,6 +5822,19 @@
       "path": "tests/editor.test.js",
       "semanticBytes": 0,
       "sourceBytes": 2729
+    },
+    {
+      "blocks": [],
+      "contentHash": "595bc06db102914e234581a16814643eb6613c03d630f178e7f78372af26d2cd",
+      "declarations": [],
+      "imports": [
+        "../src/errors.js",
+        "node:assert/strict",
+        "node:test"
+      ],
+      "path": "tests/errors.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 3305
     },
     {
       "blocks": [],
@@ -5943,7 +6063,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "6598705a7615dc9f830c6778048da5575338b9592ecf86880ae19245af73b135",
+      "contentHash": "3df0eabb20b66cd3298f5025e52704355082539a545bca9851dea4e5d039b05d",
       "declarations": [],
       "imports": [
         "../src/agent-protocol.js",
@@ -5964,7 +6084,7 @@
       ],
       "path": "tests/mcp.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 11137
+      "sourceBytes": 13416
     },
     {
       "blocks": [],
@@ -6203,7 +6323,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "70fcd3c0e1e118b3a018c52c3d954004b88c0006b50970300b54cb36cfb87c8f",
+      "contentHash": "702e57913e9767165d2c57050750d5488863774054dd7c8bd1d4e390b841e12b",
       "declarations": [],
       "imports": [
         "../src/generator.js",
@@ -6222,7 +6342,7 @@
       ],
       "path": "tests/transaction.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 27305
+      "sourceBytes": 28456
     },
     {
       "blocks": [],

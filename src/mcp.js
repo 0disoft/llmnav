@@ -14,6 +14,7 @@ import { stat } from "node:fs/promises";
 import path from "node:path";
 import readline from "node:readline";
 import { executeAgentOperation, getAgentToolDefinitions } from "./agent-protocol.js";
+import { createIoError, DEFAULT_REQUEST_TIMEOUT_MS, toErrorPayload, withDeadline } from "./errors.js";
 import { createProjectSession } from "./search.js";
 import { PACKAGE_VERSION } from "./spec.js";
 
@@ -46,6 +47,10 @@ export function createMcpServer(options = {}) {
     ? createSessionCache(root, { createSession: options.createSession })
     : null;
   const tools = getAgentToolDefinitions().map(toMcpTool);
+  const requestTimeoutMs = options.requestTimeoutMs ?? DEFAULT_REQUEST_TIMEOUT_MS;
+  if (!Number.isInteger(requestTimeoutMs) || requestTimeoutMs < 0) {
+    throw new TypeError(`createMcpServer requires a non-negative integer requestTimeoutMs: ${requestTimeoutMs}.`);
+  }
 
   return {
     async handleLine(line) {
@@ -55,15 +60,15 @@ export function createMcpServer(options = {}) {
       } catch {
         return failure(null, PARSE_ERROR, "Parse error: the line is not valid JSON.");
       }
-      return handleMessage(message, root, session, sessionCache, tools);
+      return handleMessage(message, root, session, sessionCache, tools, requestTimeoutMs);
     },
     async handleMessage(message) {
-      return handleMessage(message, root, session, sessionCache, tools);
+      return handleMessage(message, root, session, sessionCache, tools, requestTimeoutMs);
     },
   };
 }
 
-async function handleMessage(message, root, session, sessionCache, tools) {
+async function handleMessage(message, root, session, sessionCache, tools, requestTimeoutMs) {
   if (message === null || typeof message !== "object" || Array.isArray(message)) {
     return failure(null, INVALID_REQUEST, "Invalid Request: expected a JSON-RPC object.");
   }
@@ -87,27 +92,35 @@ async function handleMessage(message, root, session, sessionCache, tools) {
   if (message.method === "ping") return success(id, {});
   if (message.method === "tools/list") return success(id, { tools });
 
-  if (message.method === "tools/call") return callTool(id, message.params, root, session, sessionCache);
+  if (message.method === "tools/call") {
+    return callTool(id, message.params, root, session, sessionCache, requestTimeoutMs);
+  }
 
   return failure(id, METHOD_NOT_FOUND, `Method not found: ${message.method}`);
 }
 
-async function callTool(id, params, root, session, sessionCache) {
+async function callTool(id, params, root, session, sessionCache, requestTimeoutMs) {
   if (!hasToolName(params)) {
     return failure(id, INVALID_PARAMS, "Invalid params: tools/call requires a tool name.");
   }
   const input = params.arguments === undefined ? {} : params.arguments;
-  const activeSession = await resolveSession(session, sessionCache);
   let envelope;
   try {
-    envelope = await executeAgentOperation(
+    const activeSession = await resolveSession(session, sessionCache);
+    const operation = executeAgentOperation(
       root,
       params.name,
       input,
       activeSession === null ? {} : { session: activeSession },
     );
+    envelope = await withDeadline(`${params.name} request`, requestTimeoutMs, operation);
   } catch (error) {
-    return failure(id, INTERNAL_ERROR, error instanceof Error ? error.message : String(error));
+    return failure(
+      id,
+      INTERNAL_ERROR,
+      error instanceof Error ? error.message : String(error),
+      toErrorPayload(error),
+    );
   }
   return success(id, {
     content: [{ type: "text", text: JSON.stringify(envelope) }],
@@ -122,12 +135,9 @@ function hasToolName(params) {
 
 async function resolveSession(session, sessionCache) {
   if (sessionCache === null) return session;
-  try {
-    return await sessionCache.current();
-  } catch {
-    // A missing or half-written cache keeps the previous behaviour: one snapshot load per call.
-    return null;
-  }
+  // A failed snapshot load is reported by the caller: reusing a stale snapshot
+  // silently answers with data that no longer matches the repository.
+  return sessionCache.current();
 }
 
 export function createSessionCache(root, dependencies = {}) {
@@ -170,7 +180,14 @@ export async function sessionStamp(root, statFile = statCacheFile) {
   const parts = [];
   for (const relativePath of SESSION_STAMP_FILES) {
     const name = path.posix.basename(relativePath);
-    const info = await statFile(path.join(root, relativePath));
+    let info;
+    try {
+      info = await statFile(path.join(root, relativePath));
+    } catch (error) {
+      // A stat that fails for any reason other than absence must not look like a
+      // missing artifact, or the session silently stops noticing regeneration.
+      throw createIoError("stat", name, error);
+    }
     parts.push(info === null ? `${name}:missing` : `${name}:${info.mtimeNs}:${info.size}:${info.ino}`);
   }
   return parts.join("|");
@@ -179,8 +196,10 @@ export async function sessionStamp(root, statFile = statCacheFile) {
 async function statCacheFile(filePath) {
   try {
     return await stat(filePath, { bigint: true });
-  } catch {
-    return null;
+  } catch (error) {
+    // Absence is the only failure that means "missing"; sessionStamp wraps the rest.
+    if (error && typeof error === "object" && error.code === "ENOENT") return null;
+    throw error;
   }
 }
 
@@ -196,8 +215,12 @@ function success(id, result) {
   return { jsonrpc: "2.0", id, result };
 }
 
-function failure(id, code, message) {
-  return { jsonrpc: "2.0", id, error: { code, message } };
+function failure(id, code, message, data = undefined) {
+  return {
+    jsonrpc: "2.0",
+    id,
+    error: data === undefined ? { code, message } : { code, message, data },
+  };
 }
 
 export async function serveMcpStdio(options = {}) {

@@ -28,9 +28,11 @@ export async function migrateProject(root, options = {}) {
   const write = options.write === true;
   const { config } = await loadConfig(root);
   const before = await inspectGeneratedFormats(root, config);
-  const lockOptions = options.runtime === undefined
-    ? options.lockOptions
-    : { ...options.lockOptions, runtime: options.runtime };
+  const lockOptions = {
+    ...options.lockOptions,
+    ...(options.runtime === undefined ? {} : { runtime: options.runtime }),
+    signal: options.signal,
+  };
 
   // Plan and apply share one lock: a concurrent generation between them would
   // invalidate the plan and let a stale migration overwrite newer artifacts.

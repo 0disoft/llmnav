@@ -64,8 +64,8 @@ async function loadSearchDataLocked(root, lock) {
   let index;
   try {
     index = JSON.parse(indexText);
-  } catch {
-    throw new Error("Malformed primary index.json. Run `llmnav generate` to rebuild it.");
+  } catch (error) {
+    throw new Error("Malformed primary index.json. Run `llmnav generate` to rebuild it.", { cause: error });
   }
   if (!isUsablePrimaryIndex(index, config.repositoryId)) {
     throw new Error("Incompatible primary index.json. Run `llmnav generate` to rebuild it.");
@@ -77,8 +77,8 @@ async function loadSearchDataLocked(root, lock) {
   if (manifestText !== null) {
     try {
       manifest = JSON.parse(manifestText);
-    } catch {
-      throw new Error("Malformed generated manifest.json. Run `llmnav generate` to rebuild it.");
+    } catch (error) {
+      throw new Error("Malformed generated manifest.json. Run `llmnav generate` to rebuild it.", { cause: error });
     }
     if (manifest?.repositoryId !== config.repositoryId ||
       manifest.files?.[`${cacheRelative}/index.json`] !== sha256(indexText)) {
@@ -92,6 +92,8 @@ async function loadSearchDataLocked(root, lock) {
     try {
       graph = JSON.parse(graphText);
     } catch {
+      // The graph is optional enrichment: a missing or malformed artifact
+      // degrades to index-only search instead of failing the query.
       graph = null;
     }
   }

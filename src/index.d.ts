@@ -601,6 +601,53 @@ export const ABORT_ERROR_NAME: string;
 export function createAbortError(signal?: AbortSignalLike): Error;
 export function throwIfAborted(signal?: AbortSignalLike): void;
 
+/** One link in a wrapped failure's cause chain. */
+export interface ErrorCauseLink {
+  name: string | null;
+  code: string | null;
+  message: string;
+}
+
+/** Machine-readable failure details carried by MCP and agent envelopes. */
+export interface ErrorPayload {
+  code: string | null;
+  retryable: boolean;
+  cause: ErrorCauseLink[];
+}
+
+export const ERROR_CODES: {
+  readonly ioRead: string;
+  readonly ioWrite: string;
+  readonly timeout: string;
+};
+export const DEFAULT_REQUEST_TIMEOUT_MS: number;
+
+export class LlmnavError extends Error {
+  constructor(message: string, options?: {
+    code?: string | null;
+    operation?: string | null;
+    retryable?: boolean;
+    cause?: unknown;
+  });
+  name: "LlmnavError";
+  code: string | null;
+  operation: string | null;
+  retryable: boolean;
+}
+
+export function isAbortError(error: unknown): boolean;
+export function errorCode(error: unknown): string | null;
+export function isRetryableError(error: unknown): boolean;
+export function createIoError(operation: string, target: string, cause: unknown): Error;
+export function causeChain(error: unknown): ErrorCauseLink[];
+export function toErrorPayload(error: unknown): ErrorPayload;
+export function withDeadline<T>(
+  operation: string,
+  timeoutMs: number,
+  promise: Promise<T>,
+  options?: { signal?: AbortSignalLike },
+): Promise<T>;
+
 export interface Runtime {
   now(): number;
   pid: number;
@@ -623,6 +670,7 @@ export interface GenerationLockOptions {
   delays?: number[];
   ownerId?: string;
   runtime?: Runtime;
+  signal?: AbortSignalLike;
 }
 
 export const DEFAULT_RUNTIME: Runtime;

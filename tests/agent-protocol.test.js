@@ -209,6 +209,7 @@ test("maps handler outcomes and thrown errors onto the operation envelope", asyn
   assert.equal(internal.error.code, "LNVAP500");
   assert.equal(internal.error.message, "snapshot store unavailable");
   assert.equal(internal.data, null);
+  assert.deepEqual(internal.error.data, { code: null, retryable: false, cause: [] });
 
   const ambiguousResult = { resolvedFrom: { state: "ambiguous" } };
   const ambiguous = await executeAgentOperation(

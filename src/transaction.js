@@ -108,6 +108,8 @@ export async function acquireGenerationLock(root, options = {}) {
   await assertNoSymlinkTraversal(root, lockPath, ".llmnav/generation.lock");
   await mkdir(controlDirectory, { recursive: true });
   const runtime = options.runtime ?? DEFAULT_RUNTIME;
+  const signal = options.signal;
+  throwIfAborted(signal);
   const ownerId = options.ownerId ?? createTransactionId(runtime);
   const timeoutMs = requireLockInteger("timeoutMs", options.timeoutMs, DEFAULT_LOCK_TIMEOUT_MS, 0);
   const pollMs = requireLockInteger("pollMs", options.pollMs, DEFAULT_LOCK_POLL_MS, 1);
@@ -131,7 +133,11 @@ export async function acquireGenerationLock(root, options = {}) {
     }
 
     for (const delay of delays) {
+      // Waiting for a held lock must stay cancellable; a poll interval bounds
+      // how late the cancellation is observed.
+      throwIfAborted(signal);
       if (delay > 0) await sleepImpl(delay);
+      throwIfAborted(signal);
       try {
         await linkImpl(candidatePath, lockPath);
         return { root, lockPath, ownerId, runtime };

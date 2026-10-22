@@ -74,9 +74,11 @@ export async function generateProject(root, options = {}) {
 export async function generateProjectWithPreparation(root, prepare, options = {}) {
   assertAbortSignal(options.signal);
   throwIfAborted(options.signal);
-  const lockOptions = options.runtime === undefined
-    ? options.lockOptions
-    : { ...options.lockOptions, runtime: options.runtime };
+  const lockOptions = {
+    ...options.lockOptions,
+    ...(options.runtime === undefined ? {} : { runtime: options.runtime }),
+    signal: options.signal,
+  };
   return withGenerationLock(
     root,
     async (lock) => {

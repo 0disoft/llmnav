@@ -511,7 +511,7 @@
         "agent search decisions"
       ],
       "hashes": {
-        "body": "ded2f83a93966b790ee6dbb2466261b57fe48589ca767c614796777dbc78847f",
+        "body": "56d10902e48ce1ca5c7487284b1aab22e21683c40a39efcb99ad45d1b8da78b7",
         "semantic": "7052622c9732ab29e37c3ab87f848188e931f601684e811e7bb8adef31fbfe85",
         "structure": "9a0f6533552a700901d005e54958d56c10a2a7ce9c901e3942a85ad8273d7eef"
       },
@@ -684,7 +684,7 @@
         "source mutation"
       ],
       "hashes": {
-        "body": "738998de8610029c4c92c37114c27f9be6bbf30df2a5a241d2d993140efebd95",
+        "body": "70b5698ab8affbaa6edf878f1403d316d384203e20684905bbdc6016395082db",
         "semantic": "945f325a2ad2abfa71212b02dd952c071d47ed6d3848a16d247afd48dbe5ced6",
         "structure": "a53c3b192c4f1a53461232c4516ebbfd79337f70a6fb27f2e6325213050a6cb6"
       },
@@ -935,7 +935,7 @@
         "source indexing"
       ],
       "hashes": {
-        "body": "0881c9827f1428576fcd84811b0ce9a9d0a51116ef94106250df565e563d77f8",
+        "body": "7c24d2bf238bf0f5f853cc9873143644c38f6539e6776f948d2078eb5380e5f2",
         "semantic": "ce2cf8943f71d053f8cba914886bae20316e5b6106857f52abc4d8a59afb1ef1",
         "structure": "5de94f39bf7e761651c8294ee0af6202e494f6eb4a3f829ad9e27414fc3d9848"
       },
@@ -1314,14 +1314,15 @@
         "source mutation"
       ],
       "hashes": {
-        "body": "1a90169061599accd2d150c776acfdd75b40acceebda6700ae9f3251c713cb6c",
+        "body": "9912093c85d779e9379df5fcec7c9c308aee213db8fd8b392fc3e5942bdbbfc9",
         "semantic": "ce30fe54e5dab8eb3cda8e1e6afdcee3489c3f62267d99ff85257f4c819d21a4",
-        "structure": "e2ebafd67f7b7afa843ab30ea2d66cd74a0893a2f6b0875d2e452d8eebd15e63"
+        "structure": "299fbf9c8b28717035795dd2e1ed7d74e274ca439f2cb40256060313cbdc1426"
       },
       "id": "llmnav.agent.protocol",
       "imports": [
         "./agent-tools.js",
         "./audit.js",
+        "./errors.js",
         "./graph-input.js",
         "./policy.js",
         "./project.js",
@@ -2088,7 +2089,7 @@
         "semantic ID reassignment"
       ],
       "hashes": {
-        "body": "6ebeea5b352e87b5692d98268636ef1a9b4e32e758b776304ff1af7862c53c43",
+        "body": "b241fa28810430267b31aa5da3736b2e26a2202ffbe8a8e8dc56cb895e9d4d5a",
         "semantic": "494a51c075eee00a0da948bbc268d3ca4af5485d1a6739fd415fec556ed2af82",
         "structure": "20c8daf1062273ed75b053239acac7d96b4e72435bb96b33ab55d21e8bfe7f81"
       },
@@ -2201,13 +2202,14 @@
         "index preparation"
       ],
       "hashes": {
-        "body": "22b2cd98f0f6032faa3e9b8ae936b99fb7ca20c0819913967afc1717660637c6",
+        "body": "30e931ee27f08827b27321f7504bcda9792b66377401da56b8a68d2fed6b8e4e",
         "semantic": "a1ec177829cdd462b6ea996d78d53c2c9071291f1dd14202e05d1236559a8973",
-        "structure": "f70330ec11860d1c61aa2fdf6af64764231710a9346d26df09c586c009531c54"
+        "structure": "e1eb506106a1041206ffce15ac6bc1a3e0a8a282847dd681fb169b55ae5494aa"
       },
       "id": "llmnav.agent.mcp",
       "imports": [
         "./agent-protocol.js",
+        "./errors.js",
         "./search.js",
         "./spec.js",
         "node:events",
@@ -2378,6 +2380,55 @@
         "policy defaults"
       ],
       "stability": "architecture"
+    },
+    {
+      "boundaries": [],
+      "excludes": [
+        "diagnostics reporting",
+        "CLI formatting",
+        "retry scheduling"
+      ],
+      "hashes": {
+        "body": "fc1a4ea9ca377058330137828d99b3b2e3dca6e2e8bb82a5ebfa9fecbfc81be0",
+        "semantic": "d6cbc36ba531885f4ba3fda92bab5467687d9266cb42bc2114e6c278b7200850",
+        "structure": "86d6e24c9769cf79335bf68b7ad7c7c3e705155b6d2517eb7adc63e0a4ce4fe3"
+      },
+      "id": "llmnav.support.errors",
+      "imports": [
+        "./abort.js",
+        "node:timers"
+      ],
+      "invariant": [
+        "Every wrapped failure keeps the original error as its cause."
+      ],
+      "location": {
+        "declarationLine": null,
+        "endLine": 9,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/errors.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "owns": [
+        "error codes",
+        "cause chains",
+        "retry classification",
+        "operation deadlines"
+      ],
+      "role": "Describe failures with a stable code, retry classification, cause chain, and bounded operation deadline.",
+      "scope": "module",
+      "search": [
+        "error cause",
+        "retryable failure",
+        "error code chain",
+        "operation deadline"
+      ],
+      "stability": "contract"
     }
   ],
   "contractFingerprints": {
@@ -2393,6 +2444,6 @@
   "generatedBy": "llmnav@0.11.2",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "46554bf42f4548614f27bc92de60770f766e18aeca7c5b307fbb8a65b995c455",
+  "sourceHash": "c09574d115ff79acad2a0b02e3c273b0657de9afda373e5fa786a89d023d068e",
   "specVersion": "1"
 }

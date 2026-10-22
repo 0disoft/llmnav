@@ -210,6 +210,68 @@ test("cache stamps separate regenerations inside one millisecond", async (contex
   assert.match(await readStamp(), /\|ids\.jsonl:1000000:40:7$/u);
 });
 
+test("a failed artifact stat is reported instead of looking missing", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-mcp-stat-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  const denied = Object.assign(new Error("permission denied"), { code: "EACCES" });
+
+  await assert.rejects(sessionStamp(root, async () => {
+    throw denied;
+  }), (error) => {
+    assert.equal(error.code, "LNV100");
+    assert.equal(error.retryable, true);
+    assert.equal(error.cause, denied);
+    return true;
+  });
+});
+
+test("tool calls report a failed snapshot load with its cause", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-mcp-cause-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  const denied = Object.assign(new Error("snapshot unavailable"), { code: "EACCES" });
+  const server = createMcpServer({
+    root,
+    createSession: async () => {
+      throw denied;
+    },
+  });
+
+  const response = await server.handleMessage({
+    jsonrpc: "2.0",
+    id: 1,
+    method: "tools/call",
+    params: { name: "llmnav_query", arguments: { task: "auth" } },
+  });
+  assert.equal(response.error.code, -32603);
+  assert.equal(response.error.message, "snapshot unavailable");
+  assert.deepEqual(response.error.data, { code: "EACCES", retryable: true, cause: [] });
+});
+
+test("a tool call that outlives its request deadline reports a timeout", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-mcp-deadline-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  assert.throws(
+    () => createMcpServer({ root, requestTimeoutMs: -1 }),
+    /requires a non-negative integer requestTimeoutMs/u,
+  );
+
+  const server = createMcpServer({
+    root,
+    requestTimeoutMs: 10,
+    session: { query: () => new Promise(() => {}) },
+  });
+  const response = await server.handleMessage({
+    jsonrpc: "2.0",
+    id: 2,
+    method: "tools/call",
+    params: { name: "llmnav_query", arguments: { task: "auth" } },
+  });
+  assert.equal(response.error.code, -32603);
+  assert.equal(response.error.data.code, "LNV102");
+  assert.equal(response.error.data.retryable, false);
+  assert.match(response.error.message, /did not finish within 10 ms/u);
+});
+
 async function callTool(server, id, name, args) {
   const response = await server.handleMessage({
     jsonrpc: "2.0",

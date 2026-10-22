@@ -155,6 +155,38 @@ Cancellation is cooperative. Generation checks the signal while scanning, betwee
 
 `throwIfAborted(signal)` performs the same check in caller code, and `createAbortError(signal)` normalizes a signal into one error. An `Error` passed to `controller.abort(error)` is rethrown unchanged; any other reason becomes an `AbortError`.
 
+A generation that is waiting for the lock also stops waiting when its signal aborts, so a cancelled CLI or editor command does not sit out the full lock timeout.
+
+## Report failures with a cause and a deadline
+
+Filesystem failures keep the original system error as `cause`, and the wrapper carries a stable code plus a retry classification:
+
+```js
+import { causeChain, createIoError, isRetryableError, toErrorPayload } from "llmnav";
+
+try {
+  await readSomething();
+} catch (error) {
+  const wrapped = createIoError("read", ".llmnav/cache/index.json", error);
+  wrapped.code;        // "LNV100"
+  wrapped.retryable;   // true for EACCES, EBUSY, EAGAIN, EMFILE, ENFILE, EPERM
+  causeChain(wrapped); // [{ name, code, message }, ...] bounded and cycle-safe
+  toErrorPayload(wrapped); // { code, retryable, cause } for a JSON-RPC or HTTP body
+}
+```
+
+`ERROR_CODES` names the io codes (`LNV100` read, `LNV101` write) and the deadline code (`LNV102`). Retry only what `isRetryableError` marks as transient, and only for idempotent work: a write that may have partially applied should be reconciled from the transaction journal, not replayed. Generation and commit paths never retry themselves.
+
+`withDeadline(operation, timeoutMs, promise, { signal })` bounds an awaited operation without running anything in the background:
+
+```js
+import { DEFAULT_REQUEST_TIMEOUT_MS, withDeadline } from "llmnav";
+
+const result = await withDeadline("query request", DEFAULT_REQUEST_TIMEOUT_MS, queryProject(root, task));
+```
+
+A deadline rejects with `code: "LNV102"` and `retryable: false`; it does not cancel the underlying promise, so a timed-out read is abandoned rather than guaranteed stopped. `timeoutMs: 0` disables the deadline. The MCP server applies the same deadline per tool call through `requestTimeoutMs`.
+
 ## Build and update an inverted index
 
 ```js
@@ -309,7 +341,7 @@ Each query record requires a non-empty `query`. A positive case supplies at leas
 
 ## Agent operation protocol
 
-`getAgentToolDefinitions()` returns defensive copies of five schemaVersion 1 tool definitions in fixed order. Their JSON Schema inputs reject unknown fields and deliberately omit the repository root.
+`getAgentToolDefinitions()` returns defensive copies of six schemaVersion 2 tool definitions in fixed order. Their JSON Schema inputs reject unknown fields and deliberately omit the repository root.
 
 ```js
 import { executeAgentOperation, getAgentToolDefinitions } from "llmnav";

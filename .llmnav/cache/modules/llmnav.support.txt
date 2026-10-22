@@ -16,3 +16,9 @@ role Keep one source of truth for search ranking weights and bounded input defau
 owns search ranking weights, search input limits, audit input limits
 excludes query execution, configuration loading, agent transport
 rel workflow>llmnav.search.query, workflow>llmnav.agent.tool-schema, workflow>llmnav.audit.coverage
+
+@llmnav.support.errors
+role Describe failures with a stable code, retry classification, cause chain, and bounded operation deadline.
+owns error codes, cause chains, retry classification, operation deadlines
+excludes diagnostics reporting, CLI formatting, retry scheduling
+invariant Every wrapped failure keeps the original error as its cause.

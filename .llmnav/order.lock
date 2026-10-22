@@ -46,3 +46,4 @@ llmnav.agent.mcp
 llmnav.support.runtime
 llmnav.support.abort
 llmnav.support.policy
+llmnav.support.errors

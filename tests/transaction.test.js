@@ -636,3 +636,37 @@ test("an abort failpoint throws a recoverable abort error instead of exiting", a
   const [result] = await queryProject(root, "reserve credits");
   assert.equal(result.id, "billing.credit.reserve");
 });
+
+test("waiting for the generation lock stays cancellable", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-lock-abort-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  const holder = await acquireGenerationLock(root, { ownerId: "holder" });
+
+  const cancelled = new AbortController();
+  cancelled.abort();
+  await assert.rejects(
+    acquireGenerationLock(root, { ownerId: "waiter", delays: [0, 0, 0], signal: cancelled.signal }),
+    (error) => {
+      assert.equal(error.name, "AbortError");
+      return true;
+    },
+  );
+
+  const late = new AbortController();
+  const timer = setTimeout(() => late.abort(), 5);
+  try {
+    await assert.rejects(
+      acquireGenerationLock(root, { ownerId: "waiter", delays: [0, 20, 20, 20, 20, 20], signal: late.signal }),
+      (error) => {
+        assert.equal(error.name, "AbortError");
+        return true;
+      },
+    );
+  } finally {
+    clearTimeout(timer);
+  }
+
+  const record = JSON.parse(await readFile(path.join(root, ".llmnav", "generation.lock"), "utf8"));
+  assert.equal(record.ownerId, "holder");
+  await releaseGenerationLock(holder);
+});

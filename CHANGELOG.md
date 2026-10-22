@@ -4,6 +4,25 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.12.0] — 2026-10-22
+
+### Added
+
+* Export `LlmnavError`, `ERROR_CODES`, `createIoError`, `causeChain`, `toErrorPayload`, `errorCode`, `isAbortError`, `isRetryableError`, and `withDeadline`, so a host can classify a failure as retryable and read its cause instead of parsing a message.
+* Add `withDeadline(operation, timeoutMs, promise, { signal })`. A deadline reports a timeout without cancelling the underlying work, and `0` disables it.
+
+### Changed
+
+* `createMcpServer` accepts `requestTimeoutMs` (default 15 seconds, `0` disables it) and answers with a JSON-RPC internal error carrying `data.code === "LNV102"` when one tool call outlives the deadline.
+* Report MCP failures as `error.data` holding `{ code, retryable, cause }` rather than a message alone, so a client can tell a transient filesystem failure from a permanent one.
+* Treat a cache artifact whose `stat` fails for a reason other than absence as a failure instead of a missing file, so a session no longer freezes on a stale snapshot after a permission or handle error.
+* Stop waiting for the generation lock as soon as the caller's `signal` aborts.
+
+### Fixed
+
+* Keep the underlying error as the cause when `index.json` or `manifest.json` is malformed.
+* Print the stable error code and, under `LLMNAV_DEBUG=1`, the cause chain from the CLI.
+
 ## [0.11.2] — 2026-10-22
 
 ### Fixed
