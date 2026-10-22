@@ -56,6 +56,21 @@ test("bounded maps stop pulling work after an abort", async () => {
   assert.deepEqual(seen, [1, 2]);
 });
 
+test("bounded maps preserve undefined rejections and observe the final worker's cancellation", async () => {
+  let rejected = false;
+  await mapWithConcurrency([1], 1, async () => { throw undefined; }).catch((error) => {
+    rejected = true;
+    assert.equal(error, undefined);
+  });
+  assert.equal(rejected, true);
+  const controller = new AbortController();
+  await assert.rejects(() => mapWithConcurrency([1], 1, async () => {
+    controller.abort();
+    return 1;
+  }, { signal: controller.signal }), { name: "AbortError" });
+  await assert.rejects(() => mapWithConcurrency([], 1, async () => {}, { signal: controller.signal }), { name: "AbortError" });
+});
+
 test("scans the same project regardless of io concurrency", async (context) => {
   const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-concurrency-"));
   context.after(() => rm(root, { recursive: true, force: true }));

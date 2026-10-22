@@ -55,20 +55,22 @@ export async function withGenerationLock(root, callback, options = {}) {
   const lock = await acquireGenerationLock(root, options);
   let result;
   let failure;
+  let failed = false;
   try {
     result = await callback(lock);
   } catch (error) {
+    failed = true;
     failure = error;
   }
   // Releasing is part of the operation's contract: a callback error must not
   // hide a release error, and a release error must not leave a live-pid lock
   // behind that blocks every later generation in this process.
   const releaseFailure = await releaseGenerationLockSettled(lock);
-  if (failure !== undefined && releaseFailure !== undefined) {
-    throw new AggregateError([failure, releaseFailure], "Generation failed and its lock could not be released.");
+  if (failed && releaseFailure !== undefined) {
+    throw new AggregateError([failure, releaseFailure.error], "Generation failed and its lock could not be released.");
   }
-  if (failure !== undefined) throw failure;
-  if (releaseFailure !== undefined) throw releaseFailure;
+  if (failed) throw failure;
+  if (releaseFailure !== undefined) throw releaseFailure.error;
   return result;
 }
 
@@ -83,7 +85,7 @@ async function releaseGenerationLockSettled(lock) {
       await releaseGenerationLock(lock);
       return undefined;
     } catch (error) {
-      failure = error;
+      failure = { error };
     }
   }
   // The lock still names this process, so removal cannot steal another owner's
@@ -297,7 +299,7 @@ function journalRecord(transaction, options, phase) {
 
 async function persistJournal(transaction, options, phase) {
   transaction.journal = journalRecord(transaction, options, phase);
-  await atomicWrite(transaction.root, transaction.journalPath, stableStringify(transaction.journal));
+  await atomicWrite(transaction.root, transaction.journalPath, stableStringify(transaction.journal), { runtime: options.runtime });
 }
 
 async function moveCacheAside(transaction, options) {
@@ -422,9 +424,10 @@ export async function recoverGenerationTransaction(root, options = {}) {
 export async function renameWithRetry(source, destination, options = {}) {
   const renameImpl = options.renameImpl ?? rename;
   const delays = options.delays ?? DEFAULT_RETRY_DELAYS;
+  requireRetryDelays(delays);
   let lastError;
   for (const delay of delays) {
-    if (delay > 0) await (options.sleepImpl ?? sleep)(delay);
+    if (delay > 0) await (options.sleepImpl ?? options.runtime?.sleep ?? DEFAULT_RUNTIME.sleep)(delay);
     try {
       await renameImpl(source, destination);
       return;
@@ -439,9 +442,10 @@ export async function renameWithRetry(source, destination, options = {}) {
 export async function removeWithRetry(target, options = {}) {
   const rmImpl = options.rmImpl ?? rm;
   const delays = options.delays ?? DEFAULT_RETRY_DELAYS;
+  requireRetryDelays(delays);
   let lastError;
   for (const delay of delays) {
-    if (delay > 0) await (options.sleepImpl ?? sleep)(delay);
+    if (delay > 0) await (options.sleepImpl ?? options.runtime?.sleep ?? DEFAULT_RUNTIME.sleep)(delay);
     try {
       await rmImpl(target, { recursive: true, force: true });
       return;
@@ -658,6 +662,12 @@ async function removeOwnedLock(lockPath, ownerId, runtime = DEFAULT_RUNTIME) {
     await rm(quarantinePath, { force: true });
   }
   return false;
+}
+
+function requireRetryDelays(delays) {
+  if (!Array.isArray(delays) || delays.length === 0 || delays.some((delay) => !Number.isSafeInteger(delay) || delay < 0)) {
+    throw new TypeError("Retry delays must be a non-empty array of non-negative safe integers.");
+  }
 }
 
 function requireLockInteger(name, value, fallback, minimum) {

@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
-import { lstat, mkdir, readFile, realpath, rename, rm, writeFile } from "node:fs/promises";
+import { lstat, mkdir, open, readFile, realpath, rename, rm } from "node:fs/promises";
 import path from "node:path";
+import { DEFAULT_RUNTIME } from "./runtime.js";
 
 export function normalizeNewlines(value) {
   return value.replace(/\r\n?/gu, "\n");
@@ -143,17 +144,27 @@ export async function atomicWrite(root, filePath, content, options = {}) {
   await assertNoSymlinkTraversal(root, filePath, label);
   await mkdir(parent, { recursive: true });
   const parentIdentity = await directoryIdentity(root, parent, label);
-  const temporaryPath = `${filePath}.tmp-${process.pid}-${Math.random().toString(16).slice(2)}`;
+  const runtime = options.runtime ?? DEFAULT_RUNTIME;
+  const temporaryPath = `${filePath}.tmp-${runtime.pid}-${runtime.randomHex(8)}`;
+  let owned = false;
   try {
-    await writeFile(temporaryPath, content, { encoding: "utf8", flag: "wx" });
+    const handle = await (options.io?.open ?? open)(temporaryPath, "wx");
+    owned = true;
+    try {
+      await handle.writeFile(content, "utf8");
+    } finally {
+      await handle.close();
+    }
     await options.beforeCommit?.({ filePath, temporaryPath });
     await assertNoSymlinkTraversal(root, filePath, label);
     const currentIdentity = await directoryIdentity(root, parent, label);
     if (currentIdentity !== parentIdentity) throw new Error(`${label} parent directory changed during atomic write.`);
-    await rename(temporaryPath, filePath);
+    await (options.io?.rename ?? rename)(temporaryPath, filePath);
   } catch (error) {
     // A failed write can still leave a partial temporary file (ENOSPC, EIO).
-    if (await parentHasIdentity(root, parent, parentIdentity)) await rm(temporaryPath, { force: true });
+    if (owned && await parentHasIdentity(root, parent, parentIdentity)) {
+      await (options.io?.rm ?? rm)(temporaryPath, { force: true });
+    }
     throw error;
   }
 }

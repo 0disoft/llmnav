@@ -18,6 +18,7 @@ export async function mapWithConcurrency(items, limit, worker, options = {}) {
   }
   if (typeof worker !== "function") throw new TypeError("Concurrency worker must be a function.");
   const signal = options.signal;
+  throwIfAborted(signal);
   const results = new Array(items.length);
   const failures = new Array(items.length);
   let nextIndex = 0;
@@ -31,8 +32,9 @@ export async function mapWithConcurrency(items, limit, worker, options = {}) {
       try {
         throwIfAborted(signal);
         results[index] = await worker(items[index], index);
+        throwIfAborted(signal);
       } catch (error) {
-        failures[index] = error;
+        failures[index] = { error };
         stopped = true;
       }
     }
@@ -41,7 +43,7 @@ export async function mapWithConcurrency(items, limit, worker, options = {}) {
   const workers = Math.min(limit, items.length);
   await Promise.all(Array.from({ length: workers }, consume));
   for (const failure of failures) {
-    if (failure !== undefined) throw failure;
+    if (failure !== undefined) throw failure.error;
   }
   return results;
 }

@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import fs, { mkdir, mkdtemp, readFile, readdir, rename, rm, symlink, writeFile } from "node:fs/promises";
+import fs, { mkdir, mkdtemp, open, readFile, readdir, rename, rm, symlink, writeFile } from "node:fs/promises";
 import { syncBuiltinESMExports } from "node:module";
 import os from "node:os";
 import path from "node:path";
@@ -10,23 +10,37 @@ import { initializeProject } from "../src/initializer.js";
 import { ensureActiveIds, loadRegistry } from "../src/registry.js";
 import { loadSearchData } from "../src/search.js";
 import { atomicWrite } from "../src/util.js";
+import { createRuntime } from "../src/runtime.js";
 
 test("a failed atomic write removes the partially written temporary file", async (context) => {
   const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-atomic-write-failure-"));
   context.after(() => rm(root, { recursive: true, force: true }));
-  const originalWriteFile = fs.writeFile;
-  const mock = context.mock.method(fs, "writeFile", async (filePath, content, options) => {
-    await originalWriteFile(filePath, content, options);
-    throw Object.assign(new Error("no space left on device"), { code: "ENOSPC" });
-  });
-  syncBuiltinESMExports();
-  try {
-    await assert.rejects(() => atomicWrite(root, path.join(root, "registry.json"), "payload\n"), /no space left/u);
-  } finally {
-    mock.mock.restore();
-    syncBuiltinESMExports();
-  }
+  await assert.rejects(() => atomicWrite(root, path.join(root, "registry.json"), "payload\n", {
+    io: { open: async (...args) => {
+      const handle = await open(...args);
+      return {
+        async writeFile(...writeArgs) {
+          await handle.writeFile(...writeArgs);
+          throw Object.assign(new Error("no space left on device"), { code: "ENOSPC" });
+        },
+        close: () => handle.close(),
+      };
+    } },
+  }), /no space left/u);
   assert.deepEqual(await readdir(root), []);
+});
+
+test("an atomic temporary-name collision preserves the other writer's file", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-atomic-collision-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  const target = path.join(root, "registry.json");
+  const runtime = createRuntime({ pid: 4242, randomHex: () => "collision" });
+  const occupied = `${target}.tmp-4242-collision`;
+  await writeFile(target, "previous");
+  await writeFile(occupied, "other writer");
+  await assert.rejects(() => atomicWrite(root, target, "next", { runtime }), { code: "EEXIST" });
+  assert.equal(await readFile(occupied, "utf8"), "other writer");
+  assert.equal(await readFile(target, "utf8"), "previous");
 });
 
 test("initialization rejects a schema directory junction outside the repository", async (context) => {

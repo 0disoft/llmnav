@@ -2175,7 +2175,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "a33122d3f0c1fa5d2283a71470df07f05804e86e7dd06b0f671f6f0fea8c9c29",
+      "contentHash": "d5f25877c4d08986a327009b912d53a1238e8ce6ebd8625b9da48929b95fec9b",
       "declarations": [
         null
       ],
@@ -2184,7 +2184,7 @@
       ],
       "path": "src/concurrency.js",
       "semanticBytes": 507,
-      "sourceBytes": 1643
+      "sourceBytes": 1711
     },
     {
       "blocks": [
@@ -5579,7 +5579,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "7c24d2bf238bf0f5f853cc9873143644c38f6539e6776f948d2078eb5380e5f2",
+      "contentHash": "d016bb705f19e2973097d9d8d171bba87d859b9c9398153073c66ab5c7bccff3",
       "declarations": [
         null
       ],
@@ -5592,20 +5592,21 @@
       ],
       "path": "src/transaction.js",
       "semanticBytes": 393,
-      "sourceBytes": 32939
+      "sourceBytes": 33407
     },
     {
       "blocks": [],
-      "contentHash": "cb5fa08e9853cbfff4bfe7e6c176525f7798588fb9f64d6d5e40dc73ca3e7439",
+      "contentHash": "0ce45fc4c3a3bc366faf4a9734cfeddd0f157ce540ab97f7c6b6a7a21bdcfbb5",
       "declarations": [],
       "imports": [
+        "./runtime.js",
         "node:crypto",
         "node:fs/promises",
         "node:path"
       ],
       "path": "src/util.js",
       "semanticBytes": 0,
-      "sourceBytes": 10869
+      "sourceBytes": 11159
     },
     {
       "blocks": [
@@ -5846,7 +5847,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "842a39be47212d1d6201360c8edc2fcd90c2d45cee3dae94bc2b5f75c7561f78",
+      "contentHash": "d95e0b1301beda1017d962d5ff327e590cd985097328358dedde9035482ab4c9",
       "declarations": [],
       "imports": [
         "../src/concurrency.js",
@@ -5861,7 +5862,7 @@
       ],
       "path": "tests/concurrency.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 4796
+      "sourceBytes": 5459
     },
     {
       "blocks": [],
@@ -5984,13 +5985,14 @@
     },
     {
       "blocks": [],
-      "contentHash": "c930e14f533cda53dfde81257296381cd8ed4fd06667e2c6697cd8c5e13c878c",
+      "contentHash": "b8721b1b74701da74725ec767da2a8586adc8aaf2fd8769e7ca363bc01486301",
       "declarations": [],
       "imports": [
         "../src/formatter.js",
         "../src/incremental.js",
         "../src/initializer.js",
         "../src/registry.js",
+        "../src/runtime.js",
         "../src/search.js",
         "../src/util.js",
         "node:assert/strict",
@@ -6002,7 +6004,7 @@
       ],
       "path": "tests/filesystem-safety.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 6487
+      "sourceBytes": 7239
     },
     {
       "blocks": [],
@@ -6465,7 +6467,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "702e57913e9767165d2c57050750d5488863774054dd7c8bd1d4e390b841e12b",
+      "contentHash": "d2d99ba844dc1942b72090157438b273acf4ad76e3ce3488ef9fcaf4d8d2a5f6",
       "declarations": [],
       "imports": [
         "../src/generator.js",
@@ -6484,7 +6486,7 @@
       ],
       "path": "tests/transaction.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 28456
+      "sourceBytes": 29924
     },
     {
       "blocks": [],

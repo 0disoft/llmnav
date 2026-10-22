@@ -22,6 +22,40 @@ import {
   withGenerationLock,
 } from "../src/transaction.js";
 
+test("default retry scheduling survives a transient failure and rejects invalid schedules", async () => {
+  for (const operation of ["rename", "remove"]) {
+    let attempts = 0;
+    const action = async () => {
+      attempts += 1;
+      if (attempts === 1) throw Object.assign(new Error("scanner busy"), { code: "EBUSY" });
+    };
+    const run = (options) => operation === "rename"
+      ? renameWithRetry("unused-source", "unused-target", { renameImpl: action, ...options })
+      : removeWithRetry("unused-target", { rmImpl: action, ...options });
+    await run({});
+    assert.equal(attempts, 2);
+    for (const delays of [[], [-1], [0.5], [NaN]]) {
+      await assert.rejects(() => run({ delays }), /Retry delays/u);
+    }
+    const waits = [];
+    attempts = 0;
+    await run({ runtime: createRuntime({ sleep: async (ms) => { waits.push(ms); } }) });
+    assert.deepEqual(waits, [8]);
+  }
+});
+
+test("generation locks preserve an undefined callback rejection and still release", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-lock-undefined-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  let rejected = false;
+  await withGenerationLock(root, async () => { throw undefined; }).catch((error) => {
+    rejected = true;
+    assert.equal(error, undefined);
+  });
+  assert.equal(rejected, true);
+  await assert.rejects(() => access(path.join(root, ".llmnav", "generation.lock")), { code: "ENOENT" });
+});
+
 test("a failed owner write leaves no authoritative lock or candidate", async (context) => {
   const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-lock-write-failure-"));
   context.after(() => rm(root, { recursive: true, force: true }));
