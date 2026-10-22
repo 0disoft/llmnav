@@ -1977,7 +1977,7 @@
         "semantic role generation"
       ],
       "hashes": {
-        "body": "e0c51e676d24494e0934e94ac12dd5c79f8a7a4a83761001b0f8ecbcde26703c",
+        "body": "e6b6c71ecd0d2573135c150b572a385ebd42f18f3382b61b207b2e52f6dabb7c",
         "semantic": "47c79f36d71a39ad0b795700686fce0f12733568534f1a69dca05cc3cc8348c7",
         "structure": "63b2f15828293156f5c02a00fd4c7d58578a3ee9cd6439ee8a1c6904d7e43fb6"
       },
@@ -2444,6 +2444,6 @@
   "generatedBy": "llmnav@0.12.0",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "f2fe830038b324d0af6d6aec3c7e85a402a7601eb219392177ad6d6ada328e3c",
+  "sourceHash": "3921ab4052636c6b4058a3e78ceabcc44dfdf8509612bf2df57245a100bdf881",
   "specVersion": "1"
 }

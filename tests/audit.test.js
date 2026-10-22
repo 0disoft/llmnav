@@ -347,3 +347,29 @@ test("audit CLI emits stable JSON and supports fail-on thresholds", async (conte
   assert.equal(outside.status, 2);
   assert.match(outside.stderr, /inside the repository root/u);
 });
+
+test("ranks a multi-file module from one inspection pass", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-audit-module-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await mkdir(path.join(root, "pkg", "gateway"), { recursive: true });
+  await writeFile(path.join(root, "go.mod"), "module example.com/audit-module\n\ngo 1.24\n");
+  await writeFile(
+    path.join(root, "pkg", "gateway", "api.go"),
+    `package gateway
+
+${Array.from({ length: 12 }, (_, index) => `type Contract${index} struct{}`).join("\n")}
+`,
+  );
+  await writeFile(path.join(root, "pkg", "gateway", "helper.go"), "package gateway\n\ntype Helper struct{}\n");
+  await initializeProject(root, { agents: ["none"] });
+
+  const result = await auditProject(root);
+  const candidate = result.candidates.find((item) => item.path.startsWith("pkg/gateway/"));
+  assert.equal(candidate.path, "pkg/gateway/api.go");
+  assert.equal(candidate.signals.exportedDeclarations, 13);
+
+  const explained = await explainProjectFile(root, "pkg/gateway/helper.go");
+  assert.equal(explained.moduleKey, "go:pkg/gateway");
+  assert.equal(explained.candidate.path, "pkg/gateway/api.go");
+  assert.deepEqual(explained.coverageCards, []);
+});

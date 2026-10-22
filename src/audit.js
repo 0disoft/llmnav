@@ -39,22 +39,23 @@ export async function explainProjectFile(root, inputPath) {
   const analysis = await analyzeAuditProject(root);
   const { project, fileByPath, candidates, result } = analysis;
   const moduleKey = fileByPath.has(file) ? moduleKeyForFile(file) : null;
-  const navigationCards = project.records
-    .filter((record) => toPosix(record.relativePath) === file)
-    .map((record) => ({ id: record.card.id, scope: record.card.scope, path: file }))
-    .sort((left, right) => compareText(left.id, right.id));
-  const coverageCards = moduleKey === null ? [] : project.records
-    .filter((record) => {
-      const cardPath = toPosix(record.relativePath);
-      if (record.card.scope === "file") return cardPath === file;
-      return record.card.scope === "module" && moduleKeyForFile(cardPath) === moduleKey;
-    })
-    .map((record) => ({ id: record.card.id, scope: record.card.scope, path: toPosix(record.relativePath) }))
-    .sort((left, right) => compareText(left.id, right.id));
+  const navigationCards = [];
+  const coverageCards = [];
+  for (const record of project.records) {
+    const cardPath = toPosix(record.relativePath);
+    if (cardPath === file) navigationCards.push({ id: record.card.id, scope: record.card.scope, path: file });
+    if (moduleKey === null) continue;
+    const coversModule = record.card.scope === "file" ?
+      cardPath === file :
+      record.card.scope === "module" && moduleKeyForFile(cardPath) === moduleKey;
+    if (coversModule) coverageCards.push({ id: record.card.id, scope: record.card.scope, path: cardPath });
+  }
+  navigationCards.sort((left, right) => compareText(left.id, right.id));
+  coverageCards.sort((left, right) => compareText(left.id, right.id));
   const candidate = moduleKey === null ? null : candidates.find((item) => moduleKeyForFile(item.path) === moduleKey) ?? null;
   const dispositionPath = candidate?.path ?? file;
-  const disposition = result.dispositions.find((item) => item.path === dispositionPath) ??
-    result.dispositions.find((item) => item.path === file) ?? null;
+  const dispositionsByPath = new Map(result.dispositions.map((item) => [item.path, item]));
+  const disposition = dispositionsByPath.get(dispositionPath) ?? dispositionsByPath.get(file) ?? null;
 
   if (disposition?.status === "stale") {
     return buildFileExplanation(result.repositoryId, file, moduleKey, "stale-disposition", navigationCards, coverageCards, candidate, disposition, [
@@ -171,15 +172,12 @@ function rankModuleCandidate(moduleKey, files, coverage, importedBy, entrypoints
   if (selectableFiles.length === 0) return null;
   const productionFiles = selectableFiles.filter(([file]) => !NON_PRODUCTION_PATH_PATTERN.test(file));
   const analyzedFiles = productionFiles.length > 0 ? productionFiles : selectableFiles;
-  const file = selectRepresentativeFile(analyzedFiles, entrypoints);
+  const audit = auditModuleSources(analyzedFiles);
+  const file = selectRepresentativeFile(analyzedFiles, entrypoints, audit.exportedDeclarations);
   const record = coverage.fileByPath.get(file);
-  const boundaries = [...new Set(analyzedFiles.flatMap(([candidate, item]) => detectBoundaries({
-    relativePath: candidate,
-    card: { effect: [], risk: [] },
-    source: item.source ?? "",
-  }).map((boundary) => boundary.kind)))].sort(compareText);
+  const boundaries = [...new Set(analyzedFiles.flatMap(([candidate]) => audit.boundaries.get(candidate)))].sort(compareText);
   const exportedDeclarations = analyzedFiles.reduce(
-    (sum, [candidate, item]) => sum + countExportedDeclarations(item.source ?? "", candidate),
+    (sum, [candidate]) => sum + audit.exportedDeclarations.get(candidate),
     0,
   );
   const entrypoint = analyzedFiles.some(([candidate]) => entrypoints.has(candidate));
@@ -383,16 +381,31 @@ function collectGoEntrypoints(fileByPath, entrypoints) {
   }
 }
 
-function selectRepresentativeFile(files, entrypoints) {
-  return [...files].sort(([leftPath, left], [rightPath, right]) =>
-    representativeScore(rightPath, right, entrypoints) - representativeScore(leftPath, left, entrypoints) ||
-    compareText(leftPath, rightPath))[0][0];
+function auditModuleSources(files) {
+  const exportedDeclarations = new Map();
+  const boundaries = new Map();
+  for (const [file, item] of files) {
+    const source = item.source ?? "";
+    exportedDeclarations.set(file, countExportedDeclarations(source, file));
+    boundaries.set(file, detectBoundaries({ relativePath: file, card: { effect: [], risk: [] }, source })
+      .map((boundary) => boundary.kind));
+  }
+  return { exportedDeclarations, boundaries };
 }
 
-function representativeScore(file, record, entrypoints) {
+function selectRepresentativeFile(files, entrypoints, exportedDeclarations) {
+  const ranked = files.map(([file, record]) => ({
+    file,
+    score: representativeScore(file, record, entrypoints, exportedDeclarations.get(file) ?? 0),
+  }));
+  ranked.sort((left, right) => right.score - left.score || compareText(left.file, right.file));
+  return ranked[0].file;
+}
+
+function representativeScore(file, record, entrypoints, exportedDeclarations) {
   let score = entrypoints.has(file) ? 100_000 : 0;
   if (path.posix.basename(file) === "doc.go") score += 50_000;
-  score += countExportedDeclarations(record.source ?? "", file) * 1_000;
+  score += exportedDeclarations * 1_000;
   score += Math.min(999, Math.floor(record.sourceBytes / 100));
   return score;
 }
