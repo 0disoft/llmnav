@@ -4,6 +4,14 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.14.0] — 2026-10-23
+
+### Fixed
+
+* Match Latin aliases at word boundaries while preserving CJK substring aliases.
+* Stop excluded-only text from creating normal search hits. Use `excludes: <text>` to inspect excluded responsibilities explicitly, with an `excludes=` reason and no graph expansion.
+* Include `.mts` and `.cts` in default source selection, TypeScript declaration/import extraction, and local graph resolution. Declaration files follow the existing `.d.ts` inclusion policy.
+
 ## [0.13.5] — 2026-10-23
 
 ### Changed

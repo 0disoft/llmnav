@@ -20,7 +20,7 @@ import { compareText, sha256, stableJson, stableStringify, toPosix } from "./uti
 
 export const GRAPH_SCHEMA_VERSION = 1;
 export const GRAPH_STATE_SCHEMA_VERSION = 1;
-const IMPORT_EXTENSIONS = Object.freeze([".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".go", ".rs", ".py"]);
+const IMPORT_EXTENSIONS = Object.freeze([".ts", ".tsx", ".mts", ".cts", ".js", ".jsx", ".mjs", ".cjs", ".go", ".rs", ".py"]);
 
 // Key and semantic-ID lookups are derived from a graph object once. Generated graphs are
 // immutable, so callers that mutate nodes after resolving must treat the result as undefined.

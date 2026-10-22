@@ -139,3 +139,11 @@ function graphNode(key) {
     definitions: [{ symbol: "fixture", path: "src/fixture.ts", line: 1, kind: "function", provenance: { type: "generated-index", source: "fixture", generator: "fixture" } }],
   };
 }
+
+test("resolves extensionless, directory and emitted TypeScript module imports", () => {
+  for (const [specifier, target] of [["./target", "target.mts"], ["./target", "target.cts"], ["./target", "target/index.mts"], ["./target", "target/index.cts"], ["./target.mjs", "target.mts"], ["./target.cjs", "target.cts"]]) {
+    const cards = [card("entry.module", "src/entry.mts", [], [specifier]), card("target.module", `src/${target}`)];
+    const graph = buildRepositoryGraph({}, { repositoryId: "fixture", cards });
+    assert.equal(graph.edges.find(edge => edge.kind === "imports")?.to, "fixture/target.module", target);
+  }
+});

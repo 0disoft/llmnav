@@ -241,7 +241,7 @@ function nextSignatureCharacter(value, offset) {
 }
 
 function languageFamily(extension) {
-  if ([".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".svelte", ".astro", ".vue"].includes(extension)) {
+  if ([".ts", ".tsx", ".mts", ".cts", ".js", ".jsx", ".mjs", ".cjs", ".svelte", ".astro", ".vue"].includes(extension)) {
     return "javascript";
   }
   if (extension === ".go") return "go";
@@ -458,7 +458,7 @@ export function extractImports(source, filePath) {
   const extension = path.extname(filePath).toLowerCase();
   const results = new Set();
   const normalized = normalizeNewlines(source);
-  if ([".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".svelte", ".astro", ".vue"].includes(extension)) {
+  if ([".ts", ".tsx", ".mts", ".cts", ".js", ".jsx", ".mjs", ".cjs", ".svelte", ".astro", ".vue"].includes(extension)) {
     const patterns = [
       /^[ \t]*import\s+(?:[^;"']*?\s+from\s+)?["']([^"']+)["']/gmu,
       /^[ \t]*export\s+[^;"']*?\s+from\s+["']([^"']+)["']/gmu,

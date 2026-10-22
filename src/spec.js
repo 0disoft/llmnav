@@ -10,7 +10,7 @@ rel=workflow>llmnav.rules.validate
 stability=contract
 */
 
-export const PACKAGE_VERSION = "0.13.5";
+export const PACKAGE_VERSION = "0.14.0";
 export const SPEC_VERSION = "1";
 
 export const SCOPES = Object.freeze(["file", "module", "symbol"]);
@@ -117,6 +117,8 @@ export const FORBIDDEN_VOLATILE_KEYS = Object.freeze([
 export const DEFAULT_INCLUDE_EXTENSIONS = Object.freeze([
   ".ts",
   ".tsx",
+  ".mts",
+  ".cts",
   ".js",
   ".jsx",
   ".mjs",

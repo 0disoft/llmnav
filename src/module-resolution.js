@@ -17,7 +17,7 @@ import { abortable, throwIfAborted } from "./abort.js";
 import { DEFAULT_IO_CONCURRENCY, mapWithConcurrency } from "./concurrency.js";
 
 export const MODULE_RESOLUTION_SCHEMA_VERSION = 1;
-export const MODULE_RESOLVER_VERSION = 1;
+export const MODULE_RESOLVER_VERSION = 2;
 
 export async function loadModuleResolution(root, fileRecords = [], options = {}) {
   throwIfAborted(options.signal);

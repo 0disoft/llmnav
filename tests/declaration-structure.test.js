@@ -239,3 +239,15 @@ test("object-typed declaration bodies surface as body changes in generation repo
 function card(id) {
   return `/* llmnav/1 symbol\nid=${id}\nrole=Execute the named contract boundary deterministically.\nsearch=${id.replaceAll(".", " ")}|contract boundary\nstability=contract\n*/\n`;
 }
+
+test("MTS and CTS declarations and imports use the TypeScript parser", () => {
+  for (const extension of ["ts", "mts", "cts", "d.ts", "d.mts", "d.cts"]) {
+    const file = `src/load.${extension}`;
+    const source = `${card("api.user.load")}export function loadUser(): string { return "ok"; }\nimport value from "./value.mjs";\n`;
+    const [block] = parseLlmnavBlocks(source, file);
+    const declaration = findAttachedDeclaration(source, block, file);
+    assert.equal(declaration?.symbol, "loadUser", file);
+    assert.equal(declaration.language, "typescript", file);
+    assert.deepEqual(extractImports(source, file), ["./value.mjs"], file);
+  }
+});

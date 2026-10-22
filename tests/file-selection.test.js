@@ -65,3 +65,12 @@ test("source collection applies the documented defaults to nested files", async 
   const narrowed = await collectSourceFiles(root, { ...config, excludeFiles: ["src/generated/*.js", "*.min.js"] });
   assert.deepEqual(narrowed.map((file) => path.relative(root, file).split(path.sep).join("/")), ["src/app.js"]);
 });
+
+test("default selection treats MTS and CTS and their declarations like TS", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-ts-extensions-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  const names = ["app.ts", "app.mts", "app.cts", "app.d.ts", "app.d.mts", "app.d.cts"];
+  for (const name of names) await writeFile(path.join(root, name), "export const value = 1;\n");
+  const { config } = await loadConfig(root);
+  assert.deepEqual((await collectSourceFiles(root, config)).map(file => path.basename(file)), names.sort());
+});

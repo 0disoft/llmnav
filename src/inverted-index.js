@@ -34,7 +34,7 @@ export const SEARCH_FIELD_WEIGHTS = Object.freeze({
   role: 8,
   search: 10,
   owns: 7,
-  excludes: 2,
+  excludes: 0,
   invariant: 6,
   effect: 5,
   risk: 4,

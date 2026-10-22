@@ -278,6 +278,8 @@ export function queryIndex(index, query, options = {}) {
 export function queryPreparedIndex(index, searchIndex, query, options = {}) {
   throwIfAborted(options.signal);
   const top = boundedInteger(options.top, SEARCH_LIMITS.top.default, SEARCH_LIMITS.top.minimum, SEARCH_LIMITS.top.maximum);
+  const excluded = queryExcludedScope(index, query, top);
+  if (excluded !== null) return excluded;
   const lexicon = options.lexicon ?? { aliases: {} };
   const metrics = options.metrics ?? null;
   const normalizedQuery = normalizeSearchText(query);
@@ -322,10 +324,42 @@ function initializeQueryMetrics(metrics, queryTokenCount, cardCount, cached) {
   metrics.graphValidations = cached ? 0 : 1;
 }
 
+// Latin aliases name words; CJK aliases may occur inside an unsegmented sentence.
+function matchesAlias(query, alias) {
+  if (!alias) return false;
+  const characters = [...alias];
+  const word = /[\p{L}\p{N}_]/u;
+  const latin = /[\p{Script=Latin}\p{N}_]/u;
+  let offset = query.indexOf(alias);
+  while (offset !== -1) {
+    const before = [...query.slice(0, offset)].at(-1) ?? "";
+    const after = [...query.slice(offset + alias.length)][0] ?? "";
+    if ((!latin.test(characters[0]) || !word.test(before)) &&
+      (!latin.test(characters.at(-1)) || !word.test(after))) return true;
+    offset = query.indexOf(alias, offset + 1);
+  }
+  return false;
+}
+
+function queryExcludedScope(index, query, top) {
+  const match = String(query).match(/^\s*excludes:\s*(.*)$/isu);
+  if (!match) return null;
+  const term = normalizeSearchText(match[1]);
+  const results = new Map();
+  if (term) {
+    for (const card of index.cards) {
+      if ((card.excludes ?? []).some(value => matchesAlias(normalizeSearchText(value), term))) {
+        addScore(results, card, SEARCH_RANK.exactPhrase, `excludes=${JSON.stringify(term)}`);
+      }
+    }
+  }
+  return rankedSearchResults(results, top);
+}
+
 function matchingAliasReasons(aliases, normalizedQuery) {
   const aliasReasons = new Map();
   for (const [alias, targetValue, normalizedAlias] of aliases) {
-    if (!normalizedAlias || !normalizedQuery.includes(normalizedAlias)) continue;
+    if (!normalizedAlias || !matchesAlias(normalizedQuery, normalizedAlias)) continue;
     const targets = Array.isArray(targetValue) ? targetValue : [targetValue];
     for (const target of targets) {
       const reasons = aliasReasons.get(target) ?? [];
@@ -424,6 +458,8 @@ function prepareCompactSearchIndex(searchIndex) {
 
 export function queryIndexLegacy(index, query, options = {}) {
   const top = boundedInteger(options.top, SEARCH_LIMITS.top.default, SEARCH_LIMITS.top.minimum, SEARCH_LIMITS.top.maximum);
+  const excluded = queryExcludedScope(index, query, top);
+  if (excluded !== null) return detachSearchResults(excluded);
   const lexicon = options.lexicon ?? { aliases: {} };
   const normalizedQuery = normalizeSearchText(query);
   const queryTokens = tokenize(query);
@@ -433,7 +469,7 @@ export function queryIndexLegacy(index, query, options = {}) {
 
   for (const [alias, targetValue] of aliases) {
     const normalizedAlias = normalizeSearchText(alias);
-    if (!normalizedAlias || !normalizedQuery.includes(normalizedAlias)) continue;
+    if (!normalizedAlias || !matchesAlias(normalizedQuery, normalizedAlias)) continue;
     const targets = Array.isArray(targetValue) ? targetValue : [targetValue];
     for (const target of targets) {
       aliasTargets.add(target);

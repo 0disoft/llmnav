@@ -302,3 +302,11 @@ LLMNav is a pre-1.0 CLI and ESM library. The source format remains `llmnav/1`, a
 ## License
 
 MIT
+
+### Search boundaries
+
+Latin aliases match complete words (case insensitive): `auth` matches `auth-token`, but not `author` or `authentication`. Punctuation inside aliases, such as `sign-in` or `node.js`, stays literal. CJK aliases retain substring matching.
+
+Normal queries score responsibilities and code metadata; `excludes` text contributes no positive score. Query `llmnav query "excludes: billing"` to inspect cards explicitly excluding that responsibility. These results carry an `excludes=` reason and do not expand through relations.
+
+Default source selection includes `.mts` and `.cts`. Existing configurations with explicit `includeExtensions` lists need those extensions added if desired; `.d.mts` and `.d.cts` follow the existing `.d.ts` inclusion policy.

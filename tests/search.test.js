@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { queryIndex, queryPreparedIndex, tokenize } from "../src/search.js";
+import { queryIndex, queryIndexLegacy, queryPreparedIndex, tokenize } from "../src/search.js";
 import { buildInvertedIndex } from "../src/inverted-index.js";
 
 const index = {
@@ -109,7 +109,7 @@ test("alias ties choose seeds in card order and display results in ID order", ()
     ["a.seed", 500], ["x.seed", 500], ["y.seed", 500], ["z.seed", 500],
     ["x.target", 40], ["y.target", 40], ["z.target", 40],
   ]);
-  assert.deepEqual(results.find(({ id }) => id === "z.seed").reasons, ['alias="quuxzz"', 'alias="quux"']);
+  assert.deepEqual(results.find(({ id }) => id === "z.seed").reasons, ['alias="quuxzz"']);
   assert.equal(results.find(({ id }) => id === "z.seed").card, cards[0]);
   assert.deepEqual(input, before);
   assert.equal(metrics.idDocumentsScanned, 8);
@@ -136,4 +136,33 @@ test("phrase thresholds and cancellation preserve query metrics", () => {
   const metrics = { untouched: true };
   assert.throws(() => queryPreparedIndex(input, searchIndex, "abc", { metrics, signal: controller.signal }), (error) => error === reason);
   assert.deepEqual(metrics, { untouched: true });
+});
+
+test("Latin alias boundaries and CJK substrings agree across search implementations", () => {
+  const input = { cards: [{ id: "security.login", role: "Verify credentials." }] };
+  const lexicon = { aliases: { auth: "security.login", "권한": "security.login", "sign-in": "security.login", "node.js": "security.login" } };
+  for (const search of [queryIndex, queryIndexLegacy]) {
+    for (const query of ["author biographies", "authentication", "oauth", "auths", "auth_thing"]) {
+      assert.equal(search(input, query, { lexicon }).length, 0, query);
+    }
+    for (const query of ["AUTH!", "fix auth-token", "author auth", "권한문제", "use sign-in", "node.js!"]) {
+      assert.ok(search(input, query, { lexicon })[0].reasons.some(reason => reason.startsWith("alias=")), query);
+    }
+  }
+});
+
+test("excluded scope requires an explicit excludes query and never seeds relations", () => {
+  const input = { cards: [
+    { id: "security.login", role: "Verify credentials.", excludes: ["billing"], rel: ["workflow>security.other"] },
+    { id: "security.other", role: "Another component." },
+  ] };
+  for (const search of [queryIndex, queryIndexLegacy]) {
+    assert.deepEqual(search(input, "billing"), []);
+    assert.deepEqual(search(input, "excludes:"), []);
+    assert.deepEqual(search(input, "excludes: bill"), []);
+    const results = search(input, "excludes: billing");
+    assert.deepEqual(results.map(result => result.id), ["security.login"]);
+    assert.deepEqual(results[0].reasons, ['excludes="billing"']);
+    assert.equal(search(input, "Verify billing")[0].id, "security.login");
+  }
 });
