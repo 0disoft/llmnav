@@ -13,7 +13,7 @@ stability=architecture
 import path from "node:path";
 import { throwIfAborted } from "./abort.js";
 import { loadConfig } from "./config.js";
-import { SEARCH_LIMITS, SEARCH_RANK } from "./policy.js";
+import { ID_MATCH_POLICY, SEARCH_LIMITS, SEARCH_RANK } from "./policy.js";
 import { resolveRegistryId, loadRegistry } from "./registry.js";
 import { renderCompactCard } from "./generator.js";
 import { assertNoSymlinkTraversal, approximateTokens, compareText, readJsonSafe, readText, sha256, toPosix, truncateToTokenBudget } from "./util.js";
@@ -224,8 +224,8 @@ function buildIdCandidates(normalizedIds) {
     if (!exact.has(id)) exact.set(id, []);
     exact.get(id).push(position);
     const seen = new Set();
-    for (let offset = 0; offset <= id.length - 3; offset += 1) {
-      const gram = id.slice(offset, offset + 3);
+    for (let offset = 0; offset <= id.length - ID_MATCH_POLICY.gramLength; offset += 1) {
+      const gram = id.slice(offset, offset + ID_MATCH_POLICY.gramLength);
       if (seen.has(gram)) continue;
       seen.add(gram);
       if (!grams.has(gram)) grams.set(gram, []);
@@ -237,10 +237,10 @@ function buildIdCandidates(normalizedIds) {
 
 function idCandidatePositions(prepared, normalizedQuery) {
   if (!prepared.idCandidates) return prepared.normalizedIds.keys();
-  if (normalizedQuery.length < 3) return prepared.idCandidates.exact.get(normalizedQuery) ?? [];
+  if (normalizedQuery.length < ID_MATCH_POLICY.gramLength) return prepared.idCandidates.exact.get(normalizedQuery) ?? [];
   let smallest = null;
-  for (let offset = 0; offset <= normalizedQuery.length - 3; offset += 1) {
-    const positions = prepared.idCandidates.grams.get(normalizedQuery.slice(offset, offset + 3));
+  for (let offset = 0; offset <= normalizedQuery.length - ID_MATCH_POLICY.gramLength; offset += 1) {
+    const positions = prepared.idCandidates.grams.get(normalizedQuery.slice(offset, offset + ID_MATCH_POLICY.gramLength));
     if (!positions) return [];
     if (!smallest || positions.length < smallest.length) smallest = positions;
   }

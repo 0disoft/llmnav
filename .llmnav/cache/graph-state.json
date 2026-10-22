@@ -2060,9 +2060,23 @@
             "type": "source-card"
           },
           "to": "llmnav/llmnav.project.scan"
+        },
+        {
+          "confidence": 0.85,
+          "from": "llmnav/llmnav.declaration.extract",
+          "id": "78db791169ca4a8807dabc6723decfb1b875d9f68928e1dbffb7eb223ff6520d",
+          "kind": "imports",
+          "provenance": {
+            "generator": "llmnav",
+            "line": null,
+            "path": "src/declaration.js",
+            "source": "src/declaration.js",
+            "type": "local-import"
+          },
+          "to": "llmnav/llmnav.support.policy"
         }
       ],
-      "inputHash": "39d414aa4900501a842a5338841c455560dd13bdf54e344432beea4b4cc91944",
+      "inputHash": "fc1aa53c866e47ebe8251ee4db1320cf01240cad7a883cb83a9fe6e5f78eb388",
       "key": "card:llmnav/llmnav.declaration.extract",
       "nodes": [
         {
@@ -2094,9 +2108,18 @@
           "repositoryId": "llmnav",
           "role": null,
           "semanticId": "llmnav.project.scan"
+        },
+        {
+          "definitions": [],
+          "external": false,
+          "key": "llmnav/llmnav.support.policy",
+          "location": null,
+          "repositoryId": "llmnav",
+          "role": null,
+          "semanticId": "llmnav.support.policy"
         }
       ],
-      "outputHash": "36a80785f15090b2fc473238f3fd88aef949101cb39637a3acabe949d32f4a3e"
+      "outputHash": "8176995f7bdc781ceb0c523667c37d000380a1bc29a30033cc0b2317ea2cb88f"
     },
     {
       "edges": [
@@ -5769,7 +5792,7 @@
           "to": "llmnav/llmnav.search.query"
         }
       ],
-      "inputHash": "fb34df594e7540660564acdde21c2d156c09d0eb12a138531dbe50fd8bec187d",
+      "inputHash": "98413a256ca254392b36afeedef2a8c914e8eba6efea6e3aeebc9548eac6c553",
       "key": "card:llmnav/llmnav.support.policy",
       "nodes": [
         {
@@ -5817,11 +5840,11 @@
             "visibility": null
           },
           "repositoryId": "llmnav",
-          "role": "Keep one source of truth for search ranking weights and bounded input defaults.",
+          "role": "Keep named policies for search ranking, audit prioritization, declaration scanning, and context sizing.",
           "semanticId": "llmnav.support.policy"
         }
       ],
-      "outputHash": "daf9cf64564b622afe86b2f1335aff7335cccc9df619e2dd26f6b5d2adbe2c97"
+      "outputHash": "25b83357106435b76ee74cda7448831d4388f72f84f3a328d8d6390ceae637d5"
     },
     {
       "edges": [],

@@ -1716,7 +1716,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "01f41260490c91a1ec8a2173438b8d34fede398c42520be4dbb2526275e7ece2",
+      "contentHash": "3cb98421bef868c458e21cdf0a44cc7edb9115f597db5dd3ef0feaed4387022c",
       "declarations": [
         null
       ],
@@ -1732,7 +1732,7 @@
       ],
       "path": "src/audit.js",
       "semanticBytes": 577,
-      "sourceBytes": 27380
+      "sourceBytes": 27943
     },
     {
       "blocks": [
@@ -2495,17 +2495,18 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "b71603053fa0a473e260cd01c0f59f66f7dfd7a39f3e7250800f834da8feb95c",
+      "contentHash": "f956d5539434ec53ccfa9f548f1afcb2a28306acda8ca0031a818513a3dc6624",
       "declarations": [
         null
       ],
       "imports": [
+        "./policy.js",
         "./util.js",
         "node:path"
       ],
       "path": "src/declaration.js",
       "semanticBytes": 477,
-      "sourceBytes": 19593
+      "sourceBytes": 19774
     },
     {
       "blocks": [
@@ -3627,14 +3628,14 @@
     },
     {
       "blocks": [],
-      "contentHash": "dbacc19421badfb378718685609e14a0a8efd6628b3ba10e6d5d951f4f6a3f24",
+      "contentHash": "11806e614d3298959b9b98717315ea0804d8085626c31c7ac5875a115395152e",
       "declarations": [],
       "imports": [
         "./spec.js"
       ],
       "path": "src/index.d.ts",
       "semanticBytes": 0,
-      "sourceBytes": 33960
+      "sourceBytes": 34203
     },
     {
       "blocks": [],
@@ -4389,7 +4390,9 @@
             "owns": [
               "search ranking weights",
               "search input limits",
-              "audit input limits"
+              "audit scoring",
+              "declaration scan limits",
+              "token estimates"
             ],
             "rel": [
               "workflow>llmnav.search.query",
@@ -4397,18 +4400,19 @@
               "workflow>llmnav.audit.coverage"
             ],
             "risk": [],
-            "role": "Keep one source of truth for search ranking weights and bounded input defaults.",
+            "role": "Keep named policies for search ranking, audit prioritization, declaration scanning, and context sizing.",
             "scope": "module",
             "search": [
               "search ranking constants",
               "query input limits",
               "audit candidate limits",
-              "policy defaults"
+              "policy defaults",
+              "token estimation"
             ],
             "stability": "architecture",
             "unknown": []
           },
-          "end": 480,
+          "end": 556,
           "endLine": 11,
           "entries": [
             {
@@ -4421,13 +4425,13 @@
               "key": "role",
               "line": 3,
               "order": 1,
-              "value": "Keep one source of truth for search ranking weights and bounded input defaults."
+              "value": "Keep named policies for search ranking, audit prioritization, declaration scanning, and context sizing."
             },
             {
               "key": "owns",
               "line": 4,
               "order": 2,
-              "value": "search ranking weights|search input limits|audit input limits"
+              "value": "search ranking weights|search input limits|audit scoring|declaration scan limits|token estimates"
             },
             {
               "key": "excludes",
@@ -4439,7 +4443,7 @@
               "key": "search",
               "line": 6,
               "order": 4,
-              "value": "search ranking constants|query input limits|audit candidate limits|policy defaults"
+              "value": "search ranking constants|query input limits|audit candidate limits|policy defaults|token estimation"
             },
             {
               "key": "rel",
@@ -4470,7 +4474,7 @@
           "indent": "",
           "newline": "\n",
           "prefix": null,
-          "raw": "/* llmnav/1 module\nid=llmnav.support.policy\nrole=Keep one source of truth for search ranking weights and bounded input defaults.\nowns=search ranking weights|search input limits|audit input limits\nexcludes=query execution|configuration loading|agent transport\nsearch=search ranking constants|query input limits|audit candidate limits|policy defaults\nrel=workflow>llmnav.search.query\nrel=workflow>llmnav.agent.tool-schema\nrel=workflow>llmnav.audit.coverage\nstability=architecture\n*/",
+          "raw": "/* llmnav/1 module\nid=llmnav.support.policy\nrole=Keep named policies for search ranking, audit prioritization, declaration scanning, and context sizing.\nowns=search ranking weights|search input limits|audit scoring|declaration scan limits|token estimates\nexcludes=query execution|configuration loading|agent transport\nsearch=search ranking constants|query input limits|audit candidate limits|policy defaults|token estimation\nrel=workflow>llmnav.search.query\nrel=workflow>llmnav.agent.tool-schema\nrel=workflow>llmnav.audit.coverage\nstability=architecture\n*/",
           "scope": "module",
           "specVersion": "1",
           "start": 0,
@@ -4479,14 +4483,14 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "e33433407ebfbf3a1eedfeb8541fc2745373e724a98750225d684a13072cf54a",
+      "contentHash": "68a1ae3b833a07bcf6d5b7f4f780098a21f84f1f9c3d9611e02fffdba9e0f870",
       "declarations": [
         null
       ],
       "imports": [],
       "path": "src/policy.js",
-      "semanticBytes": 480,
-      "sourceBytes": 1240
+      "semanticBytes": 556,
+      "sourceBytes": 2197
     },
     {
       "blocks": [
@@ -5252,7 +5256,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "1690405194bc86939e7b52517080107a93a20b4c3947703bccd024fd7186773e",
+      "contentHash": "797bb70ac414b1284169fba71a101e65ca73a531057a9d8142a1d8a9f05fd241",
       "declarations": [
         null
       ],
@@ -5272,7 +5276,7 @@
       ],
       "path": "src/search.js",
       "semanticBytes": 464,
-      "sourceBytes": 34805
+      "sourceBytes": 34947
     },
     {
       "blocks": [],
@@ -5389,7 +5393,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "d0c82487227ec5de20b0bb08dcc98cabe542747ac4a34698c781d0aa429dcf10",
+      "contentHash": "423443a09de907007579c567f58b79c24cfb522b5077a2ec37e1991b99e80690",
       "declarations": [
         null
       ],
@@ -5602,10 +5606,11 @@
     },
     {
       "blocks": [],
-      "contentHash": "af5757a90181b13683b00199aceef62602a821072ec4e2ea97ef690f96871984",
+      "contentHash": "a63498fde05dbfe470fa1f7949f65a7d6c8b6e82a98f1878d8d3d58d417d0eeb",
       "declarations": [],
       "imports": [
         "./abort.js",
+        "./policy.js",
         "./runtime.js",
         "node:crypto",
         "node:fs/promises",
@@ -5613,7 +5618,7 @@
       ],
       "path": "src/util.js",
       "semanticBytes": 0,
-      "sourceBytes": 11434
+      "sourceBytes": 11560
     },
     {
       "blocks": [

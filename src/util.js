@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { lstat, mkdir, open, readFile, realpath, rename, rm } from "node:fs/promises";
 import path from "node:path";
+import { TOKEN_ESTIMATION } from "./policy.js";
 import { DEFAULT_RUNTIME } from "./runtime.js";
 import { abortable, throwIfAborted } from "./abort.js";
 
@@ -232,7 +233,7 @@ export function parseInteger(value, fallback) {
 export function approximateTokens(value) {
   const ascii = [...value].filter((character) => character.codePointAt(0) < 128).length;
   const nonAscii = value.length - ascii;
-  return Math.max(1, Math.ceil(ascii / 4 + nonAscii / 1.8));
+  return Math.max(1, Math.ceil(ascii / TOKEN_ESTIMATION.asciiCharactersPerToken + nonAscii / TOKEN_ESTIMATION.nonAsciiCodeUnitsPerToken));
 }
 
 const TRUNCATION_SUFFIX = "\n…";

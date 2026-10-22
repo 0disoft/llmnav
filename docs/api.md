@@ -213,7 +213,7 @@ console.log(updated.stats.indexedCards);
 console.log(updated.stats.reusedCards);
 ```
 
-The previous index is reused only when schema version, tokenizer version, field order, and repository ID match. Incremental and full builds serialize identically for the same primary index.
+The previous index is reused only when schema version, tokenizer version, field order, and repository ID match. Incremental and full builds serialize identically for the same primary index. Returned phrase and posting arrays are independent of the previous index, so editing either index does not alter the other. `buildArtifactSet` also copies card imports from the supplied project records.
 
 Useful lower-level exports include:
 
@@ -255,6 +255,8 @@ console.log(metrics.documentTokenizations); // 0
 ```
 
 `queryIndex(index, query)` builds an in-memory inverted index when one is not supplied, so edits to caller-owned cards are visible on the next call. For repeated queries, use a prepared index or a project session; only session-owned token lookup tables are cached. Callers supplying an explicit inverted index must rebuild it after changing cards.
+
+`queryPreparedIndex` borrows card and location objects from the supplied index. Clone these before exposing them to consumers that may edit them, or use `queryIndex` or a project session for detached results. `metrics` is an output object that the query updates intentionally; cancellation can leave partial counts.
 
 `queryIndexLegacy(index, query)` retains the v0.1-compatible per-query retokenization path for regression tests and migration measurement. New integrations should not use it in production.
 

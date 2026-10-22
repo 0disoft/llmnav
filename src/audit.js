@@ -15,7 +15,7 @@ import { detectBoundaries } from "./boundaries.js";
 import { DEFAULT_IO_CONCURRENCY, mapWithConcurrency } from "./concurrency.js";
 import { moduleKeyForFile, resolveGoImportModule } from "./module-resolution.js";
 import { scanProject } from "./project.js";
-import { AUDIT_LIMITS } from "./policy.js";
+import { AUDIT_LIMITS, AUDIT_REPRESENTATIVE, AUDIT_SCORING } from "./policy.js";
 import { compareText, readJsonSafe, toPosix } from "./util.js";
 
 export const AUDIT_SCHEMA_VERSION = 1;
@@ -231,47 +231,47 @@ function scoreAuditSignals(signals) {
   let score = 0;
   const reasons = ["missing-module-card"];
   if (signals.entrypoint) {
-    score += 50;
+    score += AUDIT_SCORING.entrypoint;
     reasons.push("package-entrypoint");
   }
   if (signals.publicApi) {
-    score += 45;
+    score += AUDIT_SCORING.publicApi;
     reasons.push("public-api-reexport");
   }
   for (const boundary of signals.boundaries) {
-    score += boundary === "command" ? 40 : 30;
+    score += boundary === "command" ? AUDIT_SCORING.commandBoundary : AUDIT_SCORING.otherBoundary;
     reasons.push(`${boundary}-boundary`);
   }
   if (signals.importers > 0) {
-    score += Math.min(30, signals.importers * 5);
+    score += Math.min(AUDIT_SCORING.importerMaximum, signals.importers * AUDIT_SCORING.importer);
     reasons.push(`imported-by:${signals.importers}`);
   }
   if (signals.exportedDeclarations > 0) {
-    score += 10;
+    score += AUDIT_SCORING.exportedDeclarations;
     reasons.push(`exported-declarations:${signals.exportedDeclarations}`);
   }
   if (signals.largeSource) {
-    score += 10;
+    score += AUDIT_SCORING.largeSource;
     reasons.push("large-source");
   }
   if (signals.broadUtility) {
-    score -= 30;
+    score -= AUDIT_SCORING.broadUtilityPenalty;
     reasons.push("broad-utility-penalty");
   }
   if (signals.nonProduction) {
-    score -= 40;
+    score -= AUDIT_SCORING.nonProductionPenalty;
     reasons.push("non-production-penalty");
   }
   if (signals.reexportBarrel) {
-    score -= 60;
+    score -= AUDIT_SCORING.reexportBarrelPenalty;
     reasons.push("reexport-barrel-penalty");
   }
   return { score: Math.max(0, score), reasons };
 }
 
 function priorityForScore(score) {
-  if (score >= 60) return "high";
-  if (score >= 30) return "medium";
+  if (score >= AUDIT_SCORING.highPriorityMinimum) return "high";
+  if (score >= AUDIT_SCORING.mediumPriorityMinimum) return "medium";
   return "low";
 }
 
@@ -404,10 +404,10 @@ function selectRepresentativeFile(files, entrypoints, exportedDeclarations) {
 }
 
 function representativeScore(file, record, entrypoints, exportedDeclarations) {
-  let score = entrypoints.has(file) ? 100_000 : 0;
-  if (path.posix.basename(file) === "doc.go") score += 50_000;
-  score += exportedDeclarations * 1_000;
-  score += Math.min(999, Math.floor(record.sourceBytes / 100));
+  let score = entrypoints.has(file) ? AUDIT_REPRESENTATIVE.entrypoint : 0;
+  if (path.posix.basename(file) === "doc.go") score += AUDIT_REPRESENTATIVE.goPackageDocumentation;
+  score += exportedDeclarations * AUDIT_REPRESENTATIVE.exportedDeclaration;
+  score += Math.min(AUDIT_REPRESENTATIVE.sourceSizeMaximum, Math.floor(record.sourceBytes / AUDIT_REPRESENTATIVE.sourceBytesPerPoint));
   return score;
 }
 

@@ -51,7 +51,7 @@
     "llmnav.support.runtime",
     "llmnav.syntax.parse"
   ],
-  "cardSetHash": "54709e9db2daea92b3d516c923398cb61f6f83acff451777dfc25f86a9750490",
+  "cardSetHash": "0af7379ba6343ebf4e5244e1d6f492bacf42d1844511edbe56d22335b1953a41",
   "documentCount": 50,
   "documents": [
     [
@@ -648,16 +648,19 @@
       ]
     ],
     [
-      "d84c12d8ce6c2671ab120195f7ef1575e3c70fa3b028c4a5a9a2051839874d90",
+      "155a7d45c5a450361b43f241620774cff7a6a7ab9bd2c184939f6ef0c452a70e",
       [
-        "keep one source of truth for search ranking weights and bounded input defaults.",
+        "keep named policies for search ranking, audit prioritization, declaration scanning, and context sizing.",
         "search ranking constants",
         "query input limits",
         "audit candidate limits",
         "policy defaults",
+        "token estimation",
         "search ranking weights",
         "search input limits",
-        "audit input limits"
+        "audit scoring",
+        "declaration scan limits",
+        "token estimates"
       ]
     ],
     [
@@ -1876,6 +1879,8 @@
       [
         47,
         [
+          1,
+          1,
           2,
           1,
           3,
@@ -2252,13 +2257,6 @@
           1,
           1
         ]
-      ],
-      [
-        47,
-        [
-          1,
-          1
-        ]
       ]
     ],
     [
@@ -3472,6 +3470,13 @@
           3,
           1
         ]
+      ],
+      [
+        47,
+        [
+          1,
+          1
+        ]
       ]
     ],
     [
@@ -3795,6 +3800,15 @@
           9,
           1
         ]
+      ],
+      [
+        47,
+        [
+          1,
+          1,
+          3,
+          1
+        ]
       ]
     ],
     [
@@ -3855,8 +3869,6 @@
       [
         47,
         [
-          1,
-          1,
           2,
           1
         ]
@@ -4508,6 +4520,24 @@
         16,
         [
           5,
+          1
+        ]
+      ]
+    ],
+    [
+      [
+        47,
+        [
+          3,
+          1
+        ]
+      ]
+    ],
+    [
+      [
+        47,
+        [
+          2,
           1
         ]
       ]
@@ -6522,12 +6552,10 @@
       [
         47,
         [
-          1,
-          1,
           2,
           1,
           3,
-          2
+          1
         ]
       ]
     ],
@@ -8517,6 +8545,15 @@
     ],
     [
       [
+        47,
+        [
+          1,
+          1
+        ]
+      ]
+    ],
+    [
+      [
         13,
         [
           3,
@@ -8805,13 +8842,6 @@
           5,
           1
         ]
-      ],
-      [
-        47,
-        [
-          1,
-          1
-        ]
       ]
     ],
     [
@@ -8884,13 +8914,6 @@
         32,
         [
           5,
-          1
-        ]
-      ],
-      [
-        47,
-        [
-          1,
           1
         ]
       ]
@@ -9422,6 +9445,15 @@
     ],
     [
       [
+        47,
+        [
+          1,
+          1
+        ]
+      ]
+    ],
+    [
+      [
         44,
         [
           4,
@@ -9596,6 +9628,13 @@
         14,
         [
           3,
+          1
+        ]
+      ],
+      [
+        47,
+        [
+          1,
           1
         ]
       ]
@@ -11567,6 +11606,13 @@
           3,
           1
         ]
+      ],
+      [
+        47,
+        [
+          3,
+          1
+        ]
       ]
     ],
     [
@@ -11574,6 +11620,13 @@
         21,
         [
           2,
+          1
+        ]
+      ],
+      [
+        47,
+        [
+          1,
           1
         ]
       ]
@@ -11762,6 +11815,13 @@
         24,
         [
           4,
+          1
+        ]
+      ],
+      [
+        47,
+        [
+          3,
           1
         ]
       ]
@@ -12354,6 +12414,15 @@
     ],
     [
       [
+        47,
+        [
+          1,
+          1
+        ]
+      ]
+    ],
+    [
+      [
         48,
         [
           1,
@@ -12584,13 +12653,6 @@
         42,
         [
           4,
-          1
-        ]
-      ],
-      [
-        47,
-        [
-          1,
           1
         ]
       ],
@@ -13701,6 +13763,15 @@
       [
         29,
         [
+          3,
+          1
+        ]
+      ],
+      [
+        47,
+        [
+          2,
+          1,
           3,
           1
         ]
@@ -13920,15 +13991,6 @@
     [
       [
         12,
-        [
-          1,
-          1
-        ]
-      ]
-    ],
-    [
-      [
-        47,
         [
           1,
           1
@@ -14366,8 +14428,6 @@
       [
         47,
         [
-          1,
-          1,
           3,
           1
         ]
@@ -14894,6 +14954,8 @@
     "error",
     "errors",
     "escaping",
+    "estimates",
+    "estimation",
     "eval",
     "evaluation",
     "event",
@@ -15089,6 +15151,7 @@
     "mutate",
     "mutation",
     "n",
+    "named",
     "names",
     "navigation",
     "negotiation",
@@ -15139,6 +15202,7 @@
     "persistence",
     "plan",
     "planning",
+    "policies",
     "policy",
     "pools",
     "posix",
@@ -15300,6 +15364,7 @@
     "signing",
     "silently",
     "single",
+    "sizing",
     "sleep",
     "snapshot",
     "so",
@@ -15370,7 +15435,6 @@
     "traversal",
     "traversed",
     "trusted",
-    "truth",
     "ts",
     "type",
     "typescript",

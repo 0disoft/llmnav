@@ -860,6 +860,7 @@ export function collectSourceFiles(root: string, config: LlmnavConfig, requested
 export function findProjectRoot(start?: string): Promise<string>;
 export function formatProject(root: string, options?: { check?: boolean; paths?: string[] }): Promise<{ ok: boolean; changedFiles: string[]; errors: Array<{ file: string; line: number; message: string }> }>;
 export function buildArtifacts(project: ScannedProject, order: string[], options?: { previousSearchIndex?: LlmnavSearchIndex | null; previousGraphState?: RepositoryGraphState | null; fileState?: LlmnavFileState }): Map<string, string>;
+/** Generated card imports are independent of the supplied project records. */
 export function buildArtifactSet(project: ScannedProject, order: string[], options?: { previousSearchIndex?: LlmnavSearchIndex | null; previousGraphState?: RepositoryGraphState | null; fileState?: LlmnavFileState }): { artifacts: Map<string, string>; index: LlmnavIndex; searchIndex: LlmnavSearchIndex; searchStats: SearchIndexStats; fileState: LlmnavFileState; graph: RepositoryGraph; graphState: RepositoryGraphState; graphStats: IncrementalGraphStats; promptBundle: PromptPrefixBundle; moduleManifest: Array<{ id: string; file: string; cards: number }> };
 export function generateProject(root: string, options?: ReadOptions & { check?: boolean; incremental?: boolean; useStatHints?: boolean; paths?: string[]; ioConcurrency?: number; failpoint?: string; renameOptions?: Record<string, unknown>; lockOptions?: GenerationLockOptions; runtime?: Runtime; signal?: AbortSignalLike; onTransactionPhase?: (phase: string) => void | Promise<void> }): Promise<GenerationResult>;
 export function renderCompactCard(card: IndexedCard): string;
@@ -869,6 +870,7 @@ export function buildFileStateFromProject(project: ScannedProject): LlmnavFileSt
 export function renderFileState(fileState: LlmnavFileState): string;
 export function usableFileState(value: unknown): value is LlmnavFileState;
 export function initializeProject(root: string, options?: { force?: boolean; packageScripts?: boolean; agents?: string[] }): Promise<{ ok: boolean; changed: string[]; generated: GenerationResult }>;
+/** Returned phrase and posting arrays are independent of the previous index. */
 export function buildInvertedIndex(index: LlmnavIndex, previous?: LlmnavSearchIndex | null): { searchIndex: LlmnavSearchIndex; stats: SearchIndexStats };
 export function buildSearchDocument(card: IndexedCard, hash?: string): SearchDocument;
 export function isCompatibleSearchIndex(searchIndex: unknown, repositoryId?: string): searchIndex is LlmnavSearchIndex;
@@ -891,6 +893,7 @@ export function createProjectSession(root: string, options: GenerationLockOption
 export function createProjectSession(root: string, options?: GenerationLockOptions & { withPromptBundle?: false }): Promise<ProjectSession>;
 export function loadSearchData(root: string, options?: GenerationLockOptions): Promise<{ index: LlmnavIndex; searchIndex: LlmnavSearchIndex; lexicon: { version?: number; aliases: Record<string, string | string[]> }; graph: RepositoryGraph | null }>;
 export function queryIndex(index: LlmnavIndex, query: string, options?: { signal?: AbortSignalLike; top?: number; lexicon?: { aliases: Record<string, string | string[]> }; invertedIndex?: LlmnavSearchIndex; metrics?: SearchMetrics; graph?: RepositoryGraph | null }): SearchResult[];
+/** Borrows index cards and locations; metrics is an intentional output object. */
 export function queryPreparedIndex(index: LlmnavIndex, searchIndex: LlmnavSearchIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> }; metrics?: SearchMetrics; graph?: RepositoryGraph | null; signal?: AbortSignalLike }): SearchResult[];
 export function queryIndexLegacy(index: LlmnavIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> } }): SearchResult[];
 export function queryProject(root: string, query: string, options?: GenerationLockOptions & { top?: number }): Promise<SearchResult[]>;

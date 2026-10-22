@@ -685,7 +685,7 @@
         "source mutation"
       ],
       "hashes": {
-        "body": "1690405194bc86939e7b52517080107a93a20b4c3947703bccd024fd7186773e",
+        "body": "797bb70ac414b1284169fba71a101e65ca73a531057a9d8142a1d8a9f05fd241",
         "semantic": "945f325a2ad2abfa71212b02dd952c071d47ed6d3848a16d247afd48dbe5ced6",
         "structure": "a53c3b192c4f1a53461232c4516ebbfd79337f70a6fb27f2e6325213050a6cb6"
       },
@@ -1570,12 +1570,13 @@
         "type-system resolution"
       ],
       "hashes": {
-        "body": "b71603053fa0a473e260cd01c0f59f66f7dfd7a39f3e7250800f834da8feb95c",
+        "body": "f956d5539434ec53ccfa9f548f1afcb2a28306acda8ca0031a818513a3dc6624",
         "semantic": "a23716e9b8875db627bcaf423c48724cbebc2d4b7eb086b35379cc85525af93a",
-        "structure": "7d48e8fccd0be05c2233ec45943a2f0dbabedc7c64e024fc9af9058e5f2d9b58"
+        "structure": "93e9370f5b74928a43897738c572379dc96b3a8582d35101667bab65e9491ee0"
       },
       "id": "llmnav.declaration.extract",
       "imports": [
+        "./policy.js",
         "./util.js",
         "node:path"
       ],
@@ -1887,7 +1888,7 @@
         "source parsing"
       ],
       "hashes": {
-        "body": "d0c82487227ec5de20b0bb08dcc98cabe542747ac4a34698c781d0aa429dcf10",
+        "body": "423443a09de907007579c567f58b79c24cfb522b5077a2ec37e1991b99e80690",
         "semantic": "59aa3e9e793d505ecdf110fec023c201aaee0154d2f6c9cf71afe1bbf71a7be5",
         "structure": "e213e073414c75bc75df1c8669a7045096142b6c0845694191893d90bf23e3c2"
       },
@@ -1983,7 +1984,7 @@
         "semantic role generation"
       ],
       "hashes": {
-        "body": "01f41260490c91a1ec8a2173438b8d34fede398c42520be4dbb2526275e7ece2",
+        "body": "3cb98421bef868c458e21cdf0a44cc7edb9115f597db5dd3ef0feaed4387022c",
         "semantic": "47c79f36d71a39ad0b795700686fce0f12733568534f1a69dca05cc3cc8348c7",
         "structure": "dadebd4777277877a18dfc53ddf5c741022f38159a84c18b7a153dadfe9b5e77"
       },
@@ -2354,8 +2355,8 @@
         "agent transport"
       ],
       "hashes": {
-        "body": "e33433407ebfbf3a1eedfeb8541fc2745373e724a98750225d684a13072cf54a",
-        "semantic": "5666a94d1c8084131d0d491627fd12b04093d3053adefafdc719a28e8edfcc77",
+        "body": "68a1ae3b833a07bcf6d5b7f4f780098a21f84f1f9c3d9611e02fffdba9e0f870",
+        "semantic": "1c3e0a746691316d75d33f3aaef87db10419c52cae67bbcc5dc26c25b7dcff74",
         "structure": "79d75218e26f6313afbe080aa88e5ab3e9fb12e97d17ac3c2168c1c1ccf0c935"
       },
       "id": "llmnav.support.policy",
@@ -2376,20 +2377,23 @@
       "owns": [
         "search ranking weights",
         "search input limits",
-        "audit input limits"
+        "audit scoring",
+        "declaration scan limits",
+        "token estimates"
       ],
       "rel": [
         "workflow>llmnav.search.query",
         "workflow>llmnav.agent.tool-schema",
         "workflow>llmnav.audit.coverage"
       ],
-      "role": "Keep one source of truth for search ranking weights and bounded input defaults.",
+      "role": "Keep named policies for search ranking, audit prioritization, declaration scanning, and context sizing.",
       "scope": "module",
       "search": [
         "search ranking constants",
         "query input limits",
         "audit candidate limits",
-        "policy defaults"
+        "policy defaults",
+        "token estimation"
       ],
       "stability": "architecture"
     },
@@ -2499,9 +2503,9 @@
     },
     "schemaVersion": 1
   },
-  "generatedBy": "llmnav@0.13.1",
+  "generatedBy": "llmnav@0.13.2",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "a16de814d708ac8eab0a2576411413415ed6e0d3ea7a040f9bc5885d41f98e52",
+  "sourceHash": "08944a7c03f4be504c14aed6dafce575b5217af1375517471c051bc7915fce62",
   "specVersion": "1"
 }

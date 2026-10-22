@@ -954,6 +954,20 @@
     },
     {
       "confidence": 0.85,
+      "from": "llmnav/llmnav.declaration.extract",
+      "id": "78db791169ca4a8807dabc6723decfb1b875d9f68928e1dbffb7eb223ff6520d",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/declaration.js",
+        "source": "src/declaration.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.support.policy"
+    },
+    {
+      "confidence": 0.85,
       "from": "llmnav/llmnav.diagnostics.doctor",
       "id": "664f3537ba967653645fb82f153bb1d4543232d5bd7c833818d01bf8835635ae",
       "kind": "imports",
@@ -3928,7 +3942,7 @@
         "visibility": null
       },
       "repositoryId": "llmnav",
-      "role": "Keep one source of truth for search ranking weights and bounded input defaults.",
+      "role": "Keep named policies for search ranking, audit prioritization, declaration scanning, and context sizing.",
       "semanticId": "llmnav.support.policy",
       "unresolved": false
     },
@@ -3979,9 +3993,9 @@
   ],
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "6769b0dd0805468b4c361c2ea93b926536ce247ad07a2b56310d40c6a85f33be",
+  "sourceHash": "95e9c0005a42aca05e8b579c6b3779668dbb0e1acab176fe19d88bc1b852d197",
   "stats": {
-    "edgeCount": 201,
+    "edgeCount": 202,
     "importedIndexCount": 0,
     "nodeCount": 50,
     "unresolvedNodeCount": 0

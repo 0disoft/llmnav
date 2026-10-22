@@ -10,6 +10,7 @@ stability=architecture
 */
 
 import path from "node:path";
+import { DECLARATION_SCAN_POLICY } from "./policy.js";
 import { buildLineStarts, lineAtOffsetFromStarts, normalizeNewlines, sha256 } from "./util.js";
 
 const DECLARATION_PATTERNS = {
@@ -53,20 +54,20 @@ const DECLARATION_CONTINUATION_CHARACTERS = new Set(["[", "{", "}", ")", "]", ",
 export function createDeclarationScanContext(source) {
   return {
     lineStarts: buildLineStarts(source),
-    remainingScanUnits: Math.max(1, source.length * 2),
+    remainingScanUnits: Math.max(1, source.length * DECLARATION_SCAN_POLICY.workUnitsPerCharacter),
   };
 }
 
 export function findAttachedDeclaration(source, block, filePath, scanContext = createDeclarationScanContext(source)) {
   if (block.scope !== "symbol") return null;
-  const window = source.slice(block.end, block.end + 3000);
+  const window = source.slice(block.end, block.end + DECLARATION_SCAN_POLICY.attachmentWindowCharacters);
   const skipped = skipTrivia(window);
   const candidate = window.slice(skipped);
   const extension = path.extname(filePath).toLowerCase();
   const family = languageFamily(extension);
   const language = languageName(extension);
   const patterns = DECLARATION_PATTERNS[family] ?? DECLARATION_PATTERNS.generic;
-  const firstLines = normalizeNewlines(candidate).split("\n").slice(0, 12).join("\n");
+  const firstLines = normalizeNewlines(candidate).split("\n").slice(0, DECLARATION_SCAN_POLICY.signatureLines).join("\n");
   const collapsed = firstLines.replace(/\s+/gu, " ").trim();
 
   for (const definition of patterns) {

@@ -4,6 +4,18 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.13.2] — 2026-10-23
+
+### Fixed
+
+* Detach generated card imports and reused search-index phrase and posting arrays from caller-owned inputs.
+
+### Changed
+
+* Separate lexical scoring, result ranking, artifact assembly, line-card scanning, and relation validation into focused operations while preserving output and error precedence.
+* Separate lock publication and committed or interrupted transaction recovery while retaining cleanup and retry behavior.
+* Name audit scoring, representative selection, ID matching, declaration scanning, and token estimation policies without changing their values.
+
 ## [0.13.1] — 2026-10-23
 
 ### Fixed
