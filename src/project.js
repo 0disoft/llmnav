@@ -11,7 +11,7 @@ stability=architecture
 */
 
 import { readFile } from "node:fs/promises";
-import { throwIfAborted } from "./abort.js";
+import { abortable, throwIfAborted } from "./abort.js";
 import { DEFAULT_IO_CONCURRENCY, mapWithConcurrency } from "./concurrency.js";
 import { loadConfig } from "./config.js";
 import { createDeclarationScanContext, findAttachedDeclaration, extractImports } from "./declaration.js";
@@ -22,7 +22,8 @@ import { loadModuleResolution } from "./module-resolution.js";
 import { relativePosix, sha256 } from "./util.js";
 
 export async function scanProject(root, options = {}) {
-  const { config, configPath } = await loadConfig(root);
+  throwIfAborted(options.signal);
+  const { config, configPath } = await loadConfig(root, options);
   const ioConcurrency = options.ioConcurrency ?? DEFAULT_IO_CONCURRENCY;
   const files = await collectSourceFiles(root, config, options.paths ?? [], {
     signal: options.signal,
@@ -30,7 +31,7 @@ export async function scanProject(root, options = {}) {
   });
   const scanned = await mapWithConcurrency(files, ioConcurrency, async (absolutePath) => {
     throwIfAborted(options.signal);
-    const source = await readFile(absolutePath, "utf8");
+    const source = await abortable((options.io?.readFile ?? readFile)(absolutePath, "utf8"), options.signal);
     const relativePath = relativePosix(root, absolutePath);
     const blocks = parseLlmnavBlocks(source, relativePath);
     return {

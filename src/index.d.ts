@@ -253,17 +253,17 @@ export interface SearchResult {
 
 export interface ProjectSession {
   root: string;
-  query(query: string, options?: { top?: number; metrics?: SearchMetrics }): SearchResult[];
-  show(id: string): { card: IndexedCard | null; node: GraphNode | null; resolvedFrom: unknown };
+  query(query: string, options?: { top?: number; metrics?: SearchMetrics; signal?: AbortSignalLike }): SearchResult[];
+  show(id: string, options?: ReadOptions): { card: IndexedCard | null; node: GraphNode | null; resolvedFrom: unknown };
   registrySnapshot(): Registry;
-  context(id: string, options?: { depth?: number; budget?: number; maxEdges?: number }): { id: string; depth: number; budget: number; maxEdges: number; included: string[]; includedEdges: string[]; text: string };
-  refresh(): Promise<ProjectSession>;
+  context(id: string, options?: GenerationLockOptions & { depth?: number; budget?: number; maxEdges?: number }): { id: string; depth: number; budget: number; maxEdges: number; included: string[]; includedEdges: string[]; text: string };
+  refresh(options?: GenerationLockOptions): Promise<ProjectSession>;
 }
 
 export interface ProjectSessionWithPromptBundle extends ProjectSession {
   promptBundle: PromptPrefixBundle;
   generationHash: string;
-  refresh(): Promise<ProjectSessionWithPromptBundle>;
+  refresh(options?: GenerationLockOptions): Promise<ProjectSessionWithPromptBundle>;
 }
 
 export interface RegistryRecord {
@@ -597,6 +597,18 @@ export interface AbortSignalLike {
   removeEventListener?(type: "abort", listener: () => void): void;
 }
 
+/** Optional host scheduling hooks; omitted methods use the platform scheduler. */
+export interface Scheduler {
+  now?(): number;
+  setTimeout?(callback: () => void, milliseconds: number): unknown;
+  clearTimeout?(timer: unknown): void;
+}
+
+export interface ReadOptions {
+  signal?: AbortSignalLike;
+  io?: { readFile?(path: string, encoding: "utf8"): Promise<string> };
+}
+
 export const ABORT_ERROR_NAME: string;
 export function createAbortError(signal?: AbortSignalLike): Error;
 export function throwIfAborted(signal?: AbortSignalLike): void;
@@ -645,7 +657,7 @@ export function withDeadline<T>(
   operation: string,
   timeoutMs: number,
   promise: Promise<T>,
-  options?: { signal?: AbortSignalLike },
+  options?: { signal?: AbortSignalLike; scheduler?: Scheduler },
 ): Promise<T>;
 
 export interface Runtime {
@@ -664,13 +676,14 @@ export interface GenerationLock {
   runtime: Runtime;
 }
 
-export interface GenerationLockOptions {
+export interface GenerationLockOptions extends ReadOptions {
   timeoutMs?: number;
   pollMs?: number;
   delays?: number[];
   ownerId?: string;
   runtime?: Runtime;
   signal?: AbortSignalLike;
+  scheduler?: Scheduler;
 }
 
 export const DEFAULT_RUNTIME: Runtime;
@@ -789,7 +802,7 @@ export function diagnosticsToEditor(diagnostics: Diagnostic[]): EditorDiagnostic
 export function renderEditorDiagnostics(diagnostics: Diagnostic[]): string;
 export function getEditorIntegration(name: "vscode"): { schemaVersion: 1; editor: "vscode"; target: ".vscode/tasks.json"; config: Record<string, unknown> };
 export function getAgentToolDefinitions(): AgentToolDefinition[];
-export function executeAgentOperation(root: string, name: string, input?: Record<string, unknown>, options?: { session?: ProjectSession }): Promise<AgentOperationResult>;
+export function executeAgentOperation(root: string, name: string, input?: Record<string, unknown>, options?: GenerationLockOptions & { session?: ProjectSession }): Promise<AgentOperationResult>;
 export function buildPromptPrefixBundle(input: { repositoryId: string; toolDefinitions: AgentToolDefinition[]; agentProtocol: string; repositoryCore: string; modules?: Array<{ id: string; content: string }> }): PromptPrefixBundle;
 export function isCompatiblePromptPrefixBundle(bundle: unknown, repositoryId?: string): bundle is PromptPrefixBundle;
 export function loadPromptPrefixBundle(root: string): Promise<PromptPrefixBundle>;
@@ -832,9 +845,9 @@ export function compareContractFingerprints(previous: ContractFingerprints | nul
 export function compareCardIndexes(previousIndex: LlmnavIndex | null, currentIndex: LlmnavIndex): ChangedCardRecord[];
 export function describeAffectedBoundaries(changedCards: ChangedCardRecord[], config: LlmnavConfig, previousIndex: LlmnavIndex | null, currentIndex: LlmnavIndex): AffectedBoundaryRecord[];
 export function describeAffectedCatalogs(changedFiles: string[], cacheDirectory: string, config: LlmnavConfig, previousIndex: LlmnavIndex | null, currentIndex: LlmnavIndex): AffectedCatalogRecord[];
-export function loadConfig(root: string): Promise<{ config: LlmnavConfig; configPath: string }>;
+export function loadConfig(root: string, options?: ReadOptions): Promise<{ config: LlmnavConfig; configPath: string }>;
 export function validateConfig(config: LlmnavConfig, configPath?: string): void;
-export function auditProject(root: string, options?: { signal?: AbortSignalLike; ioConcurrency?: number }): Promise<AuditResult>;
+export function auditProject(root: string, options?: ReadOptions & { ioConcurrency?: number }): Promise<AuditResult>;
 export function auditHasFindings(result: AuditResult, minimumPriority?: AuditPriority | "none"): boolean;
 export function selectAuditCandidates(result: AuditResult, minimumPriority?: AuditPriority, top?: number): AuditCandidateSelection;
 export function explainProjectFile(root: string, file: string): Promise<FileExplanationResult>;
@@ -843,7 +856,7 @@ export function extractImports(source: string, filePath: string): string[];
 export function doctorProject(root: string, options?: { ioConcurrency?: number }): Promise<{ ok: boolean; checks: Array<{ name: string; ok: boolean; message: string }> }>;
 export function migrateProject(root: string, options?: { write?: boolean; failpoint?: string; renameOptions?: Record<string, unknown>; lockOptions?: GenerationLockOptions; runtime?: Runtime; signal?: AbortSignalLike; onTransactionPhase?: (phase: string) => void | Promise<void> }): Promise<MigrationResult>;
 export function evaluateProject(root: string, options?: { top?: number; file?: string; minimumCases?: number }): Promise<EvaluationResult>;
-export function collectSourceFiles(root: string, config: LlmnavConfig, requestedPaths?: string[], options?: { signal?: AbortSignalLike; ioConcurrency?: number }): Promise<string[]>;
+export function collectSourceFiles(root: string, config: LlmnavConfig, requestedPaths?: string[], options?: ReadOptions & { ioConcurrency?: number }): Promise<string[]>;
 export function findProjectRoot(start?: string): Promise<string>;
 export function formatProject(root: string, options?: { check?: boolean; paths?: string[] }): Promise<{ ok: boolean; changedFiles: string[]; errors: Array<{ file: string; line: number; message: string }> }>;
 export function buildArtifacts(project: ScannedProject, order: string[], options?: { previousSearchIndex?: LlmnavSearchIndex | null; previousGraphState?: RepositoryGraphState | null; fileState?: LlmnavFileState }): Map<string, string>;
@@ -851,7 +864,7 @@ export function buildArtifactSet(project: ScannedProject, order: string[], optio
 export function generateProject(root: string, options?: { check?: boolean; incremental?: boolean; useStatHints?: boolean; paths?: string[]; ioConcurrency?: number; failpoint?: string; renameOptions?: Record<string, unknown>; lockOptions?: GenerationLockOptions; runtime?: Runtime; signal?: AbortSignalLike; onTransactionPhase?: (phase: string) => void | Promise<void> }): Promise<GenerationResult>;
 export function renderCompactCard(card: IndexedCard): string;
 export function renderSemanticCard(card: IndexedCard): string;
-export function scanProjectIncremental(root: string, options?: { paths?: string[]; useStatHints?: boolean; previousState?: LlmnavFileState; signal?: AbortSignalLike; ioConcurrency?: number }): Promise<{ project: ScannedProject; fileState: LlmnavFileState; stats: IncrementalFileStats; statHints: unknown; hintsPath: string }>;
+export function scanProjectIncremental(root: string, options?: ReadOptions & { paths?: string[]; useStatHints?: boolean; previousState?: LlmnavFileState; ioConcurrency?: number }): Promise<{ project: ScannedProject; fileState: LlmnavFileState; stats: IncrementalFileStats; statHints: unknown; hintsPath: string }>;
 export function buildFileStateFromProject(project: ScannedProject): LlmnavFileState;
 export function renderFileState(fileState: LlmnavFileState): string;
 export function usableFileState(value: unknown): value is LlmnavFileState;
@@ -867,21 +880,21 @@ export function canonicalizeSource(source: string, filePath?: string): { source:
 export function cardToCanonicalObject(card: LlmnavCard): Record<string, string | string[]>;
 export function formatLlmnavBlock(block: LlmnavBlock): string;
 export function parseLlmnavBlocks(source: string, filePath?: string): LlmnavBlock[];
-export function scanProject(root: string, options?: { paths?: string[]; signal?: AbortSignalLike; ioConcurrency?: number; registry?: Registry }): Promise<ScannedProject>;
+export function scanProject(root: string, options?: ReadOptions & { paths?: string[]; ioConcurrency?: number; registry?: Registry }): Promise<ScannedProject>;
 export function ensureActiveIds(root: string, registry: Registry, ids: string[], options?: { lockOwnerId?: string; lockOptions?: GenerationLockOptions }): Promise<{ records: RegistryRecord[]; changed: boolean }>;
 export function mergeActiveIds(registry: Registry, ids: string[]): { records: RegistryRecord[]; changed: boolean };
 export function renderRegistryRecords(records: RegistryRecord[]): string;
 export function loadRegistry(root: string): Promise<Registry>;
 export function resolveRegistryId(registry: Registry, id: string): { id: string; state: string; [key: string]: unknown };
-export function buildContext(root: string, id: string, options?: { depth?: number; budget?: number; maxEdges?: number }): Promise<{ id: string; depth: number; budget: number; maxEdges: number; included: string[]; includedEdges: string[]; text: string }>;
-export function createProjectSession(root: string, options: { withPromptBundle: true }): Promise<ProjectSessionWithPromptBundle>;
-export function createProjectSession(root: string, options?: { withPromptBundle?: false }): Promise<ProjectSession>;
-export function loadSearchData(root: string): Promise<{ index: LlmnavIndex; searchIndex: LlmnavSearchIndex; lexicon: { version?: number; aliases: Record<string, string | string[]> }; graph: RepositoryGraph | null }>;
+export function buildContext(root: string, id: string, options?: GenerationLockOptions & { depth?: number; budget?: number; maxEdges?: number }): Promise<{ id: string; depth: number; budget: number; maxEdges: number; included: string[]; includedEdges: string[]; text: string }>;
+export function createProjectSession(root: string, options: GenerationLockOptions & { withPromptBundle: true }): Promise<ProjectSessionWithPromptBundle>;
+export function createProjectSession(root: string, options?: GenerationLockOptions & { withPromptBundle?: false }): Promise<ProjectSession>;
+export function loadSearchData(root: string, options?: GenerationLockOptions): Promise<{ index: LlmnavIndex; searchIndex: LlmnavSearchIndex; lexicon: { version?: number; aliases: Record<string, string | string[]> }; graph: RepositoryGraph | null }>;
 export function queryIndex(index: LlmnavIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> }; invertedIndex?: LlmnavSearchIndex; metrics?: SearchMetrics; graph?: RepositoryGraph | null }): SearchResult[];
 export function queryPreparedIndex(index: LlmnavIndex, searchIndex: LlmnavSearchIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> }; metrics?: SearchMetrics; graph?: RepositoryGraph | null; signal?: AbortSignalLike }): SearchResult[];
 export function queryIndexLegacy(index: LlmnavIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> } }): SearchResult[];
-export function queryProject(root: string, query: string, options?: { top?: number; signal?: AbortSignalLike }): Promise<SearchResult[]>;
-export function showProjectCard(root: string, id: string): Promise<{ card: IndexedCard | null; node: GraphNode | null; resolvedFrom: unknown }>;
+export function queryProject(root: string, query: string, options?: GenerationLockOptions & { top?: number }): Promise<SearchResult[]>;
+export function showProjectCard(root: string, id: string, options?: GenerationLockOptions): Promise<{ card: IndexedCard | null; node: GraphNode | null; resolvedFrom: unknown }>;
 export function tokenize(value: string): string[];
 export function normalizeSearchText(value: string): string;
 export function commitGeneratedCache(root: string, cacheDirectory: string, artifacts: Map<string, string>, options?: Record<string, unknown>): Promise<TransactionResult>;

@@ -46,3 +46,20 @@ export function assertAbortSignal(signal) {
     throw new TypeError("Abort signal must be an AbortSignal.");
   }
 }
+
+/** Observe cancellation while consuming the work's eventual rejection as well. */
+export async function abortable(promise, signal) {
+  if (signal === undefined) return promise;
+  assertAbortSignal(signal);
+  let onAbort;
+  try {
+    return await new Promise((resolve, reject) => {
+      Promise.resolve(promise).then(resolve, reject);
+      onAbort = () => reject(createAbortError(signal));
+      if (signal.aborted) onAbort();
+      else signal.addEventListener("abort", onAbort);
+    });
+  } finally {
+    signal.removeEventListener?.("abort", onAbort);
+  }
+}

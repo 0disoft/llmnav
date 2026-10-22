@@ -12,6 +12,20 @@ import { AUDIT_PRIORITIES, auditProject } from "../src/audit.js";
 import { initializeProject } from "../src/initializer.js";
 import { createProjectSession } from "../src/search.js";
 
+test("operation cancellation prevents dispatch and reaches session handlers", async () => {
+  const controller = new AbortController();
+  let called = 0;
+  const session = { query: (task, options) => {
+    called += 1;
+    assert.equal(options.signal, controller.signal);
+    return [];
+  } };
+  assert.equal((await executeAgentOperation(".", "llmnav_query", { task: "auth" }, { session, signal: controller.signal })).ok, true);
+  controller.abort();
+  assert.equal((await executeAgentOperation(".", "llmnav_query", { task: "auth" }, { session, signal: controller.signal })).ok, false);
+  assert.equal(called, 1);
+});
+
 test("publishes stable provider-neutral tool definitions", () => {
   const definitions = getAgentToolDefinitions();
   assert.deepEqual(definitions.map((item) => item.name), [

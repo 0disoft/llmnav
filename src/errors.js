@@ -8,8 +8,8 @@ invariant=Every wrapped failure keeps the original error as its cause.
 stability=contract
 */
 
-import { setTimeout } from "node:timers";
-import { createAbortError } from "./abort.js";
+import { abortable } from "./abort.js";
+import { DEFAULT_SCHEDULER } from "./runtime.js";
 
 export const ERROR_CODES = Object.freeze({
   ioRead: "LNV100",
@@ -104,33 +104,26 @@ export function toErrorPayload(error) {
  * reporting a write as timed out while it later succeeds would be a lie.
  */
 export async function withDeadline(operation, timeoutMs, promise, options = {}) {
-  if (timeoutMs === 0) return promise;
-  if (!Number.isInteger(timeoutMs) || timeoutMs < 0) {
-    throw new TypeError(`Operation deadline for ${operation} must be a non-negative integer: ${timeoutMs}.`);
+  if (!Number.isInteger(timeoutMs) || timeoutMs < 0 || timeoutMs > 2_147_483_647) {
+    throw new TypeError(`Operation deadline for ${operation} must be a non-negative integer <= 2147483647: ${timeoutMs}.`);
   }
-  const signal = options.signal;
+  if (timeoutMs === 0) return abortable(promise, options.signal);
+  const scheduler = { ...DEFAULT_SCHEDULER, ...options.scheduler };
   let timer = null;
-  let onAbort = null;
   try {
-    return await Promise.race([
+    return await abortable(Promise.race([
       promise,
       new Promise((resolve, reject) => {
-        timer = setTimeout(() => {
+        timer = scheduler.setTimeout(() => {
           reject(new LlmnavError(`${operation} did not finish within ${timeoutMs} ms.`, {
             code: ERROR_CODES.timeout,
             operation,
             retryable: false,
           }));
         }, timeoutMs);
-        timer.unref?.();
-        if (signal) {
-          onAbort = () => reject(createAbortError(signal));
-          signal.addEventListener("abort", onAbort, { once: true });
-        }
       }),
-    ]);
+    ]), options.signal);
   } finally {
-    if (timer !== null) clearTimeout(timer);
-    if (signal && onAbort) signal.removeEventListener("abort", onAbort);
+    if (timer !== null) scheduler.clearTimeout(timer);
   }
 }

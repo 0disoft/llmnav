@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { lstat, mkdir, open, readFile, realpath, rename, rm } from "node:fs/promises";
 import path from "node:path";
 import { DEFAULT_RUNTIME } from "./runtime.js";
+import { abortable, throwIfAborted } from "./abort.js";
 
 export function normalizeNewlines(value) {
   return value.replace(/\r\n?/gu, "\n");
@@ -112,10 +113,12 @@ export function offsetAtLine(source, targetLine) {
   return source.length;
 }
 
-export async function readText(filePath, fallback = undefined) {
+export async function readText(filePath, fallback = undefined, options = {}) {
+  throwIfAborted(options.signal);
   try {
-    return await readFile(filePath, "utf8");
+    return await abortable((options.io?.readFile ?? readFile)(filePath, "utf8"), options.signal);
   } catch (error) {
+    throwIfAborted(options.signal);
     if (fallback !== undefined && error && typeof error === "object" && error.code === "ENOENT") {
       return fallback;
     }
@@ -123,16 +126,17 @@ export async function readText(filePath, fallback = undefined) {
   }
 }
 
-export async function readJson(filePath, fallback = undefined) {
-  const text = await readText(filePath, fallback === undefined ? undefined : "");
+export async function readJson(filePath, fallback = undefined, options = {}) {
+  const text = await readText(filePath, fallback === undefined ? undefined : "", options);
   if (text === "" && fallback !== undefined) return structuredClone(fallback);
   return JSON.parse(text);
 }
 
-export async function readJsonSafe(filePath, fallback = null) {
+export async function readJsonSafe(filePath, fallback = null, options = {}) {
   try {
-    return await readJson(filePath, fallback);
+    return await readJson(filePath, fallback, options);
   } catch (error) {
+    throwIfAborted(options.signal);
     if (error instanceof SyntaxError) return structuredClone(fallback);
     throw error;
   }

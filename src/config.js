@@ -34,9 +34,9 @@ const AUDIT_KEYS = new Set(Object.keys(DEFAULT_CONFIG.audit));
 const COVERAGE_KEYS = new Set(["name", "match", "scope", "requiredFields"]);
 const AUDIT_DISPOSITION_KEYS = new Set(["path", "reason"]);
 
-export async function loadConfig(root) {
+export async function loadConfig(root, options = {}) {
   const configPath = path.join(root, ".llmnav", "config.json");
-  const custom = await readJson(configPath, {});
+  const custom = await readJson(configPath, {}, options);
   const config = deepMerge(DEFAULT_CONFIG, custom);
   validateConfig(config, configPath);
   return { config, configPath };

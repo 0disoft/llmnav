@@ -80,3 +80,43 @@ test("a cause cycle still yields a finite chain", () => {
   assert.equal(causeChain(second).length, 2);
   assert.equal(causeChain(second)[0].message, "second");
 });
+
+test("deadlines honor pre-cancellation, disabled timeouts, and structural signals", async () => {
+  const controller = new AbortController();
+  const reason = new Error("caller stopped");
+  controller.abort(reason);
+  for (const timeout of [0, 1]) {
+    await assert.rejects(withDeadline("query", timeout, Promise.resolve(7), { signal: controller.signal }), (error) => error === reason);
+  }
+  const late = new AbortController();
+  const pending = withDeadline("query", 0, new Promise(() => {}), { signal: late.signal });
+  late.abort();
+  await assert.rejects(pending, { name: "AbortError" });
+  assert.equal(await withDeadline("query", 1, Promise.resolve(7), {
+    signal: { aborted: false, addEventListener() {} },
+  }), 7);
+  for (const timeout of [-1, 0.5, NaN, Infinity, 2_147_483_648]) {
+    await assert.rejects(withDeadline("query", timeout, Promise.resolve()), TypeError);
+  }
+  assert.equal(await withDeadline("query", 2_147_483_647, Promise.resolve(7)), 7);
+});
+
+test("injected deadline timers fire deterministically and clean abort listeners", async () => {
+  let fire;
+  let cleared = 0;
+  const listeners = new Set();
+  const scheduler = {
+    setTimeout(callback, delay) { assert.equal(delay, 10); fire = callback; return 1; },
+    clearTimeout(timer) { assert.equal(timer, 1); cleared += 1; },
+  };
+  const signal = {
+    aborted: false,
+    addEventListener(type, listener) { listeners.add(listener); },
+    removeEventListener(type, listener) { listeners.delete(listener); },
+  };
+  const timed = withDeadline("query", 10, new Promise(() => {}), { scheduler, signal });
+  fire();
+  await assert.rejects(timed, { code: "LNV102" });
+  assert.equal(cleared, 1);
+  assert.equal(listeners.size, 0);
+});

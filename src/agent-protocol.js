@@ -18,6 +18,7 @@ import { getAgentToolDefinitions } from "./agent-tools.js";
 import { auditProject, explainProjectFile, selectAuditCandidates } from "./audit.js";
 import { AUDIT_LIMITS, SEARCH_LIMITS } from "./policy.js";
 import { toErrorPayload } from "./errors.js";
+import { throwIfAborted } from "./abort.js";
 
 export { AGENT_TOOL_SCHEMA_VERSION, getAgentToolDefinitions } from "./agent-tools.js";
 export const AGENT_OPERATION_SCHEMA_VERSION = 1;
@@ -56,6 +57,7 @@ export async function executeAgentOperation(root, name, input = {}, options = {}
   const request = resolveRequest(name, input);
   if (request.failure) return request.failure;
   try {
+    throwIfAborted(options.signal);
     const outcome = await OPERATION_HANDLERS.get(request.operation)(input, root, options);
     if (outcome.failure) {
       return failure(request.operation, outcome.failure.code, outcome.failure.message, outcome.failure.data ?? null);
@@ -90,15 +92,15 @@ async function handleQuery(input, root, options) {
   const task = input.task.trim();
   const top = input.top ?? SEARCH_LIMITS.top.default;
   const data = options.session
-    ? await options.session.query(task, { top })
-    : await queryProject(root, task, { top });
+    ? await options.session.query(task, { top, ...(options.signal ? { signal: options.signal } : {}) })
+    : await queryProject(root, task, { ...options, top });
   return { data };
 }
 
 async function handleShow(input, root, options) {
   const result = options.session
-    ? await options.session.show(input.id.trim())
-    : await showProjectCard(root, input.id.trim());
+    ? await options.session.show(input.id.trim(), options)
+    : await showProjectCard(root, input.id.trim(), options);
   if (result.card || result.node) return { data: result };
   const state = result.resolvedFrom?.state;
   if (state === "ambiguous") {
@@ -129,7 +131,10 @@ async function handleShow(input, root, options) {
 }
 
 async function handleContext(input, root, options) {
+  const { session, ...executionOptions } = options;
   const contextOptions = {
+    ...executionOptions,
+    ...(options.signal ? { signal: options.signal } : {}),
     depth: input.depth ?? SEARCH_LIMITS.depth.default,
     budget: input.budget ?? SEARCH_LIMITS.budget.default,
     maxEdges: input.maxEdges ?? SEARCH_LIMITS.maxEdges.default,
@@ -140,9 +145,9 @@ async function handleContext(input, root, options) {
   return { data };
 }
 
-async function handleAudit(input, root) {
+async function handleAudit(input, root, options) {
   const minimumPriority = input.priority ?? "low";
-  const result = await auditProject(root);
+  const result = await auditProject(root, options);
   const selected = selectAuditCandidates(result, minimumPriority, input.top ?? AUDIT_LIMITS.top.default);
   return {
     data: {
@@ -156,13 +161,15 @@ async function handleAudit(input, root) {
   };
 }
 
-async function handleExplain(input, root) {
+async function handleExplain(input, root, options) {
+  throwIfAborted(options.signal);
   return { data: await explainProjectFile(root, input.file.trim()) };
 }
 
 async function handleCheck(input, root, options) {
   const registry = options.session ? options.session.registrySnapshot() : undefined;
   const project = await scanProject(root, {
+    ...options,
     paths: input.paths ?? [],
     ...(registry === undefined ? {} : { registry }),
   });

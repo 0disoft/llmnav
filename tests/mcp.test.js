@@ -16,6 +16,22 @@ import { PACKAGE_VERSION } from "../src/spec.js";
 
 const CLI = fileURLToPath(new URL("../bin/llmnav.js", import.meta.url));
 
+test("request deadlines include a stalled shared session load", async () => {
+  let expire;
+  const server = createMcpServer({
+    root: ".",
+    createSession: () => new Promise(() => {}),
+    scheduler: { setTimeout: (callback) => { expire = callback; return 1; }, clearTimeout() {} },
+  });
+  const pending = server.handleMessage({
+    jsonrpc: "2.0", id: 1, method: "tools/call",
+    params: { name: "llmnav_query", arguments: { task: "auth" } },
+  });
+  expire();
+  const response = await pending;
+  assert.equal(response.error.data.code, "LNV102");
+});
+
 test("rejects malformed frames without crashing the session", async (context) => {
   const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-mcp-frames-"));
   context.after(() => rm(root, { recursive: true, force: true }));

@@ -115,6 +115,20 @@
     {
       "confidence": 0.85,
       "from": "llmnav/llmnav.agent.mcp",
+      "id": "63774c4a71a71e8068d44248535ebaf19621c29d977030259e812250cb27fb2d",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/mcp.js",
+        "source": "src/mcp.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.support.abort"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.agent.mcp",
       "id": "4da4449fba816dfdb91430c94706eb2ac01466aa43b673eeb1272e5f5e753be4",
       "kind": "imports",
       "provenance": {
@@ -321,6 +335,20 @@
         "type": "source-card"
       },
       "to": "llmnav/llmnav.search.query"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.agent.protocol",
+      "id": "a942c3d9e2c8c8fdb475f66796ca3db51ea973e17f626164a8626f95318d8f28",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/agent-protocol.js",
+        "source": "src/agent-protocol.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.support.abort"
     },
     {
       "confidence": 0.85,
@@ -2689,6 +2717,20 @@
       "to": "llmnav/llmnav.support.abort"
     },
     {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.support.errors",
+      "id": "b58d3703fae23bae741b9b030eb539b910a91e43fb5bb34c3c070a9f63ccd2f5",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/errors.js",
+        "source": "src/errors.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.support.runtime"
+    },
+    {
       "confidence": 1,
       "from": "llmnav/llmnav.support.policy",
       "id": "57cf1ee89a5058a7c602ab71bab3a6f0035254546052aa5d522ba34b73af09d5",
@@ -3909,9 +3951,9 @@
   ],
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "766ac93f6f771bf4693ec290747ad99b35de3b915757ede58056d6f6031c4d60",
+  "sourceHash": "080d0150c0d1dc70f5b4ee935ff5d28a2e1a1fc262e102c5e8914572a22c7c1b",
   "stats": {
-    "edgeCount": 196,
+    "edgeCount": 199,
     "importedIndexCount": 0,
     "nodeCount": 50,
     "unresolvedNodeCount": 0

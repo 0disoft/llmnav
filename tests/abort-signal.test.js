@@ -8,6 +8,34 @@ import { auditProject } from "../src/audit.js";
 import { generateProject } from "../src/generator.js";
 import { initializeProject } from "../src/initializer.js";
 import { queryProject } from "../src/search.js";
+import { acquireGenerationLock, releaseGenerationLock } from "../src/transaction.js";
+import { createRuntime } from "../src/runtime.js";
+import { readJsonSafe } from "../src/util.js";
+
+test("query cancellation reaches its lock wait without removing another owner's lock", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-query-wait-abort-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  const held = await acquireGenerationLock(root);
+  const controller = new AbortController();
+  try {
+    await assert.rejects(() => queryProject(root, "auth", {
+      signal: controller.signal,
+      runtime: createRuntime({ sleep: async () => { controller.abort(); } }),
+    }), { name: "AbortError" });
+    assert.equal(JSON.parse(await readFile(held.lockPath, "utf8")).ownerId, held.ownerId);
+  } finally {
+    await releaseGenerationLock(held);
+  }
+});
+
+test("injected reads preserve syntax-error cancellation reasons instead of using fallback data", async () => {
+  const controller = new AbortController();
+  const reason = new SyntaxError("cancelled by caller");
+  await assert.rejects(() => readJsonSafe("unused.json", {}, {
+    signal: controller.signal,
+    io: { readFile: async () => { controller.abort(reason); throw reason; } },
+  }), (error) => error === reason);
+});
 
 function abortedController() {
   const controller = new AbortController();

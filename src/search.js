@@ -43,12 +43,12 @@ export class SemanticIdLookupError extends Error {
   }
 }
 
-export async function loadSearchData(root) {
-  return withGenerationLock(root, (lock) => loadSearchDataLocked(root, lock));
+export async function loadSearchData(root, options = {}) {
+  return withGenerationLock(root, (lock) => loadSearchDataLocked(root, lock, options), options);
 }
 
-async function loadSearchDataLocked(root, lock) {
-  const { config } = await loadConfig(root);
+async function loadSearchDataLocked(root, lock, options = {}) {
+  const { config } = await loadConfig(root, options);
   await recoverGenerationTransaction(root, { cacheDirectory: config.generation.cacheDirectory, lockOwnerId: lock.ownerId });
   const cacheRoot = path.join(root, config.generation.cacheDirectory);
   await assertNoSymlinkTraversal(root, cacheRoot, config.generation.cacheDirectory);
@@ -60,7 +60,7 @@ async function loadSearchDataLocked(root, lock) {
   for (const managedPath of [indexPath, manifestPath, graphPath, searchPath, lexiconPath]) {
     await assertNoSymlinkTraversal(root, managedPath, toPosix(path.relative(root, managedPath)));
   }
-  const indexText = await readText(indexPath, null);
+  const indexText = await readText(indexPath, null, options);
   if (indexText === null) throw new Error("No generated index found. Run `llmnav generate` first.");
   let index;
   try {
@@ -71,9 +71,9 @@ async function loadSearchDataLocked(root, lock) {
   if (!isUsablePrimaryIndex(index, config.repositoryId)) {
     throw new Error("Incompatible primary index.json. Run `llmnav generate` to rebuild it.");
   }
-  const lexicon = await readJsonSafe(lexiconPath, { version: 1, aliases: {} });
+  const lexicon = await readJsonSafe(lexiconPath, { version: 1, aliases: {} }, options);
   const cacheRelative = toPosix(config.generation.cacheDirectory).replace(/\/+$/u, "");
-  const manifestText = await readText(manifestPath, null);
+  const manifestText = await readText(manifestPath, null, options);
   let manifest = null;
   if (manifestText !== null) {
     try {
@@ -87,7 +87,7 @@ async function loadSearchDataLocked(root, lock) {
     }
   }
   const graphRelative = `${cacheRelative}/graph.json`;
-  const graphText = await readText(graphPath, null);
+  const graphText = await readText(graphPath, null, options);
   let graph = null;
   if (graphText !== null) {
     try {
@@ -105,7 +105,7 @@ async function loadSearchDataLocked(root, lock) {
   );
   if (!graphMatches) graph = null;
   const searchRelative = `${cacheRelative}/search-index.json`;
-  const searchText = await readText(searchPath, null);
+  const searchText = await readText(searchPath, null, options);
   let searchIndex = null;
   if (searchText !== null) {
     try {
@@ -142,14 +142,15 @@ function isUsablePrimaryIndex(index, repositoryId) {
 
 export async function queryProject(root, query, options = {}) {
   throwIfAborted(options.signal);
-  const { index, lexicon, searchIndex, graph } = await loadSearchData(root);
+  const { index, lexicon, searchIndex, graph } = await loadSearchData(root, options);
   throwIfAborted(options.signal);
   return detachSearchResults(queryPreparedIndex(index, searchIndex, query, { ...options, lexicon, graph }));
 }
 
 export async function createProjectSession(root, options = {}) {
   const withPromptBundle = options.withPromptBundle === true;
-  let snapshot = await loadSessionSnapshot(root, { withPromptBundle });
+  const { signal, ...sessionOptions } = options;
+  let snapshot = await loadSessionSnapshot(root, { ...options, withPromptBundle });
   const session = {
     root,
     ...(withPromptBundle ? { promptBundle: snapshot.promptBundle, generationHash: snapshot.generationHash } : {}),
@@ -160,7 +161,8 @@ export async function createProjectSession(root, options = {}) {
         graph: snapshot.graph,
       }));
     },
-    show(id) {
+    show(id, options = {}) {
+      throwIfAborted(options.signal);
       return structuredClone(showSnapshotCard(snapshot, id));
     },
     registrySnapshot() {
@@ -170,8 +172,8 @@ export async function createProjectSession(root, options = {}) {
     context(id, options = {}) {
       return buildSnapshotContext(snapshot, id, options);
     },
-    async refresh() {
-      const next = await loadSessionSnapshot(root, { withPromptBundle });
+    async refresh(refreshOptions = {}) {
+      const next = await loadSessionSnapshot(root, { ...sessionOptions, ...refreshOptions, withPromptBundle });
       snapshot = next;
       if (withPromptBundle) {
         session.promptBundle = next.promptBundle;
@@ -244,11 +246,11 @@ function idCandidatePositions(prepared, normalizedQuery) {
 
 async function loadProjectSnapshot(root, options = {}) {
   return withGenerationLock(root, async (lock) => {
-    const { index, lexicon, searchIndex, graph } = await loadSearchDataLocked(root, lock);
+    const { index, lexicon, searchIndex, graph } = await loadSearchDataLocked(root, lock, options);
     const registry = await loadRegistry(root);
     const prompt = options.withPromptBundle ? await loadPromptPrefixBundleLocked(root, lock) : null;
     return { index, lexicon, searchIndex, graph, registry, promptBundle: prompt?.bundle, generationHash: prompt?.generationHash };
-  });
+  }, options);
 }
 
 export function queryIndex(index, query, options = {}) {
@@ -510,8 +512,8 @@ function detachSearchResults(results) {
   });
 }
 
-export async function showProjectCard(root, id) {
-  return showSnapshotCard(await loadProjectSnapshot(root), id);
+export async function showProjectCard(root, id, options = {}) {
+  return showSnapshotCard(await loadProjectSnapshot(root, options), id);
 }
 
 function showSnapshotCard(snapshot, id) {
@@ -537,10 +539,11 @@ function showSnapshotCard(snapshot, id) {
 }
 
 export async function buildContext(root, id, options = {}) {
-  return buildSnapshotContext(await loadProjectSnapshot(root), id, options);
+  return buildSnapshotContext(await loadProjectSnapshot(root, options), id, options);
 }
 
 function buildSnapshotContext(snapshot, id, options = {}) {
+  throwIfAborted(options.signal);
   const { index, graph, registry } = snapshot;
   const depth = boundedInteger(options.depth, SEARCH_LIMITS.depth.default, SEARCH_LIMITS.depth.minimum, SEARCH_LIMITS.depth.maximum);
   const budget = boundedInteger(options.budget, SEARCH_LIMITS.budget.default, SEARCH_LIMITS.budget.minimum, SEARCH_LIMITS.budget.maximum);

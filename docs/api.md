@@ -165,7 +165,13 @@ Cancellation is cooperative. Generation checks the signal while scanning, betwee
 
 A generation that is waiting for the lock also stops waiting when its signal aborts, so a cancelled CLI or editor command does not sit out the full lock timeout.
 
+`loadSearchData`, `createProjectSession`, `showProjectCard`, `buildContext`, and `executeAgentOperation` also accept `signal` in their existing optional options object. Session `show`, `query`, `context`, and `refresh` accept a per-call signal. A creation signal applies to the initial load; it is not retained for future refreshes. Lock release and transaction rollback finish even after cancellation.
+
+For deterministic tests, lock options accept `scheduler.now`, a monotonic millisecond clock. Polling is clamped to the remaining timeout; zero permits one immediate acquisition attempt. `loadConfig`, `loadSearchData`, `queryProject`, `createProjectSession`, `scanProject`, and `scanProjectIncremental` accept an optional `io.readFile(path, "utf8")` hook. Omitted hooks keep filesystem reads and path-safety checks intact.
+
 ## Report failures with a cause and a deadline
+
+`withDeadline` accepts an optional `scheduler` with `setTimeout` and `clearTimeout` hooks. Deadlines range from zero to 2147483647 milliseconds; zero disables only the timer, while cancellation remains active. Already-aborted signals reject with their original reason. MCP request deadlines include session loading; a timed-out caller does not cancel a shared session load needed by other requests. Synchronous ranking remains cooperative and cannot be interrupted by a timer while it occupies the event loop.
 
 Filesystem failures keep the original system error as `cause`, and the wrapper carries a stable code plus a retry classification:
 

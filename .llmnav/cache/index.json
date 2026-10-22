@@ -685,7 +685,7 @@
         "source mutation"
       ],
       "hashes": {
-        "body": "48c608cab993008081d53fc74027df0fc0add8c91b55c064b8f9b08da052df32",
+        "body": "22b4b6eae125f48a2a676ec0d00d72159355d8b456ba87a90c34beda886a8a20",
         "semantic": "945f325a2ad2abfa71212b02dd952c071d47ed6d3848a16d247afd48dbe5ced6",
         "structure": "a53c3b192c4f1a53461232c4516ebbfd79337f70a6fb27f2e6325213050a6cb6"
       },
@@ -835,7 +835,7 @@
         "cache directory commit"
       ],
       "hashes": {
-        "body": "f4b0ec1d07e4f9e67eea0669c489333021022ab1c5da75bc600760c758bdef4d",
+        "body": "ebeabfcc9b9924683bf68bac56359f126d7a394e1fa8d08aa019b47a4701ad68",
         "semantic": "26e0abf92c39ff07a7eb622d795d5ecbc83c7704b7c1ed09cd3ad339e3c04865",
         "structure": "4533f320f5c701808b979357ece450b56bdbc35f1117a5d53a2556e684a33657"
       },
@@ -937,7 +937,7 @@
         "source indexing"
       ],
       "hashes": {
-        "body": "d016bb705f19e2973097d9d8d171bba87d859b9c9398153073c66ab5c7bccff3",
+        "body": "de0049ba56686f022514acf5affe281fde17f4287170c7400dfcb23d4f22733e",
         "semantic": "ce2cf8943f71d053f8cba914886bae20316e5b6106857f52abc4d8a59afb1ef1",
         "structure": "5de94f39bf7e761651c8294ee0af6202e494f6eb4a3f829ad9e27414fc3d9848"
       },
@@ -1316,12 +1316,13 @@
         "source mutation"
       ],
       "hashes": {
-        "body": "9912093c85d779e9379df5fcec7c9c308aee213db8fd8b392fc3e5942bdbbfc9",
+        "body": "b857a606c442c869fdefdf9220b9a3d541e8830265d45d17a2a6f564760e198d",
         "semantic": "ce30fe54e5dab8eb3cda8e1e6afdcee3489c3f62267d99ff85257f4c819d21a4",
-        "structure": "299fbf9c8b28717035795dd2e1ed7d74e274ca439f2cb40256060313cbdc1426"
+        "structure": "0fe64f939a8ed48926b7c3e733ab33492b32991aabf69887568a4d6611ad25bd"
       },
       "id": "llmnav.agent.protocol",
       "imports": [
+        "./abort.js",
         "./agent-tools.js",
         "./audit.js",
         "./errors.js",
@@ -1519,7 +1520,7 @@
         "schema file generation"
       ],
       "hashes": {
-        "body": "e0ec79379b7b4a56e64cdfaf23c147c59719c25b2ca6d5fc149a2f4e8e0dff82",
+        "body": "b5be763c24f26033cf6d800b5d0ec9dcc70189c8d09a1c9ffe776af42e54534a",
         "semantic": "69fbf9f22cc16fc3ef97d64bd1d5f4a3792793713c22a3ec717129048bd4c3f9",
         "structure": "bda327c68be34af716f65dc6a472dbac9d47af8c9436c253cbad210a336bd167"
       },
@@ -1673,7 +1674,7 @@
         "cache generation"
       ],
       "hashes": {
-        "body": "2aa73790a772b6583cf35b679a38401299955b7a54cba420eec57a3bae224cce",
+        "body": "340aa5c349a5d3e253d46bc5c1bd45994c4feb62eb22a257b6303b29dad51367",
         "semantic": "c7cfa511ec9a14754b58e0f03bae113bd850ef9c716034a56d82449368d41af2",
         "structure": "352c8ccb45a3ece68dbb4fb66ae09796efcd874a9c56d6425f6fea0e110962f6"
       },
@@ -2208,12 +2209,13 @@
         "index preparation"
       ],
       "hashes": {
-        "body": "30e931ee27f08827b27321f7504bcda9792b66377401da56b8a68d2fed6b8e4e",
+        "body": "068d3447783702cee2efeb7084c0bf08fdcdf9e007b331c945367831fc68b090",
         "semantic": "a1ec177829cdd462b6ea996d78d53c2c9071291f1dd14202e05d1236559a8973",
-        "structure": "e1eb506106a1041206ffce15ac6bc1a3e0a8a282847dd681fb169b55ae5494aa"
+        "structure": "4b31d696a2490cf8cbc5395ff64ce3f7c94db22c5794b3f548cdd02cd3f4d7dc"
       },
       "id": "llmnav.agent.mcp",
       "imports": [
+        "./abort.js",
         "./agent-protocol.js",
         "./errors.js",
         "./search.js",
@@ -2265,13 +2267,14 @@
         "generation policy"
       ],
       "hashes": {
-        "body": "d8d98560d002e7267b06c668beb6ac0c0013ad418e104e0631c1be532f442ff7",
+        "body": "63a14f5da7e4c725e43d1c1af5bf347215dc4ef2a1416889621d06516d14caff",
         "semantic": "449c48259d3d05d0001519d2cd2aa70817ee74b7d2950cd27ac48fe3b16b6f32",
-        "structure": "9a7ea6b992df5304bff172f1df12dbd90d346b255f2000f91631256ef4803e85"
+        "structure": "fa81ec46b55265904a54a42d801a66c141e319bb7daa2470f07f22af943cfa89"
       },
       "id": "llmnav.support.runtime",
       "imports": [
         "node:crypto",
+        "node:timers",
         "node:timers/promises"
       ],
       "location": {
@@ -2308,7 +2311,7 @@
         "retry policy"
       ],
       "hashes": {
-        "body": "5627ff2699116c927230a03c8178b1b468fd21acd9914aa400944dc1c2e836df",
+        "body": "18a3ec2f0725efdadd85763ebea5f71445c7f688f0dfecc7d694e7d9c85c708c",
         "semantic": "2d23c9211ed6b0c7499267c411a0fa80ce8b6dc786552b69fe9ea6ef136b10fc",
         "structure": "a9ce90ad2b2f047692bca136bcdc7d946c98a5497aa1b129dd4cdfb7dbc5d327"
       },
@@ -2395,14 +2398,14 @@
         "retry scheduling"
       ],
       "hashes": {
-        "body": "fc1a4ea9ca377058330137828d99b3b2e3dca6e2e8bb82a5ebfa9fecbfc81be0",
+        "body": "15d52864c94da0151ccc8e801cd58671b4a93664e79c2c80971e1c5a3564d514",
         "semantic": "d6cbc36ba531885f4ba3fda92bab5467687d9266cb42bc2114e6c278b7200850",
-        "structure": "86d6e24c9769cf79335bf68b7ad7c7c3e705155b6d2517eb7adc63e0a4ce4fe3"
+        "structure": "c8ec99a69c18ae22d0dc73d3921b769fc4fafe0264ee238395d6d9cad6a4b7a7"
       },
       "id": "llmnav.support.errors",
       "imports": [
         "./abort.js",
-        "node:timers"
+        "./runtime.js"
       ],
       "invariant": [
         "Every wrapped failure keeps the original error as its cause."
@@ -2496,6 +2499,6 @@
   "generatedBy": "llmnav@0.13.0",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "b540e41d68d06f0db8b4c103c3edb7a131295392a5ec57036fcb283be65ec0d9",
+  "sourceHash": "5c674113cd67f860f64c922c84c1b3bb3eb8ebc9423e563ac832980edeee54ca",
   "specVersion": "1"
 }

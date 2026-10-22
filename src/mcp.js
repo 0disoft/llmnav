@@ -17,6 +17,7 @@ import { executeAgentOperation, getAgentToolDefinitions } from "./agent-protocol
 import { createIoError, DEFAULT_REQUEST_TIMEOUT_MS, toErrorPayload, withDeadline } from "./errors.js";
 import { createProjectSession } from "./search.js";
 import { PACKAGE_VERSION } from "./spec.js";
+import { throwIfAborted } from "./abort.js";
 
 export const MCP_PROTOCOL_VERSION = "2024-11-05";
 export const MCP_SERVER_NAME = "llmnav";
@@ -48,7 +49,7 @@ export function createMcpServer(options = {}) {
     : null;
   const tools = getAgentToolDefinitions().map(toMcpTool);
   const requestTimeoutMs = options.requestTimeoutMs ?? DEFAULT_REQUEST_TIMEOUT_MS;
-  if (!Number.isInteger(requestTimeoutMs) || requestTimeoutMs < 0) {
+  if (!Number.isInteger(requestTimeoutMs) || requestTimeoutMs < 0 || requestTimeoutMs > 2_147_483_647) {
     throw new TypeError(`createMcpServer requires a non-negative integer requestTimeoutMs: ${requestTimeoutMs}.`);
   }
 
@@ -60,15 +61,15 @@ export function createMcpServer(options = {}) {
       } catch {
         return failure(null, PARSE_ERROR, "Parse error: the line is not valid JSON.");
       }
-      return handleMessage(message, root, session, sessionCache, tools, requestTimeoutMs);
+      return handleMessage(message, root, session, sessionCache, tools, requestTimeoutMs, options);
     },
     async handleMessage(message) {
-      return handleMessage(message, root, session, sessionCache, tools, requestTimeoutMs);
+      return handleMessage(message, root, session, sessionCache, tools, requestTimeoutMs, options);
     },
   };
 }
 
-async function handleMessage(message, root, session, sessionCache, tools, requestTimeoutMs) {
+async function handleMessage(message, root, session, sessionCache, tools, requestTimeoutMs, options) {
   if (message === null || typeof message !== "object" || Array.isArray(message)) {
     return failure(null, INVALID_REQUEST, "Invalid Request: expected a JSON-RPC object.");
   }
@@ -93,27 +94,30 @@ async function handleMessage(message, root, session, sessionCache, tools, reques
   if (message.method === "tools/list") return success(id, { tools });
 
   if (message.method === "tools/call") {
-    return callTool(id, message.params, root, session, sessionCache, requestTimeoutMs);
+    return callTool(id, message.params, root, session, sessionCache, requestTimeoutMs, options);
   }
 
   return failure(id, METHOD_NOT_FOUND, `Method not found: ${message.method}`);
 }
 
-async function callTool(id, params, root, session, sessionCache, requestTimeoutMs) {
+async function callTool(id, params, root, session, sessionCache, requestTimeoutMs, options) {
   if (!hasToolName(params)) {
     return failure(id, INVALID_PARAMS, "Invalid params: tools/call requires a tool name.");
   }
   const input = params.arguments === undefined ? {} : params.arguments;
   let envelope;
+  const controller = new AbortController();
   try {
-    const activeSession = await resolveSession(session, sessionCache);
-    const operation = executeAgentOperation(
-      root,
-      params.name,
-      input,
-      activeSession === null ? {} : { session: activeSession },
-    );
-    envelope = await withDeadline(`${params.name} request`, requestTimeoutMs, operation);
+    throwIfAborted(options.signal);
+    const operation = Promise.resolve().then(async () => {
+      const activeSession = await resolveSession(session, sessionCache);
+      throwIfAborted(controller.signal);
+      return executeAgentOperation(root, params.name, input, {
+        ...(activeSession === null ? {} : { session: activeSession }),
+        signal: controller.signal,
+      });
+    });
+    envelope = await withDeadline(`${params.name} request`, requestTimeoutMs, operation, options);
   } catch (error) {
     return failure(
       id,
@@ -121,6 +125,8 @@ async function callTool(id, params, root, session, sessionCache, requestTimeoutM
       error instanceof Error ? error.message : String(error),
       toErrorPayload(error),
     );
+  } finally {
+    controller.abort();
   }
   return success(id, {
     content: [{ type: "text", text: JSON.stringify(envelope) }],

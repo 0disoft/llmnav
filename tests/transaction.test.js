@@ -56,6 +56,28 @@ test("generation locks preserve an undefined callback rejection and still releas
   await assert.rejects(() => access(path.join(root, ".llmnav", "generation.lock")), { code: "ENOENT" });
 });
 
+test("lock waits clamp polling to the elapsed-time deadline", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-lock-deadline-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  const held = await acquireGenerationLock(root);
+  try {
+    for (const timeoutMs of [0, 1, 49, 50, 51]) {
+      let elapsed = 0;
+      const waits = [];
+      await assert.rejects(() => acquireGenerationLock(root, {
+        timeoutMs,
+        pollMs: 50,
+        scheduler: { now: () => elapsed },
+        runtime: createRuntime({ sleep: async (ms) => { waits.push(ms); elapsed += ms; } }),
+      }), /Timed out/u);
+      assert.equal(waits.reduce((total, ms) => total + ms, 0), timeoutMs);
+      assert.ok(waits.every((ms) => ms <= 50));
+    }
+  } finally {
+    await releaseGenerationLock(held);
+  }
+});
+
 test("a failed owner write leaves no authoritative lock or candidate", async (context) => {
   const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-lock-write-failure-"));
   context.after(() => rm(root, { recursive: true, force: true }));

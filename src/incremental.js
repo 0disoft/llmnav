@@ -10,7 +10,7 @@ stability=architecture
 
 import { readFile, stat } from "node:fs/promises";
 import path from "node:path";
-import { throwIfAborted } from "./abort.js";
+import { abortable, throwIfAborted } from "./abort.js";
 import { DEFAULT_IO_CONCURRENCY, mapWithConcurrency } from "./concurrency.js";
 import { loadConfig } from "./config.js";
 import { createDeclarationScanContext, findAttachedDeclaration, extractImports } from "./declaration.js";
@@ -34,12 +34,14 @@ export const SOURCE_INDEXER_VERSION = 8;
 const STAT_HINTS_SCHEMA_VERSION = 2;
 
 export async function scanProjectIncremental(root, options = {}) {
-  const { config, configPath } = await loadConfig(root);
+  throwIfAborted(options.signal);
+  const { config, configPath } = await loadConfig(root, options);
   const ioConcurrency = options.ioConcurrency ?? DEFAULT_IO_CONCURRENCY;
   const files = await collectSourceFiles(root, config, options.paths ?? [], { signal: options.signal, ioConcurrency });
   const cacheDirectory = path.join(root, config.generation.cacheDirectory);
   const { previousFiles, hintFiles, hintsPath } = await loadIncrementalState(root, config, cacheDirectory, options);
   const scan = createIncrementalScan(root, files, previousFiles, hintFiles);
+  scan.options = options;
 
   const scanned = await mapWithConcurrency(files, ioConcurrency, (absolutePath) => scanSourceFile(scan, absolutePath), {
     signal: options.signal,
@@ -159,7 +161,7 @@ async function reuseOrParseFile(scan, { absolutePath, relativePath, fingerprint,
     fingerprintsEqual(previousHint, fingerprint)) {
     return { stateFile: previousFile, counters: { reusedFiles: 1, reusedFilesByStat: 1, cardsReused: previousFile.blocks.length } };
   }
-  const source = await readFile(absolutePath, "utf8");
+  const source = await abortable((scan.options.io?.readFile ?? readFile)(absolutePath, "utf8"), scan.options.signal);
   const bytesRead = Buffer.byteLength(source);
   const contentHash = sha256(source);
   if (previousFile?.contentHash === contentHash) {

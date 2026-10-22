@@ -22,8 +22,8 @@ import {
   stableStringify,
   toPosix,
 } from "./util.js";
-import { throwIfAborted } from "./abort.js";
-import { DEFAULT_RUNTIME } from "./runtime.js";
+import { abortable, assertAbortSignal, throwIfAborted } from "./abort.js";
+import { DEFAULT_RUNTIME, DEFAULT_SCHEDULER } from "./runtime.js";
 
 export const TRANSACTION_SCHEMA_VERSION = 1;
 export const TRANSACTION_ABORT_EXIT_CODE = 86;
@@ -104,6 +104,8 @@ async function releaseGenerationLockSettled(lock) {
 }
 
 export async function acquireGenerationLock(root, options = {}) {
+  assertAbortSignal(options.signal);
+  throwIfAborted(options.signal);
   const controlDirectory = path.join(root, ".llmnav");
   const lockPath = path.join(controlDirectory, "generation.lock");
   await assertNoSymlinkTraversal(root, controlDirectory, ".llmnav");
@@ -115,8 +117,10 @@ export async function acquireGenerationLock(root, options = {}) {
   const ownerId = options.ownerId ?? createTransactionId(runtime);
   const timeoutMs = requireLockInteger("timeoutMs", options.timeoutMs, DEFAULT_LOCK_TIMEOUT_MS, 0);
   const pollMs = requireLockInteger("pollMs", options.pollMs, DEFAULT_LOCK_POLL_MS, 1);
-  const delays = options.delays ?? [0, ...Array.from({ length: Math.ceil(timeoutMs / pollMs) }, () => pollMs)];
-  requireLockDelays(delays);
+  const delays = options.delays;
+  if (delays !== undefined) requireLockDelays(delays);
+  const scheduler = { ...DEFAULT_SCHEDULER, ...options.scheduler };
+  const started = scheduler.now();
   const openImpl = options.openImpl ?? open;
   const linkImpl = options.linkImpl ?? link;
   const sleepImpl = options.sleepImpl ?? runtime.sleep;
@@ -134,12 +138,23 @@ export async function acquireGenerationLock(root, options = {}) {
       await handle.close();
     }
 
-    for (const delay of delays) {
+    for (let attempt = 0; delays === undefined || attempt < delays.length; attempt += 1) {
+      const remaining = timeoutMs - (scheduler.now() - started);
+      if (attempt > 0 && remaining <= 0) break;
+      const delay = Math.min(delays?.[attempt] ?? (attempt === 0 ? 0 : pollMs), Math.max(0, remaining));
       // Waiting for a held lock must stay cancellable; a poll interval bounds
       // how late the cancellation is observed.
       throwIfAborted(signal);
-      if (delay > 0) await sleepImpl(delay);
+      if (delay > 0) {
+        const waiting = new AbortController();
+        try {
+          await abortable(sleepImpl(delay, { signal: waiting.signal }), signal);
+        } finally {
+          waiting.abort();
+        }
+      }
       throwIfAborted(signal);
+      if (attempt > 0 && scheduler.now() - started > timeoutMs) break;
       try {
         await linkImpl(candidatePath, lockPath);
         return { root, lockPath, ownerId, runtime };
@@ -672,7 +687,7 @@ function requireRetryDelays(delays) {
 
 function requireLockInteger(name, value, fallback, minimum) {
   const resolved = value ?? fallback;
-  if (!Number.isInteger(resolved) || resolved < minimum) {
+  if (!Number.isSafeInteger(resolved) || resolved < minimum) {
     throw new TypeError(`Generation lock option ${name} must be an integer >= ${minimum}: ${resolved}.`);
   }
   return resolved;

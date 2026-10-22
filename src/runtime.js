@@ -9,12 +9,19 @@ stability=architecture
 
 import { randomBytes } from "node:crypto";
 import { setTimeout } from "node:timers/promises";
+import { clearTimeout, setTimeout as scheduleTimeout } from "node:timers";
+
+export const DEFAULT_SCHEDULER = Object.freeze({
+  now: () => performance.now(),
+  setTimeout: (callback, milliseconds) => scheduleTimeout(callback, milliseconds),
+  clearTimeout: (timer) => clearTimeout(timer),
+});
 
 export const DEFAULT_RUNTIME = Object.freeze({
   now: () => Date.now(),
   pid: process.pid,
   randomHex: (bytes) => randomBytes(bytes).toString("hex"),
-  sleep: (milliseconds) => setTimeout(milliseconds),
+  sleep: (milliseconds, options = {}) => setTimeout(milliseconds, undefined, options),
   env: () => process.env,
   isProcessAlive: (pid) => isProcessAlive(pid),
 });
