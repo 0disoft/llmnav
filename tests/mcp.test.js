@@ -8,7 +8,9 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 import { createMcpServer, MCP_PROTOCOL_VERSION, MCP_SERVER_NAME } from "../src/mcp.js";
 import { getAgentToolDefinitions } from "../src/agent-protocol.js";
+import { generateProject } from "../src/generator.js";
 import { initializeProject } from "../src/initializer.js";
+import { queryProject } from "../src/search.js";
 import { PACKAGE_VERSION } from "../src/spec.js";
 
 const CLI = fileURLToPath(new URL("../bin/llmnav.js", import.meta.url));
@@ -95,6 +97,49 @@ test("executes agent operations over one stdio session in request order", async 
   assert.equal(missing.error.code, "LNVAP404");
   assert.equal(missing.operation, "show");
 });
+
+test("reuses one index snapshot across calls and picks up regenerated indexes", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-mcp-reuse-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await createProject(root);
+  const server = createMcpServer({ root });
+
+  const first = await callTool(server, 1, "llmnav_query", { task: "replayed refresh token", top: 3 });
+  assert.equal(first.data[0].id, "auth.session.rotate");
+  const repeated = await callTool(server, 2, "llmnav_query", { task: "replayed refresh token", top: 3 });
+  assert.deepEqual(repeated, first);
+
+  await writeFile(
+    path.join(root, "src", "billing.ts"),
+    `/* llmnav/1 symbol
+id=auth.billing.issue
+role=Issue one billing invoice for an account.
+search=billing invoice|invoice issuance
+stability=implementation
+*/
+export function issueInvoice(): void {}
+`,
+  );
+  await generateProject(root);
+
+  const refreshed = await callTool(server, 3, "llmnav_query", { task: "billing invoice", top: 3 });
+  assert.ok(refreshed.data.some((card) => card.id === "auth.billing.issue"));
+  const direct = await queryProject(root, "billing invoice", { top: 3 });
+  assert.deepEqual(refreshed.data.map((card) => card.id), direct.map((card) => card.id));
+});
+
+async function callTool(server, id, name, args) {
+  const response = await server.handleMessage({
+    jsonrpc: "2.0",
+    id,
+    method: "tools/call",
+    params: { name, arguments: args },
+  });
+  assert.equal(response.id, id);
+  const envelope = JSON.parse(response.result.content[0].text);
+  assert.equal(envelope.ok, true, envelope.error?.message);
+  return envelope;
+}
 
 async function runSession(root, lines) {
   const child = spawn(process.execPath, [CLI, "mcp", "--root", root], {

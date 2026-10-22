@@ -102,7 +102,7 @@ The host selects only the modules relevant to the current task, preserves the de
 llmnav mcp --root .
 ```
 
-The server answers `initialize`, `ping`, `tools/list`, and `tools/call`, mapping every call onto `executeAgentOperation(root, name, input)`. Responses are newline-delimited JSON-RPC 2.0, notifications such as `notifications/initialized` are accepted silently, and tool results carry the schemaVersion 1 envelope as text content with `isError` set whenever `ok` is false, so expected validation and not-found failures stay inspectable by the model instead of becoming transport errors.
+The server answers `initialize`, `ping`, `tools/list`, and `tools/call`, mapping every call onto `executeAgentOperation(root, name, input)`. Responses are newline-delimited JSON-RPC 2.0, notifications such as `notifications/initialized` are accepted silently, and tool results carry the schemaVersion 1 envelope as text content with `isError` set whenever `ok` is false, so expected validation and not-found failures stay inspectable by the model instead of becoming transport errors. The server keeps one prepared index snapshot for the lifetime of the session and reloads it only when the generated cache artifacts change.
 
 A host that speaks a different transport can still pass `getAgentToolDefinitions()` to its provider SDK and route calls through `executeAgentOperation(root, name, input)`.
 

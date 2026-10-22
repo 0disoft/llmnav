@@ -46,7 +46,7 @@
     "llmnav.structure.modules",
     "llmnav.syntax.parse"
   ],
-  "cardSetHash": "9490feb9879d8c05317dd4a2a3fd211823c9303690cc4a75538d96792801a758",
+  "cardSetHash": "249be3245146fb5499476423b5f24ac8995baea8b53adb6b3595fbdd10b64582",
   "documentCount": 45,
   "documents": [
     [
@@ -147,17 +147,19 @@
       ]
     ],
     [
-      "299f9c0a2bc01e31a6747e9f14231a01c6baca762bfecbdd1ac1a13541108563",
+      "60063cc5f90383e2cff41ae8886e73a91faa7e7a5c2d8429353052be4a7249ed",
       [
         "serve the stable agent tool schema and operation protocol over the model context protocol stdio transport.",
         "mcp server",
         "model context protocol",
         "json rpc stdio",
         "agent tool transport",
+        "session snapshot reuse",
         "json-rpc framing",
         "capability negotiation",
         "tool listing",
-        "tool call mapping"
+        "tool call mapping",
+        "index snapshot reuse"
       ]
     ],
     [
@@ -5612,6 +5614,15 @@
     ],
     [
       [
+        9,
+        [
+          3,
+          1,
+          4,
+          1
+        ]
+      ],
+      [
         15,
         [
           4,
@@ -8503,6 +8514,13 @@
         7,
         [
           1,
+          1
+        ]
+      ],
+      [
+        9,
+        [
+          4,
           1
         ]
       ]
@@ -9980,6 +9998,15 @@
     ],
     [
       [
+        9,
+        [
+          2,
+          1,
+          3,
+          1
+        ]
+      ],
+      [
         28,
         [
           1,
@@ -10952,6 +10979,13 @@
         ]
       ],
       [
+        9,
+        [
+          2,
+          1
+        ]
+      ],
+      [
         12,
         [
           2,
@@ -11067,6 +11101,17 @@
         2,
         [
           1,
+          1
+        ]
+      ]
+    ],
+    [
+      [
+        9,
+        [
+          2,
+          1,
+          3,
           1
         ]
       ]
@@ -13702,6 +13747,7 @@
     "signing",
     "silently",
     "single",
+    "snapshot",
     "source",
     "sources",
     "spec",

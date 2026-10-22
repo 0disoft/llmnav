@@ -3555,7 +3555,8 @@
             "excludes": [
               "agent tool schemas",
               "operation execution",
-              "provider SDK transport"
+              "provider SDK transport",
+              "index preparation"
             ],
             "id": "llmnav.agent.mcp",
             "invariant": [],
@@ -3563,7 +3564,8 @@
               "JSON-RPC framing",
               "capability negotiation",
               "tool listing",
-              "tool call mapping"
+              "tool call mapping",
+              "index snapshot reuse"
             ],
             "rel": [
               "workflow>llmnav.agent.tool-schema",
@@ -3576,12 +3578,13 @@
               "mcp server",
               "model context protocol",
               "json rpc stdio",
-              "agent tool transport"
+              "agent tool transport",
+              "session snapshot reuse"
             ],
             "stability": "contract",
             "unknown": []
           },
-          "end": 469,
+          "end": 531,
           "endLine": 10,
           "entries": [
             {
@@ -3600,19 +3603,19 @@
               "key": "owns",
               "line": 4,
               "order": 2,
-              "value": "JSON-RPC framing|capability negotiation|tool listing|tool call mapping"
+              "value": "JSON-RPC framing|capability negotiation|tool listing|tool call mapping|index snapshot reuse"
             },
             {
               "key": "excludes",
               "line": 5,
               "order": 3,
-              "value": "agent tool schemas|operation execution|provider SDK transport"
+              "value": "agent tool schemas|operation execution|provider SDK transport|index preparation"
             },
             {
               "key": "search",
               "line": 6,
               "order": 4,
-              "value": "mcp server|model context protocol|json rpc stdio|agent tool transport"
+              "value": "mcp server|model context protocol|json rpc stdio|agent tool transport|session snapshot reuse"
             },
             {
               "key": "rel",
@@ -3637,7 +3640,7 @@
           "indent": "",
           "newline": "\n",
           "prefix": null,
-          "raw": "/* llmnav/1 module\nid=llmnav.agent.mcp\nrole=Serve the stable agent tool schema and operation protocol over the Model Context Protocol stdio transport.\nowns=JSON-RPC framing|capability negotiation|tool listing|tool call mapping\nexcludes=agent tool schemas|operation execution|provider SDK transport\nsearch=mcp server|model context protocol|json rpc stdio|agent tool transport\nrel=workflow>llmnav.agent.tool-schema\nrel=workflow>llmnav.agent.protocol\nstability=contract\n*/",
+          "raw": "/* llmnav/1 module\nid=llmnav.agent.mcp\nrole=Serve the stable agent tool schema and operation protocol over the Model Context Protocol stdio transport.\nowns=JSON-RPC framing|capability negotiation|tool listing|tool call mapping|index snapshot reuse\nexcludes=agent tool schemas|operation execution|provider SDK transport|index preparation\nsearch=mcp server|model context protocol|json rpc stdio|agent tool transport|session snapshot reuse\nrel=workflow>llmnav.agent.tool-schema\nrel=workflow>llmnav.agent.protocol\nstability=contract\n*/",
           "scope": "module",
           "specVersion": "1",
           "start": 0,
@@ -3646,18 +3649,21 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "226c3a65798c5be83714a540a642f78016d8747cd2f36dac1e6722c234c4a95e",
+      "contentHash": "0a51121e53ddb91b574f21bd95b972ce5c2b4f0b4746a4f7691ba61b8e1eb85d",
       "declarations": [
         null
       ],
       "imports": [
         "./agent-protocol.js",
+        "./search.js",
         "./spec.js",
+        "node:fs/promises",
+        "node:path",
         "node:readline"
       ],
       "path": "src/mcp.js",
-      "semanticBytes": 469,
-      "sourceBytes": 4435
+      "semanticBytes": 531,
+      "sourceBytes": 6083
     },
     {
       "blocks": [
@@ -5535,12 +5541,14 @@
     },
     {
       "blocks": [],
-      "contentHash": "455e0cd0329094f6a23646d2ccdc969592bdcbe15e41a374e04e501053c36ece",
+      "contentHash": "373ccfab29c6844d90f3d049b7678e99d57cf1587c5010e051447287500cf63c",
       "declarations": [],
       "imports": [
         "../src/agent-protocol.js",
+        "../src/generator.js",
         "../src/initializer.js",
         "../src/mcp.js",
+        "../src/search.js",
         "../src/spec.js",
         "node:assert/strict",
         "node:child_process",
@@ -5553,7 +5561,7 @@
       ],
       "path": "tests/mcp.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 5968
+      "sourceBytes": 7718
     },
     {
       "blocks": [],

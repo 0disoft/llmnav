@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.10.1] — 2026-10-22
+
+### Performance
+
+* Keep one prepared index snapshot inside the MCP server and reload it only when the generated cache artifacts change, so repeated `tools/call` requests skip the per-call cache read while a regenerated index is still picked up on the next call.
+
 ## [0.10.0] — 2026-10-22
 
 ### Added

@@ -34,6 +34,6 @@ rel workflow>llmnav.agent.protocol
 
 @llmnav.agent.mcp
 role Serve the stable agent tool schema and operation protocol over the Model Context Protocol stdio transport.
-owns JSON-RPC framing, capability negotiation, tool listing, tool call mapping
-excludes agent tool schemas, operation execution, provider SDK transport
+owns JSON-RPC framing, capability negotiation, tool listing, tool call mapping, index snapshot reuse
+excludes agent tool schemas, operation execution, provider SDK transport, index preparation
 rel workflow>llmnav.agent.tool-schema, workflow>llmnav.agent.protocol

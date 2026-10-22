@@ -1,16 +1,19 @@
 /* llmnav/1 module
 id=llmnav.agent.mcp
 role=Serve the stable agent tool schema and operation protocol over the Model Context Protocol stdio transport.
-owns=JSON-RPC framing|capability negotiation|tool listing|tool call mapping
-excludes=agent tool schemas|operation execution|provider SDK transport
-search=mcp server|model context protocol|json rpc stdio|agent tool transport
+owns=JSON-RPC framing|capability negotiation|tool listing|tool call mapping|index snapshot reuse
+excludes=agent tool schemas|operation execution|provider SDK transport|index preparation
+search=mcp server|model context protocol|json rpc stdio|agent tool transport|session snapshot reuse
 rel=workflow>llmnav.agent.tool-schema
 rel=workflow>llmnav.agent.protocol
 stability=contract
 */
 
+import { stat } from "node:fs/promises";
+import path from "node:path";
 import readline from "node:readline";
 import { executeAgentOperation, getAgentToolDefinitions } from "./agent-protocol.js";
+import { createProjectSession } from "./search.js";
 import { PACKAGE_VERSION } from "./spec.js";
 
 export const MCP_PROTOCOL_VERSION = "2024-11-05";
@@ -22,12 +25,16 @@ const METHOD_NOT_FOUND = -32601;
 const INVALID_PARAMS = -32602;
 const INTERNAL_ERROR = -32603;
 
+// Cache artifacts rewritten by generation; the stamp decides when a lazily owned session reloads.
+const SESSION_STAMP_FILES = ["manifest.json", "index.json", "search-index.json", "graph.json"];
+
 export function createMcpServer(options = {}) {
   const root = options.root;
   if (typeof root !== "string" || root.length === 0) {
     throw new TypeError("createMcpServer requires a project root path.");
   }
   const session = options.session ?? null;
+  const sessionCache = options.session === undefined ? createSessionCache(root) : null;
   const tools = getAgentToolDefinitions().map(toMcpTool);
 
   return {
@@ -38,15 +45,15 @@ export function createMcpServer(options = {}) {
       } catch {
         return failure(null, PARSE_ERROR, "Parse error: the line is not valid JSON.");
       }
-      return handleMessage(message, root, session, tools);
+      return handleMessage(message, root, session, sessionCache, tools);
     },
     async handleMessage(message) {
-      return handleMessage(message, root, session, tools);
+      return handleMessage(message, root, session, sessionCache, tools);
     },
   };
 }
 
-async function handleMessage(message, root, session, tools) {
+async function handleMessage(message, root, session, sessionCache, tools) {
   if (message === null || typeof message !== "object" || Array.isArray(message)) {
     return failure(null, INVALID_REQUEST, "Invalid Request: expected a JSON-RPC object.");
   }
@@ -76,13 +83,22 @@ async function handleMessage(message, root, session, tools) {
       return failure(id, INVALID_PARAMS, "Invalid params: tools/call requires a tool name.");
     }
     const input = params.arguments === undefined ? {} : params.arguments;
+    let activeSession = session;
+    if (sessionCache !== null) {
+      try {
+        activeSession = await sessionCache.current();
+      } catch {
+        // A missing or half-written cache keeps the previous behaviour: one snapshot load per call.
+        activeSession = null;
+      }
+    }
     let envelope;
     try {
       envelope = await executeAgentOperation(
         root,
         params.name,
         input,
-        session === null ? {} : { session },
+        activeSession === null ? {} : { session: activeSession },
       );
     } catch (error) {
       return failure(id, INTERNAL_ERROR, error instanceof Error ? error.message : String(error));
@@ -94,6 +110,37 @@ async function handleMessage(message, root, session, tools) {
   }
 
   return failure(id, METHOD_NOT_FOUND, `Method not found: ${message.method}`);
+}
+
+function createSessionCache(root) {
+  let session = null;
+  let stamp = null;
+  return {
+    async current() {
+      const nextStamp = await sessionStamp(root);
+      if (session === null) {
+        session = await createProjectSession(root);
+      } else if (nextStamp !== stamp) {
+        // Generation rewrites the artifacts; reuse the prepared snapshot only while they are untouched.
+        await session.refresh();
+      }
+      stamp = nextStamp;
+      return session;
+    },
+  };
+}
+
+async function sessionStamp(root) {
+  const parts = [];
+  for (const name of SESSION_STAMP_FILES) {
+    try {
+      const info = await stat(path.join(root, ".llmnav", "cache", name));
+      parts.push(`${name}:${info.mtimeMs}:${info.size}`);
+    } catch {
+      parts.push(`${name}:missing`);
+    }
+  }
+  return parts.join("|");
 }
 
 function toMcpTool(definition) {
