@@ -1,11 +1,11 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { EventEmitter, once } from "node:events";
+import { EventEmitter, getEventListeners, once } from "node:events";
 import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
-import { Readable } from "node:stream";
+import { PassThrough, Readable } from "node:stream";
 import { fileURLToPath } from "node:url";
 import { createMcpServer, createSessionCache, MCP_PROTOCOL_VERSION, MCP_SERVER_NAME, serveMcpStdio, sessionStamp } from "../src/mcp.js";
 import { getAgentToolDefinitions } from "../src/agent-protocol.js";
@@ -186,6 +186,58 @@ test("stdio output applies backpressure before reading the next request", async 
   output.emit("drain");
   assert.equal(await serving, 0);
   assert.equal(writes.length, 2);
+});
+
+test("output waits release every listener after drain, close, error, or cancellation", { timeout: 15000 }, async () => {
+  for (const ending of ["drain", "close", "error", "abort"]) {
+    const input = new PassThrough();
+    const output = new EventEmitter();
+    const controller = new AbortController();
+    const written = Promise.withResolvers();
+    output.write = () => { written.resolve(); return false; };
+    const serving = serveMcpStdio({ root: os.tmpdir(), input, output, signal: controller.signal });
+    input.write('{"jsonrpc":"2.0","id":1,"method":"ping"}\n');
+    await written.promise;
+    const reason = new Error(ending);
+    if (ending === "abort") controller.abort(reason);
+    else if (ending === "error") output.emit("error", reason);
+    else {
+      output.emit(ending);
+      input.end();
+    }
+    if (ending === "abort" || ending === "error") await assert.rejects(serving, error => error === reason);
+    else assert.equal(await serving, 0);
+    for (const event of ["drain", "close", "error"]) assert.equal(output.listenerCount(event), 0, `${ending}: ${event}`);
+    assert.equal(input.listenerCount("data"), 0);
+    assert.equal(getEventListeners(controller.signal, "abort").length, 0);
+    if (ending === "abort" || ending === "error") assert.equal(input.destroyed, false);
+    input.destroy();
+  }
+});
+
+test("stdio cancellation closes an idle reader and handles already-closed output", { timeout: 15000 }, async () => {
+  const controller = new AbortController();
+  const input = new PassThrough();
+  const output = new EventEmitter();
+  output.write = () => true;
+  const serving = serveMcpStdio({ root: os.tmpdir(), input, output, signal: controller.signal });
+  const reason = new Error("stop idle server");
+  controller.abort(reason);
+  await assert.rejects(serving, error => error === reason);
+  assert.equal(input.listenerCount("data"), 0);
+  assert.equal(getEventListeners(controller.signal, "abort").length, 0);
+  output.closed = true;
+  assert.equal(await serveMcpStdio({ root: os.tmpdir(), input, output }), 0);
+  for (const event of ["drain", "close", "error"]) assert.equal(output.listenerCount(event), 0);
+  input.destroy();
+});
+
+test("synchronous output closure is observed before the write returns", async () => {
+  const output = new EventEmitter();
+  output.write = () => { output.emit("close"); return false; };
+  const input = Readable.from(['{"jsonrpc":"2.0","id":1,"method":"ping"}\n']);
+  assert.equal(await serveMcpStdio({ root: os.tmpdir(), input, output }), 0);
+  for (const event of ["drain", "close", "error"]) assert.equal(output.listenerCount(event), 0);
 });
 
 test("a closed stdio output ends the session without an error", async () => {

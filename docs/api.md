@@ -391,7 +391,7 @@ await session.refresh(); // after generation or checkout changes
 
 `query`, `show`, and `context` reuse the loaded index, postings, graph, lexicon, and registry. `refresh()` replaces the complete snapshot; it never mutates one layer in place. The `check` operation still scans current source and does not use session data.
 
-The MCP server refreshes sessions when configuration, aliases, registry records, or generated search artifacts change. Its artifact stamp follows `generation.cacheDirectory`, including non-default cache locations.
+The MCP server refreshes sessions when configuration, aliases, registry records, or generated search artifacts change. Its artifact stamp follows `generation.cacheDirectory`, including non-default cache locations. The stdio transport observes cancellation while idle or waiting for output drainage, closes its reader, and removes its listeners on every exit. A closed output ends the transport successfully; other output errors and cancellation reject the serving operation. Caller-owned streams remain under caller control.
 
 Pass `{ withPromptBundle: true }` to `createProjectSession` when a host needs prompt partitions and navigation from the same generation. The returned session exposes `promptBundle` and a content-derived `generationHash`; `refresh()` replaces both alongside the search snapshot. The hash identifies generated cache content, not whether ungenerated source edits exist in the working tree.
 

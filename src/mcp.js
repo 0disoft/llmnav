@@ -9,7 +9,6 @@ rel=workflow>llmnav.agent.protocol
 stability=contract
 */
 
-import { once } from "node:events";
 import { stat } from "node:fs/promises";
 import path from "node:path";
 import readline from "node:readline";
@@ -17,7 +16,7 @@ import { executeAgentOperation, getAgentToolDefinitions } from "./agent-protocol
 import { createIoError, DEFAULT_REQUEST_TIMEOUT_MS, toErrorPayload, withDeadline } from "./errors.js";
 import { createProjectSession } from "./search.js";
 import { PACKAGE_VERSION } from "./spec.js";
-import { throwIfAborted } from "./abort.js";
+import { assertAbortSignal, createAbortError, throwIfAborted } from "./abort.js";
 import { loadConfig } from "./config.js";
 import { MAX_TIMER_DELAY_MS } from "./runtime.js";
 
@@ -235,39 +234,69 @@ function failure(id, code, message, data = undefined) {
 }
 
 export async function serveMcpStdio(options = {}) {
-  const server = createMcpServer(options);
+  assertAbortSignal(options.signal);
+  throwIfAborted(options.signal);
+  const controller = new AbortController();
+  const server = createMcpServer({ ...options, signal: controller.signal });
   const input = options.input ?? process.stdin;
   const output = options.output ?? process.stdout;
   const reader = readline.createInterface({ input, crlfDelay: Infinity });
+  const stop = (reason) => { controller.abort(reason); reader.close(); };
+  const onAbort = () => stop(createAbortError(options.signal));
+  const onClose = () => stop(closedOutputError());
+  const onError = (error) => stop(error);
   try {
+    options.signal?.addEventListener("abort", onAbort);
+    output.on("close", onClose);
+    output.on("error", onError);
+    if (options.signal?.aborted) onAbort();
+    if (output.destroyed || output.closed || output.writableEnded) onClose();
+    throwIfAborted(controller.signal);
     for await (const line of reader) {
+      throwIfAborted(controller.signal);
       if (line.trim().length === 0) continue;
       const response = await server.handleLine(line);
-      if (response === null) continue;
-      try {
-        await writeWithBackpressure(output, `${JSON.stringify(response)}\n`);
-      } catch (error) {
-        // A host that closed the pipe is not a server failure.
-        if (error && typeof error === "object" && error.code === "EPIPE") return 0;
-        throw error;
-      }
+      if (response !== null) await writeWithBackpressure(output, `${JSON.stringify(response)}\n`, controller.signal);
     }
+    throwIfAborted(controller.signal);
+  } catch (error) {
+    if (error && typeof error === "object" && error.code === "EPIPE") return 0;
+    throw error;
   } finally {
+    controller.abort();
     reader.close();
+    options.signal?.removeEventListener?.("abort", onAbort);
+    output.removeListener("close", onClose);
+    output.removeListener("error", onError);
   }
   return 0;
 }
 
-async function writeWithBackpressure(output, text) {
-  if (output.write(text) === true) return;
-  // Ignoring the write result would buffer every response in memory; waiting for
-  // drain or close keeps one request in flight.
-  const closed = Promise.withResolvers();
-  const onClose = () => closed.resolve(false);
-  output.once("close", onClose);
+function closedOutputError() {
+  return Object.assign(new Error("MCP output is closed."), { code: "EPIPE" });
+}
+
+async function writeWithBackpressure(output, text, signal) {
+  let onDrain, onClose, onError, onAbort;
   try {
-    await Promise.race([once(output, "drain"), closed.promise]);
+    await new Promise((resolve, reject) => {
+      onDrain = resolve;
+      onClose = () => reject(closedOutputError());
+      onError = reject;
+      onAbort = () => reject(createAbortError(signal));
+      // Subscribe before writing: custom streams can close or drain synchronously.
+      output.once("drain", onDrain);
+      output.once("close", onClose);
+      output.once("error", onError);
+      signal.addEventListener("abort", onAbort);
+      if (signal.aborted) return onAbort();
+      if (output.destroyed || output.closed || output.writableEnded) return onClose();
+      if (output.write(text) === true) resolve();
+    });
   } finally {
+    output.removeListener("drain", onDrain);
     output.removeListener("close", onClose);
+    output.removeListener("error", onError);
+    signal.removeEventListener("abort", onAbort);
   }
 }
