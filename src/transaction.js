@@ -8,10 +8,8 @@ rel=workflow>llmnav.index.generate
 stability=architecture
 */
 
-import { randomBytes } from "node:crypto";
 import { link, lstat, mkdir, open, readFile, readdir, rename, rm, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { setTimeout as sleep } from "node:timers/promises";
 import {
   assertNoSymlinkTraversal,
   atomicWrite,
@@ -24,9 +22,26 @@ import {
   stableStringify,
   toPosix,
 } from "./util.js";
+import { DEFAULT_RUNTIME } from "./runtime.js";
 
 export const TRANSACTION_SCHEMA_VERSION = 1;
 export const TRANSACTION_ABORT_EXIT_CODE = 86;
+
+/**
+ * Crash-equivalent interruption raised by the `abort:<phase>` failpoint.
+ *
+ * The library never terminates the host process: the error carries the exit
+ * code the CLI maps back to, so embedders can decide how to unwind.
+ */
+export class TransactionAbortError extends Error {
+  constructor(phase) {
+    super(`Generation was interrupted at ${phase}.`);
+    this.name = "TransactionAbortError";
+    this.code = "LLMNAV_ABORTED";
+    this.phase = phase;
+    this.exitCode = TRANSACTION_ABORT_EXIT_CODE;
+  }
+}
 const RETRYABLE_RENAME_CODES = new Set(["EACCES", "EBUSY", "EEXIST", "ENOTEMPTY", "EPERM"]);
 const DEFAULT_RETRY_DELAYS = Object.freeze([0, 8, 16, 32, 64, 128, 256, 512]);
 const JOURNAL_PHASES = new Set(["prepared", "old-moved", "new-installed", "committed"]);
@@ -50,14 +65,16 @@ export async function acquireGenerationLock(root, options = {}) {
   await assertNoSymlinkTraversal(root, controlDirectory, ".llmnav");
   await assertNoSymlinkTraversal(root, lockPath, ".llmnav/generation.lock");
   await mkdir(controlDirectory, { recursive: true });
-  const ownerId = options.ownerId ?? createTransactionId();
-  const timeoutMs = options.timeoutMs ?? DEFAULT_LOCK_TIMEOUT_MS;
-  const pollMs = options.pollMs ?? DEFAULT_LOCK_POLL_MS;
+  const runtime = options.runtime ?? DEFAULT_RUNTIME;
+  const ownerId = options.ownerId ?? createTransactionId(runtime);
+  const timeoutMs = requireLockInteger("timeoutMs", options.timeoutMs, DEFAULT_LOCK_TIMEOUT_MS, 0);
+  const pollMs = requireLockInteger("pollMs", options.pollMs, DEFAULT_LOCK_POLL_MS, 1);
   const delays = options.delays ?? [0, ...Array.from({ length: Math.ceil(timeoutMs / pollMs) }, () => pollMs)];
+  requireLockDelays(delays);
   const openImpl = options.openImpl ?? open;
   const linkImpl = options.linkImpl ?? link;
-  const sleepImpl = options.sleepImpl ?? sleep;
-  const candidatePath = `${lockPath}.tmp-${process.pid}-${randomBytes(8).toString("hex")}`;
+  const sleepImpl = options.sleepImpl ?? runtime.sleep;
+  const candidatePath = `${lockPath}.tmp-${runtime.pid}-${runtime.randomHex(8)}`;
   // Publish only a closed, complete owner record. A crash before publication
   // leaves an unused candidate, never an unreadable authoritative lock.
   let candidateCreated = false;
@@ -65,7 +82,7 @@ export async function acquireGenerationLock(root, options = {}) {
     const handle = await openImpl(candidatePath, "wx");
     candidateCreated = true;
     try {
-      await handle.writeFile(stableStringify({ schemaVersion: 1, ownerId, pid: process.pid }));
+      await handle.writeFile(stableStringify({ schemaVersion: 1, ownerId, pid: runtime.pid }));
       await handle.sync();
     } finally {
       await handle.close();
@@ -75,7 +92,7 @@ export async function acquireGenerationLock(root, options = {}) {
       if (delay > 0) await sleepImpl(delay);
       try {
         await linkImpl(candidatePath, lockPath);
-        return { root, lockPath, ownerId };
+        return { root, lockPath, ownerId, runtime };
       } catch (error) {
         if (error && typeof error === "object" && LOCK_LINK_CAPABILITY_ERRORS.has(error.code)) {
           throw new Error(
@@ -84,16 +101,24 @@ export async function acquireGenerationLock(root, options = {}) {
           );
         }
         if (!error || typeof error !== "object" || error.code !== "EEXIST") throw error;
-        const existing = await readJsonSafe(lockPath, null);
-        if (existing && Number.isInteger(existing.pid) && !isProcessAlive(existing.pid)) {
-          await removeOwnedLock(lockPath, existing.ownerId);
+        const observed = await readLockRecord(lockPath);
+        if (observed.missing) continue;
+        if (!isOwnedLockRecord(observed.record)) throw invalidOwnerRecordError();
+        if (!runtime.isProcessAlive(observed.record.pid)) {
+          await removeOwnedLock(lockPath, observed.record.ownerId, runtime);
+          // Reclaiming a dead owner must not cost another full poll interval.
+          try {
+            await linkImpl(candidatePath, lockPath);
+            return { root, lockPath, ownerId, runtime };
+          } catch (retryError) {
+            if (!retryError || typeof retryError !== "object" || retryError.code !== "EEXIST") throw retryError;
+          }
         }
       }
     }
-    const existing = await readJsonSafe(lockPath, null);
-    if (!existing || !Number.isInteger(existing.pid) || !existing.ownerId) {
-      throw new Error("The LLMNav generation lock has no valid owner record. After stopping all LLMNav processes, remove .llmnav/generation.lock and retry.");
-    }
+    const observed = await readLockRecord(lockPath);
+    if (observed.missing) throw new Error("Timed out waiting for the LLMNav generation lock.");
+    if (!isOwnedLockRecord(observed.record)) throw invalidOwnerRecordError();
     throw new Error("Timed out waiting for the LLMNav generation lock.");
   } finally {
     // Candidate cleanup must not turn successful acquisition into a leaked lock.
@@ -102,7 +127,7 @@ export async function acquireGenerationLock(root, options = {}) {
 }
 
 export async function releaseGenerationLock(lock) {
-  await removeOwnedLock(lock.lockPath, lock.ownerId);
+  await removeOwnedLock(lock.lockPath, lock.ownerId, lock.runtime ?? DEFAULT_RUNTIME);
 }
 
 export async function commitGeneratedCache(root, cacheDirectory, artifacts, options = {}) {
@@ -128,7 +153,8 @@ export async function commitGeneratedCache(root, cacheDirectory, artifacts, opti
     lockOwnerId: options.lockOwnerId,
   });
 
-  const transactionId = options.transactionId ?? createTransactionId();
+  const runtime = options.runtime ?? DEFAULT_RUNTIME;
+  const transactionId = options.transactionId ?? createTransactionId(runtime);
   const transactionPath = path.join(transactionsDirectory, transactionId);
   const stagePath = path.join(transactionPath, "stage");
   const backupPath = path.join(transactionPath, "backup");
@@ -210,7 +236,10 @@ export async function commitGeneratedCache(root, cacheDirectory, artifacts, opti
       replacedExisting: hadExistingCache,
     };
   } catch (error) {
-    const journal = await readJson(journalPath, null);
+    // An abort failpoint reproduces a crash: the journal must survive so the
+    // next read or generation can recover the interrupted swap.
+    if (error instanceof TransactionAbortError) throw error;
+    const journal = await readJournalForRollback(journalPath);
     const ownedJournal = journal?.ownerId === options.lockOwnerId ? journal : null;
     if (ownedJournal?.phase !== "committed") {
       try {
@@ -521,8 +550,8 @@ function validateControlArtifacts(journal, transactionDirectory) {
   }
 }
 
-async function removeOwnedLock(lockPath, ownerId) {
-  const quarantinePath = `${lockPath}.release-${ownerId}-${randomBytes(4).toString("hex")}`;
+async function removeOwnedLock(lockPath, ownerId, runtime = DEFAULT_RUNTIME) {
+  const quarantinePath = `${lockPath}.release-${ownerId}-${runtime.randomHex(4)}`;
   try {
     await rename(lockPath, quarantinePath);
   } catch (error) {
@@ -543,20 +572,56 @@ async function removeOwnedLock(lockPath, ownerId) {
   return false;
 }
 
-function isProcessAlive(pid) {
-  try {
-    process.kill(pid, 0);
-    return true;
-  } catch (error) {
-    return Boolean(error && typeof error === "object" && error.code === "EPERM");
+function requireLockInteger(name, value, fallback, minimum) {
+  const resolved = value ?? fallback;
+  if (!Number.isInteger(resolved) || resolved < minimum) {
+    throw new TypeError(`Generation lock option ${name} must be an integer >= ${minimum}: ${resolved}.`);
   }
+  return resolved;
+}
+
+function requireLockDelays(delays) {
+  if (!Array.isArray(delays) || delays.length === 0 || delays.some((delay) => !Number.isInteger(delay) || delay < 0)) {
+    throw new TypeError("Generation lock option delays must be a non-empty array of non-negative integers.");
+  }
+}
+
+async function readLockRecord(lockPath) {
+  let raw;
+  try {
+    raw = await readFile(lockPath, "utf8");
+  } catch (error) {
+    if (error && typeof error === "object" && error.code === "ENOENT") return { missing: true, record: null };
+    throw error;
+  }
+  try {
+    return { missing: false, record: JSON.parse(raw) };
+  } catch {
+    return { missing: false, record: null };
+  }
+}
+
+function isOwnedLockRecord(record) {
+  return Boolean(
+    record
+    && typeof record === "object"
+    && Number.isInteger(record.pid)
+    && record.pid > 0
+    && typeof record.ownerId === "string"
+    && record.ownerId.length > 0,
+  );
+}
+
+function invalidOwnerRecordError() {
+  return new Error("The LLMNav generation lock has no valid owner record. After stopping all LLMNav processes, remove .llmnav/generation.lock and retry.");
 }
 
 async function invokeFailpoint(name, options) {
   if (typeof options.onPhase === "function") await options.onPhase(name);
-  const failpoint = options.failpoint ?? process.env.LLMNAV_TEST_FAILPOINT;
+  const runtime = options.runtime ?? DEFAULT_RUNTIME;
+  const failpoint = options.failpoint ?? runtime.env().LLMNAV_TEST_FAILPOINT;
   if (failpoint === `throw:${name}`) throw new Error(`Injected generation failure at ${name}.`);
-  if (failpoint === `abort:${name}`) process.exit(TRANSACTION_ABORT_EXIT_CODE);
+  if (failpoint === `abort:${name}`) throw new TransactionAbortError(name);
 }
 
 function isRetryableRenameError(error) {
@@ -584,6 +649,15 @@ async function cleanupEmptyTransactionsDirectory(directory) {
   }
 }
 
-function createTransactionId() {
-  return `${process.pid}-${Date.now().toString(36)}-${randomBytes(6).toString("hex")}`;
+async function readJournalForRollback(journalPath) {
+  try {
+    return await readJson(journalPath, null);
+  } catch {
+    // A damaged journal must not mask the failure that stopped generation.
+    return null;
+  }
+}
+
+function createTransactionId(runtime = DEFAULT_RUNTIME) {
+  return `${runtime.pid}-${runtime.now().toString(36)}-${runtime.randomHex(6)}`;
 }

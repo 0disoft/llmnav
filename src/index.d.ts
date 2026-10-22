@@ -586,6 +586,41 @@ export interface TransactionResult {
   replacedExisting?: boolean;
 }
 
+export interface Runtime {
+  now(): number;
+  pid: number;
+  randomHex(bytes: number): string;
+  sleep(milliseconds: number): Promise<void>;
+  env(): Record<string, string | undefined>;
+  isProcessAlive(pid: number): boolean;
+}
+
+export interface GenerationLock {
+  root: string;
+  lockPath: string;
+  ownerId: string;
+  runtime: Runtime;
+}
+
+export interface GenerationLockOptions {
+  timeoutMs?: number;
+  pollMs?: number;
+  delays?: number[];
+  ownerId?: string;
+  runtime?: Runtime;
+}
+
+export const DEFAULT_RUNTIME: Runtime;
+
+export function createRuntime(overrides?: Partial<Runtime>): Runtime;
+
+export class TransactionAbortError extends Error {
+  name: "TransactionAbortError";
+  code: "LLMNAV_ABORTED";
+  phase: string;
+  exitCode: number;
+}
+
 export interface GenerationResult {
   ok: boolean;
   diagnostics: Diagnostic[];
@@ -662,7 +697,7 @@ export const AUDIT_PRIORITIES: readonly AuditPriority[];
 export const AUDIT_SCHEMA_VERSION: 1;
 export const FILE_EXPLANATION_SCHEMA_VERSION: 1;
 export const AGENT_OPERATION_SCHEMA_VERSION: 1;
-export const AGENT_TOOL_SCHEMA_VERSION: 1;
+export const AGENT_TOOL_SCHEMA_VERSION: 2;
 export const BOUNDARY_KINDS: readonly DetectedBoundary["kind"][];
 export const GRAPH_INPUT_SCHEMA_VERSION: 1;
 export const MIGRATION_REPORT_SCHEMA_VERSION: 1;
@@ -743,14 +778,14 @@ export function explainProjectFile(root: string, file: string): Promise<FileExpl
 export function findAttachedDeclaration(source: string, block: LlmnavBlock, filePath: string): Declaration | null;
 export function extractImports(source: string, filePath: string): string[];
 export function doctorProject(root: string): Promise<{ ok: boolean; checks: Array<{ name: string; ok: boolean; message: string }> }>;
-export function migrateProject(root: string, options?: { write?: boolean; failpoint?: string; renameOptions?: Record<string, unknown>; lockOptions?: Record<string, unknown>; onTransactionPhase?: (phase: string) => void | Promise<void> }): Promise<MigrationResult>;
+export function migrateProject(root: string, options?: { write?: boolean; failpoint?: string; renameOptions?: Record<string, unknown>; lockOptions?: GenerationLockOptions; runtime?: Runtime; onTransactionPhase?: (phase: string) => void | Promise<void> }): Promise<MigrationResult>;
 export function evaluateProject(root: string, options?: { top?: number; file?: string; minimumCases?: number }): Promise<EvaluationResult>;
 export function collectSourceFiles(root: string, config: LlmnavConfig, requestedPaths?: string[]): Promise<string[]>;
 export function findProjectRoot(start?: string): Promise<string>;
 export function formatProject(root: string, options?: { check?: boolean; paths?: string[] }): Promise<{ ok: boolean; changedFiles: string[]; errors: Array<{ file: string; line: number; message: string }> }>;
 export function buildArtifacts(project: ScannedProject, order: string[], options?: { previousSearchIndex?: LlmnavSearchIndex | null; previousGraphState?: RepositoryGraphState | null; fileState?: LlmnavFileState }): Map<string, string>;
 export function buildArtifactSet(project: ScannedProject, order: string[], options?: { previousSearchIndex?: LlmnavSearchIndex | null; previousGraphState?: RepositoryGraphState | null; fileState?: LlmnavFileState }): { artifacts: Map<string, string>; index: LlmnavIndex; searchIndex: LlmnavSearchIndex; searchStats: SearchIndexStats; fileState: LlmnavFileState; graph: RepositoryGraph; graphState: RepositoryGraphState; graphStats: IncrementalGraphStats; promptBundle: PromptPrefixBundle; moduleManifest: Array<{ id: string; file: string; cards: number }> };
-export function generateProject(root: string, options?: { check?: boolean; incremental?: boolean; useStatHints?: boolean; paths?: string[]; failpoint?: string; renameOptions?: Record<string, unknown>; lockOptions?: Record<string, unknown>; onTransactionPhase?: (phase: string) => void | Promise<void> }): Promise<GenerationResult>;
+export function generateProject(root: string, options?: { check?: boolean; incremental?: boolean; useStatHints?: boolean; paths?: string[]; failpoint?: string; renameOptions?: Record<string, unknown>; lockOptions?: GenerationLockOptions; runtime?: Runtime; onTransactionPhase?: (phase: string) => void | Promise<void> }): Promise<GenerationResult>;
 export function renderCompactCard(card: IndexedCard): string;
 export function renderSemanticCard(card: IndexedCard): string;
 export function scanProjectIncremental(root: string, options?: { paths?: string[]; useStatHints?: boolean; previousState?: LlmnavFileState }): Promise<{ project: ScannedProject; fileState: LlmnavFileState; stats: IncrementalFileStats; statHints: unknown; hintsPath: string }>;
@@ -788,9 +823,9 @@ export function tokenize(value: string): string[];
 export function normalizeSearchText(value: string): string;
 export function commitGeneratedCache(root: string, cacheDirectory: string, artifacts: Map<string, string>, options?: Record<string, unknown>): Promise<TransactionResult>;
 export function recoverGenerationTransaction(root: string, options?: { cacheDirectory?: string; renameOptions?: Record<string, unknown>; lockOptions?: Record<string, unknown> }): Promise<{ recovered: boolean; action: string }>;
-export function acquireGenerationLock(root: string, options?: Record<string, unknown>): Promise<{ root: string; lockPath: string; ownerId: string }>;
-export function releaseGenerationLock(lock: { root: string; lockPath: string; ownerId: string }): Promise<void>;
-export function withGenerationLock<T>(root: string, callback: (lock: { root: string; lockPath: string; ownerId: string }) => T | Promise<T>, options?: Record<string, unknown>): Promise<T>;
+export function acquireGenerationLock(root: string, options?: GenerationLockOptions): Promise<GenerationLock>;
+export function releaseGenerationLock(lock: GenerationLock): Promise<void>;
+export function withGenerationLock<T>(root: string, callback: (lock: GenerationLock) => T | Promise<T>, options?: GenerationLockOptions): Promise<T>;
 export function renameWithRetry(source: string, destination: string, options?: Record<string, unknown>): Promise<void>;
 export function removeWithRetry(target: string, options?: Record<string, unknown>): Promise<void>;
 export function countDiagnostics(diagnostics: Diagnostic[]): { error: number; warning: number; info: number };

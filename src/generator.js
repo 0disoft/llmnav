@@ -71,13 +71,16 @@ export async function generateProject(root, options = {}) {
 
 /** Internal bootstrap integration; preparation and generation share the same owner. */
 export async function generateProjectWithPreparation(root, prepare, options = {}) {
+  const lockOptions = options.runtime === undefined
+    ? options.lockOptions
+    : { ...options.lockOptions, runtime: options.runtime };
   return withGenerationLock(
     root,
     async (lock) => {
       await prepare?.();
-      return generateProjectLocked(root, { ...options, lockOwnerId: lock.ownerId });
+      return generateProjectLocked(root, { ...options, lockOwnerId: lock.ownerId, runtime: lock.runtime });
     },
-    options.lockOptions,
+    lockOptions,
   );
 }
 
@@ -219,6 +222,7 @@ async function generateProjectLocked(root, options) {
           renameOptions: options.renameOptions,
           lockOwnerId: options.lockOwnerId,
           controlArtifacts,
+          runtime: options.runtime,
         },
       );
     }

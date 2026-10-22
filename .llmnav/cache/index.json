@@ -510,7 +510,7 @@
         "agent search decisions"
       ],
       "hashes": {
-        "body": "2dff06e2055421cb4edb074d7a72f2588e8656ee39560f17908db1e2f8550d34",
+        "body": "b85c7d583f13ce33f4d851154d3d2d65d83402b2492a0fd4352a8b897a75518c",
         "semantic": "7052622c9732ab29e37c3ab87f848188e931f601684e811e7bb8adef31fbfe85",
         "structure": "9e2888cf59a38a89a022ac7c3564ca169dc9a16d8aa4902928f30fde5a01233a"
       },
@@ -930,17 +930,16 @@
         "source indexing"
       ],
       "hashes": {
-        "body": "4117324e0f3deec21db62975f3f1a7229e5bbe1ee32079adb512453fd7aaeca1",
+        "body": "e1a2067dc55879ce3ee07b5488b745469f89902e14c928eac221c4c67540ad06",
         "semantic": "ce2cf8943f71d053f8cba914886bae20316e5b6106857f52abc4d8a59afb1ef1",
-        "structure": "4757e9c563d3e3df79c0ab74a51d13e30ab74a72e266eb5ac3d2f1aaa54396d5"
+        "structure": "8571bbc68f73cf451e6fcad466eb22bf3f5b1ffe308bf3fb80618656bd85bc6c"
       },
       "id": "llmnav.index.transaction",
       "imports": [
+        "./runtime.js",
         "./util.js",
-        "node:crypto",
         "node:fs/promises",
-        "node:path",
-        "node:timers/promises"
+        "node:path"
       ],
       "location": {
         "declarationLine": null,
@@ -2074,7 +2073,7 @@
         "semantic ID reassignment"
       ],
       "hashes": {
-        "body": "65e755e8e1c5ddcba744df9bac7dc6d452b14e7ab723517450e3b22f2d0989ce",
+        "body": "49db9d52f67396d36828d55ce3af1bb208576b9b83db17127ad3f8dfc6c89aae",
         "semantic": "494a51c075eee00a0da948bbc268d3ca4af5485d1a6739fd415fec556ed2af82",
         "structure": "1f0740f8cce65a89e82be3ea0f8b91121413c9dab6ed23ade2c1bd717d37781d"
       },
@@ -2233,6 +2232,49 @@
         "session snapshot reuse"
       ],
       "stability": "contract"
+    },
+    {
+      "boundaries": [],
+      "excludes": [
+        "filesystem access",
+        "generation policy"
+      ],
+      "hashes": {
+        "body": "d8d98560d002e7267b06c668beb6ac0c0013ad418e104e0631c1be532f442ff7",
+        "semantic": "449c48259d3d05d0001519d2cd2aa70817ee74b7d2950cd27ac48fe3b16b6f32",
+        "structure": "9a7ea6b992df5304bff172f1df12dbd90d346b255f2000f91631256ef4803e85"
+      },
+      "id": "llmnav.support.runtime",
+      "imports": [
+        "node:crypto",
+        "node:timers/promises"
+      ],
+      "location": {
+        "declarationLine": null,
+        "endLine": 8,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/runtime.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "owns": [
+        "runtime injection",
+        "deterministic identity",
+        "process liveness"
+      ],
+      "role": "Supply injectable clock, process identity, randomness, sleep, environment, and liveness probes for deterministic tests.",
+      "scope": "module",
+      "search": [
+        "runtime seam",
+        "injectable clock",
+        "deterministic transaction ids"
+      ],
+      "stability": "architecture"
     }
   ],
   "contractFingerprints": {
@@ -2248,6 +2290,6 @@
   "generatedBy": "llmnav@0.10.1",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "d48987113d25995e7554915b6bdcd19b9898a87ccbbdf0aa41ccdcbcbbf321bf",
+  "sourceHash": "227239c81c6a32f9b7eecf1419bb248a4fae19101d0eb110c67412510971fdcc",
   "specVersion": "1"
 }

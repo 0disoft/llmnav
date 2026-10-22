@@ -32,6 +32,7 @@ export async function migrateProject(root, options = {}) {
     incremental: false,
     lockOptions: options.lockOptions,
     renameOptions: options.renameOptions,
+    runtime: options.runtime,
   });
   const required = plan.changedFiles.length > 0 || before.some((format) => format.status !== "current");
   const blocked = plan.counts.error > 0;
@@ -57,6 +58,7 @@ export async function migrateProject(root, options = {}) {
     lockOptions: options.lockOptions,
     renameOptions: options.renameOptions,
     onTransactionPhase: options.onTransactionPhase,
+    runtime: options.runtime,
   });
   const after = applied.ok ? await inspectGeneratedFormats(root, config) : before;
   return {

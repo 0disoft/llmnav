@@ -117,9 +117,11 @@ export {
   releaseGenerationLock,
   removeWithRetry,
   renameWithRetry,
+  TransactionAbortError,
   TRANSACTION_ABORT_EXIT_CODE,
   TRANSACTION_SCHEMA_VERSION,
   withGenerationLock,
 } from "./transaction.js";
+export { createRuntime, DEFAULT_RUNTIME } from "./runtime.js";
 export * from "./spec.js";
 export { countDiagnostics, diagnostic, validateProject } from "./validator.js";

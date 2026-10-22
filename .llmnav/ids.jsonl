@@ -43,3 +43,4 @@
 {"id":"llmnav.project.migrate","state":"active"}
 {"id":"llmnav.structure.modules","state":"active"}
 {"id":"llmnav.agent.mcp","state":"active"}
+{"id":"llmnav.support.runtime","state":"active"}

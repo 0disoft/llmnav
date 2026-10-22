@@ -2,6 +2,54 @@
   "files": [
     {
       "blocks": [],
+      "contentHash": "bf745e159c0cde01cb03335804588b5b6de8655df1f1b1d38324054aed4abada",
+      "declarations": [],
+      "imports": [
+        "node:fs/promises"
+      ],
+      "path": ".llmnav/tmp/append-tests.mjs",
+      "semanticBytes": 0,
+      "sourceBytes": 5192
+    },
+    {
+      "blocks": [],
+      "contentHash": "4f437d5d14890a6f22e1e95ecf3d5de921351aefd64db8adbdb9f8109f71504b",
+      "declarations": [],
+      "imports": [
+        "../../src/transaction.js",
+        "node:fs/promises",
+        "node:os",
+        "node:path"
+      ],
+      "path": ".llmnav/tmp/probe-lock.mjs",
+      "semanticBytes": 0,
+      "sourceBytes": 1147
+    },
+    {
+      "blocks": [],
+      "contentHash": "b15de517893d320cef375a4babbe43469a21e6ac5bde828f828d6419ca55fe02",
+      "declarations": [],
+      "imports": [
+        "../../src/search.js",
+        "../../src/util.js"
+      ],
+      "path": ".llmnav/tmp/probe-search.mjs",
+      "semanticBytes": 0,
+      "sourceBytes": 996
+    },
+    {
+      "blocks": [],
+      "contentHash": "5ac80fecce5aff0113532e05d1e3c74ca24e631c9eb43ead4a55833b036c36dd",
+      "declarations": [],
+      "imports": [
+        "../../src/util.js"
+      ],
+      "path": ".llmnav/tmp/probe-util.mjs",
+      "semanticBytes": 0,
+      "sourceBytes": 1101
+    },
+    {
+      "blocks": [],
       "contentHash": "3e66a523a48e2e1d61e97114735bd6cc9c0e28b55be36e351561f1ec76dace99",
       "declarations": [],
       "imports": [
@@ -2910,7 +2958,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "2dff06e2055421cb4edb074d7a72f2588e8656ee39560f17908db1e2f8550d34",
+      "contentHash": "b85c7d583f13ce33f4d851154d3d2d65d83402b2492a0fd4352a8b897a75518c",
       "declarations": [
         null
       ],
@@ -2939,7 +2987,7 @@
       ],
       "path": "src/generator.js",
       "semanticBytes": 476,
-      "sourceBytes": 20359
+      "sourceBytes": 20548
     },
     {
       "blocks": [
@@ -3268,18 +3316,18 @@
     },
     {
       "blocks": [],
-      "contentHash": "e2c8034107e3f04b7b2c47ef12bbc4fbc336b5678a263f98a60de36cb22a3130",
+      "contentHash": "181437736cf74ddf18a66f4270ceda83af72b3411f494d115bd6e6c01f210117",
       "declarations": [],
       "imports": [
         "./spec.js"
       ],
       "path": "src/index.d.ts",
       "semanticBytes": 0,
-      "sourceBytes": 30086
+      "sourceBytes": 30754
     },
     {
       "blocks": [],
-      "contentHash": "a9e3f78f8eba577a5cfe5bd518784c4a0e99c3afccd48edd3dd24c10dde0d3b7",
+      "contentHash": "a947b486ea98d0253d0d56a269d392b88f5b0794656d014dbecc464f924bb483",
       "declarations": [],
       "imports": [
         "./agent-protocol.js",
@@ -3306,6 +3354,7 @@
         "./project.js",
         "./prompt-bundle.js",
         "./registry.js",
+        "./runtime.js",
         "./sarif.js",
         "./search-shards.js",
         "./search.js",
@@ -3316,7 +3365,7 @@
       ],
       "path": "src/index.js",
       "semanticBytes": 0,
-      "sourceBytes": 3679
+      "sourceBytes": 3767
     },
     {
       "blocks": [
@@ -3776,7 +3825,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "65e755e8e1c5ddcba744df9bac7dc6d452b14e7ab723517450e3b22f2d0989ce",
+      "contentHash": "49db9d52f67396d36828d55ce3af1bb208576b9b83db17127ad3f8dfc6c89aae",
       "declarations": [
         null
       ],
@@ -3793,7 +3842,7 @@
       ],
       "path": "src/migration.js",
       "semanticBytes": 567,
-      "sourceBytes": 7831
+      "sourceBytes": 7891
     },
     {
       "blocks": [
@@ -4357,6 +4406,99 @@
       "path": "src/registry.js",
       "semanticBytes": 462,
       "sourceBytes": 5728
+    },
+    {
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
+              "filesystem access",
+              "generation policy"
+            ],
+            "id": "llmnav.support.runtime",
+            "invariant": [],
+            "owns": [
+              "runtime injection",
+              "deterministic identity",
+              "process liveness"
+            ],
+            "rel": [],
+            "risk": [],
+            "role": "Supply injectable clock, process identity, randomness, sleep, environment, and liveness probes for deterministic tests.",
+            "scope": "module",
+            "search": [
+              "runtime seam",
+              "injectable clock",
+              "deterministic transaction ids"
+            ],
+            "stability": "architecture",
+            "unknown": []
+          },
+          "end": 370,
+          "endLine": 8,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.support.runtime"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Supply injectable clock, process identity, randomness, sleep, environment, and liveness probes for deterministic tests."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "runtime injection|deterministic identity|process liveness"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "filesystem access|generation policy"
+            },
+            {
+              "key": "search",
+              "line": 6,
+              "order": 4,
+              "value": "runtime seam|injectable clock|deterministic transaction ids"
+            },
+            {
+              "key": "stability",
+              "line": 7,
+              "order": 5,
+              "value": "architecture"
+            }
+          ],
+          "filePath": "src/runtime.js",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.support.runtime\nrole=Supply injectable clock, process identity, randomness, sleep, environment, and liveness probes for deterministic tests.\nowns=runtime injection|deterministic identity|process liveness\nexcludes=filesystem access|generation policy\nsearch=runtime seam|injectable clock|deterministic transaction ids\nstability=architecture\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "d8d98560d002e7267b06c668beb6ac0c0013ad418e104e0631c1be532f442ff7",
+      "declarations": [
+        null
+      ],
+      "imports": [
+        "node:crypto",
+        "node:timers/promises"
+      ],
+      "path": "src/runtime.js",
+      "semanticBytes": 370,
+      "sourceBytes": 2318
     },
     {
       "blocks": [
@@ -5003,20 +5145,19 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "4117324e0f3deec21db62975f3f1a7229e5bbe1ee32079adb512453fd7aaeca1",
+      "contentHash": "e1a2067dc55879ce3ee07b5488b745469f89902e14c928eac221c4c67540ad06",
       "declarations": [
         null
       ],
       "imports": [
+        "./runtime.js",
         "./util.js",
-        "node:crypto",
         "node:fs/promises",
-        "node:path",
-        "node:timers/promises"
+        "node:path"
       ],
       "path": "src/transaction.js",
       "semanticBytes": 393,
-      "sourceBytes": 27152
+      "sourceBytes": 29976
     },
     {
       "blocks": [],
@@ -5766,11 +5907,12 @@
     },
     {
       "blocks": [],
-      "contentHash": "87a10cf40668b69fafa6f66a87d0059ea8237b634ec7e644063607e0023ee343",
+      "contentHash": "701e11ec388e9b40b6a750c4fd7fa7e49743aa684e4ef6ceb93964c76e589c3a",
       "declarations": [],
       "imports": [
         "../src/generator.js",
         "../src/initializer.js",
+        "../src/runtime.js",
         "../src/search.js",
         "../src/transaction.js",
         "node:assert/strict",
@@ -5784,7 +5926,7 @@
       ],
       "path": "tests/transaction.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 19050
+      "sourceBytes": 23905
     },
     {
       "blocks": [],

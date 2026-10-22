@@ -8,12 +8,14 @@ import { fileURLToPath } from "node:url";
 import test from "node:test";
 import { generateProject } from "../src/generator.js";
 import { initializeProject } from "../src/initializer.js";
+import { createRuntime } from "../src/runtime.js";
 import { createProjectSession, queryProject } from "../src/search.js";
 import {
   commitGeneratedCache,
   recoverGenerationTransaction,
   removeWithRetry,
   renameWithRetry,
+  TransactionAbortError,
   TRANSACTION_ABORT_EXIT_CODE,
   acquireGenerationLock,
   releaseGenerationLock,
@@ -459,4 +461,93 @@ test("cache, registry, and stable order roll back as one generation state", asyn
   assert.equal(await readFile(indexPath, "utf8"), before.index);
   assert.equal(await readFile(registryPath, "utf8"), before.registry);
   assert.equal(await readFile(orderPath, "utf8"), before.order);
+});
+
+test("lock options reject values that cannot produce a valid wait schedule", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-lock-options-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await assert.rejects(() => acquireGenerationLock(root, { pollMs: 0 }), /pollMs must be an integer >= 1: 0/u);
+  await assert.rejects(() => acquireGenerationLock(root, { pollMs: 1.5 }), /pollMs must be an integer >= 1: 1.5/u);
+  await assert.rejects(() => acquireGenerationLock(root, { timeoutMs: -1 }), /timeoutMs must be an integer >= 0: -1/u);
+  await assert.rejects(() => acquireGenerationLock(root, { delays: [] }), /delays must be a non-empty array/u);
+  await assert.rejects(() => acquireGenerationLock(root, { delays: [0, -5] }), /delays must be a non-empty array/u);
+  await releaseGenerationLock(await acquireGenerationLock(root));
+});
+
+test("an unreadable lock owner record fails immediately instead of timing out", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-lock-corrupt-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await mkdir(path.join(root, ".llmnav"), { recursive: true });
+  const lockPath = path.join(root, ".llmnav", "generation.lock");
+  await writeFile(lockPath, "{ not json");
+  const started = Date.now();
+  await assert.rejects(
+    () => acquireGenerationLock(root, { timeoutMs: 30_000, pollMs: 50 }),
+    /has no valid owner record/u,
+  );
+  assert.ok(Date.now() - started < 1000, "a damaged lock must not burn the full lock timeout");
+  assert.equal(await readFile(lockPath, "utf8"), "{ not json");
+
+  await writeFile(lockPath, JSON.stringify({ schemaVersion: 1, ownerId: "foreign", pid: 0 }));
+  await assert.rejects(() => acquireGenerationLock(root, { timeoutMs: 30_000 }), /has no valid owner record/u);
+  assert.equal(JSON.parse(await readFile(lockPath, "utf8")).pid, 0);
+});
+
+test("an injected runtime owns lock identity, liveness, and recovery decisions", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-lock-runtime-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  const runtime = createRuntime({ pid: 4242, now: () => 1000, randomHex: () => "abcdef" });
+  const lock = await acquireGenerationLock(root, { runtime });
+  assert.equal(lock.ownerId, "4242-rs-abcdef");
+  assert.equal(lock.runtime, runtime);
+  assert.deepEqual(
+    JSON.parse(await readFile(lock.lockPath, "utf8")),
+    { schemaVersion: 1, ownerId: "4242-rs-abcdef", pid: 4242 },
+  );
+
+  const foreignPath = path.join(root, ".llmnav", "generation.lock");
+  await releaseGenerationLock(lock);
+  await writeFile(foreignPath, JSON.stringify({ schemaVersion: 1, ownerId: "stale-owner", pid: 4243 }));
+
+  await assert.rejects(
+    () => acquireGenerationLock(root, { runtime: createRuntime({ isProcessAlive: () => true }), delays: [0] }),
+    /Timed out waiting for the LLMNav generation lock/u,
+  );
+  const recovered = await acquireGenerationLock(root, {
+    runtime: createRuntime({ isProcessAlive: () => false }),
+    delays: [0],
+  });
+  assert.equal(JSON.parse(await readFile(foreignPath, "utf8")).pid, process.pid);
+  await releaseGenerationLock(recovered);
+});
+
+test("an abort failpoint throws a recoverable abort error instead of exiting", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-transaction-abort-error-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await createProject(root);
+  const indexPath = path.join(root, ".llmnav", "cache", "index.json");
+  const before = await readFile(indexPath, "utf8");
+  const sourcePath = path.join(root, "src", "reserve.ts");
+  const source = await readFile(sourcePath, "utf8");
+  await writeFile(sourcePath, source.replace("generation job", "in-process generation job"));
+
+  await assert.rejects(
+    () => generateProject(root, { failpoint: "abort:after-cache-moved" }),
+    (error) => {
+      assert.ok(error instanceof TransactionAbortError);
+      assert.equal(error.code, "LLMNAV_ABORTED");
+      assert.equal(error.exitCode, TRANSACTION_ABORT_EXIT_CODE);
+      assert.equal(error.phase, "after-cache-moved");
+      return true;
+    },
+  );
+  const journalPath = path.join(root, ".llmnav", "generation-transaction.json");
+  assert.equal(JSON.parse(await readFile(journalPath, "utf8")).phase, "old-moved");
+
+  const recovery = await recoverGenerationTransaction(root, { cacheDirectory: ".llmnav/cache" });
+  assert.equal(recovery.recovered, true);
+  assert.equal(await readFile(indexPath, "utf8"), before);
+  await assert.rejects(() => readFile(journalPath, "utf8"), /ENOENT/u);
+  const [result] = await queryProject(root, "reserve credits");
+  assert.equal(result.id, "billing.credit.reserve");
 });

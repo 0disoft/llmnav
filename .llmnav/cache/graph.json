@@ -1640,6 +1640,20 @@
     },
     {
       "confidence": 0.85,
+      "from": "llmnav/llmnav.index.transaction",
+      "id": "c242c806de23d6a432265d5fd4c03a4f23487fa0bb3a562876ccbb2a88e3177b",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/transaction.js",
+        "source": "src/transaction.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.support.runtime"
+    },
+    {
+      "confidence": 0.85,
       "from": "llmnav/llmnav.project.initialize",
       "id": "a93df9518f8a4f4667bf6ced240ad5e60dc31427d223f3a3453ae10333ceeb3d",
       "kind": "imports",
@@ -3385,6 +3399,28 @@
     {
       "definitions": [],
       "external": false,
+      "key": "llmnav/llmnav.support.runtime",
+      "location": {
+        "declarationLine": null,
+        "endLine": 8,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/runtime.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Supply injectable clock, process identity, randomness, sleep, environment, and liveness probes for deterministic tests.",
+      "semanticId": "llmnav.support.runtime",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
       "key": "llmnav/llmnav.syntax.parse",
       "location": {
         "declarationLine": null,
@@ -3407,11 +3443,11 @@
   ],
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "1c149b37959071b2753d9f9af5f6a3c6282ffedcfc9377d5968c0b2d246aad24",
+  "sourceHash": "2b21170c68288f06d3cff2df6b1cbacbcedaccb1facaacad0a20f7304909e0bd",
   "stats": {
-    "edgeCount": 168,
+    "edgeCount": 169,
     "importedIndexCount": 0,
-    "nodeCount": 45,
+    "nodeCount": 46,
     "unresolvedNodeCount": 0
   }
 }
