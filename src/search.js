@@ -60,43 +60,14 @@ async function loadSearchDataLocked(root, lock, options = {}) {
     await assertNoSymlinkTraversal(root, managedPath, toPosix(path.relative(root, managedPath)));
   }
   const indexText = await readText(indexPath, null, options);
-  if (indexText === null) throw new Error("No generated index found. Run `llmnav generate` first.");
-  let index;
-  try {
-    index = JSON.parse(indexText);
-  } catch (error) {
-    throw new Error("Malformed primary index.json. Run `llmnav generate` to rebuild it.", { cause: error });
-  }
-  if (!isUsablePrimaryIndex(index, config.repositoryId)) {
-    throw new Error("Incompatible primary index.json. Run `llmnav generate` to rebuild it.");
-  }
+  const index = parsePrimaryIndex(indexText, config.repositoryId);
   const lexicon = await readJsonSafe(lexiconPath, { version: 1, aliases: {} }, options);
   const cacheRelative = toPosix(config.generation.cacheDirectory).replace(/\/+$/u, "");
   const manifestText = await readText(manifestPath, null, options);
-  let manifest = null;
-  if (manifestText !== null) {
-    try {
-      manifest = JSON.parse(manifestText);
-    } catch (error) {
-      throw new Error("Malformed generated manifest.json. Run `llmnav generate` to rebuild it.", { cause: error });
-    }
-    if (manifest?.repositoryId !== config.repositoryId ||
-      manifest.files?.[`${cacheRelative}/index.json`] !== sha256(indexText)) {
-      throw new Error("Primary index.json hash does not match manifest.json. Run `llmnav generate` to rebuild it.");
-    }
-  }
+  const manifest = parseSearchManifest(manifestText, config.repositoryId, cacheRelative, indexText);
   const graphRelative = `${cacheRelative}/graph.json`;
   const graphText = await readText(graphPath, null, options);
-  let graph = null;
-  if (graphText !== null) {
-    try {
-      graph = JSON.parse(graphText);
-    } catch {
-      // The graph is optional enrichment: a missing or malformed artifact
-      // degrades to index-only search instead of failing the query.
-      graph = null;
-    }
-  }
+  let graph = parseOptionalArtifact(graphText);
   const graphMatches = Boolean(
     graphText !== null &&
       manifest?.files?.[graphRelative] === sha256(graphText) &&
@@ -105,14 +76,7 @@ async function loadSearchDataLocked(root, lock, options = {}) {
   if (!graphMatches) graph = null;
   const searchRelative = `${cacheRelative}/search-index.json`;
   const searchText = await readText(searchPath, null, options);
-  let searchIndex = null;
-  if (searchText !== null) {
-    try {
-      searchIndex = JSON.parse(searchText);
-    } catch {
-      searchIndex = null;
-    }
-  }
+  let searchIndex = parseOptionalArtifact(searchText);
   const manifestMatches = Boolean(
     searchText !== null &&
       manifest?.searchCardSetHash &&
@@ -124,6 +88,45 @@ async function loadSearchDataLocked(root, lock, options = {}) {
     searchIndex = buildInvertedIndex(index).searchIndex;
   }
   return { index, lexicon, searchIndex, graph };
+}
+
+function parsePrimaryIndex(indexText, repositoryId) {
+  if (indexText === null) throw new Error("No generated index found. Run `llmnav generate` first.");
+  let index;
+  try {
+    index = JSON.parse(indexText);
+  } catch (error) {
+    throw new Error("Malformed primary index.json. Run `llmnav generate` to rebuild it.", { cause: error });
+  }
+  if (!isUsablePrimaryIndex(index, repositoryId)) {
+    throw new Error("Incompatible primary index.json. Run `llmnav generate` to rebuild it.");
+  }
+  return index;
+}
+
+function parseSearchManifest(manifestText, repositoryId, cacheRelative, indexText) {
+  if (manifestText === null) return null;
+  let manifest;
+  try {
+    manifest = JSON.parse(manifestText);
+  } catch (error) {
+    throw new Error("Malformed generated manifest.json. Run `llmnav generate` to rebuild it.", { cause: error });
+  }
+  if (manifest?.repositoryId !== repositoryId ||
+    manifest.files?.[`${cacheRelative}/index.json`] !== sha256(indexText)) {
+    throw new Error("Primary index.json hash does not match manifest.json. Run `llmnav generate` to rebuild it.");
+  }
+  return manifest;
+}
+
+// Optional accelerators can be rebuilt; the primary index and manifest remain strict.
+function parseOptionalArtifact(text) {
+  if (text === null) return null;
+  try {
+    return JSON.parse(text);
+  } catch {
+    return null;
+  }
 }
 
 function isUsablePrimaryIndex(index, repositoryId) {

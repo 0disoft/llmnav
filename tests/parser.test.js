@@ -33,6 +33,24 @@ test("reports an unterminated line-comment card", () => {
   assert.equal(block.syntaxErrors.length, 1);
 });
 
+test("line-card scanning preserves EOF offsets across comment styles and newlines", () => {
+  for (const [prefix, extension] of [["//", "ts"], ["#", "py"], ["--", "sql"]]) {
+    for (const newline of ["\n", "\r\n"]) {
+      for (const terminated of [false, true]) {
+        const lines = ["llmnav/1 file", "id=fixture.eof", "role=Own EOF parsing.", "stability=architecture"];
+        if (terminated) lines.push("/llmnav");
+        const source = lines.map((line) => `${prefix} ${line}`).join(newline);
+        const [block] = parseLlmnavBlocks(source, `fixture.${extension}`);
+        assert.equal(block.card.id, "fixture.eof");
+        assert.equal(block.start, 0);
+        assert.equal(block.end, source.length);
+        assert.equal(block.raw, source);
+        assert.equal(block.syntaxErrors.length, terminated ? 0 : 1);
+      }
+    }
+  }
+});
+
 test("ignores LLMNav-looking comments inside source string literals", () => {
   const source = [
     "const fixture = `/* llmnav/1 symbol",

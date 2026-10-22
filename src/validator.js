@@ -421,40 +421,25 @@ function validateRelationsForRecord(record, config, diagnostics) {
 function validateRelations(project, idRecords, diagnostics) {
   for (const record of project.records) {
     for (const relation of record.card.rel) {
-      const separator = relation.indexOf(">");
-      if (separator <= 0) continue;
-      const type = relation.slice(0, separator);
-      const target = relation.slice(separator + 1);
-      if (type === "cross-repo") continue;
-      if (!idRecords.has(target) && !project.registry.byId.has(target)) {
-        diagnostics.push(
-          diagnostic(
-            "error",
-            "LNV008",
-            `Relation target ${target} does not exist in source or .llmnav/ids.jsonl.`,
-            record.relativePath,
-            lineFor(record.block, "rel"),
-          ),
-        );
-        continue;
-      }
-      const registryTarget = project.registry.byId.get(target);
-      if (registryTarget && registryTarget.state !== "active") {
-        const resolved = resolveRegistryId(project.registry, target);
-        if (resolved.state !== "active") {
-          diagnostics.push(
-            diagnostic(
-              "error",
-              "LNV008",
-              `Relation target ${target} resolves to ${resolved.state}, not an active semantic ID.`,
-              record.relativePath,
-              lineFor(record.block, "rel"),
-            ),
-          );
-        }
-      }
+      const message = relationTargetError(project, idRecords, relation);
+      if (message === null) continue;
+      diagnostics.push(diagnostic("error", "LNV008", message, record.relativePath, lineFor(record.block, "rel")));
     }
   }
+}
+
+function relationTargetError(project, idRecords, relation) {
+  const separator = relation.indexOf(">");
+  if (separator <= 0 || relation.slice(0, separator) === "cross-repo") return null;
+  const target = relation.slice(separator + 1);
+  if (!idRecords.has(target) && !project.registry.byId.has(target)) {
+    return `Relation target ${target} does not exist in source or .llmnav/ids.jsonl.`;
+  }
+  const registryTarget = project.registry.byId.get(target);
+  if (!registryTarget || registryTarget.state === "active") return null;
+  const resolved = resolveRegistryId(project.registry, target);
+  if (resolved.state === "active") return null;
+  return `Relation target ${target} resolves to ${resolved.state}, not an active semantic ID.`;
 }
 
 function validateRegistry(project, idRecords, diagnostics) {

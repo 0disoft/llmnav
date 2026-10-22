@@ -125,34 +125,15 @@ function parseLineBlocks(source, filePath, literalMask, lineStarts, blockBudget)
     const indent = header[1];
     const prefix = header[2];
     const scope = header[3].toLowerCase();
-    const escapedPrefix = prefix === "//" ? "\\/\\/" : prefix === "#" ? "#" : "--";
-    const endPattern = new RegExp(`^\\s*${escapedPrefix}\\s*\\/llmnav\\s*(?:\\r?\\n)?$`, "iu");
-    const contentPattern = new RegExp(`^\\s*${escapedPrefix}(?:\\s?)(.*?)(?:\\r?\\n)?$`, "u");
-    const bodyLines = [];
-    let cursor = index + 1;
-    let end = start + line.length;
-    let foundEnd = false;
-
-    for (; cursor < lines.length; cursor += 1) {
-      const candidate = lines[cursor];
-      if (endPattern.test(candidate)) {
-        end += candidate.length;
-        foundEnd = true;
-        break;
-      }
-      const content = candidate.match(contentPattern);
-      if (!content) break;
-      bodyLines.push(content[1]);
-      end += candidate.length;
-    }
-
+    const parsed = readLineBlockBody(lines, index, prefix);
+    const end = start + parsed.length;
     const raw = source.slice(start, end);
     reserveBlock(blockBudget, filePath);
     const block = createBlock({
       lineStarts,
       filePath,
       raw,
-      body: bodyLines.join("\n"),
+      body: parsed.body,
       scope,
       style: "line",
       start,
@@ -160,7 +141,7 @@ function parseLineBlocks(source, filePath, literalMask, lineStarts, blockBudget)
       indent,
       prefix,
     });
-    if (!foundEnd) {
+    if (!parsed.foundEnd) {
       block.syntaxErrors.push({
         line: block.startLine,
         message: `Line-comment LLMNav blocks must end with ${prefix} /llmnav.`,
@@ -168,11 +149,39 @@ function parseLineBlocks(source, filePath, literalMask, lineStarts, blockBudget)
     }
     blocks.push(block);
 
-    if (foundEnd) index = cursor;
-    else if (cursor >= lines.length) index = lines.length - 1;
-    else index = Math.max(index, cursor - 1);
+    index = parsed.nextIndex;
   }
   return blocks;
+}
+
+function readLineBlockBody(lines, index, prefix) {
+  const escapedPrefix = prefix === "//" ? "\\/\\/" : prefix === "#" ? "#" : "--";
+  const endPattern = new RegExp(`^\\s*${escapedPrefix}\\s*\\/llmnav\\s*(?:\\r?\\n)?$`, "iu");
+  const contentPattern = new RegExp(`^\\s*${escapedPrefix}(?:\\s?)(.*?)(?:\\r?\\n)?$`, "u");
+  const bodyLines = [];
+  let cursor = index + 1;
+  let length = lines[index].length;
+  let foundEnd = false;
+
+  for (; cursor < lines.length; cursor += 1) {
+    const candidate = lines[cursor];
+    if (endPattern.test(candidate)) {
+      length += candidate.length;
+      foundEnd = true;
+      break;
+    }
+    const content = candidate.match(contentPattern);
+    if (!content) break;
+    bodyLines.push(content[1]);
+    length += candidate.length;
+  }
+
+  return {
+    body: bodyLines.join("\n"),
+    length,
+    foundEnd,
+    nextIndex: foundEnd ? cursor : Math.min(lines.length - 1, Math.max(index, cursor - 1)),
+  };
 }
 
 function parseUnterminatedBlockComments(source, filePath, parsedBlocks, literalMask, lineStarts, blockBudget) {

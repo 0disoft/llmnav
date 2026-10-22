@@ -47,6 +47,14 @@ test("query rejects a mismatched primary index and preserves manifestless compat
   changed.cards = {};
   await writeFile(indexPath, `${JSON.stringify(changed)}\n`);
   await assert.rejects(() => queryProject(root, "replayed refresh token"), /Incompatible primary index/u);
+  await writeFile(manifestPath, "{malformed\n");
+  await assert.rejects(() => queryProject(root, "replayed refresh token"), /Incompatible primary index/u);
+  await writeFile(indexPath, "{malformed\n");
+  await assert.rejects(() => queryProject(root, "replayed refresh token"), (error) => {
+    assert.equal(error.message, "Malformed primary index.json. Run `llmnav generate` to rebuild it.");
+    assert.ok(error.cause instanceof SyntaxError);
+    return true;
+  });
   await writeFile(indexPath, original);
   await writeFile(manifestPath, "{malformed\n");
   await assert.rejects(() => queryProject(root, "replayed refresh token"), /Malformed generated manifest/u);
