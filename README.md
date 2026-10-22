@@ -41,10 +41,21 @@ Public compatibility rules are documented in [Compatibility and deprecation poli
 
 ## Install
 
+With npm:
+
 ```sh
 npm install --save-dev llmnav
 npx llmnav init --agents all --package-scripts
 ```
+
+With Bun:
+
+```sh
+bun add --dev llmnav
+bunx llmnav init --agents all --package-scripts
+```
+
+For a global installation, use `npm install --global llmnav` or `bun add --global llmnav`, then run `llmnav` directly. Node.js 22 or newer is required for either installation method: the CLI uses a Node shebang, which `bunx` respects. Subsequent `npx llmnav ...` examples can also be run with `bunx llmnav ...`.
 
 Initialization is explicit. LLMNav never edits a consumer repository from an npm `postinstall` script. Use `--agents none` when only the machine-readable control directory is desired.
 
