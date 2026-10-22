@@ -115,7 +115,7 @@ async function generateProjectLocked(root, options) {
   const project = scan.project;
 
   throwIfAborted(options.signal);
-  const graphInputs = await loadGraphInputs(root, project.config);
+  const graphInputs = await loadGraphInputs(root, project.config, options);
   project.graphInputs = graphInputs.indexes;
   const diagnostics = [...validateProject(project), ...graphInputs.diagnostics].sort(compareGeneratedDiagnostics);
   const counts = countDiagnostics(diagnostics);

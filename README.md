@@ -318,3 +318,7 @@ Run `llmnav discover "rotate session" --top 5` before initialization or index ge
 Discovery uses syntax heuristics and the repository language; it does not infer business meaning or translate a query automatically. Read the candidate source, then run `llmnav explain <path>` or `llmnav audit` to decide whether one durable boundary deserves a card. Add a narrow coverage rule and one retrieval query after review. Existing `query`, `show`, and `context` keep their semantic-card contracts.
 
 For editing sessions, run `llmnav mcp --auto-generate` to prepare current indexes before semantic navigation calls.
+
+### Compiler-resolved TypeScript and Go navigation
+
+Run `llmnav analyze --language typescript` or `llmnav analyze --language go` with installed compiler tooling. Publish the graph with `--output`, configure `graph.indexFiles`, and generate. `discover --precise` finds compiler-resolved declarations and passes their IDs to `show` and `context`. Source hashes reject stale compiler inputs. See [compiler analysis](docs/precise-analysis.md) for setup, supported compiler APIs and partial-analysis limits.

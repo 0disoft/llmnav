@@ -1296,6 +1296,574 @@
           "card": {
             "effect": [],
             "excludes": [
+              "project execution",
+              "module installation",
+              "runtime dispatch inference"
+            ],
+            "id": "llmnav.structure.go-worker",
+            "invariant": [
+              "Compiler-selected production sources determine references and line directives never replace physical locations."
+            ],
+            "owns": [
+              "Go declaration identity",
+              "cross-package reference resolution",
+              "receiver identity",
+              "physical source positions"
+            ],
+            "rel": [
+              "workflow>llmnav.structure.analyze"
+            ],
+            "risk": [],
+            "role": "Resolve Go object identity and lexical references from standard-library type information.",
+            "scope": "module",
+            "search": [
+              "Go precise references",
+              "go types definitions",
+              "Go receiver methods"
+            ],
+            "stability": "architecture",
+            "unknown": []
+          },
+          "end": 581,
+          "endLine": 10,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.structure.go-worker"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Resolve Go object identity and lexical references from standard-library type information."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "Go declaration identity|cross-package reference resolution|receiver identity|physical source positions"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "project execution|module installation|runtime dispatch inference"
+            },
+            {
+              "key": "search",
+              "line": 6,
+              "order": 4,
+              "value": "Go precise references|go types definitions|Go receiver methods"
+            },
+            {
+              "key": "invariant",
+              "line": 7,
+              "order": 5,
+              "value": "Compiler-selected production sources determine references and line directives never replace physical locations."
+            },
+            {
+              "key": "rel",
+              "line": 8,
+              "order": 6,
+              "value": "workflow>llmnav.structure.analyze"
+            },
+            {
+              "key": "stability",
+              "line": 9,
+              "order": 7,
+              "value": "architecture"
+            }
+          ],
+          "filePath": "src/adapters/go-analyzer.go",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.structure.go-worker\nrole=Resolve Go object identity and lexical references from standard-library type information.\nowns=Go declaration identity|cross-package reference resolution|receiver identity|physical source positions\nexcludes=project execution|module installation|runtime dispatch inference\nsearch=Go precise references|go types definitions|Go receiver methods\ninvariant=Compiler-selected production sources determine references and line directives never replace physical locations.\nrel=workflow>llmnav.structure.analyze\nstability=architecture\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "8f626def8dd5bb560fdc8b2696df02ddbdc40a04cf16dc8b89c8b62597922ad3",
+      "declarations": [
+        null
+      ],
+      "imports": [
+        "binding",
+        "constant",
+        "encoding/json",
+        "fmt",
+        "function",
+        "go/ast",
+        "go/importer",
+        "go/parser",
+        "go/token",
+        "go/types",
+        "io",
+        "os",
+        "path/filepath",
+        "runtime",
+        "sort",
+        "strings",
+        "type",
+        "variable"
+      ],
+      "path": "src/adapters/go-analyzer.go",
+      "semanticBytes": 581,
+      "sourceBytes": 9852
+    },
+    {
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
+              "dependency installation",
+              "project execution"
+            ],
+            "id": "llmnav.structure.go",
+            "invariant": [
+              "Analysis executes only explicitly selected compiler tooling and never project application code."
+            ],
+            "owns": [
+              "offline Go metadata",
+              "Go analyzer build",
+              "temporary executable lifetime"
+            ],
+            "rel": [
+              "workflow>llmnav.structure.analyze"
+            ],
+            "risk": [],
+            "role": "Prepare offline Go dependency exports and invoke the standard-library type analysis producer.",
+            "scope": "module",
+            "search": [
+              "Go compiler adapter",
+              "offline Go type analysis"
+            ],
+            "stability": "architecture",
+            "unknown": []
+          },
+          "end": 486,
+          "endLine": 10,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.structure.go"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Prepare offline Go dependency exports and invoke the standard-library type analysis producer."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "offline Go metadata|Go analyzer build|temporary executable lifetime"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "dependency installation|project execution"
+            },
+            {
+              "key": "search",
+              "line": 6,
+              "order": 4,
+              "value": "Go compiler adapter|offline Go type analysis"
+            },
+            {
+              "key": "invariant",
+              "line": 7,
+              "order": 5,
+              "value": "Analysis executes only explicitly selected compiler tooling and never project application code."
+            },
+            {
+              "key": "rel",
+              "line": 8,
+              "order": 6,
+              "value": "workflow>llmnav.structure.analyze"
+            },
+            {
+              "key": "stability",
+              "line": 9,
+              "order": 7,
+              "value": "architecture"
+            }
+          ],
+          "filePath": "src/adapters/go.js",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.structure.go\nrole=Prepare offline Go dependency exports and invoke the standard-library type analysis producer.\nowns=offline Go metadata|Go analyzer build|temporary executable lifetime\nexcludes=dependency installation|project execution\nsearch=Go compiler adapter|offline Go type analysis\ninvariant=Analysis executes only explicitly selected compiler tooling and never project application code.\nrel=workflow>llmnav.structure.analyze\nstability=architecture\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "4f23593d80f64e9d142cddc792d72343f8a67f1150725f2fe318d335a18eae93",
+      "declarations": [
+        null
+      ],
+      "imports": [
+        "./process.js",
+        "node:fs/promises",
+        "node:os",
+        "node:path",
+        "node:url"
+      ],
+      "path": "src/adapters/go.js",
+      "semanticBytes": 486,
+      "sourceBytes": 1932
+    },
+    {
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
+              "dependency installation",
+              "project execution"
+            ],
+            "id": "llmnav.structure.compiler-process",
+            "invariant": [
+              "Analysis executes only explicitly selected compiler tooling and never project application code."
+            ],
+            "owns": [
+              "compiler process deadlines",
+              "bounded output",
+              "process cancellation",
+              "exit cleanup"
+            ],
+            "rel": [
+              "workflow>llmnav.structure.analyze"
+            ],
+            "risk": [],
+            "role": "Bound opt-in compiler subprocesses and retain cancellation, failure, and exit ownership.",
+            "scope": "module",
+            "search": [
+              "compiler subprocess",
+              "analysis deadline",
+              "compiler process failure"
+            ],
+            "stability": "architecture",
+            "unknown": []
+          },
+          "end": 521,
+          "endLine": 10,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.structure.compiler-process"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Bound opt-in compiler subprocesses and retain cancellation, failure, and exit ownership."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "compiler process deadlines|bounded output|process cancellation|exit cleanup"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "dependency installation|project execution"
+            },
+            {
+              "key": "search",
+              "line": 6,
+              "order": 4,
+              "value": "compiler subprocess|analysis deadline|compiler process failure"
+            },
+            {
+              "key": "invariant",
+              "line": 7,
+              "order": 5,
+              "value": "Analysis executes only explicitly selected compiler tooling and never project application code."
+            },
+            {
+              "key": "rel",
+              "line": 8,
+              "order": 6,
+              "value": "workflow>llmnav.structure.analyze"
+            },
+            {
+              "key": "stability",
+              "line": 9,
+              "order": 7,
+              "value": "architecture"
+            }
+          ],
+          "filePath": "src/adapters/process.js",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.structure.compiler-process\nrole=Bound opt-in compiler subprocesses and retain cancellation, failure, and exit ownership.\nowns=compiler process deadlines|bounded output|process cancellation|exit cleanup\nexcludes=dependency installation|project execution\nsearch=compiler subprocess|analysis deadline|compiler process failure\ninvariant=Analysis executes only explicitly selected compiler tooling and never project application code.\nrel=workflow>llmnav.structure.analyze\nstability=architecture\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "87c1000ce3439327eb4f4880cf07358aca4fb6f36654df865d7b0b1b8664d61a",
+      "declarations": [
+        null
+      ],
+      "imports": [
+        "../abort.js",
+        "node:child_process"
+      ],
+      "path": "src/adapters/process.js",
+      "semanticBytes": 521,
+      "sourceBytes": 2633
+    },
+    {
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
+              "dependency installation",
+              "project execution"
+            ],
+            "id": "llmnav.structure.typescript-worker",
+            "invariant": [
+              "Analysis executes only explicitly selected compiler tooling and never project application code."
+            ],
+            "owns": [
+              "compiler symbol identity",
+              "alias resolution",
+              "lexical owners",
+              "TypeScript diagnostics"
+            ],
+            "rel": [
+              "workflow>llmnav.structure.analyze"
+            ],
+            "risk": [],
+            "role": "Resolve TypeScript declarations and symbol uses through the compiler type checker without emitting code.",
+            "scope": "module",
+            "search": [
+              "TypeScript precise references",
+              "renamed imports",
+              "type checker symbols"
+            ],
+            "stability": "architecture",
+            "unknown": []
+          },
+          "end": 546,
+          "endLine": 10,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.structure.typescript-worker"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Resolve TypeScript declarations and symbol uses through the compiler type checker without emitting code."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "compiler symbol identity|alias resolution|lexical owners|TypeScript diagnostics"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "dependency installation|project execution"
+            },
+            {
+              "key": "search",
+              "line": 6,
+              "order": 4,
+              "value": "TypeScript precise references|renamed imports|type checker symbols"
+            },
+            {
+              "key": "invariant",
+              "line": 7,
+              "order": 5,
+              "value": "Analysis executes only explicitly selected compiler tooling and never project application code."
+            },
+            {
+              "key": "rel",
+              "line": 8,
+              "order": 6,
+              "value": "workflow>llmnav.structure.analyze"
+            },
+            {
+              "key": "stability",
+              "line": 9,
+              "order": 7,
+              "value": "architecture"
+            }
+          ],
+          "filePath": "src/adapters/typescript-worker.js",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.structure.typescript-worker\nrole=Resolve TypeScript declarations and symbol uses through the compiler type checker without emitting code.\nowns=compiler symbol identity|alias resolution|lexical owners|TypeScript diagnostics\nexcludes=dependency installation|project execution\nsearch=TypeScript precise references|renamed imports|type checker symbols\ninvariant=Analysis executes only explicitly selected compiler tooling and never project application code.\nrel=workflow>llmnav.structure.analyze\nstability=architecture\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "ee0fbc3adae6d969011ae6a714ddc940ba5ccfb174f94cfa060036aa0d7e5c8a",
+      "declarations": [
+        null
+      ],
+      "imports": [
+        "node:fs",
+        "node:module",
+        "node:path"
+      ],
+      "path": "src/adapters/typescript-worker.js",
+      "semanticBytes": 546,
+      "sourceBytes": 7335
+    },
+    {
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
+              "dependency installation",
+              "project execution"
+            ],
+            "id": "llmnav.structure.typescript",
+            "invariant": [
+              "Analysis executes only explicitly selected compiler tooling and never project application code."
+            ],
+            "owns": [
+              "compiler resolution",
+              "TypeScript worker invocation"
+            ],
+            "rel": [
+              "workflow>llmnav.structure.analyze"
+            ],
+            "risk": [],
+            "role": "Resolve an installed TypeScript Compiler API and run source analysis in an isolated process.",
+            "scope": "module",
+            "search": [
+              "TypeScript compiler adapter",
+              "isolated TypeScript analysis"
+            ],
+            "stability": "architecture",
+            "unknown": []
+          },
+          "end": 486,
+          "endLine": 10,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.structure.typescript"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Resolve an installed TypeScript Compiler API and run source analysis in an isolated process."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "compiler resolution|TypeScript worker invocation"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "dependency installation|project execution"
+            },
+            {
+              "key": "search",
+              "line": 6,
+              "order": 4,
+              "value": "TypeScript compiler adapter|isolated TypeScript analysis"
+            },
+            {
+              "key": "invariant",
+              "line": 7,
+              "order": 5,
+              "value": "Analysis executes only explicitly selected compiler tooling and never project application code."
+            },
+            {
+              "key": "rel",
+              "line": 8,
+              "order": 6,
+              "value": "workflow>llmnav.structure.analyze"
+            },
+            {
+              "key": "stability",
+              "line": 9,
+              "order": 7,
+              "value": "architecture"
+            }
+          ],
+          "filePath": "src/adapters/typescript.js",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.structure.typescript\nrole=Resolve an installed TypeScript Compiler API and run source analysis in an isolated process.\nowns=compiler resolution|TypeScript worker invocation\nexcludes=dependency installation|project execution\nsearch=TypeScript compiler adapter|isolated TypeScript analysis\ninvariant=Analysis executes only explicitly selected compiler tooling and never project application code.\nrel=workflow>llmnav.structure.analyze\nstability=architecture\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "b9347740b2205ac66a335c8d050954538a049179ab4275da2c4b7033e02e9044",
+      "declarations": [
+        null
+      ],
+      "imports": [
+        "./process.js",
+        "node:module",
+        "node:path",
+        "node:url"
+      ],
+      "path": "src/adapters/typescript.js",
+      "semanticBytes": 486,
+      "sourceBytes": 1529
+    },
+    {
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
               "provider SDK transport",
               "repository discovery",
               "source mutation"
@@ -1396,7 +1964,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "d5d1a10f3ebb38ac9826ca545b92cc745b61d8dcbe76a898c2f64c495e76c68d",
+      "contentHash": "8827c694e022ac0c808af0d8fb3d3024913c06a009fd187f85ce83fa02892bec",
       "declarations": [
         null
       ],
@@ -1414,7 +1982,7 @@
       ],
       "path": "src/agent-protocol.js",
       "semanticBytes": 528,
-      "sourceBytes": 9777
+      "sourceBytes": 9945
     },
     {
       "blocks": [
@@ -1507,7 +2075,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "97b81d56c49d9149ddbf1b2ff51c435bdb80740e3553171e27ce188de7c5e69b",
+      "contentHash": "5b41ccde74f53d86970af147f8b3b8c67a591a07c78bf74560b8d876a17fc4a8",
       "declarations": [
         null
       ],
@@ -1516,7 +2084,7 @@
       ],
       "path": "src/agent-tools.js",
       "semanticBytes": 411,
-      "sourceBytes": 3906
+      "sourceBytes": 4032
     },
     {
       "blocks": [
@@ -1617,6 +2185,131 @@
       "path": "src/agents.js",
       "semanticBytes": 374,
       "sourceBytes": 6971
+    },
+    {
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
+              "dependency installation",
+              "project execution",
+              "runtime dispatch inference"
+            ],
+            "id": "llmnav.structure.analyze",
+            "invariant": [
+              "Compiler output is validated and source changes invalidate it before publication or compiler-input loading."
+            ],
+            "owns": [
+              "compiler adapter orchestration",
+              "generated structural IDs",
+              "source freshness proofs",
+              "analysis publication"
+            ],
+            "rel": [
+              "workflow>llmnav.graph.import",
+              "workflow>llmnav.search.discover"
+            ],
+            "risk": [],
+            "role": "Connect opt-in compiler-resolved TypeScript and Go definitions and references to semantic cards.",
+            "scope": "module",
+            "search": [
+              "precise TypeScript analysis",
+              "Go type checker",
+              "compiler definition reference graph"
+            ],
+            "stability": "architecture",
+            "unknown": []
+          },
+          "end": 632,
+          "endLine": 11,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.structure.analyze"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Connect opt-in compiler-resolved TypeScript and Go definitions and references to semantic cards."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "compiler adapter orchestration|generated structural IDs|source freshness proofs|analysis publication"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "dependency installation|project execution|runtime dispatch inference"
+            },
+            {
+              "key": "search",
+              "line": 6,
+              "order": 4,
+              "value": "precise TypeScript analysis|Go type checker|compiler definition reference graph"
+            },
+            {
+              "key": "invariant",
+              "line": 7,
+              "order": 5,
+              "value": "Compiler output is validated and source changes invalidate it before publication or compiler-input loading."
+            },
+            {
+              "key": "rel",
+              "line": 8,
+              "order": 6,
+              "value": "workflow>llmnav.graph.import"
+            },
+            {
+              "key": "rel",
+              "line": 9,
+              "order": 7,
+              "value": "workflow>llmnav.search.discover"
+            },
+            {
+              "key": "stability",
+              "line": 10,
+              "order": 8,
+              "value": "architecture"
+            }
+          ],
+          "filePath": "src/analysis.js",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.structure.analyze\nrole=Connect opt-in compiler-resolved TypeScript and Go definitions and references to semantic cards.\nowns=compiler adapter orchestration|generated structural IDs|source freshness proofs|analysis publication\nexcludes=dependency installation|project execution|runtime dispatch inference\nsearch=precise TypeScript analysis|Go type checker|compiler definition reference graph\ninvariant=Compiler output is validated and source changes invalidate it before publication or compiler-input loading.\nrel=workflow>llmnav.graph.import\nrel=workflow>llmnav.search.discover\nstability=architecture\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "cd9974aac1831d19b1eba259c32d43e346ddb92da99e72c466a885a8826476ae",
+      "declarations": [
+        null
+      ],
+      "imports": [
+        "./abort.js",
+        "./adapters/go.js",
+        "./adapters/typescript.js",
+        "./config.js",
+        "./graph-input.js",
+        "./project.js",
+        "./util.js",
+        "./validator.js",
+        "node:path"
+      ],
+      "path": "src/analysis.js",
+      "semanticBytes": 632,
+      "sourceBytes": 6727
     },
     {
       "blocks": [
@@ -2055,12 +2748,13 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "8b405993275dd338cd88ee1584084f3b879893cea758b123bb5cdb9f59d34792",
+      "contentHash": "d318559ae9a7240890466b893966ed2b006c0abb1178eb5d4ed2f017251bb746",
       "declarations": [
         null
       ],
       "imports": [
         "./agent-protocol.js",
+        "./analysis.js",
         "./audit.js",
         "./discovery.js",
         "./doctor.js",
@@ -2086,7 +2780,7 @@
       ],
       "path": "src/cli.js",
       "semanticBytes": 508,
-      "sourceBytes": 24679
+      "sourceBytes": 25798
     },
     {
       "blocks": [
@@ -2617,13 +3311,14 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "dfa428c7e06647f8db724d2023dd570e4ebf4544b3567a452c47164a9a2afb2e",
+      "contentHash": "405eb20d2edf781e74a238882da6b98feb5acace265e34abe320870395685d8d",
       "declarations": [
         null
       ],
       "imports": [
         "./abort.js",
         "./declaration.js",
+        "./graph-input.js",
         "./policy.js",
         "./project.js",
         "./tokenizer.js",
@@ -2631,7 +3326,7 @@
       ],
       "path": "src/discovery.js",
       "semanticBytes": 597,
-      "sourceBytes": 4049
+      "sourceBytes": 5066
     },
     {
       "blocks": [
@@ -3391,7 +4086,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "16c0693751e88e8441890d8872e6a9e9a96fe132a724b202573006e005f5b9f8",
+      "contentHash": "1775cb578f2508c54b859e6f2626d8520805b5b22e71d3750777525a75286a53",
       "declarations": [
         null
       ],
@@ -3422,7 +4117,7 @@
       ],
       "path": "src/generator.js",
       "semanticBytes": 476,
-      "sourceBytes": 23530
+      "sourceBytes": 23539
     },
     {
       "blocks": [
@@ -3513,11 +4208,13 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "00c8cc44b535ceb6f883508f5bfa8b112fa9975926890c906ac96a04d24bf2ba",
+      "contentHash": "394cbd35d4d6be2ba9409569bdf36fb800f0d2d389a9746dae6ee93a614c408f",
       "declarations": [
         null
       ],
       "imports": [
+        "./abort.js",
+        "./files.js",
         "./spec.js",
         "./util.js",
         "./validator.js",
@@ -3525,7 +4222,7 @@
       ],
       "path": "src/graph-input.js",
       "semanticBytes": 397,
-      "sourceBytes": 6741
+      "sourceBytes": 8709
     },
     {
       "blocks": [
@@ -3753,23 +4450,24 @@
     },
     {
       "blocks": [],
-      "contentHash": "78d8348a3cd3ff3124c41664cdefe6a046c7b6596d3c1e56bfc4dbdc7d70a722",
+      "contentHash": "d1810525b5a533f8acaa0a10a99041d4be27981b8de2dce838715a7bb5289e98",
       "declarations": [],
       "imports": [
         "./spec.js"
       ],
       "path": "src/index.d.ts",
       "semanticBytes": 0,
-      "sourceBytes": 35483
+      "sourceBytes": 36574
     },
     {
       "blocks": [],
-      "contentHash": "821ec6cc732a1e9048cd0baebe506cde487f282b53f69686c812684096bb9b69",
+      "contentHash": "f6b8bd010b2840b173fd77822dce981fd89c9a8ea3ccd9f1154eee3cf04b6404",
       "declarations": [],
       "imports": [
         "./abort.js",
         "./agent-protocol.js",
         "./agents.js",
+        "./analysis.js",
         "./audit.js",
         "./boundaries.js",
         "./changes.js",
@@ -3806,7 +4504,7 @@
       ],
       "path": "src/index.js",
       "semanticBytes": 0,
-      "sourceBytes": 4151
+      "sourceBytes": 4215
     },
     {
       "blocks": [
@@ -5741,7 +6439,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "85120207416f4871995c50ec59f396db72d3751ba1ed8d45544852f5f26cb927",
+      "contentHash": "92004159a77e515f48c726c656eac58c4331e3e2e8c901d467bc4729c1664bc7",
       "declarations": [
         null
       ],
@@ -6135,7 +6833,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "737005f2cb1e550d9f543698751c24319a4ddf912e5550ecd0fa04b666b2ac4a",
+      "contentHash": "e8da3b773c7fc482d8b2d5c1a5700afc309e4c30ffdf74381e2467587b0ea3d0",
       "declarations": [],
       "imports": [
         "../src/agent-protocol.js",
@@ -6151,6 +6849,28 @@
       "path": "tests/agent-protocol.test.js",
       "semanticBytes": 0,
       "sourceBytes": 12670
+    },
+    {
+      "blocks": [],
+      "contentHash": "8b7d76260ebe389a4f8a5800bf6d0a2e182db652a476d2f828fa75c09cc3f4db",
+      "declarations": [],
+      "imports": [
+        "../src/analysis.js",
+        "../src/config.js",
+        "../src/discovery.js",
+        "../src/generator.js",
+        "../src/graph-input.js",
+        "../src/search.js",
+        "node:assert/strict",
+        "node:child_process",
+        "node:fs/promises",
+        "node:os",
+        "node:path",
+        "node:test"
+      ],
+      "path": "tests/analysis.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 6703
     },
     {
       "blocks": [],
@@ -6209,6 +6929,20 @@
       "path": "tests/cli.test.js",
       "semanticBytes": 0,
       "sourceBytes": 3241
+    },
+    {
+      "blocks": [],
+      "contentHash": "5493337e239a8e0f92972bdcc761aa1b9679a5291e95e1288a088aaec1f65471",
+      "declarations": [],
+      "imports": [
+        "../src/adapters/process.js",
+        "node:assert/strict",
+        "node:events",
+        "node:test"
+      ],
+      "path": "tests/compiler-process.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 1212
     },
     {
       "blocks": [],

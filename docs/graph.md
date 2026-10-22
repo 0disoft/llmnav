@@ -90,3 +90,7 @@ Configured graph inputs may contribute nodes from multiple repository IDs. LLMNa
 Qualified IDs such as `accounts/auth.session.rotate` resolve exactly. An unqualified ID first prefers the local repository. If no local node exists, it resolves only when exactly one workspace node has that semantic ID. Multiple matches return an ambiguity with sorted qualified candidates and require the caller to choose one.
 
 `show` renders external definitions when no local card exists. `context` can start from an external or unresolved graph node and pack its definitions and bounded edge evidence. External nodes do not become searchable lexical cards merely because they were imported.
+
+## Compiler producers
+
+`llmnav analyze` supplies official TypeScript and Go producers. Their schema 2 graph inputs retain schema 1 definitions/references and add required `sourceHashes`. Hash mismatches and changed selected source sets fail with `LNV014`. The generated repository graph remains schema 1. See [compiler analysis](precise-analysis.md).

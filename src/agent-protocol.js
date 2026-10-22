@@ -93,7 +93,7 @@ function resolveRequest(name, input) {
 }
 
 async function handleDiscover(input, root, options) {
-  return { data: await discoverProject(root, input.task.trim(), { ...options, top: input.top ?? SEARCH_LIMITS.top.default }) };
+  return { data: await discoverProject(root, input.task.trim(), { ...options, top: input.top ?? SEARCH_LIMITS.top.default, precise: input.precise === true }) };
 }
 
 async function handleQuery(input, root, options) {
@@ -180,7 +180,7 @@ async function handleCheck(input, root, options) {
     paths: input.paths ?? [],
     ...(registry === undefined ? {} : { registry }),
   });
-  const graphInputs = await loadGraphInputs(root, project.config);
+  const graphInputs = await loadGraphInputs(root, project.config, options);
   const diagnostics = [...validateProject(project), ...graphInputs.diagnostics].sort(compareDiagnostics);
   const counts = countDiagnostics(diagnostics);
   return { data: { counts, diagnostics, cardCount: project.records.length }, ok: counts.error === 0 };
@@ -217,6 +217,8 @@ function validateProperty(key, value, schema) {
     if (schema.enum !== undefined && !schema.enum.includes(value)) {
       return `Input field ${key} must be one of: ${schema.enum.join(", ")}.`;
     }
+  } else if (schema.type === "boolean") {
+    if (typeof value !== "boolean") return `Input field ${key} must be a boolean.`;
   } else if (schema.type === "integer") {
     if (!Number.isInteger(value) || value < schema.minimum || value > schema.maximum) {
       return `Input field ${key} must be an integer from ${schema.minimum} to ${schema.maximum}.`;

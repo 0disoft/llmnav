@@ -13,6 +13,7 @@ stability=architecture
 */
 
 import path from "node:path";
+import { analyzeProject, writeAnalysis } from "./analysis.js";
 import { discoverProject } from "./discovery.js";
 import { findProjectRoot } from "./files.js";
 import { initializeProject } from "./initializer.js";
@@ -44,7 +45,7 @@ import { AUDIT_PRIORITIES, auditHasFindings, auditProject, explainProjectFile } 
 import { migrateProject } from "./migration.js";
 import { SEARCH_LIMITS } from "./policy.js";
 
-const VALUE_OPTIONS = new Set(["--root", "--format", "--top", "--depth", "--budget", "--max-edges", "--agents", "--file", "--fail-on", "--output"]);
+const VALUE_OPTIONS = new Set(["--root", "--format", "--top", "--depth", "--budget", "--max-edges", "--agents", "--file", "--fail-on", "--output", "--language", "--project", "--typescript"]);
 
 const COMMAND_OPTIONS = Object.freeze({
   init: new Set(["--agents", "--package-scripts", "--force", "--root", "--json"]),
@@ -52,7 +53,8 @@ const COMMAND_OPTIONS = Object.freeze({
   format: new Set(["--check", "--root", "--json"]),
   generate: new Set(["--check", "--verify", "--full", "--root", "--json"]),
   index: new Set(["--check", "--verify", "--full", "--root", "--json"]),
-  discover: new Set(["--top", "--root", "--json"]),
+  analyze: new Set(["--language", "--project", "--typescript", "--allow-errors", "--output", "--root", "--json"]),
+  discover: new Set(["--precise", "--top", "--root", "--json"]),
   query: new Set(["--top", "--root", "--json"]),
   show: new Set(["--root", "--json"]),
   context: new Set(["--depth", "--budget", "--max-edges", "--root", "--json"]),
@@ -99,6 +101,8 @@ export async function runCli(argv) {
     case "generate":
     case "index":
       return runGenerate(root, args, json);
+    case "analyze":
+      return runAnalyze(root, args, json);
     case "discover":
       return runDiscover(root, args, json);
     case "query":
@@ -245,11 +249,23 @@ async function runQuery(root, args, json) {
   return 0;
 }
 
+async function runAnalyze(root, args, json) {
+  const result = await analyzeProject(root, {
+    language: getOption(args, "--language"), project: getOption(args, "--project"),
+    typescriptPath: getOption(args, "--typescript"), allowErrors: hasFlag(args, "--allow-errors"),
+  });
+  const output = getOption(args, "--output");
+  if (output) await writeAnalysis(root, output, result);
+  if (json || !output) console.log(JSON.stringify(result, null, 2));
+  else console.log(`Analyzed ${result.language}: ${result.counts.definitions} definitions, ${result.counts.references} references. Wrote ${output}. Add this path to graph.indexFiles and run llmnav generate.`);
+  return 0;
+}
+
 async function runDiscover(root, args, json) {
   const query = getPositionals(args).join(" ").trim();
   if (!query) { console.error("discover requires search text."); return 2; }
   const top = parseCliIntegerOption(args, "--top", SEARCH_LIMITS.top.default);
-  const result = await discoverProject(root, query, { top });
+  const result = await discoverProject(root, query, { top, precise: hasFlag(args, "--precise") });
   if (json) console.log(JSON.stringify(result, null, 2));
   else if (result.results.length === 0) console.log("No matching source paths or declarations found. Try identifiers in the repository language.");
   else {
@@ -590,6 +606,7 @@ Usage
   llmnav check [paths...] [--format text|json|github|sarif|editor]
   llmnav format [paths...] [--check]
   llmnav generate [--check] [--full]
+  llmnav analyze --language <typescript|go> [--project tsconfig.json] [--output .llmnav/imports/code.json]
   llmnav discover "<text>" [--top <n>] [--root <path>] [--json]
   llmnav query "<task>" [--top ${SEARCH_LIMITS.top.default}]
   llmnav show <semantic-id>

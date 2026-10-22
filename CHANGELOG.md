@@ -4,6 +4,15 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.15.0] — 2026-10-23
+
+### Added
+
+* Opt-in TypeScript Compiler API 5/6 and Go standard-library type-checker adapters through `analyze` and `analyzeProject`, with alias/name/member binding, existing semantic-ID attachment, and generated structural IDs.
+* Freshness-proved graph input schema 2; retain schema 1 compatibility and reject stale edited, added or deleted compiler inputs.
+* `discover --precise` and `llmnav_discover` `precise` input (tool definition schema 4), returning compiler provenance and IDs usable with existing show/context operations.
+* Bounded compiler subprocess deadlines, cancellation and output; atomic analysis publication, optional partial diagnostics, offline Go metadata and no project execution.
+
 ## [0.14.0] — 2026-10-23
 
 ### Added

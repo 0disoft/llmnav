@@ -51,3 +51,9 @@
 {"id":"llmnav.support.read-operation","state":"active"}
 {"id":"llmnav.agent.freshness","state":"active"}
 {"id":"llmnav.search.discover","state":"active"}
+{"id":"llmnav.structure.go","state":"active"}
+{"id":"llmnav.structure.compiler-process","state":"active"}
+{"id":"llmnav.structure.typescript-worker","state":"active"}
+{"id":"llmnav.structure.typescript","state":"active"}
+{"id":"llmnav.structure.analyze","state":"active"}
+{"id":"llmnav.structure.go-worker","state":"active"}

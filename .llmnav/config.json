@@ -10,6 +10,12 @@
   },
   "coverageRules": [
     {
+      "match": ["src/analysis.js", "src/adapters/process.js", "src/adapters/typescript.js", "src/adapters/typescript-worker.js", "src/adapters/go.js", "src/adapters/go-analyzer.go"],
+      "name": "opt-in compiler analysis boundaries",
+      "requiredFields": ["owns", "invariant"],
+      "scope": "module"
+    },
+    {
       "match": ["src/discovery.js"],
       "name": "source discovery without semantic cards",
       "requiredFields": ["owns", "invariant"],

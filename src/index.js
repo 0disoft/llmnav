@@ -141,3 +141,5 @@ export * from "./spec.js";
 export { countDiagnostics, diagnostic, validateProject } from "./validator.js";
 
 export { discoverProject } from "./discovery.js";
+
+export { analyzeProject, writeAnalysis } from "./analysis.js";

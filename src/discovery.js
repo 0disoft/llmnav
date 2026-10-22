@@ -12,6 +12,7 @@ stability=architecture
 
 import { throwIfAborted } from "./abort.js";
 import { extractSourceDeclarations } from "./declaration.js";
+import { loadGraphInputs } from "./graph-input.js";
 import { scanProject } from "./project.js";
 import { DISCOVERY_RANK, SEARCH_LIMITS } from "./policy.js";
 import { normalizeSearchText, tokenize } from "./tokenizer.js";
@@ -35,6 +36,20 @@ export async function discoverProject(root, query, options = {}) {
     cardIdsByPath.set(record.relativePath, ids);
   }
   const results = [];
+  let compiled = null;
+  if (options.precise === true) {
+    const loaded = await loadGraphInputs(root, project.config, options);
+    if (loaded.diagnostics.length) throw new Error(loaded.diagnostics.map(item => item.message).join("; "));
+    compiled = new Map();
+    for (const index of loaded.indexes) {
+      for (const definition of index.definitions) {
+        if (definition.kind === "module") continue;
+        const list = compiled.get(definition.path) ?? [];
+        list.push({ ...definition, compiler: index.generator }); compiled.set(definition.path, list);
+      }
+    }
+    if (!loaded.indexes.length) throw new Error("No configured compiler graph. Run llmnav analyze, configure graph.indexFiles, and generate first.");
+  }
   for (const file of project.fileRecords) {
     throwIfAborted(options.signal);
     const cardIds = [...(cardIdsByPath.get(file.relativePath) ?? [])].sort(compareText);
@@ -42,10 +57,12 @@ export async function discoverProject(root, query, options = {}) {
     const pathTokens = sourceTokens(file.relativePath);
     const fileCandidate = { ...base, source: "file", line: 1 };
     addCandidate(results, fileCandidate, queryTokens, normalized, pathTokens);
-    for (const declaration of extractSourceDeclarations(file.source, file.relativePath)) {
+    const declarations = compiled === null ? extractSourceDeclarations(file.source, file.relativePath) : compiled.get(file.relativePath) ?? [];
+    for (const declaration of declarations) {
       throwIfAborted(options.signal);
       addCandidate(results, {
-        ...base, source: "declaration", line: declaration.line,
+        ...base, source: compiled === null ? "declaration" : "compiler", line: declaration.line,
+        ...(compiled === null ? {} : { id: declaration.id, compiler: declaration.compiler }),
         symbol: declaration.symbol, signature: declaration.signature,
         kind: declaration.kind, language: declaration.language,
       }, queryTokens, normalized, pathTokens);

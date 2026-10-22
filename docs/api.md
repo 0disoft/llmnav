@@ -385,7 +385,7 @@ Each query record requires a non-empty `query`. A positive case supplies at leas
 
 ## Agent operation protocol
 
-`getAgentToolDefinitions()` returns defensive copies of seven schemaVersion 3 tool definitions in fixed order. Their JSON Schema inputs reject unknown fields and deliberately omit the repository root.
+`getAgentToolDefinitions()` returns defensive copies of seven schemaVersion 4 tool definitions in fixed order. Their JSON Schema inputs reject unknown fields and deliberately omit the repository root.
 
 ```js
 import { executeAgentOperation, getAgentToolDefinitions } from "llmnav";
@@ -443,3 +443,7 @@ const result = await discoverProject(root, "rotate session", { top: 5, signal })
 ```
 
 Returns `{ schemaVersion: 1, repositoryId, results, matched, truncated }`. Each candidate carries `source` (`file` or `declaration`), `path`, one-based `line`, `cardIds`, `score`, and `reasons`. Declarations also carry `symbol`, `signature`, `kind`, and `language`. These are syntax heuristics, including nested declarations when within the shared scan budget; they do not provide type resolution, stable semantic IDs, or inferred business contracts. The operation reads selected live sources, honors include/exclude rules and cancellation, uses bounded file I/O, and writes nothing. `top` is an integer from 1 to 100.
+
+## Compiler analysis
+
+`analyzeProject(root, { language, project?, typescriptPath?, allowErrors?, signal?, timeoutMs? })` returns compiler diagnostics and a schema 2 graph input. `writeAnalysis(root, relativeOutput, result, options?)` rechecks source freshness and atomically publishes it. `discoverProject` accepts `precise: true` to search configured compiler definitions with explicit provenance. See [compiler analysis](precise-analysis.md).

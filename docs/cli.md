@@ -257,7 +257,7 @@ Prints the active source specification version, canonical key order, stability v
 llmnav tools [--json]
 ```
 
-Prints the fixed provider-neutral tool definitions for `query`, `show`, `context`, `check`, `explain`, `audit`, and `discover`. Each definition carries schemaVersion 3; JSON output wraps the ordered definitions in a schemaVersion 1 command envelope. Tool inputs reject unknown fields and never accept a repository root; a trusted host binds repository scope when it calls the library dispatcher.
+Prints the fixed provider-neutral tool definitions for `query`, `show`, `context`, `check`, `explain`, `audit`, and `discover`. Each definition carries schemaVersion 4; JSON output wraps the ordered definitions in a schemaVersion 1 command envelope. Tool inputs reject unknown fields and never accept a repository root; a trusted host binds repository scope when it calls the library dispatcher.
 
 ## `llmnav mcp`
 
@@ -292,3 +292,7 @@ llmnav discover "rotate session" --top 5 --json
 ```
 
 Works before initialization or generation. Searches selected source paths, heuristic declaration names and signatures. Use identifiers in the repository language; JSON results distinguish `file` and `declaration` sources. Review source behavior before adding a semantic card. The corresponding provider-neutral operation is `llmnav_discover` with `{ task, top? }`.
+
+## Compiler analysis
+
+`llmnav analyze --language <typescript|go> [--project tsconfig.json] [--typescript <compiler.js>] [--allow-errors] [--output .llmnav/imports/code.json] [--json]` runs installed compiler tooling. It writes only when `--output` is supplied. `discover --precise` requires configured, fresh compiler inputs. See [compiler analysis](precise-analysis.md).

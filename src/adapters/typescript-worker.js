@@ -1,0 +1,108 @@
+/* llmnav/1 module
+id=llmnav.structure.typescript-worker
+role=Resolve TypeScript declarations and symbol uses through the compiler type checker without emitting code.
+owns=compiler symbol identity|alias resolution|lexical owners|TypeScript diagnostics
+excludes=dependency installation|project execution
+search=TypeScript precise references|renamed imports|type checker symbols
+invariant=Analysis executes only explicitly selected compiler tooling and never project application code.
+rel=workflow>llmnav.structure.analyze
+stability=architecture
+*/
+
+// Isolated compiler API host: never emits JavaScript or loads tsconfig plugins.
+import path from "node:path";
+import { createRequire } from "node:module";
+import { readFileSync, realpathSync } from "node:fs";
+
+let input = "";
+for await (const chunk of process.stdin) input += chunk;
+try { console.log(JSON.stringify(analyze(JSON.parse(input)))); }
+catch (error) { console.error(error.message); process.exitCode = 1; }
+
+function analyze(request) {
+  const ts = createRequire(import.meta.url)(request.compiler);
+  if (!/^[56]\./u.test(ts.version ?? "") || typeof ts.createProgram !== "function") {
+    throw new Error("This adapter supports TypeScript Compiler API 5.x and 6.x. Native TypeScript 7 requires its own API adapter.");
+  }
+  const root = path.resolve(request.root);
+  const selected = new Set(request.files.map(file => path.resolve(file)));
+  let options = { target: ts.ScriptTarget.ESNext, module: ts.ModuleKind.NodeNext, moduleResolution: ts.ModuleResolutionKind.NodeNext, noEmit: true, skipLibCheck: true, types: [] };
+  let names = [...selected];
+  if (request.project) {
+    const project = path.resolve(root, request.project);
+    if (!inside(root, project)) throw new Error("TypeScript project must be inside the repository.");
+    const loaded = ts.readConfigFile(project, ts.sys.readFile);
+    if (loaded.error) throw new Error(ts.flattenDiagnosticMessageText(loaded.error.messageText, "\n"));
+    const parsed = ts.parseJsonConfigFileContent(loaded.config, ts.sys, path.dirname(project));
+    if (parsed.errors.length) throw new Error(parsed.errors.map(error => ts.flattenDiagnosticMessageText(error.messageText, "\n")).join("\n"));
+    options = { ...parsed.options, noEmit: true, incremental: false };
+    names = parsed.fileNames.filter(file => selected.has(path.resolve(file)));
+  }
+  const host = ts.createCompilerHost(options);
+  const originalRead = host.readFile;
+  const inputs = new Set();
+  host.readFile = file => {
+    const absolute = path.resolve(file);
+    if (inside(root, absolute)) {
+      let canonical;
+      try { canonical = realpathSync(absolute); }
+      catch (error) { if (error.code === "ENOENT" || error.code === "ENOTDIR") return originalRead(file); throw error; }
+      if (!inside(root, canonical)) throw new Error("Compiler input traverses a symlink outside the repository.");
+      inputs.add(absolute);
+    }
+    return originalRead(file);
+  };
+  const program = ts.createProgram(names, options, host);
+  const checker = program.getTypeChecker();
+  const diagnostics = ts.getPreEmitDiagnostics(program).map(error => ({
+    category: ts.DiagnosticCategory[error.category], code: String(error.code),
+    path: error.file && inside(root, error.file.fileName) ? relative(error.file.fileName) : null,
+    line: error.file ? error.file.getLineAndCharacterOfPosition(error.start ?? 0).line + 1 : null,
+    message: ts.flattenDiagnosticMessageText(error.messageText, "\n"),
+  }));
+  if (!request.allowErrors && diagnostics.some(error => error.category === "Error")) throw new Error(JSON.stringify(diagnostics));
+  const declarations = [], references = [], bySymbol = new Map(), byDeclaration = new Map(), owners = new Map();
+  const sources = program.getSourceFiles().filter(source => selected.has(path.resolve(source.fileName)));
+  for (const source of sources) {
+    const module = { key: `${relative(source.fileName)}:module`, symbol: path.basename(source.fileName), path: relative(source.fileName), line: 1, offset: -1, kind: "module", qualified: "module" };
+    declarations.push(module); owners.set(source, module.key);
+    function definitions(node, scope) {
+      let next = scope;
+      if (node.name && ts.isIdentifier(node.name) && isDeclaration(node)) {
+        let symbol = checker.getSymbolAtLocation(node.name);
+        if (symbol && !bySymbol.has(symbol)) {
+          const kind = ts.SyntaxKind[node.kind];
+          const key = `${relative(source.fileName)}:${node.getStart(source)}`;
+          const qualified = `${scope}/${kind}:${node.name.text}`;
+          const record = { key, symbol: node.name.text, path: relative(source.fileName), line: source.getLineAndCharacterOfPosition(node.name.getStart(source)).line + 1, offset: node.getStart(source), kind, qualified, parent: nearestOwner(node.parent) };
+          declarations.push(record); bySymbol.set(symbol, key); byDeclaration.set(node, key); owners.set(node, key); next = qualified;
+        } else if (symbol) { owners.set(node, bySymbol.get(symbol)); next = `${scope}/${node.name.text}`; }
+      }
+      ts.forEachChild(node, child => definitions(child, next));
+    }
+    definitions(source, "module");
+  }
+  for (const source of sources) {
+    function uses(node) {
+      if (ts.isIdentifier(node) && !isName(node)) {
+        let symbol = checker.getSymbolAtLocation(node);
+        if (symbol?.flags & ts.SymbolFlags.Alias) symbol = checker.getAliasedSymbol(symbol);
+        const to = bySymbol.get(symbol) ?? symbol?.declarations?.map(declaration => byDeclaration.get(declaration)).find(Boolean), from = nearestOwner(node);
+        if (from && to && from !== to) {
+          const parent = node.parent;
+          const call = ts.isCallExpression(parent) && parent.expression === node ||
+            ts.isPropertyAccessExpression(parent) && ts.isCallExpression(parent.parent) && parent.parent.expression === parent;
+          references.push({ from, to, kind: call ? "calls" : "references", path: relative(source.fileName), line: source.getLineAndCharacterOfPosition(node.getStart(source)).line + 1 });
+        }
+      }
+      ts.forEachChild(node, uses);
+    }
+    uses(source);
+  }
+  return { compiler: { name: "typescript", version: ts.version }, declarations, references, diagnostics, inputs: [...inputs].map(relative) };
+  function relative(file) { return path.relative(root, file).split(path.sep).join("/"); }
+  function nearestOwner(node) { for (let current = node; current; current = current.parent) if (owners.has(current)) return owners.get(current); return null; }
+  function isDeclaration(node) { return ts.isFunctionDeclaration(node) || ts.isClassDeclaration(node) || ts.isInterfaceDeclaration(node) || ts.isTypeAliasDeclaration(node) || ts.isEnumDeclaration(node) || ts.isMethodDeclaration(node) || ts.isPropertyDeclaration(node) || ts.isVariableDeclaration(node) || ts.isParameter(node) || ts.isMethodSignature(node) || ts.isPropertySignature(node); }
+  function isName(node) { return node.parent?.name === node && isDeclaration(node.parent) || ts.isImportSpecifier(node.parent) || ts.isImportClause(node.parent) || ts.isNamespaceImport(node.parent); }
+}
+function inside(root, file) { const relative = path.relative(root, file); return relative === "" || relative !== ".." && !relative.startsWith(`..${path.sep}`) && !path.isAbsolute(relative); }

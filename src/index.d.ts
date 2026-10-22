@@ -330,7 +330,7 @@ export interface LlmnavConfig {
 }
 
 export interface AgentToolDefinition {
-  schemaVersion: 3;
+  schemaVersion: 4;
   name: "llmnav_query" | "llmnav_show" | "llmnav_context" | "llmnav_check" | "llmnav_explain" | "llmnav_audit" | "llmnav_discover";
   description: string;
   inputSchema: {
@@ -454,7 +454,7 @@ export interface GraphReference {
 export interface GraphInputIndex {
   file: string;
   contentHash: string | null;
-  schemaVersion: 1;
+  schemaVersion: 1 | 2;
   repositoryId: string;
   generator: string | null;
   definitions: GraphDefinition[];
@@ -789,9 +789,9 @@ export const AUDIT_PRIORITIES: readonly AuditPriority[];
 export const AUDIT_SCHEMA_VERSION: 1;
 export const FILE_EXPLANATION_SCHEMA_VERSION: 1;
 export const AGENT_OPERATION_SCHEMA_VERSION: 1;
-export const AGENT_TOOL_SCHEMA_VERSION: 3;
+export const AGENT_TOOL_SCHEMA_VERSION: 4;
 export const BOUNDARY_KINDS: readonly DetectedBoundary["kind"][];
-export const GRAPH_INPUT_SCHEMA_VERSION: 1;
+export const GRAPH_INPUT_SCHEMA_VERSION: 2;
 export const MIGRATION_REPORT_SCHEMA_VERSION: 1;
 export const EDITOR_DIAGNOSTIC_SCHEMA_VERSION: 1;
 export const EDITOR_INTEGRATION_SCHEMA_VERSION: 1;
@@ -825,7 +825,7 @@ export function loadPromptPrefixBundle(root: string): Promise<PromptPrefixBundle
 export function renderPromptPrefixBundle(bundle: PromptPrefixBundle): string;
 export function detectBoundaries(record: ProjectRecord): DetectedBoundary[];
 export function normalizeGraphInput(value: unknown, file?: string, contentHash?: string | null): GraphInputIndex;
-export function loadGraphInputs(root: string, config: LlmnavConfig): Promise<{ indexes: GraphInputIndex[]; diagnostics: Diagnostic[] }>;
+export function loadGraphInputs(root: string, config: LlmnavConfig, options?: ReadOptions): Promise<{ indexes: GraphInputIndex[]; diagnostics: Diagnostic[] }>;
 export function buildRepositoryGraph(project: ScannedProject, index: LlmnavIndex): RepositoryGraph;
 export function buildRepositoryGraphIncremental(project: ScannedProject, index: LlmnavIndex, previousState?: RepositoryGraphState | null): {
   graph: RepositoryGraph;
@@ -930,7 +930,9 @@ export function validateProject(project: ScannedProject): Diagnostic[];
 export * from "./spec.js";
 
 export interface SourceCandidate {
-  source: "file" | "declaration";
+  source: "file" | "declaration" | "compiler";
+  id?: string;
+  compiler?: string;
   path: string;
   line: number;
   cardIds: string[];
@@ -943,10 +945,29 @@ export interface SourceCandidate {
 }
 
 /** Read live source paths and heuristic declarations without requiring generated indexes. */
-export function discoverProject(root: string, query: string, options?: ReadOptions & { paths?: string[]; ioConcurrency?: number; top?: number }): Promise<{
+export function discoverProject(root: string, query: string, options?: ReadOptions & { paths?: string[]; ioConcurrency?: number; top?: number; precise?: boolean }): Promise<{
   schemaVersion: 1;
   repositoryId: string;
   results: SourceCandidate[];
   matched: number;
   truncated: boolean;
 }>;
+
+export interface CompilerGraphInput {
+  schemaVersion: 2;
+  repositoryId: string;
+  generator: string;
+  sourceHashes: Record<string, string>;
+  definitions: Array<{ id: string; symbol: string; path: string; line: number; kind: string }>;
+  references: Array<{ from: string; to: string; kind: string; path: string; line: number; confidence: number }>;
+}
+export interface AnalysisResult {
+  schemaVersion: 1;
+  language: "typescript" | "go";
+  compiler: { name: string; version: string };
+  diagnostics: Array<unknown>;
+  counts: { definitions: number; references: number; cardBindings: number };
+  graph: CompilerGraphInput;
+}
+export function analyzeProject(root: string, options: ReadOptions & { language: "typescript" | "go"; project?: string; typescriptPath?: string; allowErrors?: boolean; timeoutMs?: number; goCommand?: string }): Promise<AnalysisResult>;
+export function writeAnalysis(root: string, relativeOutput: string, result: AnalysisResult, options?: ReadOptions): Promise<string>;

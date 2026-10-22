@@ -27,3 +27,4 @@
 {"query":"excludes: embedding generation","expected":["llmnav.search.query"]}
 {"query":"automatically refresh MCP indexes after source edits","expected":["llmnav.agent.freshness"]}
 {"query":"find source declarations before writing semantic cards","expected":["llmnav.search.discover"]}
+{"query":"resolve precise TypeScript and Go references using compiler adapters","expected":["llmnav.structure.analyze"]}

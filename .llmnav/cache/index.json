@@ -393,13 +393,14 @@
         "index persistence format"
       ],
       "hashes": {
-        "body": "8b405993275dd338cd88ee1584084f3b879893cea758b123bb5cdb9f59d34792",
+        "body": "d318559ae9a7240890466b893966ed2b006c0abb1178eb5d4ed2f017251bb746",
         "semantic": "f4671d61fc8164fc24498faa91ba84f777e28a7f325750991908542867a69b6e",
-        "structure": "b4bf4435bde7971c2feb72565f8fe38887af95e953e386c795593925f8876c95"
+        "structure": "2007e5915f59c7ddc671056f4582d748915de384b4e62d3fe18d7bc112f8df96"
       },
       "id": "llmnav.cli.dispatch",
       "imports": [
         "./agent-protocol.js",
+        "./analysis.js",
         "./audit.js",
         "./discovery.js",
         "./doctor.js",
@@ -512,7 +513,7 @@
         "agent search decisions"
       ],
       "hashes": {
-        "body": "16c0693751e88e8441890d8872e6a9e9a96fe132a724b202573006e005f5b9f8",
+        "body": "1775cb578f2508c54b859e6f2626d8520805b5b22e71d3750777525a75286a53",
         "semantic": "7052622c9732ab29e37c3ab87f848188e931f601684e811e7bb8adef31fbfe85",
         "structure": "aa3268053c71247ce97d79c75afc0dcdd2c67104a70f35b1691e7e003012be63"
       },
@@ -1216,12 +1217,14 @@
         "source mutation"
       ],
       "hashes": {
-        "body": "00c8cc44b535ceb6f883508f5bfa8b112fa9975926890c906ac96a04d24bf2ba",
+        "body": "394cbd35d4d6be2ba9409569bdf36fb800f0d2d389a9746dae6ee93a614c408f",
         "semantic": "c4122aabf96e2489fbb8561b5614b963a8dabc6762a85e8fb378b472dd3fc9dd",
-        "structure": "cd5307a276a39c4c38e032e3d5c5fd2321d3d87232801c507226e4d5b953e433"
+        "structure": "f0b28529b2d7749fc41965cc6056e0ecb652042968d1464c53532740835b66e9"
       },
       "id": "llmnav.graph.import",
       "imports": [
+        "./abort.js",
+        "./files.js",
         "./spec.js",
         "./util.js",
         "./validator.js",
@@ -1318,7 +1321,7 @@
         "source mutation"
       ],
       "hashes": {
-        "body": "d5d1a10f3ebb38ac9826ca545b92cc745b61d8dcbe76a898c2f64c495e76c68d",
+        "body": "8827c694e022ac0c808af0d8fb3d3024913c06a009fd187f85ce83fa02892bec",
         "semantic": "ce30fe54e5dab8eb3cda8e1e6afdcee3489c3f62267d99ff85257f4c819d21a4",
         "structure": "95d824e01b3df78a9bd187082735ef147cd288047ecd667c0b1cdde861f83df5"
       },
@@ -1430,7 +1433,7 @@
         "repository scope"
       ],
       "hashes": {
-        "body": "97b81d56c49d9149ddbf1b2ff51c435bdb80740e3553171e27ce188de7c5e69b",
+        "body": "5b41ccde74f53d86970af147f8b3b8c67a591a07c78bf74560b8d876a17fc4a8",
         "semantic": "d1de5aa0a4d4ade41371bd255707d45ec8ba04edd4d99f9d49242cd766df1f4a",
         "structure": "f7288c1ea4e3c498c7ca4e1d62c455c8e07d1cc102615842d2b06c21bc8cc503"
       },
@@ -1892,7 +1895,7 @@
         "source parsing"
       ],
       "hashes": {
-        "body": "85120207416f4871995c50ec59f396db72d3751ba1ed8d45544852f5f26cb927",
+        "body": "92004159a77e515f48c726c656eac58c4331e3e2e8c901d467bc4729c1664bc7",
         "semantic": "59aa3e9e793d505ecdf110fec023c201aaee0154d2f6c9cf71afe1bbf71a7be5",
         "structure": "e213e073414c75bc75df1c8669a7045096142b6c0845694191893d90bf23e3c2"
       },
@@ -2611,14 +2614,15 @@
         "semantic ID assignment"
       ],
       "hashes": {
-        "body": "dfa428c7e06647f8db724d2023dd570e4ebf4544b3567a452c47164a9a2afb2e",
+        "body": "405eb20d2edf781e74a238882da6b98feb5acace265e34abe320870395685d8d",
         "semantic": "172ba02627952bedcf36390a976b34f698fd1f73db8c2f9398d21bcc26c5cae6",
-        "structure": "0d22a1ad773bdc9e24cacd91b6455a69a5be06952f6594db26b4fe59fd0795d5"
+        "structure": "6d3be839052ef2fbbbc4917adb42669807ea75e8b4cabab64ff53cc4b66da6be"
       },
       "id": "llmnav.search.discover",
       "imports": [
         "./abort.js",
         "./declaration.js",
+        "./graph-input.js",
         "./policy.js",
         "./project.js",
         "./tokenizer.js",
@@ -2657,11 +2661,338 @@
         "find declaration without cards"
       ],
       "stability": "architecture"
+    },
+    {
+      "boundaries": [],
+      "excludes": [
+        "dependency installation",
+        "project execution",
+        "runtime dispatch inference"
+      ],
+      "hashes": {
+        "body": "cd9974aac1831d19b1eba259c32d43e346ddb92da99e72c466a885a8826476ae",
+        "semantic": "98ef2c3c355aa7e08323d2912e94cda316620f1dd30eb971c33bb0ee26fd5653",
+        "structure": "1433328f8d59f2065bf7bbf39ef19d8e32c8fc1092fb7724f4003d2bfe68bd17"
+      },
+      "id": "llmnav.structure.analyze",
+      "imports": [
+        "./abort.js",
+        "./adapters/go.js",
+        "./adapters/typescript.js",
+        "./config.js",
+        "./graph-input.js",
+        "./project.js",
+        "./util.js",
+        "./validator.js",
+        "node:path"
+      ],
+      "invariant": [
+        "Compiler output is validated and source changes invalidate it before publication or compiler-input loading."
+      ],
+      "location": {
+        "declarationLine": null,
+        "endLine": 11,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/analysis.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "owns": [
+        "compiler adapter orchestration",
+        "generated structural IDs",
+        "source freshness proofs",
+        "analysis publication"
+      ],
+      "rel": [
+        "workflow>llmnav.graph.import",
+        "workflow>llmnav.search.discover"
+      ],
+      "role": "Connect opt-in compiler-resolved TypeScript and Go definitions and references to semantic cards.",
+      "scope": "module",
+      "search": [
+        "precise TypeScript analysis",
+        "Go type checker",
+        "compiler definition reference graph"
+      ],
+      "stability": "architecture"
+    },
+    {
+      "boundaries": [],
+      "excludes": [
+        "dependency installation",
+        "project execution"
+      ],
+      "hashes": {
+        "body": "87c1000ce3439327eb4f4880cf07358aca4fb6f36654df865d7b0b1b8664d61a",
+        "semantic": "cbee233a5bc6268a9870a6c1431d67e0d901a09e1c48658af1f7c4177d652e4c",
+        "structure": "b7714fe5396fcfc66f9e217287537120f0990284b0cc8f8375ee936c724a6eb3"
+      },
+      "id": "llmnav.structure.compiler-process",
+      "imports": [
+        "../abort.js",
+        "node:child_process"
+      ],
+      "invariant": [
+        "Analysis executes only explicitly selected compiler tooling and never project application code."
+      ],
+      "location": {
+        "declarationLine": null,
+        "endLine": 10,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/adapters/process.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "owns": [
+        "compiler process deadlines",
+        "bounded output",
+        "process cancellation",
+        "exit cleanup"
+      ],
+      "rel": [
+        "workflow>llmnav.structure.analyze"
+      ],
+      "role": "Bound opt-in compiler subprocesses and retain cancellation, failure, and exit ownership.",
+      "scope": "module",
+      "search": [
+        "compiler subprocess",
+        "analysis deadline",
+        "compiler process failure"
+      ],
+      "stability": "architecture"
+    },
+    {
+      "boundaries": [],
+      "excludes": [
+        "dependency installation",
+        "project execution"
+      ],
+      "hashes": {
+        "body": "4f23593d80f64e9d142cddc792d72343f8a67f1150725f2fe318d335a18eae93",
+        "semantic": "7db28d69e8034191e4397873d1109493d7eadaf0b5cd38cdfe7a6155346f23fe",
+        "structure": "48864586710b7007deab7c541445baf106f3c7a95d7a6148c2a08f8988567d98"
+      },
+      "id": "llmnav.structure.go",
+      "imports": [
+        "./process.js",
+        "node:fs/promises",
+        "node:os",
+        "node:path",
+        "node:url"
+      ],
+      "invariant": [
+        "Analysis executes only explicitly selected compiler tooling and never project application code."
+      ],
+      "location": {
+        "declarationLine": null,
+        "endLine": 10,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/adapters/go.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "owns": [
+        "offline Go metadata",
+        "Go analyzer build",
+        "temporary executable lifetime"
+      ],
+      "rel": [
+        "workflow>llmnav.structure.analyze"
+      ],
+      "role": "Prepare offline Go dependency exports and invoke the standard-library type analysis producer.",
+      "scope": "module",
+      "search": [
+        "Go compiler adapter",
+        "offline Go type analysis"
+      ],
+      "stability": "architecture"
+    },
+    {
+      "boundaries": [],
+      "excludes": [
+        "dependency installation",
+        "project execution"
+      ],
+      "hashes": {
+        "body": "b9347740b2205ac66a335c8d050954538a049179ab4275da2c4b7033e02e9044",
+        "semantic": "37bf800e07722dd57a1b8e518162935117cf46252a6c36254de05f367b394035",
+        "structure": "2e971b86eb4f5485f316a5ea1f00ba114f65486c73ce45ea020c67419c6afc0b"
+      },
+      "id": "llmnav.structure.typescript",
+      "imports": [
+        "./process.js",
+        "node:module",
+        "node:path",
+        "node:url"
+      ],
+      "invariant": [
+        "Analysis executes only explicitly selected compiler tooling and never project application code."
+      ],
+      "location": {
+        "declarationLine": null,
+        "endLine": 10,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/adapters/typescript.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "owns": [
+        "compiler resolution",
+        "TypeScript worker invocation"
+      ],
+      "rel": [
+        "workflow>llmnav.structure.analyze"
+      ],
+      "role": "Resolve an installed TypeScript Compiler API and run source analysis in an isolated process.",
+      "scope": "module",
+      "search": [
+        "TypeScript compiler adapter",
+        "isolated TypeScript analysis"
+      ],
+      "stability": "architecture"
+    },
+    {
+      "boundaries": [],
+      "excludes": [
+        "dependency installation",
+        "project execution"
+      ],
+      "hashes": {
+        "body": "ee0fbc3adae6d969011ae6a714ddc940ba5ccfb174f94cfa060036aa0d7e5c8a",
+        "semantic": "9174bc8af1e474db714ce23725d74727f07be95cb060cb71e5acf0d4f23d4ba5",
+        "structure": "335e838d65e61e0d42ba37c2ebd07f873a34fd837da9ddd88c5fbd18a12b096b"
+      },
+      "id": "llmnav.structure.typescript-worker",
+      "imports": [
+        "node:fs",
+        "node:module",
+        "node:path"
+      ],
+      "invariant": [
+        "Analysis executes only explicitly selected compiler tooling and never project application code."
+      ],
+      "location": {
+        "declarationLine": null,
+        "endLine": 10,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/adapters/typescript-worker.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "owns": [
+        "compiler symbol identity",
+        "alias resolution",
+        "lexical owners",
+        "TypeScript diagnostics"
+      ],
+      "rel": [
+        "workflow>llmnav.structure.analyze"
+      ],
+      "role": "Resolve TypeScript declarations and symbol uses through the compiler type checker without emitting code.",
+      "scope": "module",
+      "search": [
+        "TypeScript precise references",
+        "renamed imports",
+        "type checker symbols"
+      ],
+      "stability": "architecture"
+    },
+    {
+      "boundaries": [],
+      "excludes": [
+        "project execution",
+        "module installation",
+        "runtime dispatch inference"
+      ],
+      "hashes": {
+        "body": "8f626def8dd5bb560fdc8b2696df02ddbdc40a04cf16dc8b89c8b62597922ad3",
+        "semantic": "3454d028828a7674256e6fa59114c9c18227cfb7766281754f5e2023726dc78d",
+        "structure": "faef68d008d7be090ba73b9d5b1a77f71b16f1aa6a2432405efd86baf020b765"
+      },
+      "id": "llmnav.structure.go-worker",
+      "imports": [
+        "binding",
+        "constant",
+        "encoding/json",
+        "fmt",
+        "function",
+        "go/ast",
+        "go/importer",
+        "go/parser",
+        "go/token",
+        "go/types",
+        "io",
+        "os",
+        "path/filepath",
+        "runtime",
+        "sort",
+        "strings",
+        "type",
+        "variable"
+      ],
+      "invariant": [
+        "Compiler-selected production sources determine references and line directives never replace physical locations."
+      ],
+      "location": {
+        "declarationLine": null,
+        "endLine": 10,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/adapters/go-analyzer.go",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "owns": [
+        "Go declaration identity",
+        "cross-package reference resolution",
+        "receiver identity",
+        "physical source positions"
+      ],
+      "rel": [
+        "workflow>llmnav.structure.analyze"
+      ],
+      "role": "Resolve Go object identity and lexical references from standard-library type information.",
+      "scope": "module",
+      "search": [
+        "Go precise references",
+        "go types definitions",
+        "Go receiver methods"
+      ],
+      "stability": "architecture"
     }
   ],
   "contractFingerprints": {
     "configuration": {
-      "sha256": "03ae1d4f4339b0b348a6f47fabbe0b76c96934620dbc7376de28da2505f7bda5"
+      "sha256": "8d0c5245d38ce310714709d00eeb79d1707451a3d306c3ceaa59899c94539142"
     },
     "exportedApi": {
       "count": 5,
@@ -2669,9 +3000,9 @@
     },
     "schemaVersion": 1
   },
-  "generatedBy": "llmnav@0.14.0",
+  "generatedBy": "llmnav@0.15.0",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "be0eba7c596a98e882f5e29ac0efb737f5eccd872b3e1268f735267e6e29d08e",
+  "sourceHash": "a7dd181b0f8ca0ee91004f5f06f6b772ceff3aa522cda73b41bc63d1215b47b5",
   "specVersion": "1"
 }

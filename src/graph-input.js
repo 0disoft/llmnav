@@ -9,13 +9,15 @@ stability=architecture
 */
 
 import path from "node:path";
+import { throwIfAborted } from "./abort.js";
+import { collectSourceFiles } from "./files.js";
 import { ID_PATTERN, CROSS_REPO_ID_PATTERN } from "./spec.js";
 import { assertNoSymlinkTraversal, compareText, readText, sha256, toPosix } from "./util.js";
 import { diagnostic } from "./validator.js";
 
-export const GRAPH_INPUT_SCHEMA_VERSION = 1;
+export const GRAPH_INPUT_SCHEMA_VERSION = 2;
 
-export async function loadGraphInputs(root, config) {
+export async function loadGraphInputs(root, config, options = {}) {
   const indexes = [];
   const diagnostics = [];
   for (const relativePath of [...config.graph.indexFiles].sort(compareText)) {
@@ -23,11 +25,16 @@ export async function loadGraphInputs(root, config) {
     const absolutePath = path.join(root, file);
     try {
       await assertNoSymlinkTraversal(root, absolutePath, file);
-      const text = await readText(absolutePath, null);
+      const text = await readText(absolutePath, null, options);
       if (text === null) throw new Error("file does not exist");
       const parsed = JSON.parse(text);
+      if (parsed.schemaVersion === 2) {
+        normalizeGraphInput(parsed, file);
+        await assertCompilerInputFresh(root, parsed, config, options);
+      }
       indexes.push(normalizeGraphInput(parsed, file, sha256(text)));
     } catch (error) {
+      throwIfAborted(options.signal);
       diagnostics.push(
         diagnostic(
           "error",
@@ -44,8 +51,16 @@ export async function loadGraphInputs(root, config) {
 
 export function normalizeGraphInput(value, file = "<graph-index>", contentHash = null) {
   assertObject(value, "graph index");
-  assertKeys(value, new Set(["schemaVersion", "repositoryId", "generator", "definitions", "references"]), "graph index");
-  if (value.schemaVersion !== GRAPH_INPUT_SCHEMA_VERSION) throw new Error("schemaVersion must be 1");
+  assertKeys(value, new Set(["schemaVersion", "repositoryId", "generator", "definitions", "references", "sourceHashes"]), "graph index");
+  if (![1, GRAPH_INPUT_SCHEMA_VERSION].includes(value.schemaVersion)) throw new Error("schemaVersion must be 1 or 2");
+  if (value.schemaVersion === 2) {
+    assertObject(value.sourceHashes, "sourceHashes");
+    if (Object.keys(value.sourceHashes).length === 0) throw new Error("sourceHashes must not be empty");
+    for (const [file, hash] of Object.entries(value.sourceHashes)) {
+      normalizeSourcePath(file, "sourceHashes path");
+      if (!/^[a-f0-9]{64}$/u.test(hash)) throw new Error("sourceHashes values must be SHA-256 hashes");
+    }
+  } else if (value.sourceHashes !== undefined) throw new Error("sourceHashes requires schemaVersion 2");
   if (!/^[a-z][a-z0-9-]{0,63}$/u.test(value.repositoryId ?? "")) {
     throw new Error("repositoryId must match ^[a-z][a-z0-9-]{0,63}$");
   }
@@ -68,7 +83,7 @@ export function normalizeGraphInput(value, file = "<graph-index>", contentHash =
   return {
     file: toPosix(file),
     contentHash,
-    schemaVersion: GRAPH_INPUT_SCHEMA_VERSION,
+    schemaVersion: value.schemaVersion,
     repositoryId: value.repositoryId,
     generator: value.generator?.trim() ?? null,
     definitions,
@@ -154,4 +169,21 @@ function assertKeys(value, allowed, name) {
 function compareReferences(left, right) {
   return compareText(left.from, right.from) || compareText(left.to, right.to) || compareText(left.kind, right.kind) ||
     compareText(left.path ?? "", right.path ?? "") || (left.line ?? 0) - (right.line ?? 0);
+}
+
+export async function assertCompilerInputFresh(root, parsed, config, options = {}) {
+  const adapter = parsed.generator?.match(/^llmnav-(typescript|go)@1;/u)?.[1];
+  if (adapter) {
+    const extension = adapter === "go" ? /\.go$/u : /\.(?:[cm]?ts|tsx)$/u;
+    const current = (await collectSourceFiles(root, config, [], options)).map(source => toPosix(path.relative(root, source)))
+      .filter(source => extension.test(source)).sort(compareText);
+    const expected = Object.keys(parsed.sourceHashes).filter(source => extension.test(source)).sort(compareText);
+    if (JSON.stringify(current) !== JSON.stringify(expected)) throw new Error("Compiler source set changed; run llmnav analyze again.");
+  }
+  for (const [source, hash] of Object.entries(parsed.sourceHashes)) {
+    const sourcePath = path.join(root, source);
+    await assertNoSymlinkTraversal(root, sourcePath, source);
+    const content = await readText(sourcePath, null, options);
+    if (content === null || sha256(content) !== hash) throw new Error(`Stale compiler analysis for ${source}; run llmnav analyze again.`);
+  }
 }

@@ -10,7 +10,7 @@ stability=contract
 
 import { AUDIT_LIMITS, SEARCH_LIMITS } from "./policy.js";
 
-export const AGENT_TOOL_SCHEMA_VERSION = 3;
+export const AGENT_TOOL_SCHEMA_VERSION = 4;
 
 // Duplicated from AUDIT_PRIORITIES on purpose: importing the audit module would load
 // repository execution code into the definition-only surface. A contract test keeps them equal.
@@ -47,6 +47,7 @@ const DEFINITIONS = [
   }),
   tool("llmnav_discover", "Find live source paths and heuristic declarations without requiring cards or an index. Results are structural candidates, not reviewed business rules.", {
     task: stringProperty("Source identifiers or task language to search for."),
+    precise: { type: "boolean", description: "Use configured compiler definitions; reject stale analysis.", default: false },
     top: integerProperty("Maximum results.", SEARCH_LIMITS.top.minimum, SEARCH_LIMITS.top.maximum, SEARCH_LIMITS.top.default),
   }, ["task"]),
 ];

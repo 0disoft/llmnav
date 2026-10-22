@@ -1011,6 +1011,20 @@
     {
       "confidence": 0.85,
       "from": "llmnav/llmnav.cli.dispatch",
+      "id": "ebe077c413b202987cb2880ecbfc18823d639a81f0645a17325e336d6c97d103",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/cli.js",
+        "source": "src/cli.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.structure.analyze"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.cli.dispatch",
       "id": "1c148fdb3005b94273192da308b7dbedc92f5233443af136fd171a603d2b7596",
       "kind": "imports",
       "provenance": {
@@ -1445,6 +1459,20 @@
     {
       "confidence": 0.85,
       "from": "llmnav/llmnav.graph.import",
+      "id": "21f30b0cd72aa39ff2c816874eb33ebd4505bdc3d9fb7fa8deb34a72306ee502",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/graph-input.js",
+        "source": "src/graph-input.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.source.discover"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.graph.import",
       "id": "a5dcaca8c14af4191f0fd03e51aa7213e9f0facc4238d7800a97e73041f72853",
       "kind": "imports",
       "provenance": {
@@ -1455,6 +1483,20 @@
         "type": "local-import"
       },
       "to": "llmnav/llmnav.spec.contract"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.graph.import",
+      "id": "84b0f7ba0d1d0e9c822487b356981a4644181298d042998d6a00aefb426c327b",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/graph-input.js",
+        "source": "src/graph-input.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.support.abort"
     },
     {
       "confidence": 1,
@@ -2565,6 +2607,20 @@
     {
       "confidence": 0.85,
       "from": "llmnav/llmnav.search.discover",
+      "id": "4b394f8a0a87638c131b8dc9d02fad46eeafc0e936f949af21b501cd3eb05f36",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/discovery.js",
+        "source": "src/discovery.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.graph.import"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.search.discover",
       "id": "1fc7c81cc6310d0b62e00e03fef88c6da1a314572c53dfd58bba352c53b5e642",
       "kind": "imports",
       "provenance": {
@@ -2955,6 +3011,132 @@
       "to": "llmnav/llmnav.rules.validate"
     },
     {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.structure.analyze",
+      "id": "91c9e4d2b31d9a236aecfc616662b4a7e9fa33fb593294821bd58e456fea2643",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/analysis.js",
+        "source": "src/analysis.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.config.load"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.structure.analyze",
+      "id": "7cb81af6f76e1636a9f86606b808a882944b1eb22ca0c94ca9f1a34f40c1b3e6",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/analysis.js",
+        "source": "src/analysis.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.graph.import"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.structure.analyze",
+      "id": "4c1b71969979e9187ab1558b615e02826e58e7122728fa3331e18f1f111fe0ad",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/analysis.js",
+        "source": "src/analysis.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.graph.import"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.structure.analyze",
+      "id": "ac5f1c2b5ee5a0e73c2463a2d050f6b4ff826711615e5952f9ca51c5e5806e43",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/analysis.js",
+        "source": "src/analysis.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.project.scan"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.structure.analyze",
+      "id": "57c98c634ef0755ea3a0853af4d9178427249a64e1292f995fb0e407b1b83a70",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/analysis.js",
+        "source": "src/analysis.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.rules.validate"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.structure.analyze",
+      "id": "53688a200283fd061c1b7f181f0a9c7baddcb443cbcbc7a602e00b5968fb6889",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/analysis.js",
+        "source": "src/analysis.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.search.discover"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.structure.analyze",
+      "id": "2bf2c7e26b145eb309241ee2cf67bd3b4fee812cd85d7eb11dc9dcf9236e6a5c",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/analysis.js",
+        "source": "src/analysis.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.structure.go"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.structure.analyze",
+      "id": "8f946a9e3f4ee963e222e63d108291cd013e8b86fcf2fb8aa5617e12add60124",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/analysis.js",
+        "source": "src/analysis.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.structure.typescript"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.structure.analyze",
+      "id": "0a8a628318450755af40a1408f47028f4e1f87c4fbb64517bd4b090ebf555ceb",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/analysis.js",
+        "source": "src/analysis.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.support.abort"
+    },
+    {
       "confidence": 1,
       "from": "llmnav/llmnav.structure.boundaries",
       "id": "fd91c860c59f885fe34e05a12f41996b17737082fe1559de06319219fe0fb750",
@@ -2967,6 +3149,76 @@
         "type": "source-card"
       },
       "to": "llmnav/llmnav.index.generate"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.structure.compiler-process",
+      "id": "a2abbe803f81a1828150832b8e7df4ce43a03e63e62244c7346ccfc477b8f94c",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/adapters/process.js",
+        "source": "src/adapters/process.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.structure.analyze"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.structure.compiler-process",
+      "id": "06b74346a2116c6fe5d9bde59958578b76f97e5ae9dd960b860744be25d95b4f",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/adapters/process.js",
+        "source": "src/adapters/process.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.support.abort"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.structure.go",
+      "id": "43379e4644099356f0aae00539ea22c185956b28ff1f0d6eff6e0f8685d49972",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/adapters/go.js",
+        "source": "src/adapters/go.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.structure.analyze"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.structure.go",
+      "id": "ee05f6e29d401192cbc4b83ab8de34bc9f8a6fcc9ce428c3a2d9b582169c3fd7",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/adapters/go.js",
+        "source": "src/adapters/go.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.structure.compiler-process"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.structure.go-worker",
+      "id": "0f269c1e0b967b93f372af9c1b332d1718b3cbd9f1c581f7d84b89fbc91743e6",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/adapters/go-analyzer.go",
+        "source": "src/adapters/go-analyzer.go",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.structure.analyze"
     },
     {
       "confidence": 1,
@@ -3023,6 +3275,48 @@
         "type": "local-import"
       },
       "to": "llmnav/llmnav.support.concurrency"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.structure.typescript",
+      "id": "3c42b39642e41efbb5d636ba10aaa66f32cd474134739db4271625f9f61a02a3",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/adapters/typescript.js",
+        "source": "src/adapters/typescript.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.structure.analyze"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.structure.typescript",
+      "id": "202edba3a3cd53714015c50145b104064ee75381174b652d19b03f09698c6b42",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/adapters/typescript.js",
+        "source": "src/adapters/typescript.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.structure.compiler-process"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.structure.typescript-worker",
+      "id": "d7c121e8f0dc9045c98eed2aac2075de0c19c490ffc5833952b961ccb366fd1a",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/adapters/typescript-worker.js",
+        "source": "src/adapters/typescript-worker.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.structure.analyze"
     },
     {
       "confidence": 0.85,
@@ -4197,6 +4491,28 @@
     {
       "definitions": [],
       "external": false,
+      "key": "llmnav/llmnav.structure.analyze",
+      "location": {
+        "declarationLine": null,
+        "endLine": 11,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/analysis.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Connect opt-in compiler-resolved TypeScript and Go definitions and references to semantic cards.",
+      "semanticId": "llmnav.structure.analyze",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
       "key": "llmnav/llmnav.structure.boundaries",
       "location": {
         "declarationLine": null,
@@ -4219,6 +4535,72 @@
     {
       "definitions": [],
       "external": false,
+      "key": "llmnav/llmnav.structure.compiler-process",
+      "location": {
+        "declarationLine": null,
+        "endLine": 10,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/adapters/process.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Bound opt-in compiler subprocesses and retain cancellation, failure, and exit ownership.",
+      "semanticId": "llmnav.structure.compiler-process",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
+      "key": "llmnav/llmnav.structure.go",
+      "location": {
+        "declarationLine": null,
+        "endLine": 10,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/adapters/go.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Prepare offline Go dependency exports and invoke the standard-library type analysis producer.",
+      "semanticId": "llmnav.structure.go",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
+      "key": "llmnav/llmnav.structure.go-worker",
+      "location": {
+        "declarationLine": null,
+        "endLine": 10,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/adapters/go-analyzer.go",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Resolve Go object identity and lexical references from standard-library type information.",
+      "semanticId": "llmnav.structure.go-worker",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
       "key": "llmnav/llmnav.structure.modules",
       "location": {
         "declarationLine": null,
@@ -4236,6 +4618,50 @@
       "repositoryId": "llmnav",
       "role": "Resolve repository-contained language modules without executing project toolchains or following metadata symlinks.",
       "semanticId": "llmnav.structure.modules",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
+      "key": "llmnav/llmnav.structure.typescript",
+      "location": {
+        "declarationLine": null,
+        "endLine": 10,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/adapters/typescript.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Resolve an installed TypeScript Compiler API and run source analysis in an isolated process.",
+      "semanticId": "llmnav.structure.typescript",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
+      "key": "llmnav/llmnav.structure.typescript-worker",
+      "location": {
+        "declarationLine": null,
+        "endLine": 10,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/adapters/typescript-worker.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Resolve TypeScript declarations and symbol uses through the compiler type checker without emitting code.",
+      "semanticId": "llmnav.structure.typescript-worker",
       "unresolved": false
     },
     {
@@ -4395,11 +4821,11 @@
   ],
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "08603ca29cbcdddfb8a762a40003caa0efdd47bc681de527f5bfc420db5b7849",
+  "sourceHash": "639439991a34faf7e5f24d102f6ad7b61e13fdb285ddd08742081f08304ebdcd",
   "stats": {
-    "edgeCount": 226,
+    "edgeCount": 247,
     "importedIndexCount": 0,
-    "nodeCount": 53,
+    "nodeCount": 59,
     "unresolvedNodeCount": 0
   }
 }

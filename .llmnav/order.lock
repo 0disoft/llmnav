@@ -51,3 +51,9 @@ llmnav.support.concurrency
 llmnav.support.read-operation
 llmnav.agent.freshness
 llmnav.search.discover
+llmnav.structure.analyze
+llmnav.structure.compiler-process
+llmnav.structure.go
+llmnav.structure.typescript
+llmnav.structure.typescript-worker
+llmnav.structure.go-worker
