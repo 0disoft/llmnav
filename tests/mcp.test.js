@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { EventEmitter, getEventListeners, once } from "node:events";
-import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rename, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
@@ -418,3 +418,34 @@ export function rotateSession(): void {}
   const initialized = await initializeProject(root, { agents: ["none"] });
   assert.equal(initialized.ok, true);
 }
+
+test("opt-in MCP generation follows source edits, renames, deletion and recovery", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-mcp-auto-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await createProject(root);
+  const server = createMcpServer({ root, autoGenerate: true });
+  const originalPath = path.join(root, "src", "rotate.ts");
+  const source = await readFile(originalPath, "utf8");
+  await callTool(server, 1, "llmnav_query", { task: "refresh token" });
+  const manifestPath = path.join(root, ".llmnav/cache/manifest.json");
+  const unchanged = await readFile(manifestPath, "utf8");
+  await callTool(server, 2, "llmnav_query", { task: "refresh token" });
+  assert.equal(await readFile(manifestPath, "utf8"), unchanged);
+  await writeFile(originalPath, source.replace("Rotate one", "Rotate qzxupdated one"));
+  const updated = await Promise.all([3, 4].map(id => callTool(server, id, "llmnav_query", { task: "qzxupdated" })));
+  for (const result of updated) assert.equal(result.data[0].id, "auth.session.rotate");
+  const renamed = path.join(root, "src", "moved.mts");
+  await rename(originalPath, renamed);
+  assert.equal((await callTool(server, 5, "llmnav_query", { task: "qzxupdated" })).data[0].location.path, "src/moved.mts");
+  const validManifest = await readFile(manifestPath, "utf8");
+  await writeFile(renamed, source.replace("id=auth.session.rotate", "id=INVALID"));
+  const failed = await server.handleMessage({ jsonrpc: "2.0", id: 6, method: "tools/call", params: { name: "llmnav_query", arguments: { task: "qzxupdated" } } });
+  assert.equal(failed.error.data.code, "LLMNAV_REFRESH_FAILED");
+  assert.equal(server.status().phase, "error");
+  assert.equal(await readFile(manifestPath, "utf8"), validManifest);
+  await writeFile(renamed, source);
+  assert.equal((await callTool(server, 7, "llmnav_query", { task: "refresh token" })).data[0].id, "auth.session.rotate");
+  assert.equal(server.status().phase, "ready");
+  await rm(renamed);
+  assert.deepEqual((await callTool(server, 8, "llmnav_query", { task: "refresh token" })).data, []);
+});

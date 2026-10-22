@@ -25,3 +25,4 @@
 {"query":"explain why one source file has no llmnav annotation and show its audit score or disposition","expected":["llmnav.audit.coverage"]}
 {"query":"retry idempotent reads with exponential backoff jitter and cancellation","expected":["llmnav.support.read-operation"]}
 {"query":"excludes: embedding generation","expected":["llmnav.search.query"]}
+{"query":"automatically refresh MCP indexes after source edits","expected":["llmnav.agent.freshness"]}

@@ -49,3 +49,4 @@
 {"id":"llmnav.support.errors","state":"active"}
 {"id":"llmnav.support.concurrency","state":"active"}
 {"id":"llmnav.support.read-operation","state":"active"}
+{"id":"llmnav.agent.freshness","state":"active"}

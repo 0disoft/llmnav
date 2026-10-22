@@ -6,6 +6,10 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 
 ## [0.14.0] — 2026-10-23
 
+### Added
+
+* Opt-in `mcp --auto-generate`: detect source edits, additions, moves, deletion and metadata changes at request boundaries; generate incrementally before loading the shared session. Report preparation status and failures without returning stale data.
+
 ### Fixed
 
 * Match Latin aliases at word boundaries while preserving CJK substring aliases.

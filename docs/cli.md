@@ -262,7 +262,7 @@ Prints the fixed provider-neutral tool definitions for `query`, `show`, `context
 ## `llmnav mcp`
 
 ```sh
-llmnav mcp [--root <path>]
+llmnav mcp [--root <path>] [--auto-generate]
 ```
 
 Serves the same tool definitions and operation envelope over the Model Context Protocol stdio transport as newline-delimited JSON-RPC 2.0 on stdout. The server answers `initialize`, `ping`, `tools/list`, and `tools/call` with protocol version 2024-11-05, accepts notifications silently, and never writes diagnostics to stdout, so a host can parse every line as protocol traffic. Each `tools/call` result carries the schemaVersion 1 agent operation envelope as text content and sets `isError` whenever `ok` is false. Malformed frames return JSON-RPC parse or invalid-request errors and leave the session alive. The server prepares one index snapshot and reloads it only when `.llmnav/cache` artifacts change, so repeated calls avoid re-reading the cache while a regenerated index is still visible on the next call.
@@ -282,3 +282,5 @@ llmnav editor vscode
 ```
 
 Prints a schemaVersion 1 editor integration envelope containing a VS Code `tasks.json` configuration. The command is repository-independent and does not write `.vscode` files. Merge the returned task into an existing configuration when necessary.
+
+Use `llmnav mcp --auto-generate` for on-request source freshness. Without the flag the host runs generation explicitly. See [editor integration](editor-integration.md#source-freshness-for-mcp).

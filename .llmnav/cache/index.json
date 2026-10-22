@@ -393,7 +393,7 @@
         "index persistence format"
       ],
       "hashes": {
-        "body": "9fc0849633d00e6a55d21b0bd0334f6d1d6f0dbcd0a85479ddadd205c1471430",
+        "body": "c5143c77c92f724d7a032704d2b9ccf7a4b02b4db714c31e5c641b3682cd68c7",
         "semantic": "f4671d61fc8164fc24498faa91ba84f777e28a7f325750991908542867a69b6e",
         "structure": "95bb4b37dc587e88afdffa5e159aacf975164f6261ec8a8d13c0912b54e1f0ed"
       },
@@ -2212,9 +2212,9 @@
         "index preparation"
       ],
       "hashes": {
-        "body": "a2c24d353c34b9b348c9e5ec4f03a08c129c27ef4dbbd39b87997868c7b09ac9",
+        "body": "3ecef5813dfa810bd1af2a03ab6455d758a25f733b6f755d209a5a152d6fa9e5",
         "semantic": "a1ec177829cdd462b6ea996d78d53c2c9071291f1dd14202e05d1236559a8973",
-        "structure": "e75cbc520dab8d8605e294471af8ac9338ee534acad9e4770753577627f6021c"
+        "structure": "78e4d8d2614cbfb79ac3a7b19b1f3df4022a797dbb3dd967555bdc37b1a9861f"
       },
       "id": "llmnav.agent.mcp",
       "imports": [
@@ -2222,6 +2222,7 @@
         "./agent-protocol.js",
         "./config.js",
         "./errors.js",
+        "./mcp-refresh.js",
         "./runtime.js",
         "./search.js",
         "./spec.js",
@@ -2541,11 +2542,67 @@
         "read cancellation"
       ],
       "stability": "architecture"
+    },
+    {
+      "boundaries": [],
+      "excludes": [
+        "filesystem watchers",
+        "source annotation",
+        "request cancellation ownership"
+      ],
+      "hashes": {
+        "body": "795d99728f47cbff6f5760fc96cfeb1ea6939b9d7a50003e2bb42da2e562207a",
+        "semantic": "273f312a13397e49d44806ba090489f8b4f0b901e54593397ba22b84a00ab671",
+        "structure": "f22dd5cafaec2f4c787d8e092423c28f9196630c35618378b4f8d33dce1b2f47"
+      },
+      "id": "llmnav.agent.freshness",
+      "imports": [
+        "./abort.js",
+        "./concurrency.js",
+        "./config.js",
+        "./files.js",
+        "./generator.js",
+        "./util.js",
+        "node:fs/promises",
+        "node:path"
+      ],
+      "invariant": [
+        "Only a successful uncancelled generation advances the prepared source stamp."
+      ],
+      "location": {
+        "declarationLine": null,
+        "endLine": 10,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/mcp-refresh.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "owns": [
+        "source change stamps",
+        "on-request incremental generation",
+        "refresh failure reporting"
+      ],
+      "rel": [
+        "workflow>llmnav.index.generate"
+      ],
+      "role": "Prepare current source-derived indexes before opt-in MCP navigation requests.",
+      "scope": "module",
+      "search": [
+        "source edit refresh",
+        "automatic MCP generation",
+        "index freshness"
+      ],
+      "stability": "architecture"
     }
   ],
   "contractFingerprints": {
     "configuration": {
-      "sha256": "83149a897607287d8f97b183650f7a6402922453908b068255a722b465c42d68"
+      "sha256": "e0f2e2e891adc1defce72fa414794d935ad4eceb95624533f5f40fa01d264358"
     },
     "exportedApi": {
       "count": 5,
@@ -2556,6 +2613,6 @@
   "generatedBy": "llmnav@0.14.0",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "72aca86b2315064e919b277ec96fd8fbca53039f1f303989aedbc9b026218cb7",
+  "sourceHash": "26c79d6e331002dbca631690af96afa89dc9d0fabcd2e48e33c6909bfb41ac7a",
   "specVersion": "1"
 }

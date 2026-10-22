@@ -10,6 +10,12 @@
   },
   "coverageRules": [
     {
+      "match": ["src/mcp-refresh.js"],
+      "name": "MCP source freshness",
+      "requiredFields": ["owns", "invariant"],
+      "scope": "module"
+    },
+    {
       "match": ["src/read-operation.js"],
       "name": "idempotent read resilience",
       "requiredFields": ["owns", "invariant"],

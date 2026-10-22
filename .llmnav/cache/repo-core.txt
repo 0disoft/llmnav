@@ -188,3 +188,10 @@ role Bound idempotent reads with cooperative cancellation and opt-in transient r
 owns read deadlines, read retry scheduling, retry jitter
 excludes write retries, transaction recovery, shared cache ownership
 invariant Cancellation and deadline failures never start another attempt.
+
+@llmnav.agent.freshness
+role Prepare current source-derived indexes before opt-in MCP navigation requests.
+owns source change stamps, on-request incremental generation, refresh failure reporting
+excludes filesystem watchers, source annotation, request cancellation ownership
+invariant Only a successful uncancelled generation advances the prepared source stamp.
+rel workflow>llmnav.index.generate

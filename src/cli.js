@@ -61,7 +61,7 @@ const COMMAND_OPTIONS = Object.freeze({
   explain: new Set(["--root", "--json"]),
   spec: new Set(["--root", "--json"]),
   tools: new Set(["--json"]),
-  mcp: new Set(["--root"]),
+  mcp: new Set(["--root", "--auto-generate"]),
   bundle: new Set(["--root", "--json"]),
   editor: new Set(["--json"]),
   help: new Set(["--root", "--json"]),
@@ -442,7 +442,7 @@ function runTools(json) {
 async function runMcp(args) {
   const rootOption = getOption(args, "--root");
   const root = rootOption ? path.resolve(rootOption) : await findProjectRoot(process.cwd());
-  return serveMcpStdio({ root });
+  return serveMcpStdio({ root, autoGenerate: hasFlag(args, "--auto-generate") });
 }
 
 async function runBundle(root, json) {
@@ -576,7 +576,7 @@ Usage
   llmnav explain <file>
   llmnav spec
   llmnav tools [--json]
-  llmnav mcp [--root <path>]
+  llmnav mcp [--root <path>] [--auto-generate]
   llmnav bundle [--json]
   llmnav editor vscode
 

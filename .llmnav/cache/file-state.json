@@ -2054,7 +2054,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "9fc0849633d00e6a55d21b0bd0334f6d1d6f0dbcd0a85479ddadd205c1471430",
+      "contentHash": "c5143c77c92f724d7a032704d2b9ccf7a4b02b4db714c31e5c641b3682cd68c7",
       "declarations": [
         null
       ],
@@ -2084,7 +2084,7 @@
       ],
       "path": "src/cli.js",
       "semanticBytes": 508,
-      "sourceBytes": 23108
+      "sourceBytes": 23193
     },
     {
       "blocks": [
@@ -3917,6 +3917,122 @@
           "card": {
             "effect": [],
             "excludes": [
+              "filesystem watchers",
+              "source annotation",
+              "request cancellation ownership"
+            ],
+            "id": "llmnav.agent.freshness",
+            "invariant": [
+              "Only a successful uncancelled generation advances the prepared source stamp."
+            ],
+            "owns": [
+              "source change stamps",
+              "on-request incremental generation",
+              "refresh failure reporting"
+            ],
+            "rel": [
+              "workflow>llmnav.index.generate"
+            ],
+            "risk": [],
+            "role": "Prepare current source-derived indexes before opt-in MCP navigation requests.",
+            "scope": "module",
+            "search": [
+              "source edit refresh",
+              "automatic MCP generation",
+              "index freshness"
+            ],
+            "stability": "architecture",
+            "unknown": []
+          },
+          "end": 507,
+          "endLine": 10,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.agent.freshness"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Prepare current source-derived indexes before opt-in MCP navigation requests."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "source change stamps|on-request incremental generation|refresh failure reporting"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "filesystem watchers|source annotation|request cancellation ownership"
+            },
+            {
+              "key": "search",
+              "line": 6,
+              "order": 4,
+              "value": "source edit refresh|automatic MCP generation|index freshness"
+            },
+            {
+              "key": "invariant",
+              "line": 7,
+              "order": 5,
+              "value": "Only a successful uncancelled generation advances the prepared source stamp."
+            },
+            {
+              "key": "rel",
+              "line": 8,
+              "order": 6,
+              "value": "workflow>llmnav.index.generate"
+            },
+            {
+              "key": "stability",
+              "line": 9,
+              "order": 7,
+              "value": "architecture"
+            }
+          ],
+          "filePath": "src/mcp-refresh.js",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.agent.freshness\nrole=Prepare current source-derived indexes before opt-in MCP navigation requests.\nowns=source change stamps|on-request incremental generation|refresh failure reporting\nexcludes=filesystem watchers|source annotation|request cancellation ownership\nsearch=source edit refresh|automatic MCP generation|index freshness\ninvariant=Only a successful uncancelled generation advances the prepared source stamp.\nrel=workflow>llmnav.index.generate\nstability=architecture\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "795d99728f47cbff6f5760fc96cfeb1ea6939b9d7a50003e2bb42da2e562207a",
+      "declarations": [
+        null
+      ],
+      "imports": [
+        "./abort.js",
+        "./concurrency.js",
+        "./config.js",
+        "./files.js",
+        "./generator.js",
+        "./util.js",
+        "node:fs/promises",
+        "node:path"
+      ],
+      "path": "src/mcp-refresh.js",
+      "semanticBytes": 507,
+      "sourceBytes": 3911
+    },
+    {
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
               "agent tool schemas",
               "operation execution",
               "provider SDK transport",
@@ -4013,7 +4129,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "a2c24d353c34b9b348c9e5ec4f03a08c129c27ef4dbbd39b87997868c7b09ac9",
+      "contentHash": "3ecef5813dfa810bd1af2a03ab6455d758a25f733b6f755d209a5a152d6fa9e5",
       "declarations": [
         null
       ],
@@ -4022,6 +4138,7 @@
         "./agent-protocol.js",
         "./config.js",
         "./errors.js",
+        "./mcp-refresh.js",
         "./runtime.js",
         "./search.js",
         "./spec.js",
@@ -4031,7 +4148,7 @@
       ],
       "path": "src/mcp.js",
       "semanticBytes": 531,
-      "sourceBytes": 13159
+      "sourceBytes": 13861
     },
     {
       "blocks": [
@@ -6317,7 +6434,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "fe0d3a91eeb1ce4e1eda067ab5aaa836606c8edfc0dc3c9f22fd1e474df8c2e5",
+      "contentHash": "5b0d080272d132083d654252bbc5b6038bd556022ac6b52ee44e3daa3f6a5d66",
       "declarations": [],
       "imports": [
         "../src/agent-protocol.js",
@@ -6338,7 +6455,7 @@
       ],
       "path": "tests/mcp.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 18452
+      "sourceBytes": 20586
     },
     {
       "blocks": [],
@@ -6596,9 +6713,10 @@
     },
     {
       "blocks": [],
-      "contentHash": "42c9dc3cd84f9640fb4f5c275e71b505e43e248c546d8b28c6dbea3f542f2af4",
+      "contentHash": "096cf57cdb48c5887cea32ddcf567e0c9e5047230a4403f196ff383ba7adb9ae",
       "declarations": [],
       "imports": [
+        "../src/mcp-refresh.js",
         "../src/mcp.js",
         "node:assert/strict",
         "node:events",
@@ -6606,7 +6724,7 @@
       ],
       "path": "tests/session-cache.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 3993
+      "sourceBytes": 6539
     },
     {
       "blocks": [],

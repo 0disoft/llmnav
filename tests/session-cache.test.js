@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { getEventListeners } from "node:events";
 import test from "node:test";
+import { createSourcePreparation } from "../src/mcp-refresh.js";
 import { createSessionCache } from "../src/mcp.js";
 
 function deadline() {
@@ -91,4 +92,68 @@ test("server shutdown cancels shared loading with the original reason and remove
   await assert.rejects(pending, error => error === reason);
   assert.equal(sharedSignal.reason, reason);
   assert.equal(getEventListeners(controller.signal, "abort").length, 0);
+});
+
+test("shared preparation runs once, preserves cancellation ownership, and retries failures on the next request", async () => {
+  const gate = Promise.withResolvers(), started = Promise.withResolvers();
+  let generates = 0, stamp = "first", fail = false;
+  const cause = new Error("disk full");
+  const prepare = createSourcePreparation("unused", {
+    sourceStamp: async () => stamp,
+    generateProject: async (root, { signal }) => {
+      generates++;
+      started.resolve();
+      await gate.promise;
+      assert.equal(signal.aborted, false);
+      if (fail) throw cause;
+      return { ok: true };
+    },
+  });
+  const cache = createSessionCache("unused", {
+    prepare, sessionStamp: async () => stamp, createSession: async () => ({ refresh: async () => {} }),
+  });
+  const controller = new AbortController();
+  const first = cache.current({ signal: controller.signal });
+  const second = cache.current();
+  await started.promise;
+  assert.equal(cache.status().phase, "preparing");
+  controller.abort(new Error("stop subscriber"));
+  await assert.rejects(first, /stop subscriber/u);
+  gate.resolve();
+  await second;
+  assert.equal(cache.status().phase, "ready");
+  await cache.current();
+  assert.equal(generates, 1);
+  stamp = "changed";
+  fail = true;
+  await assert.rejects(cache.current(), error => error.cause === cause && error.code === "LLMNAV_REFRESH_FAILED");
+  assert.equal(cache.status().phase, "error");
+  fail = false;
+  await cache.current();
+  assert.equal(generates, 3);
+});
+
+test("edits during preparation and late abandoned completions are not acknowledged", async () => {
+  let stamp = "first", generates = 0;
+  const gate = Promise.withResolvers(), started = Promise.withResolvers();
+  const controller = new AbortController();
+  const prepare = createSourcePreparation("unused", {
+    sourceStamp: async () => stamp,
+    generateProject: async () => { generates++; started.resolve(); await gate.promise; return { ok: true }; },
+  });
+  const late = prepare({ signal: controller.signal });
+  await started.promise;
+  controller.abort(new Error("abandoned"));
+  gate.resolve();
+  await assert.rejects(late, /abandoned/u);
+  await prepare();
+  assert.equal(generates, 2);
+  const changing = createSourcePreparation("unused", {
+    sourceStamp: async () => stamp,
+    generateProject: async () => { generates++; stamp = "second"; return { ok: true }; },
+  });
+  await changing();
+  await changing();
+  await changing();
+  assert.equal(generates, 4);
 });

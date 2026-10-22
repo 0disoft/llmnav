@@ -37,3 +37,10 @@ role Serve the stable agent tool schema and operation protocol over the Model Co
 owns JSON-RPC framing, capability negotiation, tool listing, tool call mapping, index snapshot reuse
 excludes agent tool schemas, operation execution, provider SDK transport, index preparation
 rel workflow>llmnav.agent.tool-schema, workflow>llmnav.agent.protocol
+
+@llmnav.agent.freshness
+role Prepare current source-derived indexes before opt-in MCP navigation requests.
+owns source change stamps, on-request incremental generation, refresh failure reporting
+excludes filesystem watchers, source annotation, request cancellation ownership
+invariant Only a successful uncancelled generation advances the prepared source stamp.
+rel workflow>llmnav.index.generate

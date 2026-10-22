@@ -27,3 +27,11 @@ The matcher follows the current [VS Code task and problem matcher contract](http
 Editors and language-client wrappers should consume `check --format editor` or call `diagnosticsToEditor(diagnostics)`. This keeps coordinate conversion and severity mapping in LLMNav while leaving document URI construction, lifecycle, debounce, and Problems-panel ownership to the editor integration.
 
 LLMNav does not run a watcher or language server. A host decides when to invoke checks and how to cancel or replace stale results.
+
+## Source freshness for MCP
+
+Start `llmnav mcp --auto-generate` to refresh indexes on demand before tool calls. The first call prepares the index. Later calls compare selected source paths and file metadata (including nanosecond modification/change times and file identity), configured graph inputs, configuration and Go module metadata. Additions, edits, renames, deletions and branch checkouts trigger incremental generation through the normal repository lock and recovery transaction. The default `llmnav mcp` keeps host-managed generation.
+
+Concurrent requests share preparation and wait for it before querying. Request cancellation stops only that subscriber's wait; preparation has its own bounded session deadline and server-shutdown signal. Failed generation returns a JSON-RPC error with `LLMNAV_REFRESH_FAILED` and cause details; no previous snapshot is returned. A later request can retry after correction. Embedders can inspect `server.status()` for `idle`, `checking`, `preparing`, `loading`, `ready`, or `error` and error details.
+
+Change detection runs at the request boundary, without a persistent watcher. An edit made during generation is checked again on the next request. Filesystems or tools that preserve all metadata can require explicit `llmnav generate --full`; this is metadata-based freshness rather than a snapshot of a concurrently edited filesystem.

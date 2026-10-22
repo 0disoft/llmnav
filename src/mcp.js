@@ -18,6 +18,7 @@ import { createProjectSession } from "./search.js";
 import { PACKAGE_VERSION } from "./spec.js";
 import { abortable, assertAbortSignal, createAbortError, throwIfAborted } from "./abort.js";
 import { loadConfig } from "./config.js";
+import { createSourcePreparation } from "./mcp-refresh.js";
 import { MAX_TIMER_DELAY_MS } from "./runtime.js";
 
 export const MCP_PROTOCOL_VERSION = "2024-11-05";
@@ -45,6 +46,7 @@ export function createMcpServer(options = {}) {
       loadTimeoutMs: options.sessionLoadTimeoutMs,
       signal: options.signal,
       scheduler: options.scheduler,
+      autoGenerate: options.autoGenerate,
     })
     : null;
   const tools = getAgentToolDefinitions().map(toMcpTool);
@@ -54,6 +56,7 @@ export function createMcpServer(options = {}) {
   }
 
   return {
+    status() { return sessionCache?.status() ?? { phase: "ready", error: null }; },
     async handleLine(line) {
       let message;
       try {
@@ -149,6 +152,9 @@ async function resolveSession(session, sessionCache, signal) {
 
 export function createSessionCache(root, dependencies = {}) {
   const createSession = dependencies.createSession ?? createProjectSession;
+  const prepare = dependencies.prepare ?? (dependencies.autoGenerate === true ? createSourcePreparation(root) : null);
+  let phase = "idle";
+  let lastError = null;
   const readStamp = dependencies.sessionStamp ?? sessionStamp;
   const timeoutMs = dependencies.loadTimeoutMs ?? DEFAULT_REQUEST_TIMEOUT_MS;
   if (!Number.isInteger(timeoutMs) || timeoutMs < 0 || timeoutMs > MAX_TIMER_DELAY_MS) {
@@ -159,6 +165,7 @@ export function createSessionCache(root, dependencies = {}) {
   let stamp = null;
   let loading = null;
   return {
+    status() { return { phase, error: lastError }; },
     current(options = {}) {
       assertAbortSignal(options.signal);
       throwIfAborted(options.signal);
@@ -170,6 +177,8 @@ export function createSessionCache(root, dependencies = {}) {
   };
 
   function startLoad() {
+    phase = "checking";
+    lastError = null;
     const controller = new AbortController();
     const onAbort = () => controller.abort(createAbortError(dependencies.signal));
     dependencies.signal?.addEventListener("abort", onAbort);
@@ -183,6 +192,8 @@ export function createSessionCache(root, dependencies = {}) {
       // Detach a possibly half-refreshed instance before admitting a new load.
       session = null;
       stamp = null;
+      phase = "error";
+      lastError = toErrorPayload(error);
       throw error;
     }).finally(() => {
       dependencies.signal?.removeEventListener?.("abort", onAbort);
@@ -192,6 +203,12 @@ export function createSessionCache(root, dependencies = {}) {
   }
 
   async function load(signal) {
+    if (prepare !== null) {
+      phase = "preparing";
+      await abortable(prepare({ signal }), signal);
+      throwIfAborted(signal);
+    }
+    phase = "loading";
     const previous = session;
     const previousStamp = stamp;
     const nextStamp = await abortable(readStamp(root, undefined, { signal }), signal);
@@ -202,6 +219,7 @@ export function createSessionCache(root, dependencies = {}) {
     throwIfAborted(signal);
     session = next;
     stamp = nextStamp;
+    phase = "ready";
     return session;
   }
 }
