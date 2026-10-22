@@ -4,6 +4,19 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.13.3] — 2026-10-23
+
+### Fixed
+
+* Serialize generation-lock publication, stale-owner reclamation, and release through a mutation guard so a stale observation cannot displace a live owner; retry transient Windows guard-read sharing errors.
+* Serialize formatting with other repository writers and reject source changes detected immediately before replacement with `LLMNAV_WRITE_CONFLICT`.
+* Stop MCP stdio waits on cancellation, output closure, or errors, and remove drain, close, error, and abort listeners on every exit.
+* Prevent late older session and host refreshes from replacing newer successful snapshots, including prompt partitions and generation hashes.
+
+### Changed
+
+* A dead or unreadable mutation guard requires stopping all LLMNav processes and explicitly removing the guard before retrying. Dead main generation locks remain automatically recoverable.
+
 ## [0.13.2] — 2026-10-23
 
 ### Fixed

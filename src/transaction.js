@@ -221,7 +221,15 @@ async function claimLockMutationGuard(candidatePath, lockPath, runtime) {
   } catch (error) {
     if (!error || typeof error !== "object" || error.code !== "EEXIST") throw error;
   }
-  const observed = await readLockRecord(guardPath);
+  let observed;
+  try {
+    observed = await readLockRecord(guardPath);
+  } catch (error) {
+    // Windows can deny opening a guard while its owner finishes deleting it.
+    // Retry as contention, never as permission to displace an unknown owner.
+    if (error && typeof error === "object" && ["EACCES", "EBUSY", "EPERM"].includes(error.code)) return false;
+    throw error;
+  }
   if (observed.missing) return false;
   if (!isOwnedLockRecord(observed.record) || !runtime.isProcessAlive(observed.record.pid)) {
     throw new Error("The LLMNav generation lock mutation guard needs recovery. After stopping all LLMNav processes, remove .llmnav/generation.lock.guard and retry.");

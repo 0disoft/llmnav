@@ -61,6 +61,34 @@ test("stale owner observation cannot displace a newer lock owner", { timeout: 15
   assert.deepEqual(await readdir(path.dirname(lockPath)), []);
 });
 
+test("a guard disappearing during a Windows read is retried without stealing ownership", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-lock-guard-sharing-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  const guardPath = path.join(root, ".llmnav/generation.lock.guard");
+  await mkdir(path.dirname(guardPath));
+  const originalRead = fs.readFile;
+  for (const code of ["EACCES", "EBUSY", "EPERM"]) {
+    await writeFile(guardPath, JSON.stringify({ schemaVersion: 1, ownerId: "departing", pid: process.pid }));
+    let pendingDeletion = true;
+    const mock = context.mock.method(fs, "readFile", async (...args) => {
+      if (args[0] === guardPath && pendingDeletion) {
+        pendingDeletion = false;
+        await rm(guardPath);
+        throw Object.assign(new Error("guard is pending deletion"), { code });
+      }
+      return originalRead(...args);
+    });
+    syncBuiltinESMExports();
+    try {
+      const lock = await acquireGenerationLock(root, { delays: [0, 0] });
+      assert.equal(pendingDeletion, false);
+      await releaseGenerationLock(lock);
+    } finally {
+      mock.mock.restore(); syncBuiltinESMExports();
+    }
+  }
+});
+
 test("a dead mutation guard requires explicit recovery and is never stolen", async (context) => {
   const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-lock-guard-recovery-"));
   context.after(() => rm(root, { recursive: true, force: true }));
