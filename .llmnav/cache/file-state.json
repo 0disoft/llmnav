@@ -1395,7 +1395,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "e599e63ad013bc9d291d459a36aa9af2ecd4c9b566616cd0c68ebbac36722286",
+      "contentHash": "65aa4f61808c5d385fd6a5696dab9f4acacc1147c558c92c08e2ae4be487c83f",
       "declarations": [
         null
       ],
@@ -1403,13 +1403,14 @@
         "./agent-tools.js",
         "./audit.js",
         "./graph-input.js",
+        "./policy.js",
         "./project.js",
         "./search.js",
         "./validator.js"
       ],
       "path": "src/agent-protocol.js",
       "semanticBytes": 504,
-      "sourceBytes": 7030
+      "sourceBytes": 7237
     },
     {
       "blocks": [
@@ -1502,14 +1503,16 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "c36efb37e558f0ecbff58f2c047438506fcbe76544d891582235a4f9a68640f6",
+      "contentHash": "6e12196a3f9157d763546937015c66c6f627bb8aa3dd32130f82a5ed165062f6",
       "declarations": [
         null
       ],
-      "imports": [],
+      "imports": [
+        "./policy.js"
+      ],
       "path": "src/agent-tools.js",
       "semanticBytes": 411,
-      "sourceBytes": 3072
+      "sourceBytes": 3501
     },
     {
       "blocks": [
@@ -1710,7 +1713,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "b102b85d489f9204e379f0864cf8ebcff76db9da3b380da31e195f7616397d76",
+      "contentHash": "877e9ff057af02de9d25d7c9be6231a31a658c1e2c60d52f2a7113b74c8fb72e",
       "declarations": [
         null
       ],
@@ -1718,13 +1721,14 @@
         "./abort.js",
         "./boundaries.js",
         "./module-resolution.js",
+        "./policy.js",
         "./project.js",
         "./util.js",
         "node:path"
       ],
       "path": "src/audit.js",
       "semanticBytes": 577,
-      "sourceBytes": 24558
+      "sourceBytes": 24624
     },
     {
       "blocks": [
@@ -2046,7 +2050,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "28c1b3b77a3963791a3226bd6bae51a7d8e41fd9325cac4ca5159d8502862a7e",
+      "contentHash": "9fc0849633d00e6a55d21b0bd0334f6d1d6f0dbcd0a85479ddadd205c1471430",
       "declarations": [
         null
       ],
@@ -2064,6 +2068,7 @@
         "./initializer.js",
         "./mcp.js",
         "./migration.js",
+        "./policy.js",
         "./project.js",
         "./prompt-bundle.js",
         "./sarif.js",
@@ -2075,7 +2080,7 @@
       ],
       "path": "src/cli.js",
       "semanticBytes": 508,
-      "sourceBytes": 22820
+      "sourceBytes": 23108
     },
     {
       "blocks": [
@@ -4155,6 +4160,120 @@
           "card": {
             "effect": [],
             "excludes": [
+              "query execution",
+              "configuration loading",
+              "agent transport"
+            ],
+            "id": "llmnav.support.policy",
+            "invariant": [],
+            "owns": [
+              "search ranking weights",
+              "search input limits",
+              "audit input limits"
+            ],
+            "rel": [
+              "workflow>llmnav.search.query",
+              "workflow>llmnav.agent.tool-schema",
+              "workflow>llmnav.audit.coverage"
+            ],
+            "risk": [],
+            "role": "Keep one source of truth for search ranking weights and bounded input defaults.",
+            "scope": "module",
+            "search": [
+              "search ranking constants",
+              "query input limits",
+              "audit candidate limits",
+              "policy defaults"
+            ],
+            "stability": "architecture",
+            "unknown": []
+          },
+          "end": 480,
+          "endLine": 11,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.support.policy"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Keep one source of truth for search ranking weights and bounded input defaults."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "search ranking weights|search input limits|audit input limits"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "query execution|configuration loading|agent transport"
+            },
+            {
+              "key": "search",
+              "line": 6,
+              "order": 4,
+              "value": "search ranking constants|query input limits|audit candidate limits|policy defaults"
+            },
+            {
+              "key": "rel",
+              "line": 7,
+              "order": 5,
+              "value": "workflow>llmnav.search.query"
+            },
+            {
+              "key": "rel",
+              "line": 8,
+              "order": 6,
+              "value": "workflow>llmnav.agent.tool-schema"
+            },
+            {
+              "key": "rel",
+              "line": 9,
+              "order": 7,
+              "value": "workflow>llmnav.audit.coverage"
+            },
+            {
+              "key": "stability",
+              "line": 10,
+              "order": 8,
+              "value": "architecture"
+            }
+          ],
+          "filePath": "src/policy.js",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.support.policy\nrole=Keep one source of truth for search ranking weights and bounded input defaults.\nowns=search ranking weights|search input limits|audit input limits\nexcludes=query execution|configuration loading|agent transport\nsearch=search ranking constants|query input limits|audit candidate limits|policy defaults\nrel=workflow>llmnav.search.query\nrel=workflow>llmnav.agent.tool-schema\nrel=workflow>llmnav.audit.coverage\nstability=architecture\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "e33433407ebfbf3a1eedfeb8541fc2745373e724a98750225d684a13072cf54a",
+      "declarations": [
+        null
+      ],
+      "imports": [],
+      "path": "src/policy.js",
+      "semanticBytes": 480,
+      "sourceBytes": 1240
+    },
+    {
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
               "semantic validation",
               "cache generation"
             ],
@@ -4909,7 +5028,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "71804b668f8583fdf00c30268079cb0f1cbef4a054c71531513a3b18a79704f8",
+      "contentHash": "aa62395881cbcac2f3ffa23fcecf03c179d24c0d625edad302e8513d12169286",
       "declarations": [
         null
       ],
@@ -4919,6 +5038,7 @@
         "./generator.js",
         "./graph.js",
         "./inverted-index.js",
+        "./policy.js",
         "./prompt-bundle.js",
         "./registry.js",
         "./tokenizer.js",
@@ -4928,7 +5048,7 @@
       ],
       "path": "src/search.js",
       "semanticBytes": 464,
-      "sourceBytes": 31068
+      "sourceBytes": 32103
     },
     {
       "blocks": [],
@@ -5912,6 +6032,23 @@
       "path": "tests/performance.test.js",
       "semanticBytes": 0,
       "sourceBytes": 1312
+    },
+    {
+      "blocks": [],
+      "contentHash": "1ab5178b73bf6937634b41c1b8c7ee9a983d215be5ee2bff5beaec66702ea508",
+      "declarations": [],
+      "imports": [
+        "../src/agent-protocol.js",
+        "../src/audit.js",
+        "../src/inverted-index.js",
+        "../src/policy.js",
+        "../src/search.js",
+        "node:assert/strict",
+        "node:test"
+      ],
+      "path": "tests/policy.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 3729
     },
     {
       "blocks": [],

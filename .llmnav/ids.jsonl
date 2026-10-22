@@ -45,3 +45,4 @@
 {"id":"llmnav.agent.mcp","state":"active"}
 {"id":"llmnav.support.runtime","state":"active"}
 {"id":"llmnav.support.abort","state":"active"}
+{"id":"llmnav.support.policy","state":"active"}

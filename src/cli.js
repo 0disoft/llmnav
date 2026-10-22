@@ -41,6 +41,7 @@ import { loadPromptPrefixBundle } from "./prompt-bundle.js";
 import { diagnosticsToEditor, getEditorIntegration } from "./editor.js";
 import { AUDIT_PRIORITIES, auditHasFindings, auditProject, explainProjectFile } from "./audit.js";
 import { migrateProject } from "./migration.js";
+import { SEARCH_LIMITS } from "./policy.js";
 
 const VALUE_OPTIONS = new Set(["--root", "--format", "--top", "--depth", "--budget", "--max-edges", "--agents", "--file", "--fail-on", "--output"]);
 
@@ -267,9 +268,9 @@ async function runContext(root, args, json) {
     return 2;
   }
   const result = await buildContext(root, id, {
-    depth: parseCliIntegerOption(args, "--depth", 1),
-    budget: parseCliIntegerOption(args, "--budget", 2500),
-    maxEdges: parseCliIntegerOption(args, "--max-edges", 24),
+    depth: parseCliIntegerOption(args, "--depth", SEARCH_LIMITS.depth.default),
+    budget: parseCliIntegerOption(args, "--budget", SEARCH_LIMITS.budget.default),
+    maxEdges: parseCliIntegerOption(args, "--max-edges", SEARCH_LIMITS.maxEdges.default),
   });
   if (json) console.log(JSON.stringify(result, null, 2));
   else console.log(result.text);
@@ -278,7 +279,7 @@ async function runContext(root, args, json) {
 
 async function runEval(root, args, json) {
   const result = await evaluateProject(root, {
-    top: parseCliIntegerOption(args, "--top", 5),
+    top: parseCliIntegerOption(args, "--top", SEARCH_LIMITS.top.default),
     file: getOption(args, "--file"),
   });
   if (json) {
@@ -565,10 +566,10 @@ Usage
   llmnav check [paths...] [--format text|json|github|sarif|editor]
   llmnav format [paths...] [--check]
   llmnav generate [--check] [--full]
-  llmnav query "<task>" [--top 5]
+  llmnav query "<task>" [--top ${SEARCH_LIMITS.top.default}]
   llmnav show <semantic-id>
-  llmnav context <semantic-id> [--depth 1] [--budget 2500] [--max-edges 24]
-  llmnav eval [--file path] [--top 5]
+  llmnav context <semantic-id> [--depth ${SEARCH_LIMITS.depth.default}] [--budget ${SEARCH_LIMITS.budget.default}] [--max-edges ${SEARCH_LIMITS.maxEdges.default}]
+  llmnav eval [--file path] [--top ${SEARCH_LIMITS.top.default}]
   llmnav doctor
   llmnav migrate [--check|--write]
   llmnav audit [--summary] [--output path] [--fail-on none|high|medium|low]

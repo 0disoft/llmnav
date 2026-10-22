@@ -393,9 +393,9 @@
         "index persistence format"
       ],
       "hashes": {
-        "body": "28c1b3b77a3963791a3226bd6bae51a7d8e41fd9325cac4ca5159d8502862a7e",
+        "body": "9fc0849633d00e6a55d21b0bd0334f6d1d6f0dbcd0a85479ddadd205c1471430",
         "semantic": "f4671d61fc8164fc24498faa91ba84f777e28a7f325750991908542867a69b6e",
-        "structure": "cb4a647894b1c1e9431175b7d81b81a12e5aa89358a05c5c02468297dd2d8bb6"
+        "structure": "95bb4b37dc587e88afdffa5e159aacf975164f6261ec8a8d13c0912b54e1f0ed"
       },
       "id": "llmnav.cli.dispatch",
       "imports": [
@@ -412,6 +412,7 @@
         "./initializer.js",
         "./mcp.js",
         "./migration.js",
+        "./policy.js",
         "./project.js",
         "./prompt-bundle.js",
         "./sarif.js",
@@ -683,9 +684,9 @@
         "source mutation"
       ],
       "hashes": {
-        "body": "71804b668f8583fdf00c30268079cb0f1cbef4a054c71531513a3b18a79704f8",
+        "body": "aa62395881cbcac2f3ffa23fcecf03c179d24c0d625edad302e8513d12169286",
         "semantic": "945f325a2ad2abfa71212b02dd952c071d47ed6d3848a16d247afd48dbe5ced6",
-        "structure": "72a8b2e76b92988e953b02478748f913e5f05e3f4108cc810de6fafcc079d3dd"
+        "structure": "a53c3b192c4f1a53461232c4516ebbfd79337f70a6fb27f2e6325213050a6cb6"
       },
       "id": "llmnav.search.query",
       "imports": [
@@ -694,6 +695,7 @@
         "./generator.js",
         "./graph.js",
         "./inverted-index.js",
+        "./policy.js",
         "./prompt-bundle.js",
         "./registry.js",
         "./tokenizer.js",
@@ -1312,15 +1314,16 @@
         "source mutation"
       ],
       "hashes": {
-        "body": "e599e63ad013bc9d291d459a36aa9af2ecd4c9b566616cd0c68ebbac36722286",
+        "body": "65aa4f61808c5d385fd6a5696dab9f4acacc1147c558c92c08e2ae4be487c83f",
         "semantic": "3476901cdb633f3bc0fbcfdff78aa789b36c8d885a6137bf5cab66f763ca9486",
-        "structure": "1eab4986ebf8d007ec438c149e335af5ecd4c98c661f2e3a7d17b825ac389a4b"
+        "structure": "e2ebafd67f7b7afa843ab30ea2d66cd74a0893a2f6b0875d2e452d8eebd15e63"
       },
       "id": "llmnav.agent.protocol",
       "imports": [
         "./agent-tools.js",
         "./audit.js",
         "./graph-input.js",
+        "./policy.js",
         "./project.js",
         "./search.js",
         "./validator.js"
@@ -1419,12 +1422,14 @@
         "repository scope"
       ],
       "hashes": {
-        "body": "c36efb37e558f0ecbff58f2c047438506fcbe76544d891582235a4f9a68640f6",
+        "body": "6e12196a3f9157d763546937015c66c6f627bb8aa3dd32130f82a5ed165062f6",
         "semantic": "d1de5aa0a4d4ade41371bd255707d45ec8ba04edd4d99f9d49242cd766df1f4a",
-        "structure": "01cefd4f7b9d4d7a8a90ececba902900b7ba139ca93ba7554b6763626ea6a22e"
+        "structure": "f7288c1ea4e3c498c7ca4e1d62c455c8e07d1cc102615842d2b06c21bc8cc503"
       },
       "id": "llmnav.agent.tool-schema",
-      "imports": [],
+      "imports": [
+        "./policy.js"
+      ],
       "location": {
         "declarationLine": null,
         "endLine": 9,
@@ -1969,15 +1974,16 @@
         "semantic role generation"
       ],
       "hashes": {
-        "body": "b102b85d489f9204e379f0864cf8ebcff76db9da3b380da31e195f7616397d76",
+        "body": "877e9ff057af02de9d25d7c9be6231a31a658c1e2c60d52f2a7113b74c8fb72e",
         "semantic": "47c79f36d71a39ad0b795700686fce0f12733568534f1a69dca05cc3cc8348c7",
-        "structure": "1ab02741eeb4f62f28c6f7c745cc81efcf10dc9fd541e7f33188a4194a2d79e0"
+        "structure": "63b2f15828293156f5c02a00fd4c7d58578a3ee9cd6439ee8a1c6904d7e43fb6"
       },
       "id": "llmnav.audit.coverage",
       "imports": [
         "./abort.js",
         "./boundaries.js",
         "./module-resolution.js",
+        "./policy.js",
         "./project.js",
         "./util.js",
         "node:path"
@@ -2321,6 +2327,53 @@
         "abort error"
       ],
       "stability": "architecture"
+    },
+    {
+      "boundaries": [],
+      "excludes": [
+        "query execution",
+        "configuration loading",
+        "agent transport"
+      ],
+      "hashes": {
+        "body": "e33433407ebfbf3a1eedfeb8541fc2745373e724a98750225d684a13072cf54a",
+        "semantic": "5666a94d1c8084131d0d491627fd12b04093d3053adefafdc719a28e8edfcc77",
+        "structure": "79d75218e26f6313afbe080aa88e5ab3e9fb12e97d17ac3c2168c1c1ccf0c935"
+      },
+      "id": "llmnav.support.policy",
+      "imports": [],
+      "location": {
+        "declarationLine": null,
+        "endLine": 11,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/policy.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "owns": [
+        "search ranking weights",
+        "search input limits",
+        "audit input limits"
+      ],
+      "rel": [
+        "workflow>llmnav.search.query",
+        "workflow>llmnav.agent.tool-schema",
+        "workflow>llmnav.audit.coverage"
+      ],
+      "role": "Keep one source of truth for search ranking weights and bounded input defaults.",
+      "scope": "module",
+      "search": [
+        "search ranking constants",
+        "query input limits",
+        "audit candidate limits",
+        "policy defaults"
+      ],
+      "stability": "architecture"
     }
   ],
   "contractFingerprints": {
@@ -2336,6 +2389,6 @@
   "generatedBy": "llmnav@0.11.0",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "d306beeede799682b0382d9a1069d16022a54f6d1c0dcf77bd663f8717a117d3",
+  "sourceHash": "81bcf80ed51108ebc2b85ef8b883ac8c29581f5447d10565c8e6ddfa8a26ddf4",
   "specVersion": "1"
 }

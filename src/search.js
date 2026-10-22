@@ -13,6 +13,7 @@ stability=architecture
 import path from "node:path";
 import { throwIfAborted } from "./abort.js";
 import { loadConfig } from "./config.js";
+import { SEARCH_LIMITS, SEARCH_RANK } from "./policy.js";
 import { resolveRegistryId, loadRegistry } from "./registry.js";
 import { renderCompactCard } from "./generator.js";
 import { assertNoSymlinkTraversal, approximateTokens, compareText, readJsonSafe, readText, sha256, toPosix, truncateToTokenBudget } from "./util.js";
@@ -247,7 +248,7 @@ export function queryIndex(index, query, options = {}) {
 }
 
 export function queryPreparedIndex(index, searchIndex, query, options = {}) {
-  const top = boundedInteger(options.top, 5, 1, 100);
+  const top = boundedInteger(options.top, SEARCH_LIMITS.top.default, SEARCH_LIMITS.top.minimum, SEARCH_LIMITS.top.maximum);
   const lexicon = options.lexicon ?? { aliases: {} };
   const metrics = options.metrics ?? null;
   const normalizedQuery = normalizeSearchText(query);
@@ -290,14 +291,14 @@ export function queryPreparedIndex(index, searchIndex, query, options = {}) {
     const card = index.cards[position];
     const normalizedId = prepared.normalizedIds[position];
     if (normalizedId === normalizedQuery) {
-      addScore(resultsById, card, 1000, "exact semantic ID");
-    } else if (normalizedId.includes(normalizedQuery) && normalizedQuery.length > 2) {
-      addScore(resultsById, card, 100, "semantic ID phrase");
+      addScore(resultsById, card, SEARCH_RANK.exactSemanticId, "exact semantic ID");
+    } else if (normalizedId.includes(normalizedQuery) && normalizedQuery.length >= SEARCH_RANK.semanticIdPhraseMinimumQueryLength) {
+      addScore(resultsById, card, SEARCH_RANK.semanticIdPhrase, "semantic ID phrase");
     }
   }
   for (const target of aliasTargets) {
     const card = byId.get(target);
-    if (card) addScore(resultsById, card, 500, aliasReasons.get(target) ?? []);
+    if (card) addScore(resultsById, card, SEARCH_RANK.alias, aliasReasons.get(target) ?? []);
   }
 
   const preparedSearchIndex = prepareCompactSearchIndex(searchIndex);
@@ -323,21 +324,21 @@ export function queryPreparedIndex(index, searchIndex, query, options = {}) {
     }
   }
 
-  if (normalizedQuery.length >= 4) {
+  if (normalizedQuery.length >= SEARCH_RANK.exactPhraseMinimumQueryLength) {
     for (const [cardIndex, document] of searchIndex.documents.entries()) {
       throwIfAborted(options.signal);
       if (metrics) metrics.phraseDocumentsScanned += 1;
       const phrases = Array.isArray(document) && Array.isArray(document[1]) ? document[1] : [];
       if (!phrases.some((field) => field.includes(normalizedQuery))) continue;
       const card = byId.get(searchIndex.cardIds[cardIndex]);
-      if (card) addScore(resultsById, card, 40, "exact phrase");
+      if (card) addScore(resultsById, card, SEARCH_RANK.exactPhrase, "exact phrase");
     }
   }
 
   const results = [...resultsById.values()].filter((result) => result.score > 0);
   const seeds = [...results]
     .sort((left, right) => right.score - left.score || (cardOrder.get(left.card.id) ?? 0) - (cardOrder.get(right.card.id) ?? 0))
-    .slice(0, 3);
+    .slice(0, SEARCH_RANK.seedCount);
   if (prepared.graphCompatible) {
     applyGraphBonuses(index, options.graph, seeds, byId, resultsById, metrics);
   } else {
@@ -350,8 +351,8 @@ export function queryPreparedIndex(index, searchIndex, query, options = {}) {
     .slice(0, top)
     .map((result) => ({
       id: result.card.id,
-      score: Number(result.score.toFixed(3)),
-      reasons: [...new Set(result.reasons)].slice(0, 6),
+      score: Number(result.score.toFixed(SEARCH_RANK.scorePrecision)),
+      reasons: [...new Set(result.reasons)].slice(0, SEARCH_RANK.reasonLimit),
       role: result.card.role,
       location: result.card.location,
       card: result.card,
@@ -369,7 +370,7 @@ function prepareCompactSearchIndex(searchIndex) {
 }
 
 export function queryIndexLegacy(index, query, options = {}) {
-  const top = boundedInteger(options.top, 5, 1, 100);
+  const top = boundedInteger(options.top, SEARCH_LIMITS.top.default, SEARCH_LIMITS.top.minimum, SEARCH_LIMITS.top.maximum);
   const lexicon = options.lexicon ?? { aliases: {} };
   const normalizedQuery = normalizeSearchText(query);
   const queryTokens = tokenize(query);
@@ -404,15 +405,15 @@ export function queryIndexLegacy(index, query, options = {}) {
     const reasons = [];
 
     if (normalizeSearchText(card.id) === normalizedQuery) {
-      score += 1000;
+      score += SEARCH_RANK.exactSemanticId;
       reasons.push("exact semantic ID");
-    } else if (normalizeSearchText(card.id).includes(normalizedQuery) && normalizedQuery.length > 2) {
-      score += 100;
+    } else if (normalizeSearchText(card.id).includes(normalizedQuery) && normalizedQuery.length >= SEARCH_RANK.semanticIdPhraseMinimumQueryLength) {
+      score += SEARCH_RANK.semanticIdPhrase;
       reasons.push("semantic ID phrase");
     }
 
     if (aliasTargets.has(card.id)) {
-      score += 500;
+      score += SEARCH_RANK.alias;
       reasons.push(...(aliasReasons.get(card.id) ?? []));
     }
 
@@ -433,16 +434,16 @@ export function queryIndexLegacy(index, query, options = {}) {
     const phraseFields = [card.role, ...(card.search ?? []), ...(card.invariant ?? []), ...(card.owns ?? [])]
       .filter(Boolean)
       .map(normalizeSearchText);
-    if (normalizedQuery.length >= 4 && phraseFields.some((field) => field.includes(normalizedQuery))) {
-      score += 40;
+    if (normalizedQuery.length >= SEARCH_RANK.exactPhraseMinimumQueryLength && phraseFields.some((field) => field.includes(normalizedQuery))) {
+      score += SEARCH_RANK.exactPhrase;
       reasons.push("exact phrase");
     }
 
-    if (score > 0) results.push({ card, score, reasons: [...new Set(reasons)].slice(0, 6) });
+    if (score > 0) results.push({ card, score, reasons: [...new Set(reasons)].slice(0, SEARCH_RANK.reasonLimit) });
   }
 
   const byId = new Map(results.map((result) => [result.card.id, result]));
-  const seeds = [...results].sort((left, right) => right.score - left.score).slice(0, 3);
+  const seeds = [...results].sort((left, right) => right.score - left.score).slice(0, SEARCH_RANK.seedCount);
   for (const seed of seeds) {
     for (const relation of seed.card.rel ?? []) {
       const separator = relation.indexOf(">");
@@ -451,7 +452,7 @@ export function queryIndexLegacy(index, query, options = {}) {
       const targetCard = index.cards.find((card) => card.id === target);
       if (!targetCard) continue;
       const existing = byId.get(target);
-      const bonus = seed.score * 0.08;
+      const bonus = seed.score * SEARCH_RANK.relationBonusFactor;
       if (existing) {
         existing.score += bonus;
         existing.reasons.push(`related-from=${seed.card.id}`);
@@ -468,8 +469,8 @@ export function queryIndexLegacy(index, query, options = {}) {
     .slice(0, top)
     .map((result) => ({
       id: result.card.id,
-      score: Number(result.score.toFixed(3)),
-      reasons: [...new Set(result.reasons)].slice(0, 6),
+      score: Number(result.score.toFixed(SEARCH_RANK.scorePrecision)),
+      reasons: [...new Set(result.reasons)].slice(0, SEARCH_RANK.reasonLimit),
       role: result.card.role,
       location: result.card.location,
       card: result.card,
@@ -507,9 +508,9 @@ export async function buildContext(root, id, options = {}) {
 
 function buildSnapshotContext(snapshot, id, options = {}) {
   const { index, graph, registry } = snapshot;
-  const depth = boundedInteger(options.depth, 1, 0, 8);
-  const budget = boundedInteger(options.budget, 2500, 128, 100000);
-  const maxEdges = boundedInteger(options.maxEdges, 24, 0, 1000);
+  const depth = boundedInteger(options.depth, SEARCH_LIMITS.depth.default, SEARCH_LIMITS.depth.minimum, SEARCH_LIMITS.depth.maximum);
+  const budget = boundedInteger(options.budget, SEARCH_LIMITS.budget.default, SEARCH_LIMITS.budget.minimum, SEARCH_LIMITS.budget.maximum);
+  const maxEdges = boundedInteger(options.maxEdges, SEARCH_LIMITS.maxEdges.default, SEARCH_LIMITS.maxEdges.minimum, SEARCH_LIMITS.maxEdges.maximum);
   const direct = index.cards.find((card) => card.id === id);
   let rootId = direct?.id ?? null;
   if (!rootId && !String(id).includes("/")) {
@@ -679,8 +680,8 @@ function applyGraphBonuses(index, graph, seeds, byId, resultsById, metrics) {
       const target = localSemanticId(entry.neighbor, index.repositoryId);
       const targetCard = target ? byId.get(target) : null;
       if (!targetCard) continue;
-      const directionWeight = entry.direction === "out" ? 1 : 0.6;
-      const bonus = seed.score * 0.08 * edgeConfidence(entry.edge) * directionWeight;
+      const directionWeight = entry.direction === "out" ? 1 : SEARCH_RANK.inboundRelationWeight;
+      const bonus = seed.score * SEARCH_RANK.relationBonusFactor * edgeConfidence(entry.edge) * directionWeight;
       if (bonus <= 0) continue;
       addScore(
         resultsById,
@@ -699,7 +700,7 @@ function applyLegacyRelationBonuses(seeds, byId, resultsById) {
       if (separator <= 0) continue;
       const target = relation.slice(separator + 1);
       const targetCard = byId.get(target);
-      if (targetCard) addScore(resultsById, targetCard, seed.score * 0.08, `related-from=${seed.card.id}`);
+      if (targetCard) addScore(resultsById, targetCard, seed.score * SEARCH_RANK.relationBonusFactor, `related-from=${seed.card.id}`);
     }
   }
 }

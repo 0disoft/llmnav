@@ -45,3 +45,4 @@ llmnav.structure.modules
 llmnav.agent.mcp
 llmnav.support.runtime
 llmnav.support.abort
+llmnav.support.policy

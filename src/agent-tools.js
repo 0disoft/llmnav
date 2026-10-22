@@ -8,6 +8,8 @@ rel=workflow>llmnav.agent.protocol
 stability=contract
 */
 
+import { AUDIT_LIMITS, SEARCH_LIMITS } from "./policy.js";
+
 export const AGENT_TOOL_SCHEMA_VERSION = 2;
 
 // Duplicated from AUDIT_PRIORITIES on purpose: importing the audit module would load
@@ -17,16 +19,16 @@ const AUDIT_PRIORITY_VALUES = Object.freeze(["high", "medium", "low"]);
 const DEFINITIONS = [
   tool("llmnav_query", "Find the most relevant semantic cards for a coding task.", {
     task: stringProperty("Task language to search for."),
-    top: integerProperty("Maximum results.", 1, 100, 5),
+    top: integerProperty("Maximum results.", SEARCH_LIMITS.top.minimum, SEARCH_LIMITS.top.maximum, SEARCH_LIMITS.top.default),
   }, ["task"]),
   tool("llmnav_show", "Resolve one local or qualified workspace semantic ID.", {
     id: stringProperty("Semantic ID or repository-qualified semantic ID."),
   }, ["id"]),
   tool("llmnav_context", "Build bounded semantic and graph context around one ID.", {
     id: stringProperty("Semantic ID or repository-qualified semantic ID."),
-    depth: integerProperty("Maximum graph traversal depth.", 0, 8, 1),
-    budget: integerProperty("Approximate token budget.", 128, 100000, 2500),
-    maxEdges: integerProperty("Maximum graph edges to inspect and pack.", 0, 1000, 24),
+    depth: integerProperty("Maximum graph traversal depth.", SEARCH_LIMITS.depth.minimum, SEARCH_LIMITS.depth.maximum, SEARCH_LIMITS.depth.default),
+    budget: integerProperty("Approximate token budget.", SEARCH_LIMITS.budget.minimum, SEARCH_LIMITS.budget.maximum, SEARCH_LIMITS.budget.default),
+    maxEdges: integerProperty("Maximum graph edges to inspect and pack.", SEARCH_LIMITS.maxEdges.minimum, SEARCH_LIMITS.maxEdges.maximum, SEARCH_LIMITS.maxEdges.default),
   }, ["id"]),
   tool("llmnav_check", "Validate semantic cards and configured graph inputs without mutation.", {
     paths: {
@@ -41,7 +43,7 @@ const DEFINITIONS = [
   }, ["file"]),
   tool("llmnav_audit", "List the highest-priority unannotated boundaries worth documenting next.", {
     priority: enumProperty("Lowest audit priority to include.", AUDIT_PRIORITY_VALUES, "low"),
-    top: integerProperty("Maximum candidates.", 1, 50, 10),
+    top: integerProperty("Maximum candidates.", AUDIT_LIMITS.top.minimum, AUDIT_LIMITS.top.maximum, AUDIT_LIMITS.top.default),
   }),
 ];
 

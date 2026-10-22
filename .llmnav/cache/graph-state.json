@@ -2,7 +2,7 @@
   "partitions": [
     {
       "edges": [],
-      "inputHash": "956dbbe2dd317eadc3709d2386c26301a606814ff64512f828a15031abdf7ef2",
+      "inputHash": "8a9556df0c14cf44693a427931fbd2b45a89d32edd1c79ff55b84e71b9bf481d",
       "key": "card:llmnav/example.auth.session",
       "nodes": [
         {
@@ -46,7 +46,7 @@
           "to": "llmnav/example.auth.session.rotate-contract"
         }
       ],
-      "inputHash": "39fc205a594dc9ca52a8995e03ea264346ae926402dd3d9cef12149f43e36b9a",
+      "inputHash": "2b977d0164978975e07dcffa3d8ae43e21b34e4998228251fdfba18bda319ccd",
       "key": "card:llmnav/example.auth.session.rotate",
       "nodes": [
         {
@@ -96,7 +96,7 @@
     },
     {
       "edges": [],
-      "inputHash": "6147ee9c001e7984e9b17d75967ee442f1d106c872d60779fcfc3d3ff8850601",
+      "inputHash": "478351d594de62168990cbcaf7c9543c512775c30b5aa8b20e639793b6ceb622",
       "key": "card:llmnav/example.auth.session.rotate-contract",
       "nodes": [
         {
@@ -137,7 +137,7 @@
     },
     {
       "edges": [],
-      "inputHash": "bda9e6e81ba180268256c8e0835d5becb57eaa37e487e5564c33d0c874af60e0",
+      "inputHash": "a3835c5454fab5e33533fae0a2dd5884bb2e67e35fdcef76cd5d3bcdc868c423",
       "key": "card:llmnav/example.billing.credit",
       "nodes": [
         {
@@ -166,7 +166,7 @@
     },
     {
       "edges": [],
-      "inputHash": "8520dc99e01ad3620dfc3ebcf4ff103332305dcf7b85690753f61c7173b27763",
+      "inputHash": "c5742a104971379b7a071b330c5caab6fb9cea9daba9f8e16340662d40eb3c36",
       "key": "card:llmnav/example.billing.credit.reserve",
       "nodes": [
         {
@@ -207,7 +207,7 @@
     },
     {
       "edges": [],
-      "inputHash": "083c6e30122419689b3a3053b5db52cd7212f814e584d441a8be798d803b5d04",
+      "inputHash": "5cbc89dfbcb7a3c5089c032bbba7ce983029f740cc48d4535ec00eae534cba19",
       "key": "card:llmnav/example.privacy.export",
       "nodes": [
         {
@@ -251,7 +251,7 @@
           "to": "llmnav/example.privacy.export.prepare-contract"
         }
       ],
-      "inputHash": "1501514ebb46a60cc0dcb12957d3d5dd541f99f99bc028115084f00fc10f4415",
+      "inputHash": "a9c25656a682c56642082c94218dab24c5d2e1f70b278387ce24f6c10a0bbffc",
       "key": "card:llmnav/example.privacy.export.prepare",
       "nodes": [
         {
@@ -301,7 +301,7 @@
     },
     {
       "edges": [],
-      "inputHash": "20fae527c76c6c12518b41def4b92d35cb04237a6b51ef0f732d7b190381b96e",
+      "inputHash": "1f2de0a33d39cc10d456f9758eb2997db63c2bc1d30c9df1301d9ce877a7ce34",
       "key": "card:llmnav/example.privacy.export.prepare-contract",
       "nodes": [
         {
@@ -357,7 +357,7 @@
           "to": "llmnav/llmnav.search.query"
         }
       ],
-      "inputHash": "52b4f5e810cdfc624cd244d59eeb80d196cea51a3889be6fe35084b5536ddb69",
+      "inputHash": "a887474b3b56b4edbb38f9f8cdc77dc51ac5488bf63b9e2dfd14c758ed1a79e1",
       "key": "card:llmnav/llmnav.agent.install",
       "nodes": [
         {
@@ -466,7 +466,7 @@
           "to": "llmnav/llmnav.spec.contract"
         }
       ],
-      "inputHash": "70f9f263a0f9d3595181239db0f63ab436d37feff69e3d9e742496128f62df3c",
+      "inputHash": "12794e9f53d5cba340250a318f02d245cc3ade430d34588292f3028406ca633b",
       "key": "card:llmnav/llmnav.agent.mcp",
       "nodes": [
         {
@@ -602,7 +602,7 @@
           "to": "llmnav/llmnav.index.transaction"
         }
       ],
-      "inputHash": "095ad679d9496ffe76ff8cdd341c2022edfa69f6fda44390c5c97493f3395a4b",
+      "inputHash": "7f03f2c761bd0a5600a03cd355f7a398c75b8dd39470c1c43d75696afc4e90eb",
       "key": "card:llmnav/llmnav.agent.prompt-bundle",
       "nodes": [
         {
@@ -801,9 +801,23 @@
             "type": "source-card"
           },
           "to": "llmnav/llmnav.search.query"
+        },
+        {
+          "confidence": 0.85,
+          "from": "llmnav/llmnav.agent.protocol",
+          "id": "bfebcba7a9770b832072d551c425324c8297b79f3d53fbd53ab14664e7ca90a8",
+          "kind": "imports",
+          "provenance": {
+            "generator": "llmnav",
+            "line": null,
+            "path": "src/agent-protocol.js",
+            "source": "src/agent-protocol.js",
+            "type": "local-import"
+          },
+          "to": "llmnav/llmnav.support.policy"
         }
       ],
-      "inputHash": "3bbe17869cf841de1e14b7e632a4bd2a4c3a2e6a9a7e267d816563bfed59cd6c",
+      "inputHash": "f0fe47e58b36d44db51962ff03fc895898aacfe32169b83b09cca79dd49c11fa",
       "key": "card:llmnav/llmnav.agent.protocol",
       "nodes": [
         {
@@ -880,9 +894,18 @@
           "repositoryId": "llmnav",
           "role": null,
           "semanticId": "llmnav.search.query"
+        },
+        {
+          "definitions": [],
+          "external": false,
+          "key": "llmnav/llmnav.support.policy",
+          "location": null,
+          "repositoryId": "llmnav",
+          "role": null,
+          "semanticId": "llmnav.support.policy"
         }
       ],
-      "outputHash": "dd7d8060ab48e62aea7710252b42a15ba8de95a598832f7a1f3f759a2af86f6c"
+      "outputHash": "71b14127df6618345fed324f486af06c58a810a9bbe778ea0aeac992e00c85ce"
     },
     {
       "edges": [
@@ -901,7 +924,7 @@
           "to": "llmnav/llmnav.agent.protocol"
         }
       ],
-      "inputHash": "48aa50cf5eb02bf4ea0f7857e01010e60bf34c93bc25b8b2aa98f970158bb525",
+      "inputHash": "0c3e34c9a1057d61bff8543b926af7f94c7c34cce93a09872d5a20609c8af8d0",
       "key": "card:llmnav/llmnav.agent.provider-neutral-host",
       "nodes": [
         {
@@ -952,9 +975,23 @@
             "type": "source-card"
           },
           "to": "llmnav/llmnav.agent.protocol"
+        },
+        {
+          "confidence": 0.85,
+          "from": "llmnav/llmnav.agent.tool-schema",
+          "id": "137407dcfccf1cf134e4ed7cb270a2fa6975c4c755b1a9fd84bbb9a037fc24ba",
+          "kind": "imports",
+          "provenance": {
+            "generator": "llmnav",
+            "line": null,
+            "path": "src/agent-tools.js",
+            "source": "src/agent-tools.js",
+            "type": "local-import"
+          },
+          "to": "llmnav/llmnav.support.policy"
         }
       ],
-      "inputHash": "91329ed0f02ddc0fb5a7a274f04965b629606c2d021fb4f85312558bbcb24b2f",
+      "inputHash": "123a9b29ee1423482a1456fd42a8a112b4d586350a1b2ba5ac5e926e130422f6",
       "key": "card:llmnav/llmnav.agent.tool-schema",
       "nodes": [
         {
@@ -986,9 +1023,18 @@
           "repositoryId": "llmnav",
           "role": "Publish stable provider-neutral tool definitions without loading repository execution code.",
           "semanticId": "llmnav.agent.tool-schema"
+        },
+        {
+          "definitions": [],
+          "external": false,
+          "key": "llmnav/llmnav.support.policy",
+          "location": null,
+          "repositoryId": "llmnav",
+          "role": null,
+          "semanticId": "llmnav.support.policy"
         }
       ],
-      "outputHash": "1904ba7889481dcd81d5ee392411c534c2d6556e8cbdb8a33394f30d5a81fe7b"
+      "outputHash": "636cc6b73a7ba426bc8e65e94d01ea4e16f45e34dc7055ab9c4c264162252144"
     },
     {
       "edges": [
@@ -1061,9 +1107,23 @@
             "type": "local-import"
           },
           "to": "llmnav/llmnav.support.abort"
+        },
+        {
+          "confidence": 0.85,
+          "from": "llmnav/llmnav.audit.coverage",
+          "id": "670ed5b71f892bd1683feb66be81de025fb7711fe381e7d267d773ff9abeb3c8",
+          "kind": "imports",
+          "provenance": {
+            "generator": "llmnav",
+            "line": null,
+            "path": "src/audit.js",
+            "source": "src/audit.js",
+            "type": "local-import"
+          },
+          "to": "llmnav/llmnav.support.policy"
         }
       ],
-      "inputHash": "e2dbc01071036ce9a45a5aa282ddd3fefa306daa479fe459e9ed7bde3e5e2eb5",
+      "inputHash": "f8b1c206cf17b876442d7c3edfb473485dbc9bc54f7a80297564ff3efeeb019c",
       "key": "card:llmnav/llmnav.audit.coverage",
       "nodes": [
         {
@@ -1122,9 +1182,18 @@
           "repositoryId": "llmnav",
           "role": null,
           "semanticId": "llmnav.support.abort"
+        },
+        {
+          "definitions": [],
+          "external": false,
+          "key": "llmnav/llmnav.support.policy",
+          "location": null,
+          "repositoryId": "llmnav",
+          "role": null,
+          "semanticId": "llmnav.support.policy"
         }
       ],
-      "outputHash": "5f689e0f01e989ae2595099291942150d5ee85ab7ec52b3433fc047a5ecf36e9"
+      "outputHash": "4c551cac25bfa98e69c6f9999f32181d1d7e4a3bf67d38feac79e1f4199a9e6f"
     },
     {
       "edges": [
@@ -1463,9 +1532,23 @@
             "type": "local-import"
           },
           "to": "llmnav/llmnav.spec.contract"
+        },
+        {
+          "confidence": 0.85,
+          "from": "llmnav/llmnav.cli.dispatch",
+          "id": "1c148fdb3005b94273192da308b7dbedc92f5233443af136fd171a603d2b7596",
+          "kind": "imports",
+          "provenance": {
+            "generator": "llmnav",
+            "line": null,
+            "path": "src/cli.js",
+            "source": "src/cli.js",
+            "type": "local-import"
+          },
+          "to": "llmnav/llmnav.support.policy"
         }
       ],
-      "inputHash": "12eef2c78adb45032dffa1fd309b2364d16ffe7c546bf8e1537065f5617e2852",
+      "inputHash": "ba05bf748f8c5fe89daf3b94ffa8fef5f814731a2516eb643083e7f6325e3020",
       "key": "card:llmnav/llmnav.cli.dispatch",
       "nodes": [
         {
@@ -1659,9 +1742,18 @@
           "repositoryId": "llmnav",
           "role": null,
           "semanticId": "llmnav.spec.contract"
+        },
+        {
+          "definitions": [],
+          "external": false,
+          "key": "llmnav/llmnav.support.policy",
+          "location": null,
+          "repositoryId": "llmnav",
+          "role": null,
+          "semanticId": "llmnav.support.policy"
         }
       ],
-      "outputHash": "a8f6d7497cc9d0f656fbda0ccb97e5da98580c79bc19a3daf3e8d5ea1b6ea9fe"
+      "outputHash": "bed0541759e6e647e25a1bcd45f368744cc4e2c8002cc45074ddbe93aaabf2b0"
     },
     {
       "edges": [
@@ -1694,7 +1786,7 @@
           "to": "llmnav/llmnav.spec.contract"
         }
       ],
-      "inputHash": "256f79feb4670e0c474fb1bd37cfe1ae85e602ea29f05e5b8579ae9db556a772",
+      "inputHash": "c907a0d72f32ce9272e669257b528eaece6aa0899a3843779aef9df0fbe82ad0",
       "key": "card:llmnav/llmnav.config.load",
       "nodes": [
         {
@@ -1756,7 +1848,7 @@
           "to": "llmnav/llmnav.index.generate"
         }
       ],
-      "inputHash": "182726f632b34409e3083c7fab9a430d09f7bd40fb3c5c0fe8658c09ca6c2af3",
+      "inputHash": "7a340352525bb66904588628f8e7e80d15d9fa5349a9e33aec3505f710e43de1",
       "key": "card:llmnav/llmnav.contract.fingerprint",
       "nodes": [
         {
@@ -1809,7 +1901,7 @@
           "to": "llmnav/llmnav.project.scan"
         }
       ],
-      "inputHash": "15588a0ff92031701216c3985265c694355da95fe938df46bdbaaad9f0be2b8d",
+      "inputHash": "5b3c0de88351781f309912d4dc5ef20fead19f97db9cef1971289ed4c04d7e66",
       "key": "card:llmnav/llmnav.declaration.extract",
       "nodes": [
         {
@@ -1932,7 +2024,7 @@
           "to": "llmnav/llmnav.index.transaction"
         }
       ],
-      "inputHash": "c2d1aee93b82c705b1bfe0f681426d8aedf973a49d82c90fc18af5141656e11e",
+      "inputHash": "36121c7592e60863b3f536523d09d6981043db50086c1c279d96bce653ada022",
       "key": "card:llmnav/llmnav.diagnostics.doctor",
       "nodes": [
         {
@@ -2021,7 +2113,7 @@
           "to": "llmnav/llmnav.rules.validate"
         }
       ],
-      "inputHash": "46e32edb56947bf2f8575ccee362e6de4e0246aa652f95f992547bee33b4aed3",
+      "inputHash": "867c8430d38d22d60f9cb54e53a57e6f0545b040df0fef50a21b8de8eb0d8890",
       "key": "card:llmnav/llmnav.diagnostics.editor",
       "nodes": [
         {
@@ -2088,7 +2180,7 @@
           "to": "llmnav/llmnav.spec.contract"
         }
       ],
-      "inputHash": "d95298816a06474dbeaedce9cc409c2bf32a93c6b04a3daa871ff63df4693583",
+      "inputHash": "8ba9ab21559cf276c41a42b9535ce91ce69dbc8c439558c696971e33e73ec953",
       "key": "card:llmnav/llmnav.diagnostics.sarif",
       "nodes": [
         {
@@ -2220,7 +2312,7 @@
           "to": "llmnav/llmnav.rules.validate"
         }
       ],
-      "inputHash": "2ecff3c825abde2fd744be81e6f36cb441b613087d9dd8d7b375fdc99719d9e1",
+      "inputHash": "02a969dfd8eeed90e76f2ab6010913d4c618599ce5ba7813c8aa68ca4da8cf21",
       "key": "card:llmnav/llmnav.eval.conformance",
       "nodes": [
         {
@@ -2337,7 +2429,7 @@
           "to": "llmnav/llmnav.search.query"
         }
       ],
-      "inputHash": "d08997ff3aef3fa84924296deca53c0ddf3855cdc42cc6fdffa7cb3e43d13aff",
+      "inputHash": "09f77271ab245f4e427fcbbfba9891c98af67531e2844734b3ecb48fb294be89",
       "key": "card:llmnav/llmnav.eval.measure",
       "nodes": [
         {
@@ -2427,7 +2519,7 @@
           "to": "llmnav/llmnav.structure.modules"
         }
       ],
-      "inputHash": "8fc653ccf07280c5455d411cb1900d04fd3610f5e3cb55e833c2e95113cc5efe",
+      "inputHash": "fbeda402425d14ce0eae38bfe5a7acff2c37d9e66ca9b78221eb467a3c3790f6",
       "key": "card:llmnav/llmnav.graph.generate",
       "nodes": [
         {
@@ -2526,7 +2618,7 @@
           "to": "llmnav/llmnav.spec.contract"
         }
       ],
-      "inputHash": "851d3b7718a6d2595b38e3babfbfe7705cb43c1a3772ceaa46ce927ce24ae02e",
+      "inputHash": "8a101c9555b4516b5cb563d70faa1a0c7d31b25e7d8cb6dd3ce62068d96b08ad",
       "key": "card:llmnav/llmnav.graph.import",
       "nodes": [
         {
@@ -2597,7 +2689,7 @@
           "to": "llmnav/llmnav.index.generate"
         }
       ],
-      "inputHash": "8a7e11556097051be307c07618f1f3c5273d39e2182da86f47c2e01ead68d0cd",
+      "inputHash": "1075e31412cc130f19e284cffe8f46d5b4bab47e923eddeeffab4a8c2221e642",
       "key": "card:llmnav/llmnav.index.changes",
       "nodes": [
         {
@@ -2958,7 +3050,7 @@
           "to": "llmnav/llmnav.syntax.parse"
         }
       ],
-      "inputHash": "7bb9fe4a63e757bc38ec4362d5ce944ddcd448ff7c44bd8e61cccab4117bcb66",
+      "inputHash": "f5d48abb49a9b67fec2ecc358eba4b6c1d7f986d57c0958d48a2b22b301c9f05",
       "key": "card:llmnav/llmnav.index.generate",
       "nodes": [
         {
@@ -3271,7 +3363,7 @@
           "to": "llmnav/llmnav.syntax.parse"
         }
       ],
-      "inputHash": "6bcf59aae4e5bf7f1d4669d258cc9c22b9a412e7ca7db58efce5ec832d78c71a",
+      "inputHash": "975e862b85eae2df38bc07bef116fa78ad49ebfccd9c7c0d354a805e3fd5b05e",
       "key": "card:llmnav/llmnav.index.incremental",
       "nodes": [
         {
@@ -3415,7 +3507,7 @@
           "to": "llmnav/llmnav.search.tokenize"
         }
       ],
-      "inputHash": "58b48482fa2cc979f434fc1b8e70dce90ccea16bb0c5b1b4550fe926d0502b6e",
+      "inputHash": "ac82081cfc5f6c7eeb8604d84afaf362f81b7888c6e0799025549bc0a130ded7",
       "key": "card:llmnav/llmnav.index.inverted",
       "nodes": [
         {
@@ -3505,7 +3597,7 @@
           "to": "llmnav/llmnav.index.inverted"
         }
       ],
-      "inputHash": "61b5a8ecce14b6e1e0d6eab353ac39606064bb0b824eb6f105b19ecf2753a4f4",
+      "inputHash": "11971ca98229068fbfb1817484d2d5b116a8a01dda9d036782e3179f2c0fc511",
       "key": "card:llmnav/llmnav.index.search-shards",
       "nodes": [
         {
@@ -3595,7 +3687,7 @@
           "to": "llmnav/llmnav.support.runtime"
         }
       ],
-      "inputHash": "596f46a026431c65ac0e6d1ed68df71451627d9b90773fd00d510b09439b33c4",
+      "inputHash": "6d70c517da4a951e6f00980faefa51b865afb94575c1c0314d32c6bd7f6f75ca",
       "key": "card:llmnav/llmnav.index.transaction",
       "nodes": [
         {
@@ -3722,7 +3814,7 @@
           "to": "llmnav/llmnav.spec.contract"
         }
       ],
-      "inputHash": "9633db12b4a05bdede5327214a5217e0e46461a3e78bd85ebbcd25e36b2ed30b",
+      "inputHash": "fd54a7fe594ca4f5004e39473fed5a737da54c30fb6eab49e29bdf56df3f2836",
       "key": "card:llmnav/llmnav.project.initialize",
       "nodes": [
         {
@@ -3905,7 +3997,7 @@
           "to": "llmnav/llmnav.index.transaction"
         }
       ],
-      "inputHash": "15bb98401cb1eae63a09e77fa157e1049d188d27b719707e3ed2427e7812e0ef",
+      "inputHash": "859eb178667bdd3c5c4d5e76486f4652786283d809635ceffd6cde85eb6b0432",
       "key": "card:llmnav/llmnav.project.migrate",
       "nodes": [
         {
@@ -4133,7 +4225,7 @@
           "to": "llmnav/llmnav.syntax.parse"
         }
       ],
-      "inputHash": "32d70326ccc3985e9cd7bf2ce0d7f2d5c01c4ec7e48c85e3cac10ee4be02026a",
+      "inputHash": "45d60094a74e811218ba62781536876e97b843164184e7cadcb6d5bc2cac2427",
       "key": "card:llmnav/llmnav.project.scan",
       "nodes": [
         {
@@ -4254,7 +4346,7 @@
           "to": "llmnav/llmnav.spec.contract"
         }
       ],
-      "inputHash": "a12031d9c40725680bf6e7a54066b19d1e24ef85edaf2f594890010de30a0e68",
+      "inputHash": "2d8010acc5a855bb3dc7144627fe5cb4038a2d9d3fcb6de5f66b24033f63cd2a",
       "key": "card:llmnav/llmnav.registry.ids",
       "nodes": [
         {
@@ -4358,7 +4450,7 @@
           "to": "llmnav/llmnav.syntax.parse"
         }
       ],
-      "inputHash": "c14ca16dad568eda35da0521d00b449e417268be8c6aa906a4b27e78f967eb16",
+      "inputHash": "57970c1735cccc2299023f3cc332d9c26e94a77e90ca77607a0a007a6f8e6d97",
       "key": "card:llmnav/llmnav.rules.validate",
       "nodes": [
         {
@@ -4581,9 +4673,23 @@
             "type": "local-import"
           },
           "to": "llmnav/llmnav.support.abort"
+        },
+        {
+          "confidence": 0.85,
+          "from": "llmnav/llmnav.search.query",
+          "id": "5f92b41151b640ec95751d55440f506c9d43c468c776cb8b4b611f3266c3e305",
+          "kind": "imports",
+          "provenance": {
+            "generator": "llmnav",
+            "line": null,
+            "path": "src/search.js",
+            "source": "src/search.js",
+            "type": "local-import"
+          },
+          "to": "llmnav/llmnav.support.policy"
         }
       ],
-      "inputHash": "823fd3a8f214d50c3a9c91bc86ea2ad7e01c0bed4884dd939def15673277c6b2",
+      "inputHash": "5ede597ed9f44c36f1674fa88d20d19d92f9624088b0a2b7add12934ef14e875",
       "key": "card:llmnav/llmnav.search.query",
       "nodes": [
         {
@@ -4687,9 +4793,18 @@
           "repositoryId": "llmnav",
           "role": null,
           "semanticId": "llmnav.support.abort"
+        },
+        {
+          "definitions": [],
+          "external": false,
+          "key": "llmnav/llmnav.support.policy",
+          "location": null,
+          "repositoryId": "llmnav",
+          "role": null,
+          "semanticId": "llmnav.support.policy"
         }
       ],
-      "outputHash": "88da59f4279b9b7f9677d64aff115961fb89e9a2cf56045af7948811ee908c57"
+      "outputHash": "0a71dbb9022423f14f04f23eef9853131b47f2618a3223663bc291da6238ba54"
     },
     {
       "edges": [
@@ -4708,7 +4823,7 @@
           "to": "llmnav/llmnav.search.query"
         }
       ],
-      "inputHash": "181b2f279f265791a1b52de55c0f85052f9b0d858f44865c36b41c875a52f420",
+      "inputHash": "3c50072513d967290cb39b00168c9a8700549c563c48a2c4954b40d8a612c00b",
       "key": "card:llmnav/llmnav.search.tokenize",
       "nodes": [
         {
@@ -4775,7 +4890,7 @@
           "to": "llmnav/llmnav.support.abort"
         }
       ],
-      "inputHash": "e6fca965a4dabf653f58897c5ab53882e7e479afb7ff46b8d0a1bb41afa2ce89",
+      "inputHash": "2589602f5120b7bafa001d2875d22cd4038fce1ce3d86c56d9d5a8d11ba1a243",
       "key": "card:llmnav/llmnav.source.discover",
       "nodes": [
         {
@@ -4879,7 +4994,7 @@
           "to": "llmnav/llmnav.syntax.parse"
         }
       ],
-      "inputHash": "51ee8b4cbd57c868f8dfbac8a0664807aeaa6a9845cd7d0106985f3516f6bcc4",
+      "inputHash": "7bdb9b26c4166dde2289d88c9eb5e1608699d4717b8175a63e714f3960fdbe9e",
       "key": "card:llmnav/llmnav.source.format",
       "nodes": [
         {
@@ -4964,7 +5079,7 @@
           "to": "llmnav/llmnav.rules.validate"
         }
       ],
-      "inputHash": "ccc871885acfcd7654b00049a8aecb6905fffea6402f7624c1b1dc5945fc2ccd",
+      "inputHash": "b7a7ca16e5d6cbf3338aa54cd78e7ac4d111e879f4d909e9609fdf1db7ec58f9",
       "key": "card:llmnav/llmnav.spec.contract",
       "nodes": [
         {
@@ -5026,7 +5141,7 @@
           "to": "llmnav/llmnav.index.generate"
         }
       ],
-      "inputHash": "99d30f9592a21600030414262be57c2670bbfa28d7b4abb5e0f96aa8fe4eadf4",
+      "inputHash": "8627a4fbb6dc75b7fa1643f9b56989c10170b6a0d75c55461c53f9cd263a1dd4",
       "key": "card:llmnav/llmnav.structure.boundaries",
       "nodes": [
         {
@@ -5093,7 +5208,7 @@
           "to": "llmnav/llmnav.project.scan"
         }
       ],
-      "inputHash": "3812ef574a40d9059bbb0b17a836be63167bd8cf995c424c8494d56fb645a5f5",
+      "inputHash": "fb4e75df5de32af0d12bf0f19f67b38f7c5f77233efc1d80d13ff7c030577a65",
       "key": "card:llmnav/llmnav.structure.modules",
       "nodes": [
         {
@@ -5140,7 +5255,7 @@
     },
     {
       "edges": [],
-      "inputHash": "c4978dc4a1fa55c202cb9b438fe0c589158ace903bdbfcafe1d70b9c00177a6e",
+      "inputHash": "a44b2d9892f238e88eed61b041a2657836a65a6ed149fcd894f74993dbdad785",
       "key": "card:llmnav/llmnav.support.abort",
       "nodes": [
         {
@@ -5168,8 +5283,107 @@
       "outputHash": "362938c1d96c0b225359eba1495b25c16250a1513bbc9529ea887a18d9e8d266"
     },
     {
+      "edges": [
+        {
+          "confidence": 1,
+          "from": "llmnav/llmnav.support.policy",
+          "id": "57cf1ee89a5058a7c602ab71bab3a6f0035254546052aa5d522ba34b73af09d5",
+          "kind": "workflow",
+          "provenance": {
+            "generator": null,
+            "line": 1,
+            "path": "src/policy.js",
+            "source": "src/policy.js",
+            "type": "source-card"
+          },
+          "to": "llmnav/llmnav.agent.tool-schema"
+        },
+        {
+          "confidence": 1,
+          "from": "llmnav/llmnav.support.policy",
+          "id": "9bba7dbe59e086a59100d2cf54087b9876a81bc03ca2ea1f622ab5632e7ac083",
+          "kind": "workflow",
+          "provenance": {
+            "generator": null,
+            "line": 1,
+            "path": "src/policy.js",
+            "source": "src/policy.js",
+            "type": "source-card"
+          },
+          "to": "llmnav/llmnav.audit.coverage"
+        },
+        {
+          "confidence": 1,
+          "from": "llmnav/llmnav.support.policy",
+          "id": "a238aac7e56c301e32719e0a4d75c5e405f1263bc291a0d4422c7476e2e97ee8",
+          "kind": "workflow",
+          "provenance": {
+            "generator": null,
+            "line": 1,
+            "path": "src/policy.js",
+            "source": "src/policy.js",
+            "type": "source-card"
+          },
+          "to": "llmnav/llmnav.search.query"
+        }
+      ],
+      "inputHash": "96065e5b108f84acdc56ebef504c11ef5ef7f878bb24de2a5543a5fa022c3239",
+      "key": "card:llmnav/llmnav.support.policy",
+      "nodes": [
+        {
+          "definitions": [],
+          "external": false,
+          "key": "llmnav/llmnav.agent.tool-schema",
+          "location": null,
+          "repositoryId": "llmnav",
+          "role": null,
+          "semanticId": "llmnav.agent.tool-schema"
+        },
+        {
+          "definitions": [],
+          "external": false,
+          "key": "llmnav/llmnav.audit.coverage",
+          "location": null,
+          "repositoryId": "llmnav",
+          "role": null,
+          "semanticId": "llmnav.audit.coverage"
+        },
+        {
+          "definitions": [],
+          "external": false,
+          "key": "llmnav/llmnav.search.query",
+          "location": null,
+          "repositoryId": "llmnav",
+          "role": null,
+          "semanticId": "llmnav.search.query"
+        },
+        {
+          "definitions": [],
+          "external": false,
+          "key": "llmnav/llmnav.support.policy",
+          "location": {
+            "declarationLine": null,
+            "endLine": 11,
+            "exported": null,
+            "kind": null,
+            "language": null,
+            "path": "src/policy.js",
+            "receiver": null,
+            "signature": null,
+            "startLine": 1,
+            "symbol": null,
+            "visibility": null
+          },
+          "repositoryId": "llmnav",
+          "role": "Keep one source of truth for search ranking weights and bounded input defaults.",
+          "semanticId": "llmnav.support.policy"
+        }
+      ],
+      "outputHash": "daf9cf64564b622afe86b2f1335aff7335cccc9df619e2dd26f6b5d2adbe2c97"
+    },
+    {
       "edges": [],
-      "inputHash": "51523bd02f83f1d4b3b442f855cc47da80ec6819849ee3296a7ff2b26b2e1598",
+      "inputHash": "dedf753c7cdbedd5656a6524dbe4ec6de563f14d66bbc466d6d864aa190e1f30",
       "key": "card:llmnav/llmnav.support.runtime",
       "nodes": [
         {
@@ -5213,7 +5427,7 @@
           "to": "llmnav/llmnav.spec.contract"
         }
       ],
-      "inputHash": "ab965d7ab5b8800762778ed22cfbe4d09691b4236e8916f4fa61b71999bb0227",
+      "inputHash": "f3037bf0096f6c96c96298888427e8e6b4b093ea40a97832342a00e313374c28",
       "key": "card:llmnav/llmnav.syntax.parse",
       "nodes": [
         {
@@ -5251,6 +5465,6 @@
     }
   ],
   "repositoryId": "llmnav",
-  "resolutionHash": "4873e8c3392b50277a3a1e60cc4d2c70a649c00db78c8e5ccf5e4af8d1ca14c7",
+  "resolutionHash": "4da46502a4e5abbc994f6e678a1f89a8e54de2adca1e0b8df5e7ccddea289472",
   "schemaVersion": 1
 }

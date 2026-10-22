@@ -170,3 +170,9 @@ excludes filesystem access, generation policy
 role Expose cooperative cancellation checks so long scans, queries, and generations can stop at bounded checkpoints.
 owns abort checks, abort error normalization
 excludes cancellation sources, retry policy
+
+@llmnav.support.policy
+role Keep one source of truth for search ranking weights and bounded input defaults.
+owns search ranking weights, search input limits, audit input limits
+excludes query execution, configuration loading, agent transport
+rel workflow>llmnav.search.query, workflow>llmnav.agent.tool-schema, workflow>llmnav.audit.coverage

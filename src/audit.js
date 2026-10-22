@@ -14,6 +14,7 @@ import { throwIfAborted } from "./abort.js";
 import { detectBoundaries } from "./boundaries.js";
 import { moduleKeyForFile, resolveGoImportModule } from "./module-resolution.js";
 import { scanProject } from "./project.js";
+import { AUDIT_LIMITS } from "./policy.js";
 import { compareText, readJsonSafe, toPosix } from "./util.js";
 
 export const AUDIT_SCHEMA_VERSION = 1;
@@ -352,7 +353,7 @@ export function auditHasFindings(result, minimumPriority = "none") {
   return result.candidates.some((candidate) => priorityRank(candidate.priority) <= threshold);
 }
 
-export function selectAuditCandidates(result, minimumPriority = "low", top = 10) {
+export function selectAuditCandidates(result, minimumPriority = "low", top = AUDIT_LIMITS.top.default) {
   if (!AUDIT_PRIORITIES.includes(minimumPriority)) {
     throw new TypeError(`Unknown audit priority: ${minimumPriority}.`);
   }

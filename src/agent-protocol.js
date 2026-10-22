@@ -16,6 +16,7 @@ import { buildContext, queryProject, SemanticIdLookupError, showProjectCard } fr
 import { countDiagnostics, validateProject } from "./validator.js";
 import { getAgentToolDefinitions } from "./agent-tools.js";
 import { auditProject, explainProjectFile, selectAuditCandidates } from "./audit.js";
+import { AUDIT_LIMITS, SEARCH_LIMITS } from "./policy.js";
 
 export { AGENT_TOOL_SCHEMA_VERSION, getAgentToolDefinitions } from "./agent-tools.js";
 export const AGENT_OPERATION_SCHEMA_VERSION = 1;
@@ -42,8 +43,8 @@ export async function executeAgentOperation(root, name, input = {}, options = {}
   try {
     if (operation === "query") {
       return success(operation, options.session
-        ? options.session.query(input.task.trim(), { top: input.top ?? 5 })
-        : await queryProject(root, input.task.trim(), { top: input.top ?? 5 }));
+        ? options.session.query(input.task.trim(), { top: input.top ?? SEARCH_LIMITS.top.default })
+        : await queryProject(root, input.task.trim(), { top: input.top ?? SEARCH_LIMITS.top.default }));
     }
     if (operation === "show") {
       const result = options.session
@@ -59,9 +60,9 @@ export async function executeAgentOperation(root, name, input = {}, options = {}
     }
     if (operation === "context") {
       const contextOptions = {
-        depth: input.depth ?? 1,
-        budget: input.budget ?? 2500,
-        maxEdges: input.maxEdges ?? 24,
+        depth: input.depth ?? SEARCH_LIMITS.depth.default,
+        budget: input.budget ?? SEARCH_LIMITS.budget.default,
+        maxEdges: input.maxEdges ?? SEARCH_LIMITS.maxEdges.default,
       };
       return success(operation, options.session
         ? options.session.context(input.id.trim(), contextOptions)
@@ -70,7 +71,7 @@ export async function executeAgentOperation(root, name, input = {}, options = {}
     if (operation === "audit") {
       const minimumPriority = input.priority ?? "low";
       const result = await auditProject(root);
-      const selected = selectAuditCandidates(result, minimumPriority, input.top ?? 10);
+      const selected = selectAuditCandidates(result, minimumPriority, input.top ?? AUDIT_LIMITS.top.default);
       return success(operation, {
         repositoryId: result.repositoryId,
         minimumPriority,
