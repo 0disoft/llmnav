@@ -4,6 +4,13 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.10.0] — 2026-10-22
+
+### Added
+
+* Add `llmnav_audit`, a sixth provider-neutral agent tool and MCP tool that returns the unannotated-boundary candidates from `llmnav audit`, filtered by a minimum priority and bounded by a candidate count, with the audit summary and an explicit truncation flag.
+* Bump provider-neutral tool definitions to schemaVersion 2 so a host can detect that the stable tool set gained a definition; the operation envelope stays schemaVersion 1.
+
 ## [0.9.9] — 2026-10-22
 
 ### Added

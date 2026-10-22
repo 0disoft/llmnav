@@ -15,7 +15,7 @@ import { scanProject } from "./project.js";
 import { buildContext, queryProject, SemanticIdLookupError, showProjectCard } from "./search.js";
 import { countDiagnostics, validateProject } from "./validator.js";
 import { getAgentToolDefinitions } from "./agent-tools.js";
-import { explainProjectFile } from "./audit.js";
+import { auditProject, explainProjectFile, selectAuditCandidates } from "./audit.js";
 
 export { AGENT_TOOL_SCHEMA_VERSION, getAgentToolDefinitions } from "./agent-tools.js";
 export const AGENT_OPERATION_SCHEMA_VERSION = 1;
@@ -28,6 +28,7 @@ const OPERATIONS = new Map([
   ["llmnav_context", "context"],
   ["llmnav_check", "check"],
   ["llmnav_explain", "explain"],
+  ["llmnav_audit", "audit"],
 ]);
 
 export async function executeAgentOperation(root, name, input = {}, options = {}) {
@@ -65,6 +66,19 @@ export async function executeAgentOperation(root, name, input = {}, options = {}
       return success(operation, options.session
         ? options.session.context(input.id.trim(), contextOptions)
         : await buildContext(root, input.id.trim(), contextOptions));
+    }
+    if (operation === "audit") {
+      const minimumPriority = input.priority ?? "low";
+      const result = await auditProject(root);
+      const selected = selectAuditCandidates(result, minimumPriority, input.top ?? 10);
+      return success(operation, {
+        repositoryId: result.repositoryId,
+        minimumPriority,
+        summary: result.summary,
+        candidates: selected.candidates.map(toAuditCandidate),
+        matched: selected.matched,
+        truncated: selected.truncated,
+      });
     }
     if (operation === "explain") {
       return success(operation, await explainProjectFile(root, input.file.trim()));
@@ -106,6 +120,9 @@ function validateInput(schema, input) {
 function validateProperty(key, value, schema) {
   if (schema.type === "string") {
     if (typeof value !== "string" || value.trim().length < (schema.minLength ?? 0)) return `Input field ${key} must be a non-empty string.`;
+    if (schema.enum !== undefined && !schema.enum.includes(value)) {
+      return `Input field ${key} must be one of: ${schema.enum.join(", ")}.`;
+    }
   } else if (schema.type === "integer") {
     if (!Number.isInteger(value) || value < schema.minimum || value > schema.maximum) {
       return `Input field ${key} must be an integer from ${schema.minimum} to ${schema.maximum}.`;
@@ -124,6 +141,16 @@ function success(operation, data) {
 
 function failure(operation, code, message, data = null) {
   return { schemaVersion: AGENT_OPERATION_SCHEMA_VERSION, operation, ok: false, data, error: { code, message } };
+}
+
+function toAuditCandidate(candidate) {
+  return {
+    path: candidate.path,
+    priority: candidate.priority,
+    score: candidate.score,
+    reasons: candidate.reasons,
+    suggestedCoverageRule: candidate.suggestedCoverageRule,
+  };
 }
 
 function compareDiagnostics(left, right) {

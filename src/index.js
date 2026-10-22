@@ -21,6 +21,7 @@ export {
   auditHasFindings,
   auditProject,
   explainProjectFile,
+  selectAuditCandidates,
 } from "./audit.js";
 export { BOUNDARY_KINDS, detectBoundaries } from "./boundaries.js";
 export {

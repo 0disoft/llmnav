@@ -8,7 +8,11 @@ rel=workflow>llmnav.agent.protocol
 stability=contract
 */
 
-export const AGENT_TOOL_SCHEMA_VERSION = 1;
+export const AGENT_TOOL_SCHEMA_VERSION = 2;
+
+// Duplicated from AUDIT_PRIORITIES on purpose: importing the audit module would load
+// repository execution code into the definition-only surface. A contract test keeps them equal.
+const AUDIT_PRIORITY_VALUES = Object.freeze(["high", "medium", "low"]);
 
 const DEFINITIONS = [
   tool("llmnav_query", "Find the most relevant semantic cards for a coding task.", {
@@ -35,6 +39,10 @@ const DEFINITIONS = [
   tool("llmnav_explain", "Explain one file's card coverage, audit evidence, disposition, and recommended next action.", {
     file: stringProperty("Repository-relative or repository-contained absolute file path."),
   }, ["file"]),
+  tool("llmnav_audit", "List the highest-priority unannotated boundaries worth documenting next.", {
+    priority: enumProperty("Lowest audit priority to include.", AUDIT_PRIORITY_VALUES, "low"),
+    top: integerProperty("Maximum candidates.", 1, 50, 10),
+  }),
 ];
 
 export function getAgentToolDefinitions() {
@@ -57,6 +65,10 @@ function tool(name, description, properties, required = []) {
 
 function stringProperty(description) {
   return { type: "string", minLength: 1, description };
+}
+
+function enumProperty(description, values, defaultValue) {
+  return { type: "string", enum: [...values], default: defaultValue, description };
 }
 
 function integerProperty(description, minimum, maximum, defaultValue) {

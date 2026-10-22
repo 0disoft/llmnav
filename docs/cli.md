@@ -257,7 +257,7 @@ Prints the active source specification version, canonical key order, stability v
 llmnav tools [--json]
 ```
 
-Prints the fixed provider-neutral tool definitions for `query`, `show`, `context`, and `check`. JSON output wraps the ordered definitions in a schemaVersion 1 object. Tool inputs reject unknown fields and never accept a repository root; a trusted host binds repository scope when it calls the library dispatcher.
+Prints the fixed provider-neutral tool definitions for `query`, `show`, `context`, `check`, `explain`, and `audit`. Each definition carries schemaVersion 2; JSON output wraps the ordered definitions in a schemaVersion 1 command envelope. Tool inputs reject unknown fields and never accept a repository root; a trusted host binds repository scope when it calls the library dispatcher.
 
 ## `llmnav mcp`
 

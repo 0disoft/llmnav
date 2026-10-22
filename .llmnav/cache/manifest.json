@@ -3,11 +3,11 @@
   "fileStateSchemaVersion": 1,
   "files": {
     ".llmnav/cache/agent-context.md": "065ac9f82a5a5d89a9d1ae582e8176daca737e5f9ff8eb722625c5cf40610cda",
-    ".llmnav/cache/cards.jsonl": "15e9f0998b8be3f1f4505b73c51cd8bd69b8c4e98b538bfea4b7dce3752ec3e2",
-    ".llmnav/cache/file-state.json": "d37ffbfa110a19ce283286ffc148b4695cbe9574e8e5fb5ece2f01784af2daa4",
+    ".llmnav/cache/cards.jsonl": "1ef00e7ecb84ce8e641bb0736a3498b58dd03f3b0871f3347b07dbd410a84572",
+    ".llmnav/cache/file-state.json": "c339567cfe42bd58e2eb4dba2ac0623ccd54eebeb2238843c8811a649932158b",
     ".llmnav/cache/graph-state.json": "adfd3dd39861d8ea86156a2cf8669d0afae0b74a794caef623064d9828481806",
     ".llmnav/cache/graph.json": "dccc6000b932110aba7f35d72660132ea4c39d1c9f4248af20cd2e654e120f78",
-    ".llmnav/cache/index.json": "d20f417852ba771ecb261a7d84c5ed8153cf1f4710c4afc98b575b47acee8c6c",
+    ".llmnav/cache/index.json": "44667d8592edbb021de4235f700f48782c35037481d64f8ba69fb89d7d482246",
     ".llmnav/cache/modules/example.auth.txt": "ae0aebf37a7f541ec0af5a36c1584452703b5b4fcafd6f397d0a7a402c3a76e1",
     ".llmnav/cache/modules/example.billing.txt": "957e2c984d5c121e598956c4f78525016505b1c97d6a94273866d92c4166fecd",
     ".llmnav/cache/modules/example.privacy.txt": "0948627bfa62f11088fbbf1aec835cab50c35d2d03f49eadefbddc221169e0b7",
@@ -29,7 +29,7 @@
     ".llmnav/cache/modules/llmnav.spec.txt": "69eda130d3cc42c58f3705bdf6f45994d9bbdc0624de452859910a8f798b49a6",
     ".llmnav/cache/modules/llmnav.structure.txt": "3771bc29e843ec1e2312fc321d9619b9c2ebc1bfbf99e3770488bf9108622181",
     ".llmnav/cache/modules/llmnav.syntax.txt": "a1f177762cc5a6e8d26ea4ca8c1ba36c840dbba98b0ed046ed4a1d19ed774916",
-    ".llmnav/cache/prompt-prefix.json": "5396461abaa0d01edc507e013c21097cf5c52d65af5ea4694b173918958cb1a8",
+    ".llmnav/cache/prompt-prefix.json": "bf75a9c6fd490a1bba5dbbd0d9e6a920a59431c3acb369b46ad5d9b9eb5253f4",
     ".llmnav/cache/repo-core.txt": "d931bc9a877c30901a8533d220f8cb4e0490bbccaf237d26fd8ba4b13b9abce0",
     ".llmnav/cache/search-index.json": "fc4ffc80a3f3478699f323da2498e3bca3eaaee0fc2bdd99521a283892101117"
   },
@@ -42,6 +42,6 @@
   "searchCardSetHash": "9490feb9879d8c05317dd4a2a3fd211823c9303690cc4a75538d96792801a758",
   "searchIndexSchemaVersion": 2,
   "searchShardSchemaVersion": null,
-  "sourceHash": "f7cad45ce3d355e4b09146a4083045a7e1a51f2dbff65c10090301f9a9659a07",
+  "sourceHash": "9aa91684e96c143f37c31e3367fd80822a25409c6e539e1d28ce212f15d57dbf",
   "specVersion": "1"
 }

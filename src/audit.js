@@ -349,6 +349,18 @@ export function auditHasFindings(result, minimumPriority = "none") {
   return result.candidates.some((candidate) => priorityRank(candidate.priority) <= threshold);
 }
 
+export function selectAuditCandidates(result, minimumPriority = "low", top = 10) {
+  if (!AUDIT_PRIORITIES.includes(minimumPriority)) {
+    throw new TypeError(`Unknown audit priority: ${minimumPriority}.`);
+  }
+  if (!Number.isInteger(top) || top < 1) {
+    throw new TypeError(`Audit candidate limit must be a positive integer: ${top}.`);
+  }
+  const threshold = priorityRank(minimumPriority);
+  const selected = result.candidates.filter((candidate) => priorityRank(candidate.priority) <= threshold);
+  return { candidates: selected.slice(0, top), matched: selected.length, truncated: selected.length > top };
+}
+
 function buildCoverageSuggestion(file) {
   const stem = path.posix.basename(file, path.posix.extname(file)).replace(/[^a-z0-9]+/giu, "-").toLowerCase();
   return {

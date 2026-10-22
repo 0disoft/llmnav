@@ -4,6 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { executeAgentOperation, getAgentToolDefinitions } from "../src/agent-protocol.js";
+import { AUDIT_PRIORITIES, auditProject } from "../src/audit.js";
 import { initializeProject } from "../src/initializer.js";
 import { createProjectSession } from "../src/search.js";
 
@@ -15,8 +16,13 @@ test("publishes stable provider-neutral tool definitions", () => {
     "llmnav_context",
     "llmnav_check",
     "llmnav_explain",
+    "llmnav_audit",
   ]);
-  assert.ok(definitions.every((item) => item.schemaVersion === 1));
+  assert.ok(definitions.every((item) => item.schemaVersion === 2));
+  const auditTool = definitions.find((item) => item.name === "llmnav_audit");
+  assert.deepEqual(auditTool.inputSchema.required, []);
+  assert.deepEqual(auditTool.inputSchema.properties.priority.enum, [...AUDIT_PRIORITIES]);
+  assert.equal(auditTool.inputSchema.properties.top.default, 10);
   assert.ok(definitions.every((item) => item.inputSchema.additionalProperties === false));
   assert.ok(definitions.every((item) => !Object.hasOwn(item.inputSchema.properties, "root")));
 
@@ -59,6 +65,46 @@ test("executes bounded operations through one deterministic envelope", async (co
   assert.equal(explained.data.navigationCards[0].id, "auth.session.rotate");
 });
 
+test("returns bounded audit candidates with deterministic priority ordering", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-agent-audit-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await createAuditProject(root);
+
+  const audit = await auditProject(root);
+  const result = await executeAgentOperation(root, "llmnav_audit", {});
+  assert.equal(result.ok, true);
+  assert.equal(result.operation, "audit");
+  assert.equal(result.data.repositoryId, audit.repositoryId);
+  assert.deepEqual(result.data.summary, audit.summary);
+  assert.equal(result.data.minimumPriority, "low");
+  assert.equal(result.data.matched, audit.candidates.length);
+  assert.equal(result.data.truncated, false);
+  assert.deepEqual(result.data.candidates.map((item) => item.path), audit.candidates.map((item) => item.path));
+  assert.equal(result.data.candidates[0].priority, "high");
+  for (const candidate of result.data.candidates) {
+    assert.deepEqual(Object.keys(candidate), ["path", "priority", "score", "reasons", "suggestedCoverageRule"]);
+  }
+
+  const bounded = await executeAgentOperation(root, "llmnav_audit", { top: 1 });
+  assert.equal(bounded.data.candidates.length, 1);
+  assert.equal(bounded.data.truncated, audit.candidates.length > 1);
+
+  const high = await executeAgentOperation(root, "llmnav_audit", { priority: "high" });
+  assert.equal(high.data.minimumPriority, "high");
+  assert.deepEqual(
+    high.data.candidates.map((item) => item.path),
+    audit.candidates.filter((item) => item.priority === "high").map((item) => item.path),
+  );
+
+  const unknownPriority = await executeAgentOperation(root, "llmnav_audit", { priority: "urgent" });
+  assert.equal(unknownPriority.ok, false);
+  assert.equal(unknownPriority.error.code, "LNVAP002");
+  assert.match(unknownPriority.error.message, /must be one of: high, medium, low/u);
+
+  const zeroTop = await executeAgentOperation(root, "llmnav_audit", { top: 0 });
+  assert.equal(zeroTop.error.code, "LNVAP002");
+});
+
 test("returns stable protocol failures for invalid input and missing IDs", async (context) => {
   const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-agent-errors-"));
   context.after(() => rm(root, { recursive: true, force: true }));
@@ -99,6 +145,18 @@ test("returns stable protocol failures for invalid input and missing IDs", async
   const unknown = await executeAgentOperation(root, "provider_specific_tool", {});
   assert.equal(unknown.error.code, "LNVAP001");
 });
+
+async function createAuditProject(root) {
+  await writeFile(path.join(root, "package.json"), '{"name":"agent-audit-fixture","main":"src/main.ts"}\n');
+  await mkdir(path.join(root, "src"));
+  await writeFile(path.join(root, "src", "main.ts"), "export function boot(): void {}\n");
+  await writeFile(
+    path.join(root, "src", "billing.ts"),
+    "export function charge(): void {}\nexport function refund(): void {}\n",
+  );
+  const initialized = await initializeProject(root, { agents: ["none"] });
+  assert.equal(initialized.ok, true);
+}
 
 async function createProject(root) {
   await writeFile(path.join(root, "package.json"), '{"name":"agent-protocol-fixture"}\n');

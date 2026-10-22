@@ -120,6 +120,12 @@ export interface AuditResult {
   >;
 }
 
+export interface AuditCandidateSelection {
+  candidates: AuditCandidate[];
+  matched: number;
+  truncated: boolean;
+}
+
 export interface FileExplanationResult {
   schemaVersion: 1;
   repositoryId: string;
@@ -323,8 +329,8 @@ export interface LlmnavConfig {
 }
 
 export interface AgentToolDefinition {
-  schemaVersion: 1;
-  name: "llmnav_query" | "llmnav_show" | "llmnav_context" | "llmnav_check" | "llmnav_explain";
+  schemaVersion: 2;
+  name: "llmnav_query" | "llmnav_show" | "llmnav_context" | "llmnav_check" | "llmnav_explain" | "llmnav_audit";
   description: string;
   inputSchema: {
     type: "object";
@@ -336,7 +342,7 @@ export interface AgentToolDefinition {
 
 export interface AgentOperationResult<T = unknown> {
   schemaVersion: 1;
-  operation: "query" | "show" | "context" | "check" | "explain" | "unknown";
+  operation: "query" | "show" | "context" | "check" | "explain" | "audit" | "unknown";
   ok: boolean;
   data: T | null;
   error: { code: string; message: string } | null;
@@ -732,6 +738,7 @@ export function loadConfig(root: string): Promise<{ config: LlmnavConfig; config
 export function validateConfig(config: LlmnavConfig, configPath?: string): void;
 export function auditProject(root: string): Promise<AuditResult>;
 export function auditHasFindings(result: AuditResult, minimumPriority?: AuditPriority | "none"): boolean;
+export function selectAuditCandidates(result: AuditResult, minimumPriority?: AuditPriority, top?: number): AuditCandidateSelection;
 export function explainProjectFile(root: string, file: string): Promise<FileExplanationResult>;
 export function findAttachedDeclaration(source: string, block: LlmnavBlock, filePath: string): Declaration | null;
 export function extractImports(source: string, filePath: string): string[];
