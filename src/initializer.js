@@ -96,7 +96,7 @@ async function bootstrapProject(root, options, agents) {
   await writeIfMissingOrForced(
     root,
     path.join(root, ".llmnav", ".gitignore"),
-    "tmp/\nstate/\n.transactions/\ngeneration-transaction.json\ngeneration.lock\ngeneration.lock.release-*\n*.tmp-*\n",
+    "tmp/\nstate/\n.transactions/\ngeneration-transaction.json\ngeneration.lock\ngeneration.lock.guard\ngeneration.lock.release-*\n*.tmp-*\n",
     options.force,
     changed,
     ".llmnav/.gitignore",

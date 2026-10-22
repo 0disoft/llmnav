@@ -3785,7 +3785,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "2fc1aaf4090a9cfd684af21256eb966d7e6a06255600133294605c6f46f18e99",
+      "contentHash": "ee9ad898bf15e1d9bf82e1cf617046ce7da8766808ad2b3e9223e2bc80d80cfa",
       "declarations": [
         null
       ],
@@ -3800,7 +3800,7 @@
       ],
       "path": "src/initializer.js",
       "semanticBytes": 493,
-      "sourceBytes": 7210
+      "sourceBytes": 7233
     },
     {
       "blocks": [
@@ -5589,7 +5589,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "3e61ffc009c0e83f1cbed29543cec2754904a3efa5d04eca9d730c75ea9b4f45",
+      "contentHash": "c6a254c8f4d763cb0acfff348821d0d4da4e516d494f55db043ce1115db024c9",
       "declarations": [
         null
       ],
@@ -5602,7 +5602,7 @@
       ],
       "path": "src/transaction.js",
       "semanticBytes": 393,
-      "sourceBytes": 34912
+      "sourceBytes": 37081
     },
     {
       "blocks": [],
@@ -6483,7 +6483,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "4fd5e890077c7a92682af6e1f43031d8dab77923103bc254937504ac8350a0b5",
+      "contentHash": "732de39fda458ac5f85373d94fa7615e3f0b4b743764a30a1fab57bc8ee22704",
       "declarations": [],
       "imports": [
         "../src/generator.js",
@@ -6502,7 +6502,7 @@
       ],
       "path": "tests/transaction.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 32636
+      "sourceBytes": 35249
     },
     {
       "blocks": [],

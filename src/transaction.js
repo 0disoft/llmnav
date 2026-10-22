@@ -88,17 +88,11 @@ async function releaseGenerationLockSettled(lock) {
       failure = { error };
     }
   }
-  // The lock still names this process, so removal cannot steal another owner's
-  // lock: finishing without it would only strand the next generation.
   try {
-    const observed = await readLockRecord(lock.lockPath);
-    if (observed.missing) return undefined;
-    if (observed.record?.ownerId === lock.ownerId) {
-      await rm(lock.lockPath, { force: true });
-      return undefined;
-    }
+    await releaseOwnedLockGuarded(lock, true);
+    return undefined;
   } catch {
-    // Report the original release failure instead of the fallback cleanup error.
+    // Preserve the release failure when guarded fallback cleanup also fails.
   }
   return failure;
 }
@@ -176,6 +170,15 @@ async function waitForLockPoll(delay, sleepImpl, signal) {
 }
 
 async function tryPublishGenerationLock(candidatePath, lockPath, runtime, linkImpl) {
+  if (!await claimLockMutationGuard(candidatePath, lockPath, runtime)) return false;
+  try {
+    return await publishGenerationLockGuarded(candidatePath, lockPath, runtime, linkImpl);
+  } finally {
+    await removeWithRetry(`${lockPath}.guard`, { runtime });
+  }
+}
+
+async function publishGenerationLockGuarded(candidatePath, lockPath, runtime, linkImpl) {
   try {
     await linkImpl(candidatePath, lockPath);
     return true;
@@ -204,7 +207,53 @@ async function tryPublishGenerationLock(candidatePath, lockPath, runtime, linkIm
 }
 
 export async function releaseGenerationLock(lock) {
-  await removeOwnedLock(lock.lockPath, lock.ownerId, lock.runtime ?? DEFAULT_RUNTIME);
+  await releaseOwnedLockGuarded(lock);
+}
+
+// No participant reclaims this short-lived guard: stale guards fail closed.
+// This makes re-reading and changing the main owner one indivisible protocol step.
+async function claimLockMutationGuard(candidatePath, lockPath, runtime) {
+  const guardPath = `${lockPath}.guard`;
+  await assertNoSymlinkTraversal(path.dirname(path.dirname(lockPath)), guardPath, ".llmnav/generation.lock.guard");
+  try {
+    await link(candidatePath, guardPath);
+    return true;
+  } catch (error) {
+    if (!error || typeof error !== "object" || error.code !== "EEXIST") throw error;
+  }
+  const observed = await readLockRecord(guardPath);
+  if (observed.missing) return false;
+  if (!isOwnedLockRecord(observed.record) || !runtime.isProcessAlive(observed.record.pid)) {
+    throw new Error("The LLMNav generation lock mutation guard needs recovery. After stopping all LLMNav processes, remove .llmnav/generation.lock.guard and retry.");
+  }
+  return false;
+}
+
+async function releaseOwnedLockGuarded(lock, force = false) {
+  const runtime = lock.runtime ?? DEFAULT_RUNTIME;
+  const candidatePath = `${lock.lockPath}.tmp-release-${runtime.pid}-${runtime.randomHex(8)}`;
+  let created = false;
+  try {
+    const handle = await open(candidatePath, "wx");
+    created = true;
+    await writeLockCandidate(handle, { schemaVersion: 1, ownerId: lock.ownerId, pid: runtime.pid });
+    for (const delay of DEFAULT_RETRY_DELAYS) {
+      if (delay > 0) await runtime.sleep(delay);
+      if (!await claimLockMutationGuard(candidatePath, lock.lockPath, runtime)) continue;
+      try {
+        const observed = await readLockRecord(lock.lockPath);
+        if (observed.missing || observed.record?.ownerId !== lock.ownerId) return;
+        if (force) await rm(lock.lockPath, { force: true });
+        else await removeOwnedLock(lock.lockPath, lock.ownerId, runtime);
+        return;
+      } finally {
+        await removeWithRetry(`${lock.lockPath}.guard`, { runtime });
+      }
+    }
+    throw new Error("Timed out waiting to release the LLMNav generation lock mutation guard.");
+  } finally {
+    if (created) await removeWithRetry(candidatePath, { runtime });
+  }
 }
 
 export async function commitGeneratedCache(root, cacheDirectory, artifacts, options = {}) {
@@ -694,7 +743,8 @@ async function removeOwnedLock(lockPath, ownerId, runtime = DEFAULT_RUNTIME) {
     return true;
   }
   try {
-    await rename(quarantinePath, lockPath);
+    await link(quarantinePath, lockPath);
+    await rm(quarantinePath, { force: true });
   } catch (error) {
     if (!error || typeof error !== "object" || error.code !== "EEXIST") throw error;
     await rm(quarantinePath, { force: true });

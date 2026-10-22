@@ -22,6 +22,60 @@ import {
   withGenerationLock,
 } from "../src/transaction.js";
 
+test("stale owner observation cannot displace a newer lock owner", { timeout: 15000 }, async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-lock-stale-race-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  const lockPath = path.join(root, ".llmnav/generation.lock");
+  await mkdir(path.dirname(lockPath));
+  await writeFile(lockPath, JSON.stringify({ schemaVersion: 1, ownerId: "dead", pid: 999999 }));
+  const observed = Promise.withResolvers(), resume = Promise.withResolvers();
+  const originalRead = fs.readFile;
+  let armed = true;
+  const mock = context.mock.method(fs, "readFile", async (...args) => {
+    const content = await originalRead(...args);
+    if (armed && args[0] === lockPath) {
+      armed = false;
+      observed.resolve();
+      await resume.promise;
+    }
+    return content;
+  });
+  syncBuiltinESMExports();
+  const runtime = createRuntime({ isProcessAlive: (pid) => pid !== 999999 });
+  const first = acquireGenerationLock(root, { ownerId: "first", runtime, delays: [0] });
+  let lock;
+  try {
+    await observed.promise;
+    await assert.rejects(() => acquireGenerationLock(root, { ownerId: "second", runtime, delays: [0] }), /Timed out waiting/u);
+    assert.equal(JSON.parse(await originalRead(lockPath, "utf8")).ownerId, "dead");
+    resume.resolve();
+    lock = await first;
+    assert.equal(JSON.parse(await originalRead(lockPath, "utf8")).ownerId, "first");
+    await assert.rejects(() => acquireGenerationLock(root, { ownerId: "third", runtime, delays: [0] }), /Timed out waiting/u);
+  } finally {
+    resume.resolve();
+    lock ??= await first;
+    mock.mock.restore(); syncBuiltinESMExports();
+    await releaseGenerationLock(lock);
+  }
+  assert.deepEqual(await readdir(path.dirname(lockPath)), []);
+});
+
+test("a dead mutation guard requires explicit recovery and is never stolen", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-lock-guard-recovery-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  const control = path.join(root, ".llmnav");
+  await mkdir(control);
+  const guardPath = path.join(control, "generation.lock.guard");
+  const owner = JSON.stringify({ schemaVersion: 1, ownerId: "dead-guard", pid: 999999 });
+  await writeFile(guardPath, owner);
+  await assert.rejects(() => acquireGenerationLock(root, {
+    runtime: createRuntime({ isProcessAlive: () => false }), delays: [0],
+  }), /mutation guard needs recovery/u);
+  assert.equal(await readFile(guardPath, "utf8"), owner);
+  assert.deepEqual(await readdir(control), ["generation.lock.guard"]);
+});
+
 test("default retry scheduling survives a transient failure and rejects invalid schedules", async () => {
   for (const operation of ["rename", "remove"]) {
     let attempts = 0;
