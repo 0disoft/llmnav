@@ -5252,7 +5252,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "9ac5617cfcbc2e82a46653d0890ac351957ff91c632028da62405d3e63ec7cdf",
+      "contentHash": "26806de7e82ecf889813e6c83f84b70909e2adae8d4dbe105b1d2e5a39f717bb",
       "declarations": [
         null
       ],
@@ -5272,7 +5272,7 @@
       ],
       "path": "src/search.js",
       "semanticBytes": 464,
-      "sourceBytes": 33503
+      "sourceBytes": 34595
     },
     {
       "blocks": [],
@@ -6451,7 +6451,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "deade7ebea471e7388aba0eef92bac566c34150f7f4cf333773bd96834d9c724",
+      "contentHash": "fd84f5c3846278c40a7161750e31b002c7851e9bb9287b81ee9f0404a01231a9",
       "declarations": [],
       "imports": [
         "../src/inverted-index.js",
@@ -6461,7 +6461,7 @@
       ],
       "path": "tests/search.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 4148
+      "sourceBytes": 6449
     },
     {
       "blocks": [],

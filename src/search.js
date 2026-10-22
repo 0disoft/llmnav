@@ -275,38 +275,61 @@ export function queryPreparedIndex(index, searchIndex, query, options = {}) {
   const queryTokens = tokenize(query);
   const cached = sessionSearchMetadataCache.get(index);
   const prepared = cached ?? prepareSearchMetadata(index, lexicon, options.graph);
-  const aliases = prepared.aliases;
-  const aliasTargets = new Set();
-  const aliasReasons = new Map();
   const { byId, cardOrder } = prepared;
+  // Only this query owns the score accumulator; metrics is an intentional output parameter.
   const resultsById = new Map();
   throwIfAborted(options.signal);
 
-  if (metrics) {
-    metrics.queryTokens = queryTokens.length;
-    metrics.documentTokenizations = 0;
-    metrics.postingVisits = 0;
-    metrics.phraseDocumentsScanned = 0;
-    metrics.idDocumentsScanned = 0;
-    metrics.graphEdgesVisited = 0;
-    metrics.idNormalizations = cached ? 0 : index.cards.length;
-    metrics.lookupBuilds = cached ? 0 : 2;
-    metrics.graphValidations = cached ? 0 : 1;
-  }
+  initializeQueryMetrics(metrics, queryTokens.length, index.cards.length, Boolean(cached));
 
+  const aliasReasons = matchingAliasReasons(prepared.aliases, normalizedQuery);
+  scoreSemanticIds(index, prepared, normalizedQuery, resultsById, metrics, options.signal);
+  for (const [target, reasons] of aliasReasons) {
+    const card = byId.get(target);
+    if (card) addScore(resultsById, card, SEARCH_RANK.alias, reasons);
+  }
+  scoreTokenPostings(index.cards.length, searchIndex, queryTokens, byId, resultsById, metrics, options.signal);
+  scoreExactPhrases(searchIndex, normalizedQuery, byId, resultsById, metrics, options.signal);
+
+  const seeds = selectSearchSeeds(resultsById, cardOrder);
+  if (prepared.graphCompatible) {
+    applyGraphBonuses(index, options.graph, seeds, byId, resultsById, metrics);
+  } else {
+    applyLegacyRelationBonuses(seeds, byId, resultsById);
+  }
+  return rankedSearchResults(resultsById, top);
+}
+
+function initializeQueryMetrics(metrics, queryTokenCount, cardCount, cached) {
+  if (!metrics) return;
+  metrics.queryTokens = queryTokenCount;
+  metrics.documentTokenizations = 0;
+  metrics.postingVisits = 0;
+  metrics.phraseDocumentsScanned = 0;
+  metrics.idDocumentsScanned = 0;
+  metrics.graphEdgesVisited = 0;
+  metrics.idNormalizations = cached ? 0 : cardCount;
+  metrics.lookupBuilds = cached ? 0 : 2;
+  metrics.graphValidations = cached ? 0 : 1;
+}
+
+function matchingAliasReasons(aliases, normalizedQuery) {
+  const aliasReasons = new Map();
   for (const [alias, targetValue, normalizedAlias] of aliases) {
     if (!normalizedAlias || !normalizedQuery.includes(normalizedAlias)) continue;
     const targets = Array.isArray(targetValue) ? targetValue : [targetValue];
     for (const target of targets) {
-      aliasTargets.add(target);
       const reasons = aliasReasons.get(target) ?? [];
       reasons.push(`alias=${JSON.stringify(alias)}`);
       aliasReasons.set(target, reasons);
     }
   }
+  return aliasReasons;
+}
 
+function scoreSemanticIds(index, prepared, normalizedQuery, resultsById, metrics, signal) {
   for (const position of idCandidatePositions(prepared, normalizedQuery)) {
-    throwIfAborted(options.signal);
+    throwIfAborted(signal);
     if (metrics) metrics.idDocumentsScanned += 1;
     const card = index.cards[position];
     const normalizedId = prepared.normalizedIds[position];
@@ -316,55 +339,57 @@ export function queryPreparedIndex(index, searchIndex, query, options = {}) {
       addScore(resultsById, card, SEARCH_RANK.semanticIdPhrase, "semantic ID phrase");
     }
   }
-  for (const target of aliasTargets) {
-    const card = byId.get(target);
-    if (card) addScore(resultsById, card, SEARCH_RANK.alias, aliasReasons.get(target) ?? []);
-  }
+}
 
+function scoreTokenPostings(documentCount, searchIndex, queryTokens, byId, resultsById, metrics, signal) {
   const preparedSearchIndex = prepareCompactSearchIndex(searchIndex);
-  const documentCount = index.cards.length;
   for (const token of queryTokens) {
     const tokenIndex = preparedSearchIndex.tokenIndex.get(token);
     const tokenPostings = tokenIndex === undefined ? [] : (searchIndex.postings[tokenIndex] ?? []);
     const frequency = tokenPostings.length;
     const idf = Math.log(1 + (documentCount + 1) / (frequency + 1));
     for (const [cardIndex, vector] of tokenPostings) {
-    throwIfAborted(options.signal);
+      throwIfAborted(signal);
       if (metrics) metrics.postingVisits += 1;
       const id = searchIndex.cardIds[cardIndex];
       const card = byId.get(id);
       if (!card) continue;
-      let tokenScore = 0;
-      for (let vectorIndex = 0; vectorIndex < vector.length; vectorIndex += 2) {
-        const field = SEARCH_FIELD_ORDER[vector[vectorIndex]];
-        const count = vector[vectorIndex + 1] ?? 0;
-        if (field) tokenScore += count * SEARCH_FIELD_WEIGHTS[field] * idf;
-      }
+      const tokenScore = scoreFieldVector(vector, idf);
       if (tokenScore > 0) addScore(resultsById, card, tokenScore, `token=${token}`);
     }
   }
+}
 
-  if (normalizedQuery.length >= SEARCH_RANK.exactPhraseMinimumQueryLength) {
-    for (const [cardIndex, document] of searchIndex.documents.entries()) {
-      throwIfAborted(options.signal);
-      if (metrics) metrics.phraseDocumentsScanned += 1;
-      const phrases = Array.isArray(document) && Array.isArray(document[1]) ? document[1] : [];
-      if (!phrases.some((field) => field.includes(normalizedQuery))) continue;
-      const card = byId.get(searchIndex.cardIds[cardIndex]);
-      if (card) addScore(resultsById, card, SEARCH_RANK.exactPhrase, "exact phrase");
-    }
+function scoreFieldVector(vector, idf) {
+  let score = 0;
+  for (let vectorIndex = 0; vectorIndex < vector.length; vectorIndex += 2) {
+    const field = SEARCH_FIELD_ORDER[vector[vectorIndex]];
+    const count = vector[vectorIndex + 1] ?? 0;
+    if (field) score += count * SEARCH_FIELD_WEIGHTS[field] * idf;
   }
+  return score;
+}
 
+function scoreExactPhrases(searchIndex, normalizedQuery, byId, resultsById, metrics, signal) {
+  if (normalizedQuery.length < SEARCH_RANK.exactPhraseMinimumQueryLength) return;
+  for (const [cardIndex, document] of searchIndex.documents.entries()) {
+    throwIfAborted(signal);
+    if (metrics) metrics.phraseDocumentsScanned += 1;
+    const phrases = Array.isArray(document) && Array.isArray(document[1]) ? document[1] : [];
+    if (!phrases.some((field) => field.includes(normalizedQuery))) continue;
+    const card = byId.get(searchIndex.cardIds[cardIndex]);
+    if (card) addScore(resultsById, card, SEARCH_RANK.exactPhrase, "exact phrase");
+  }
+}
+
+function selectSearchSeeds(resultsById, cardOrder) {
   const results = [...resultsById.values()].filter((result) => result.score > 0);
-  const seeds = [...results]
+  return results
     .sort((left, right) => right.score - left.score || (cardOrder.get(left.card.id) ?? 0) - (cardOrder.get(right.card.id) ?? 0))
     .slice(0, SEARCH_RANK.seedCount);
-  if (prepared.graphCompatible) {
-    applyGraphBonuses(index, options.graph, seeds, byId, resultsById, metrics);
-  } else {
-    applyLegacyRelationBonuses(seeds, byId, resultsById);
-  }
+}
 
+function rankedSearchResults(resultsById, top) {
   return [...resultsById.values()]
     .filter((result) => result.score > 0)
     .sort((left, right) => right.score - left.score || compareText(left.card.id, right.card.id))

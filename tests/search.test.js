@@ -91,3 +91,49 @@ test("prepared queries do not retain stale token offsets for caller-owned search
   Object.assign(searchIndex, buildInvertedIndex(mutable).searchIndex);
   assert.equal(queryPreparedIndex(mutable, searchIndex, "qx")[0].id, mutable.cards[0].id);
 });
+
+test("alias ties choose seeds in card order and display results in ID order", () => {
+  const ids = ["z.seed", "y.seed", "x.seed", "a.seed"];
+  const cards = ids.map((id) => ({ id, role: "Unrelated", rel: [`workflow>${id.replace("seed", "target")}`] }));
+  const targets = ids.map((id) => ({ id: id.replace("seed", "target"), role: "Neighbor" }));
+  const input = { cards: [...cards, ...targets] };
+  const before = structuredClone(input);
+  const { searchIndex } = buildInvertedIndex(input);
+  const metrics = {};
+  const results = queryPreparedIndex(input, searchIndex, "quuxzz", {
+    top: 100,
+    lexicon: { aliases: { quuxzz: [...ids, ids[0]], quux: ids[0] } },
+    metrics,
+  });
+  assert.deepEqual(results.map(({ id, score }) => [id, score]), [
+    ["a.seed", 500], ["x.seed", 500], ["y.seed", 500], ["z.seed", 500],
+    ["x.target", 40], ["y.target", 40], ["z.target", 40],
+  ]);
+  assert.deepEqual(results.find(({ id }) => id === "z.seed").reasons, ['alias="quuxzz"', 'alias="quux"']);
+  assert.equal(results.find(({ id }) => id === "z.seed").card, cards[0]);
+  assert.deepEqual(input, before);
+  assert.equal(metrics.idDocumentsScanned, 8);
+  assert.equal(metrics.phraseDocumentsScanned, 8);
+  assert.equal(metrics.postingVisits, 0);
+});
+
+test("phrase thresholds and cancellation preserve query metrics", () => {
+  const input = { cards: [{ id: "core.abc", role: "abc abcd" }] };
+  const { searchIndex } = buildInvertedIndex(input);
+  for (const [query, scans, idPhrase, exactPhrase] of [
+    ["ab", 0, false, false], ["abc", 0, true, false],
+    ["abcd", 1, false, true], ["abcde", 1, false, false],
+  ]) {
+    const metrics = {};
+    const [result] = queryPreparedIndex(input, searchIndex, query, { metrics });
+    assert.equal(result?.reasons.includes("semantic ID phrase") ?? false, idPhrase);
+    assert.equal(result?.reasons.includes("exact phrase") ?? false, exactPhrase);
+    assert.equal(metrics.phraseDocumentsScanned, scans);
+  }
+  const controller = new AbortController();
+  const reason = new Error("cancel query");
+  controller.abort(reason);
+  const metrics = { untouched: true };
+  assert.throws(() => queryPreparedIndex(input, searchIndex, "abc", { metrics, signal: controller.signal }), (error) => error === reason);
+  assert.deepEqual(metrics, { untouched: true });
+});
