@@ -4158,7 +4158,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "0083c1c167e2e588868661b38e7b8f175a42f6706be3b27456dae5576228b403",
+      "contentHash": "96caa6ce44000cd5f6ca6ab135b1666b5a5b422748347cb365848c2744906c9b",
       "declarations": [
         null
       ],
@@ -4169,7 +4169,7 @@
       ],
       "path": "src/module-resolution.js",
       "semanticBytes": 609,
-      "sourceBytes": 4857
+      "sourceBytes": 5536
     },
     {
       "blocks": [
@@ -6107,6 +6107,19 @@
       "path": "tests/migration.test.js",
       "semanticBytes": 0,
       "sourceBytes": 5428
+    },
+    {
+      "blocks": [],
+      "contentHash": "6fc497e2f254b6f5279fa28540adc73f56ff6262f149876c2aafaabd5eedccf3",
+      "declarations": [],
+      "imports": [
+        "../src/module-resolution.js",
+        "node:assert/strict",
+        "node:test"
+      ],
+      "path": "tests/module-resolution.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 2157
     },
     {
       "blocks": [],

@@ -2149,7 +2149,7 @@
         "semantic card generation"
       ],
       "hashes": {
-        "body": "0083c1c167e2e588868661b38e7b8f175a42f6706be3b27456dae5576228b403",
+        "body": "96caa6ce44000cd5f6ca6ab135b1666b5a5b422748347cb365848c2744906c9b",
         "semantic": "98dd8a524ca973c2bb5cb1bcb0a442fbfffa3f5bceb5556a796c1411f1a22272",
         "structure": "920841a19639da5b84d897845c266296dc50e4f80c60052ef0b1e2fad9750715"
       },
@@ -2444,6 +2444,6 @@
   "generatedBy": "llmnav@0.12.0",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "3921ab4052636c6b4058a3e78ceabcc44dfdf8509612bf2df57245a100bdf881",
+  "sourceHash": "a293a60c630a59f98a737d5f0fd238cc63e644a92b5ab96fe2f454d5031b48ed",
   "specVersion": "1"
 }

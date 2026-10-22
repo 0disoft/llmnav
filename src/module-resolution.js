@@ -76,9 +76,8 @@ export function moduleKeyForFile(file) {
 
 export function resolveGoImportModule(sourcePath, specifier, resolution, availableModuleKeys = null) {
   if (path.posix.extname(toPosix(sourcePath)).toLowerCase() !== ".go") return null;
-  const modules = compatibleModuleResolution(resolution).goModules
-    .filter((item) => specifier === item.modulePath || specifier.startsWith(`${item.modulePath}/`))
-    .sort((left, right) => right.modulePath.length - left.modulePath.length || compareText(left.modulePath, right.modulePath));
+  const modules = goModulesByLength(compatibleModuleResolution(resolution))
+    .filter((item) => specifier === item.modulePath || specifier.startsWith(`${item.modulePath}/`));
   const selected = modules[0];
   if (!selected) return null;
   const suffix = specifier === selected.modulePath ? "" : specifier.slice(selected.modulePath.length + 1);
@@ -89,15 +88,31 @@ export function resolveGoImportModule(sourcePath, specifier, resolution, availab
   return key;
 }
 
+const moduleResolutionCache = new WeakMap();
+const goModuleOrderCache = new WeakMap();
+
+// Resolution snapshots are immutable once loaded, so each input object is normalized
+// once instead of once per imported specifier.
 export function compatibleModuleResolution(value) {
-  if (!value || value.schemaVersion !== MODULE_RESOLUTION_SCHEMA_VERSION || !Array.isArray(value.goModules)) {
-    return { schemaVersion: MODULE_RESOLUTION_SCHEMA_VERSION, goModules: [] };
-  }
-  const goModules = value.goModules
+  if (!value || typeof value !== "object") return { schemaVersion: MODULE_RESOLUTION_SCHEMA_VERSION, goModules: [] };
+  const cached = moduleResolutionCache.get(value);
+  if (cached !== undefined) return cached;
+  const goModules = value.schemaVersion !== MODULE_RESOLUTION_SCHEMA_VERSION || !Array.isArray(value.goModules) ? [] : value.goModules
     .filter((item) => item && typeof item.directory === "string" && typeof item.modulePath === "string" && item.modulePath)
     .map((item) => ({ directory: toPosix(item.directory), modulePath: item.modulePath }))
     .sort((left, right) => compareText(left.directory, right.directory) || compareText(left.modulePath, right.modulePath));
-  return { schemaVersion: MODULE_RESOLUTION_SCHEMA_VERSION, goModules };
+  const resolution = { schemaVersion: MODULE_RESOLUTION_SCHEMA_VERSION, goModules };
+  moduleResolutionCache.set(value, resolution);
+  return resolution;
+}
+
+function goModulesByLength(resolution) {
+  const cached = goModuleOrderCache.get(resolution);
+  if (cached !== undefined) return cached;
+  const ordered = [...resolution.goModules]
+    .sort((left, right) => right.modulePath.length - left.modulePath.length || compareText(left.modulePath, right.modulePath));
+  goModuleOrderCache.set(resolution, ordered);
+  return ordered;
 }
 
 function compareDirectories(left, right) {
