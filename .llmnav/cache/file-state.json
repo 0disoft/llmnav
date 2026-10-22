@@ -3393,7 +3393,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "e2f8cd95cd09ecc732d6fbc7263eb62b033be2aa076f51044ea89c4e6ce832b4",
+      "contentHash": "3fa7627aa99d7dd353cea0f7ec491a7ea7dfd1354ea2adcc7569a2d62b868e33",
       "declarations": [
         null
       ],
@@ -3411,7 +3411,7 @@
       ],
       "path": "src/incremental.js",
       "semanticBytes": 381,
-      "sourceBytes": 11255
+      "sourceBytes": 12250
     },
     {
       "blocks": [],

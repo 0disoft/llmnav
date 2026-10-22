@@ -36,6 +36,35 @@ export async function scanProjectIncremental(root, options = {}) {
   const { config, configPath } = await loadConfig(root);
   const files = await collectSourceFiles(root, config, options.paths ?? [], { signal: options.signal });
   const cacheDirectory = path.join(root, config.generation.cacheDirectory);
+  const { previousFiles, hintFiles, hintsPath } = await loadIncrementalState(root, config, cacheDirectory, options);
+  const scan = createIncrementalScan(root, files, previousFiles, hintFiles);
+
+  for (const absolutePath of files) {
+    throwIfAborted(options.signal);
+    await scanSourceFile(scan, absolutePath);
+  }
+
+  const { fileState, statHints } = buildIncrementalArtifacts(scan);
+  const registry = await loadRegistry(root);
+  const moduleResolution = await loadModuleResolution(root, scan.fileRecords);
+  const project = {
+    root,
+    config,
+    configPath,
+    files,
+    fileRecords: scan.fileRecords,
+    records: scan.records,
+    registry,
+    moduleResolution,
+    sourceBytes: scan.sourceBytes,
+    semanticBytes: scan.semanticBytes,
+    incremental: scan.stats,
+  };
+
+  return { project, fileState, statHints, hintsPath, stats: scan.stats };
+}
+
+async function loadIncrementalState(root, config, cacheDirectory, options) {
   await assertNoSymlinkTraversal(root, cacheDirectory, config.generation.cacheDirectory);
   const fileStatePath = path.join(cacheDirectory, "file-state.json");
   await assertNoSymlinkTraversal(root, fileStatePath, relativePosix(root, fileStatePath));
@@ -63,73 +92,84 @@ export async function scanProjectIncremental(root, options = {}) {
   const previousFiles = trustedPreviousState ? mapStateFiles(previousState.files) : new Map();
   const hintFiles = trustedPreviousState && usableStatHints(previousHints) &&
     previousHints.fileStateHash === previousStateHash ? previousHints.files : {};
+  return { previousFiles, hintFiles, hintsPath };
+}
 
-  const fileRecords = [];
-  const records = [];
-  const nextStateFiles = [];
-  const nextHintFiles = {};
-  const seenPaths = new Set();
-  const stats = {
-    totalFiles: files.length,
-    parsedFiles: 0,
-    reusedFiles: 0,
-    reusedFilesByStat: 0,
-    reusedFilesByHash: 0,
-    deletedFiles: 0,
-    bytesRead: 0,
-    cardsParsed: 0,
-    cardsReused: 0,
+function createIncrementalScan(root, files, previousFiles, hintFiles) {
+  return {
+    root,
+    previousFiles,
+    hintFiles,
+    seenPaths: new Set(),
+    fileRecords: [],
+    records: [],
+    nextStateFiles: [],
+    nextHintFiles: {},
+    sourceBytes: 0,
+    semanticBytes: 0,
+    stats: {
+      totalFiles: files.length,
+      parsedFiles: 0,
+      reusedFiles: 0,
+      reusedFilesByStat: 0,
+      reusedFilesByHash: 0,
+      deletedFiles: 0,
+      bytesRead: 0,
+      cardsParsed: 0,
+      cardsReused: 0,
+    },
   };
-  let sourceBytes = 0;
-  let semanticBytes = 0;
+}
 
-  for (const absolutePath of files) {
-    throwIfAborted(options.signal);
-    const relativePath = relativePosix(root, absolutePath);
-    const details = await stat(absolutePath, { bigint: true });
-    const fingerprint = statFingerprint(details);
-    seenPaths.add(relativePath);
-    const previousFile = previousFiles.get(relativePath);
-    const previousHint = hintFiles[relativePath];
-    let stateFile;
+async function scanSourceFile(scan, absolutePath) {
+  const relativePath = relativePosix(scan.root, absolutePath);
+  const details = await stat(absolutePath, { bigint: true });
+  const fingerprint = statFingerprint(details);
+  scan.seenPaths.add(relativePath);
+  const stateFile = await reuseOrParseFile(scan, {
+    absolutePath,
+    relativePath,
+    fingerprint,
+    previousFile: scan.previousFiles.get(relativePath),
+    previousHint: scan.hintFiles[relativePath],
+  });
+  const normalizedStateFile = normalizeStateFile(stateFile, relativePath);
+  scan.nextHintFiles[relativePath] = { ...fingerprint, contentHash: normalizedStateFile.contentHash };
+  scan.nextStateFiles.push(normalizedStateFile);
+  scan.sourceBytes += normalizedStateFile.sourceBytes;
+  scan.semanticBytes += normalizedStateFile.semanticBytes;
+  scan.fileRecords.push(hydrateFileRecord(scan.root, absolutePath, normalizedStateFile));
+  scan.records.push(...hydrateRecords(scan.root, absolutePath, normalizedStateFile));
+}
 
-    if (previousFile && previousHint?.contentHash === previousFile.contentHash &&
-      fingerprintsEqual(previousHint, fingerprint)) {
-      stateFile = previousFile;
-      stats.reusedFiles += 1;
-      stats.reusedFilesByStat += 1;
-      stats.cardsReused += previousFile.blocks.length;
-    } else {
-      const source = await readFile(absolutePath, "utf8");
-      stats.bytesRead += Buffer.byteLength(source);
-      const contentHash = sha256(source);
-      if (previousFile?.contentHash === contentHash) {
-        stateFile = previousFile;
-        stats.reusedFiles += 1;
-        stats.reusedFilesByHash += 1;
-        stats.cardsReused += previousFile.blocks.length;
-      } else {
-        stateFile = analyzeFile(relativePath, source);
-        stats.parsedFiles += 1;
-        stats.cardsParsed += stateFile.blocks.length;
-      }
-    }
-
-    const normalizedStateFile = normalizeStateFile(stateFile, relativePath);
-    nextHintFiles[relativePath] = { ...fingerprint, contentHash: normalizedStateFile.contentHash };
-    nextStateFiles.push(normalizedStateFile);
-    sourceBytes += normalizedStateFile.sourceBytes;
-    semanticBytes += normalizedStateFile.semanticBytes;
-    const fileRecord = hydrateFileRecord(root, absolutePath, normalizedStateFile);
-    fileRecords.push(fileRecord);
-    records.push(...hydrateRecords(root, absolutePath, normalizedStateFile));
+async function reuseOrParseFile(scan, { absolutePath, relativePath, fingerprint, previousFile, previousHint }) {
+  if (previousFile && previousHint?.contentHash === previousFile.contentHash &&
+    fingerprintsEqual(previousHint, fingerprint)) {
+    scan.stats.reusedFiles += 1;
+    scan.stats.reusedFilesByStat += 1;
+    scan.stats.cardsReused += previousFile.blocks.length;
+    return previousFile;
   }
-
-  for (const previousPath of previousFiles.keys()) {
-    if (!seenPaths.has(previousPath)) stats.deletedFiles += 1;
+  const source = await readFile(absolutePath, "utf8");
+  scan.stats.bytesRead += Buffer.byteLength(source);
+  const contentHash = sha256(source);
+  if (previousFile?.contentHash === contentHash) {
+    scan.stats.reusedFiles += 1;
+    scan.stats.reusedFilesByHash += 1;
+    scan.stats.cardsReused += previousFile.blocks.length;
+    return previousFile;
   }
+  const stateFile = analyzeFile(relativePath, source);
+  scan.stats.parsedFiles += 1;
+  scan.stats.cardsParsed += stateFile.blocks.length;
+  return stateFile;
+}
 
-  nextStateFiles.sort((left, right) => compareText(left.path, right.path));
+function buildIncrementalArtifacts(scan) {
+  for (const previousPath of scan.previousFiles.keys()) {
+    if (!scan.seenPaths.has(previousPath)) scan.stats.deletedFiles += 1;
+  }
+  const nextStateFiles = [...scan.nextStateFiles].sort((left, right) => compareText(left.path, right.path));
   const fileState = {
     schemaVersion: FILE_STATE_SCHEMA_VERSION,
     indexerVersion: SOURCE_INDEXER_VERSION,
@@ -138,25 +178,9 @@ export async function scanProjectIncremental(root, options = {}) {
   const statHints = {
     schemaVersion: STAT_HINTS_SCHEMA_VERSION,
     fileStateHash: sha256(renderFileState(fileState)),
-    files: Object.fromEntries(Object.entries(nextHintFiles).sort(([left], [right]) => compareText(left, right))),
+    files: Object.fromEntries(Object.entries(scan.nextHintFiles).sort(([left], [right]) => compareText(left, right))),
   };
-  const registry = await loadRegistry(root);
-  const moduleResolution = await loadModuleResolution(root, fileRecords);
-  const project = {
-    root,
-    config,
-    configPath,
-    files,
-    fileRecords,
-    records,
-    registry,
-    moduleResolution,
-    sourceBytes,
-    semanticBytes,
-    incremental: stats,
-  };
-
-  return { project, fileState, statHints, hintsPath, stats };
+  return { fileState, statHints };
 }
 
 export function buildFileStateFromProject(project) {
