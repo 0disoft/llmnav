@@ -1389,7 +1389,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "8f626def8dd5bb560fdc8b2696df02ddbdc40a04cf16dc8b89c8b62597922ad3",
+      "contentHash": "4b8fec793560fbdd3c990a9571b95fecc3b5840432e81dc8790d7d109c7d30ea",
       "declarations": [
         null
       ],
@@ -1415,7 +1415,7 @@
       ],
       "path": "src/adapters/go-analyzer.go",
       "semanticBytes": 581,
-      "sourceBytes": 9852
+      "sourceBytes": 10188
     },
     {
       "blocks": [
@@ -1736,7 +1736,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "ee0fbc3adae6d969011ae6a714ddc940ba5ccfb174f94cfa060036aa0d7e5c8a",
+      "contentHash": "777ef4f3fbb12381d2be88cb2cdf1e314579179cf390d44f246cdae05aa84102",
       "declarations": [
         null
       ],
@@ -1747,7 +1747,7 @@
       ],
       "path": "src/adapters/typescript-worker.js",
       "semanticBytes": 546,
-      "sourceBytes": 7335
+      "sourceBytes": 8169
     },
     {
       "blocks": [
@@ -2292,7 +2292,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "cd9974aac1831d19b1eba259c32d43e346ddb92da99e72c466a885a8826476ae",
+      "contentHash": "0e899d154ba8cddec05fcf7c74e3ad004404fe03869bec3f3c6933e3d07bcca8",
       "declarations": [
         null
       ],
@@ -2309,7 +2309,7 @@
       ],
       "path": "src/analysis.js",
       "semanticBytes": 632,
-      "sourceBytes": 6727
+      "sourceBytes": 6743
     },
     {
       "blocks": [
@@ -6852,7 +6852,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "8b7d76260ebe389a4f8a5800bf6d0a2e182db652a476d2f828fa75c09cc3f4db",
+      "contentHash": "730ced04cc3f2ce4a03b5c70e4a7f9c4eea5f8608c774504e95aabdfeb4a3568",
       "declarations": [],
       "imports": [
         "../src/analysis.js",
@@ -6870,7 +6870,7 @@
       ],
       "path": "tests/analysis.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 6703
+      "sourceBytes": 6740
     },
     {
       "blocks": [],

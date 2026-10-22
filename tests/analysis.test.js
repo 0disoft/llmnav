@@ -27,7 +27,7 @@ const card = "/* llmnav/1 symbol\nid=auth.session.rotate\nrole=Rotate a session 
 test("TypeScript resolves renamed imports and shadowed symbols with fresh compiler provenance", async context => {
   const root = await fixture(context, {
     "lib.mts": `${card}export function rotate(token: string) { return token; }\nexport class One { run() { return rotate('one'); } }\nexport class Two { run() { return 'two'; } }\n`,
-    "main.mts": "import { rotate as renamed, One, Two } from './lib.mjs';\nexport function invoke() { return renamed('ok'); }\nexport function shadow() { const renamed = (x: string) => x; return renamed('local'); }\nexport function first() { return new One().run(); }\nexport function second() { return new Two().run(); }\n",
+    "main.mts": "import { rotate as renamed, One, Two } from './lib.mjs';\nexport function invoke() { const result = renamed('ok'); return result; }\nexport function shadow() { const renamed = (x: string) => x; return renamed('local'); }\nexport function first() { return new One().run(); }\nexport function second() { return new Two().run(); }\n",
   });
   const result = await analyzeProject(root, { language: "typescript" });
   const defs = new Map(result.graph.definitions.map(item => [item.id, item]));
@@ -36,7 +36,7 @@ test("TypeScript resolves renamed imports and shadowed symbols with fresh compil
   const shadow = result.graph.definitions.find(item => item.symbol === "shadow");
   assert.ok(result.graph.references.some(edge => edge.from === caller.id && edge.to === "auth.session.rotate" && edge.kind === "calls"));
   assert.equal(result.graph.references.some(edge => edge.from === shadow.id && edge.to === "auth.session.rotate"), false);
-  const methods = result.graph.definitions.filter(item => item.symbol === "run").sort((a, b) => a.line - b.line);
+  const methods = result.graph.definitions.filter(item => item.symbol.endsWith(".run")).sort((a, b) => a.line - b.line);
   assert.equal(methods.length, 2);
   assert.notEqual(methods[0].id, methods[1].id);
   for (const [name, methodIndex] of [["first", 0], ["second", 1]]) {
@@ -78,7 +78,7 @@ test("Go type-checks local packages and separates methods and function-value sha
   const shadow = result.graph.definitions.find(item => item.symbol === "Shadow");
   assert.ok(result.graph.references.some(edge => edge.from === caller.id && edge.to === "auth.session.rotate" && edge.kind === "calls"));
   assert.equal(result.graph.references.some(edge => edge.from === shadow.id && edge.to === "auth.session.rotate"), false);
-  const methods = result.graph.definitions.filter(item => item.symbol === "Run");
+  const methods = result.graph.definitions.filter(item => item.symbol.endsWith(".Run"));
   assert.equal(methods.length, 2);
   for (const name of ["First", "Second"]) {
     const from = result.graph.definitions.find(item => item.symbol === name).id;

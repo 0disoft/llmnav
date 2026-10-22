@@ -39,6 +39,7 @@ type listedPackage struct {
 	GoFiles                 []string
 }
 type declaration struct {
+	Display   string `json:"display,omitempty"`
 	Key       string `json:"key"`
 	Symbol    string `json:"symbol"`
 	Path      string `json:"path"`
@@ -203,7 +204,7 @@ func (a *analyzer) collect(name string) {
 		module := relative + ":module"
 		a.owners[file] = module
 		qualifiedNames := map[string]string{module: "module"}
-		a.report.Declarations = append(a.report.Declarations, declaration{module, filepath.Base(relative), relative, 1, -1, "module", "module", ""})
+		a.report.Declarations = append(a.report.Declarations, declaration{Key: module, Symbol: filepath.Base(relative), Path: relative, Line: 1, Offset: -1, Kind: "module", Qualified: "module"})
 		stack := []ast.Node{}
 		scopes := []string{}
 		ast.Inspect(file, func(node ast.Node) bool {
@@ -229,15 +230,17 @@ func (a *analyzer) collect(name string) {
 					pos := a.fset.PositionFor(id.Pos(), false)
 					key := fmt.Sprintf("%s:%d", relative, pos.Offset)
 					qualified := qualifiedNames[parent] + "/" + kind + ":" + id.Name
+					display := id.Name
 					// Receiver identity distinguishes same-named methods on different types.
 					if function, ok := object.(*types.Func); ok {
 						if signature, ok := function.Type().(*types.Signature); ok && signature.Recv() != nil {
 							qualified += ":" + types.TypeString(signature.Recv().Type(), func(p *types.Package) string { return p.Path() })
+							display = strings.TrimPrefix(types.TypeString(signature.Recv().Type(), func(p *types.Package) string { return "" }), "*") + "." + id.Name
 						}
 					}
 					a.objects[object] = key
 					qualifiedNames[key] = qualified
-					a.report.Declarations = append(a.report.Declarations, declaration{key, id.Name, relative, pos.Line, pos.Offset, kind, qualified, parent})
+					a.report.Declarations = append(a.report.Declarations, declaration{Key: key, Symbol: id.Name, Display: display, Path: relative, Line: pos.Line, Offset: pos.Offset, Kind: kind, Qualified: qualified, Parent: parent})
 					// Function/type/value nodes own subsequent body uses, not their name identifier.
 					if len(stack) > 0 {
 						owner := stack[len(stack)-1]

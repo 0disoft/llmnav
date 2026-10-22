@@ -74,7 +74,7 @@ function connectDefinitions(project, raw, language, sourceHashes) {
     ids.set(item.key, id);
     if (!definitionIds.has(id)) {
       definitionIds.add(id);
-      definitions.push({ id, symbol: item.symbol, path: item.path, line: item.line, kind: item.kind });
+      definitions.push({ id, symbol: item.display ?? item.symbol, path: item.path, line: item.line, kind: item.kind });
     }
   }
   const unique = new Map();

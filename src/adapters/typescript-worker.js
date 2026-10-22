@@ -74,7 +74,8 @@ function analyze(request) {
           const kind = ts.SyntaxKind[node.kind];
           const key = `${relative(source.fileName)}:${node.getStart(source)}`;
           const qualified = `${scope}/${kind}:${node.name.text}`;
-          const record = { key, symbol: node.name.text, path: relative(source.fileName), line: source.getLineAndCharacterOfPosition(node.name.getStart(source)).line + 1, offset: node.getStart(source), kind, qualified, parent: nearestOwner(node.parent) };
+          const display = (ts.isMethodDeclaration(node) || ts.isMethodSignature(node)) && node.parent.name ? `${node.parent.name.text}.${node.name.text}` : node.name.text;
+          const record = { key, symbol: node.name.text, display, path: relative(source.fileName), line: source.getLineAndCharacterOfPosition(node.name.getStart(source)).line + 1, offset: node.getStart(source), kind, qualified, parent: nearestOwner(node.parent) };
           declarations.push(record); bySymbol.set(symbol, key); byDeclaration.set(node, key); owners.set(node, key); next = qualified;
         } else if (symbol) { owners.set(node, bySymbol.get(symbol)); next = `${scope}/${node.name.text}`; }
       }
@@ -87,7 +88,7 @@ function analyze(request) {
       if (ts.isIdentifier(node) && !isName(node)) {
         let symbol = checker.getSymbolAtLocation(node);
         if (symbol?.flags & ts.SymbolFlags.Alias) symbol = checker.getAliasedSymbol(symbol);
-        const to = bySymbol.get(symbol) ?? symbol?.declarations?.map(declaration => byDeclaration.get(declaration)).find(Boolean), from = nearestOwner(node);
+        const to = bySymbol.get(symbol) ?? symbol?.declarations?.map(declaration => byDeclaration.get(declaration)).find(Boolean), from = nearestUseOwner(node);
         if (from && to && from !== to) {
           const parent = node.parent;
           const call = ts.isCallExpression(parent) && parent.expression === node ||
@@ -102,6 +103,20 @@ function analyze(request) {
   return { compiler: { name: "typescript", version: ts.version }, declarations, references, diagnostics, inputs: [...inputs].map(relative) };
   function relative(file) { return path.relative(root, file).split(path.sep).join("/"); }
   function nearestOwner(node) { for (let current = node; current; current = current.parent) if (owners.has(current)) return owners.get(current); return null; }
+  function nearestUseOwner(node) {
+    for (let current = node; current; current = current.parent) {
+      if (!owners.has(current) || ts.isParameter(current)) continue;
+      if (ts.isVariableDeclaration(current) && !(current.initializer && (ts.isArrowFunction(current.initializer) || ts.isFunctionExpression(current.initializer)))) {
+        let callable = false;
+        for (let parent = current.parent; parent && !ts.isSourceFile(parent); parent = parent.parent) {
+          if (ts.isFunctionLike(parent)) { callable = true; break; }
+        }
+        if (callable) continue;
+      }
+      return owners.get(current);
+    }
+    return null;
+  }
   function isDeclaration(node) { return ts.isFunctionDeclaration(node) || ts.isClassDeclaration(node) || ts.isInterfaceDeclaration(node) || ts.isTypeAliasDeclaration(node) || ts.isEnumDeclaration(node) || ts.isMethodDeclaration(node) || ts.isPropertyDeclaration(node) || ts.isVariableDeclaration(node) || ts.isParameter(node) || ts.isMethodSignature(node) || ts.isPropertySignature(node); }
   function isName(node) { return node.parent?.name === node && isDeclaration(node.parent) || ts.isImportSpecifier(node.parent) || ts.isImportClause(node.parent) || ts.isNamespaceImport(node.parent); }
 }
