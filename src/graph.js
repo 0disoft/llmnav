@@ -22,6 +22,10 @@ export const GRAPH_SCHEMA_VERSION = 1;
 export const GRAPH_STATE_SCHEMA_VERSION = 1;
 const IMPORT_EXTENSIONS = Object.freeze([".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".go", ".rs", ".py"]);
 
+// Key and semantic-ID lookups are derived from a graph object once. Generated graphs are
+// immutable, so callers that mutate nodes after resolving must treat the result as undefined.
+const graphNodeLookupCache = new WeakMap();
+
 export function buildRepositoryGraph(project, index) {
   return buildRepositoryGraphIncremental(project, index).graph;
 }
@@ -180,7 +184,7 @@ export function isCompatibleRepositoryGraph(graph, repositoryId = undefined) {
 export function resolveGraphNode(graph, id, localRepositoryId = graph?.repositoryId) {
   if (!isCompatibleRepositoryGraph(graph)) return { state: "missing", id, candidates: [], node: null };
   const value = String(id).trim();
-  const byKey = new Map(graph.nodes.map((node) => [node.key, node]));
+  const { byKey, bySemanticId } = graphNodeLookup(graph);
   if (value.includes("/")) {
     const node = byKey.get(value) ?? null;
     return node
@@ -188,11 +192,36 @@ export function resolveGraphNode(graph, id, localRepositoryId = graph?.repositor
       : { state: "missing", id: value, candidates: [], node: null };
   }
   const localKey = `${localRepositoryId}/${value}`;
-  if (byKey.has(localKey)) return { state: "resolved", id: localKey, candidates: [localKey], node: byKey.get(localKey) };
-  const candidates = graph.nodes.filter((node) => node.semanticId === value).map((node) => node.key).sort(compareText);
+  const localNode = byKey.get(localKey);
+  if (localNode) return { state: "resolved", id: localKey, candidates: [localKey], node: localNode };
+  const candidates = [...(bySemanticId.get(value) ?? [])];
   if (candidates.length === 1) return { state: "resolved", id: candidates[0], candidates, node: byKey.get(candidates[0]) };
   if (candidates.length > 1) return { state: "ambiguous", id: value, candidates, node: null };
   return { state: "missing", id: value, candidates: [], node: null };
+}
+
+export function findGraphNode(graph, key) {
+  return graphNodeLookup(graph).byKey.get(key) ?? null;
+}
+
+function graphNodeLookup(graph) {
+  const cached = graphNodeLookupCache.get(graph);
+  if (cached !== undefined) return cached;
+  const byKey = new Map();
+  const bySemanticId = new Map();
+  for (const node of graph.nodes) {
+    byKey.set(node.key, node);
+    let keys = bySemanticId.get(node.semanticId);
+    if (keys === undefined) {
+      keys = [];
+      bySemanticId.set(node.semanticId, keys);
+    }
+    keys.push(node.key);
+  }
+  for (const keys of bySemanticId.values()) keys.sort(compareText);
+  const lookup = { byKey, bySemanticId };
+  graphNodeLookupCache.set(graph, lookup);
+  return lookup;
 }
 
 export function renderGraphNode(node) {

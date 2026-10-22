@@ -27,12 +27,13 @@ import {
 import { normalizeSearchText, tokenize } from "./tokenizer.js";
 import { loadPromptPrefixBundleLocked } from "./prompt-bundle.js";
 import { recoverGenerationTransaction, withGenerationLock } from "./transaction.js";
-import { isCompatibleRepositoryGraph, renderGraphNode, resolveGraphNode } from "./graph.js";
+import { findGraphNode, isCompatibleRepositoryGraph, renderGraphNode, resolveGraphNode } from "./graph.js";
 
 const preparedIndexCache = new WeakMap();
 const preparedSearchIndexCache = new WeakMap();
 const sessionGraphAdjacencyCache = new WeakMap();
 const sessionSearchMetadataCache = new WeakMap();
+const indexCardLookupCache = new WeakMap();
 
 export class SemanticIdLookupError extends Error {
   constructor(reason, message) {
@@ -188,6 +189,15 @@ async function loadSessionSnapshot(root, options = {}) {
   if (snapshot.graph) sessionGraphAdjacencyCache.set(snapshot.graph, buildGraphAdjacency(snapshot.graph));
   sessionSearchMetadataCache.set(snapshot.index, prepareSearchMetadata(snapshot.index, snapshot.lexicon, snapshot.graph, true));
   return snapshot;
+}
+
+function indexCardLookup(index) {
+  let lookup = indexCardLookupCache.get(index);
+  if (lookup === undefined) {
+    lookup = new Map(index.cards.map((card) => [card.id, card]));
+    indexCardLookupCache.set(index, lookup);
+  }
+  return lookup;
 }
 
 function prepareSearchMetadata(index, lexicon, graph, forSession = false) {
@@ -462,7 +472,7 @@ export function queryIndexLegacy(index, query, options = {}) {
       const separator = relation.indexOf(">");
       if (separator <= 0) continue;
       const target = relation.slice(separator + 1);
-      const targetCard = index.cards.find((card) => card.id === target);
+      const targetCard = indexCardLookup(index).get(target) ?? null;
       if (!targetCard) continue;
       const existing = byId.get(target);
       const bonus = seed.score * SEARCH_RANK.relationBonusFactor;
@@ -506,12 +516,13 @@ export async function showProjectCard(root, id) {
 
 function showSnapshotCard(snapshot, id) {
   const { index, graph, registry } = snapshot;
-  const direct = index.cards.find((card) => card.id === id);
+  const cards = indexCardLookup(index);
+  const direct = cards.get(id) ?? null;
   if (direct) return { card: direct, node: null, resolvedFrom: null };
   if (!String(id).includes("/")) {
     const resolved = resolveRegistryId(registry, id);
     if (resolved.state === "active") {
-      const card = index.cards.find((item) => item.id === resolved.id) ?? null;
+      const card = cards.get(resolved.id) ?? null;
       if (card) return { card, node: null, resolvedFrom: resolved };
     }
     if (resolved.state === "ambiguous" || resolved.state === "cycle") {
@@ -521,7 +532,7 @@ function showSnapshotCard(snapshot, id) {
   const graphResolution = resolveGraphNode(graph, id, index.repositoryId);
   if (graphResolution.state !== "resolved") return { card: null, node: null, resolvedFrom: graphResolution };
   const localId = localSemanticId(graphResolution.node.key, index.repositoryId);
-  const card = localId ? index.cards.find((item) => item.id === localId) ?? null : null;
+  const card = localId ? cards.get(localId) ?? null : null;
   return { card, node: card ? null : graphResolution.node, resolvedFrom: graphResolution };
 }
 
@@ -534,11 +545,12 @@ function buildSnapshotContext(snapshot, id, options = {}) {
   const depth = boundedInteger(options.depth, SEARCH_LIMITS.depth.default, SEARCH_LIMITS.depth.minimum, SEARCH_LIMITS.depth.maximum);
   const budget = boundedInteger(options.budget, SEARCH_LIMITS.budget.default, SEARCH_LIMITS.budget.minimum, SEARCH_LIMITS.budget.maximum);
   const maxEdges = boundedInteger(options.maxEdges, SEARCH_LIMITS.maxEdges.default, SEARCH_LIMITS.maxEdges.minimum, SEARCH_LIMITS.maxEdges.maximum);
-  const direct = index.cards.find((card) => card.id === id);
+  const cards = indexCardLookup(index);
+  const direct = cards.get(id) ?? null;
   let rootId = direct?.id ?? null;
   if (!rootId && !String(id).includes("/")) {
     const resolved = resolveRegistryId(registry, id);
-    if (resolved.state === "active" && index.cards.some((card) => card.id === resolved.id)) rootId = resolved.id;
+    if (resolved.state === "active" && cards.has(resolved.id)) rootId = resolved.id;
     if (resolved.state === "ambiguous") {
       throw new SemanticIdLookupError("ambiguous", `Ambiguous replaced semantic ID ${id}; choose one of ${resolved.candidates.join(", ")}.`);
     }
@@ -560,8 +572,7 @@ function buildSnapshotContext(snapshot, id, options = {}) {
 
 function buildGraphContext(index, graph, rootNode, options) {
   const { depth, budget, maxEdges } = options;
-  const byId = new Map(index.cards.map((card) => [card.id, card]));
-  const nodesByKey = new Map(graph.nodes.map((node) => [node.key, node]));
+  const byId = indexCardLookup(index);
   const graphAdjacency = buildGraphAdjacency(graph);
   const queue = [{ key: rootNode.key, depth: 0 }];
   const visited = new Set();
@@ -572,7 +583,7 @@ function buildGraphContext(index, graph, rootNode, options) {
     const current = queue.shift();
     if (!current || visited.has(current.key)) continue;
     visited.add(current.key);
-    const node = nodesByKey.get(current.key);
+    const node = findGraphNode(graph, current.key);
     if (!node) continue;
     const localId = localSemanticId(node.key, index.repositoryId);
     selected.push({ node, card: localId ? byId.get(localId) ?? null : null });
@@ -622,9 +633,9 @@ function buildGraphContext(index, graph, rootNode, options) {
 
 function buildLegacyContext(index, rootId, options) {
   const { depth, budget, maxEdges } = options;
-  const start = index.cards.find((card) => card.id === rootId);
+  const byId = indexCardLookup(index);
+  const start = byId.get(rootId);
   if (!start) throw new Error(`No indexed source card exists for semantic ID ${rootId}.`);
-  const byId = new Map(index.cards.map((card) => [card.id, card]));
   const reverse = new Map();
   for (const card of index.cards) {
     for (const relation of card.rel ?? []) {

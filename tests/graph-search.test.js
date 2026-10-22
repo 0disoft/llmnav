@@ -6,6 +6,7 @@ import test from "node:test";
 import { evaluateProject } from "../src/evaluation.js";
 import { generateProject } from "../src/generator.js";
 import { initializeProject } from "../src/initializer.js";
+import { findGraphNode, GRAPH_SCHEMA_VERSION, resolveGraphNode } from "../src/graph.js";
 import { buildInvertedIndex } from "../src/inverted-index.js";
 import { buildContext, createProjectSession, queryPreparedIndex, queryProject, showProjectCard } from "../src/search.js";
 
@@ -260,6 +261,45 @@ test("legacy context respects edge limits when the graph is missing or malformed
     assert.deepEqual((await buildContext(root, "auth.session.revoke", { depth: 8, maxEdges: 0 })).included, ["auth.session.revoke"]);
     assert.equal((await buildContext(root, "auth.session.revoke", { depth: 8, maxEdges: 1 })).included.length, 2);
   }
+});
+
+test("graph node resolution caches lookups and hands out detached candidates", () => {
+  const node = (key, semanticId) => ({
+    key,
+    repositoryId: key.slice(0, key.indexOf("/")),
+    semanticId,
+    role: null,
+    location: null,
+    definitions: [],
+    external: key.startsWith("other/"),
+  });
+  const graph = {
+    schemaVersion: GRAPH_SCHEMA_VERSION,
+    repositoryId: "demo",
+    sourceHash: "fixture",
+    nodes: [
+      node("demo/core.target", "core.target"),
+      node("demo/extra.one", "extra.one"),
+      node("demo/alpha", "dup.thing"),
+      node("other/beta", "dup.thing"),
+    ],
+    edges: [],
+  };
+
+  assert.deepEqual(resolveGraphNode(graph, "core.target", "demo"), {
+    state: "resolved",
+    id: "demo/core.target",
+    candidates: ["demo/core.target"],
+    node: graph.nodes[0],
+  });
+  assert.equal(findGraphNode(graph, "demo/extra.one"), graph.nodes[1]);
+  assert.equal(findGraphNode(graph, "demo/missing.thing"), null);
+
+  const ambiguous = resolveGraphNode(graph, "dup.thing", "demo");
+  assert.deepEqual(ambiguous.candidates, ["demo/alpha", "other/beta"]);
+  ambiguous.candidates.push("mutated");
+  assert.deepEqual(resolveGraphNode(graph, "dup.thing", "demo").candidates, ["demo/alpha", "other/beta"]);
+  assert.equal(resolveGraphNode(graph, "demo/extra.one", "demo").state, "resolved");
 });
 
 function sourceCard(id, symbol) {
