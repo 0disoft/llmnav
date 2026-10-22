@@ -4,6 +4,17 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.11.1] — 2026-10-22
+
+### Changed
+
+* Split record validation, the agent operation pipeline, generation and commit phases, audit analysis, the incremental scan, and the literal-mask parser into named stages with unchanged output, so diagnostics keep their order, parsed offsets stay identical, and generated artifacts are byte-for-byte the same.
+* Centralize search ranking scores, input limits, and audit bounds in `src/policy.js` so the CLI help, the provider-neutral tool schema, and runtime defaults read one source of truth.
+
+### Fixed
+
+* Return detached card objects from `queryIndex`, `queryIndexLegacy`, `queryProject`, and the project session query, so mutating a result can no longer corrupt the cached index snapshot.
+
 ## [0.11.0] — 2026-10-22
 
 ### Added
