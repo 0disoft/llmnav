@@ -219,16 +219,33 @@ export function approximateTokens(value) {
   return Math.max(1, Math.ceil(ascii / 4 + nonAscii / 1.8));
 }
 
+const TRUNCATION_SUFFIX = "\n…";
+
+/**
+ * Trim text so the returned value, including its ellipsis, fits the budget.
+ *
+ * The suffix is charged against the budget instead of being appended on top of
+ * it, and the cut never splits a surrogate pair.
+ */
 export function truncateToTokenBudget(value, budget) {
-  if (approximateTokens(value) <= budget) return value;
+  const limit = Number.isFinite(budget) ? Math.max(0, Math.floor(budget)) : 0;
+  if (approximateTokens(value) <= limit) return value;
+  if (limit === 0) return "";
+  const bodyBudget = Math.max(0, limit - approximateTokens(TRUNCATION_SUFFIX));
   let low = 0;
   let high = value.length;
   while (low < high) {
     const middle = Math.ceil((low + high) / 2);
-    if (approximateTokens(value.slice(0, middle)) <= budget) low = middle;
+    if (approximateTokens(value.slice(0, middle)) <= bodyBudget) low = middle;
     else high = middle - 1;
   }
-  return `${value.slice(0, low).trimEnd()}\n…`;
+  let cut = low;
+  if (cut > 0 && cut < value.length) {
+    const code = value.charCodeAt(cut - 1);
+    if (code >= 0xd800 && code <= 0xdbff) cut -= 1;
+  }
+  const body = value.slice(0, cut).trimEnd();
+  return `${body}${TRUNCATION_SUFFIX}`;
 }
 
 export function escapeRegExp(value) {

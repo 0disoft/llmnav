@@ -5258,7 +5258,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "b3e4b3404fff4ec0120bf063945c3cf53cced573977ad87305f422c09dba2eee",
+      "contentHash": "46c128b26c2755a08f9fb9c177a45347300d2341116dc30f60190fe04461d56b",
       "declarations": [],
       "imports": [
         "node:crypto",
@@ -5267,7 +5267,7 @@
       ],
       "path": "src/util.js",
       "semanticBytes": 0,
-      "sourceBytes": 10151
+      "sourceBytes": 10789
     },
     {
       "blocks": [
@@ -6039,6 +6039,19 @@
       "path": "tests/search.test.js",
       "semanticBytes": 0,
       "sourceBytes": 2143
+    },
+    {
+      "blocks": [],
+      "contentHash": "74c04709480fc77bfb6bcfa76dd83717c09704f582e0a43d363732fae8107448",
+      "declarations": [],
+      "imports": [
+        "../src/util.js",
+        "node:assert/strict",
+        "node:test"
+      ],
+      "path": "tests/text-budget.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 1379
     },
     {
       "blocks": [],
