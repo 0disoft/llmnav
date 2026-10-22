@@ -163,7 +163,7 @@ rel workflow>llmnav.project.scan, workflow>llmnav.graph.generate
 
 @llmnav.support.runtime
 role Supply injectable clock, process identity, randomness, sleep, environment, and liveness probes for deterministic tests.
-owns runtime injection, deterministic identity, process liveness
+owns runtime injection, deterministic identity, process liveness, deadline scheduling
 excludes filesystem access, generation policy
 
 @llmnav.support.abort

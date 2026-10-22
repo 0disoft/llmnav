@@ -4,6 +4,22 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.13.1] — 2026-10-23
+
+### Fixed
+
+* Retry transient filesystem errors with the production sleep implementation and reject invalid retry schedules.
+* Preserve another writer's temporary file on name collisions; clean only files created by the current atomic write.
+* Preserve all rejected values, including undefined, through concurrent work and generation lock cleanup.
+* Apply MCP deadlines to session loading and execution, honor cancellation with disabled timers, and reject overflowing timer delays.
+* Bound lock polling by elapsed time and propagate cancellation through repository reads and agent operations.
+* Refresh MCP sessions after alias or configuration changes and follow configured cache directories.
+* Rebuild search data for mutable caller-owned indexes while retaining prepared lookups inside project sessions.
+
+### Added
+
+* Optional scheduler hooks and read I/O hooks for deterministic tests without changing required arguments or result envelopes.
+
 ## [0.13.0] — 2026-10-22
 
 ### Added

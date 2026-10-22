@@ -1396,7 +1396,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "b857a606c442c869fdefdf9220b9a3d541e8830265d45d17a2a6f564760e198d",
+      "contentHash": "e7ca33fec789ebf59a9fa5495db2802f73e942af8f297d0d0ec2fa3e5fe69a75",
       "declarations": [
         null
       ],
@@ -1413,7 +1413,7 @@
       ],
       "path": "src/agent-protocol.js",
       "semanticBytes": 528,
-      "sourceBytes": 9489
+      "sourceBytes": 9475
     },
     {
       "blocks": [
@@ -1716,7 +1716,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "0374f9eeb9643058f7af15eae289f4ba8f989c576befc6d804758def436769d0",
+      "contentHash": "01f41260490c91a1ec8a2173438b8d34fede398c42520be4dbb2526275e7ece2",
       "declarations": [
         null
       ],
@@ -1732,7 +1732,7 @@
       ],
       "path": "src/audit.js",
       "semanticBytes": 577,
-      "sourceBytes": 27414
+      "sourceBytes": 27380
     },
     {
       "blocks": [
@@ -2816,7 +2816,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "15d52864c94da0151ccc8e801cd58671b4a93664e79c2c80971e1c5a3564d514",
+      "contentHash": "22f4fe8939c20973f9821ab6babad2136f92ae84891bfa788406e8bd651fce8e",
       "declarations": [
         null
       ],
@@ -2826,7 +2826,7 @@
       ],
       "path": "src/errors.js",
       "semanticBytes": 453,
-      "sourceBytes": 4564
+      "sourceBytes": 4616
     },
     {
       "blocks": [
@@ -3265,7 +3265,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "6728d59a5416919134fdee9d166c3ce2886231539c64859461f295f597f5a389",
+      "contentHash": "382849ea19052552634253463ae4508e8ffc05c81296fa07d84a79bf6024e0d3",
       "declarations": [
         null
       ],
@@ -3296,7 +3296,7 @@
       ],
       "path": "src/generator.js",
       "semanticBytes": 476,
-      "sourceBytes": 22758
+      "sourceBytes": 22767
     },
     {
       "blocks": [
@@ -3604,7 +3604,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "ebeabfcc9b9924683bf68bac56359f126d7a394e1fa8d08aa019b47a4701ad68",
+      "contentHash": "4df5e8654068ed69b464039592fa41f0a9e17e86996d238decd3d4d6c9451e7f",
       "declarations": [
         null
       ],
@@ -3623,18 +3623,18 @@
       ],
       "path": "src/incremental.js",
       "semanticBytes": 381,
-      "sourceBytes": 12913
+      "sourceBytes": 12956
     },
     {
       "blocks": [],
-      "contentHash": "2b720d805aa07ea32ad328cc7d11c047fcfd4f481c4858141bd66ee95fc56305",
+      "contentHash": "dbacc19421badfb378718685609e14a0a8efd6628b3ba10e6d5d951f4f6a3f24",
       "declarations": [],
       "imports": [
         "./spec.js"
       ],
       "path": "src/index.d.ts",
       "semanticBytes": 0,
-      "sourceBytes": 33845
+      "sourceBytes": 33960
     },
     {
       "blocks": [],
@@ -4011,7 +4011,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "4fba35eb1d2b3c6c60ca0bdd857d5cdbd7f990ec41d3277e47cad7063cb2cb0a",
+      "contentHash": "f7dfed0b3db8a917fce7ef42073a910daa04fb127d32f93a2ad1186be2cca37d",
       "declarations": [
         null
       ],
@@ -4020,6 +4020,7 @@
         "./agent-protocol.js",
         "./config.js",
         "./errors.js",
+        "./runtime.js",
         "./search.js",
         "./spec.js",
         "node:events",
@@ -4029,7 +4030,7 @@
       ],
       "path": "src/mcp.js",
       "semanticBytes": 531,
-      "sourceBytes": 9922
+      "sourceBytes": 9978
     },
     {
       "blocks": [
@@ -4591,7 +4592,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "340aa5c349a5d3e253d46bc5c1bd45994c4feb62eb22a257b6303b29dad51367",
+      "contentHash": "500a9e506be573d7a1475262971f2ad928867c46215a57837d84715063dd0f36",
       "declarations": [
         null
       ],
@@ -4609,7 +4610,7 @@
       ],
       "path": "src/project.js",
       "semanticBytes": 510,
-      "sourceBytes": 3530
+      "sourceBytes": 3573
     },
     {
       "blocks": [
@@ -4828,7 +4829,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "5b43b986760f0a9cb77706efff2252d8700f93dd9994d118d8a423c4c8fb71db",
+      "contentHash": "4f150fd6ba594f9ce73bc3625afa8a54dc1a1472d55154fc12936366a2b5d2a2",
       "declarations": [
         null
       ],
@@ -4840,7 +4841,7 @@
       ],
       "path": "src/registry.js",
       "semanticBytes": 462,
-      "sourceBytes": 6400
+      "sourceBytes": 6423
     },
     {
       "blocks": [
@@ -4856,7 +4857,8 @@
             "owns": [
               "runtime injection",
               "deterministic identity",
-              "process liveness"
+              "process liveness",
+              "deadline scheduling"
             ],
             "rel": [],
             "risk": [],
@@ -4870,7 +4872,7 @@
             "stability": "architecture",
             "unknown": []
           },
-          "end": 370,
+          "end": 390,
           "endLine": 8,
           "entries": [
             {
@@ -4889,7 +4891,7 @@
               "key": "owns",
               "line": 4,
               "order": 2,
-              "value": "runtime injection|deterministic identity|process liveness"
+              "value": "runtime injection|deterministic identity|process liveness|deadline scheduling"
             },
             {
               "key": "excludes",
@@ -4914,7 +4916,7 @@
           "indent": "",
           "newline": "\n",
           "prefix": null,
-          "raw": "/* llmnav/1 module\nid=llmnav.support.runtime\nrole=Supply injectable clock, process identity, randomness, sleep, environment, and liveness probes for deterministic tests.\nowns=runtime injection|deterministic identity|process liveness\nexcludes=filesystem access|generation policy\nsearch=runtime seam|injectable clock|deterministic transaction ids\nstability=architecture\n*/",
+          "raw": "/* llmnav/1 module\nid=llmnav.support.runtime\nrole=Supply injectable clock, process identity, randomness, sleep, environment, and liveness probes for deterministic tests.\nowns=runtime injection|deterministic identity|process liveness|deadline scheduling\nexcludes=filesystem access|generation policy\nsearch=runtime seam|injectable clock|deterministic transaction ids\nstability=architecture\n*/",
           "scope": "module",
           "specVersion": "1",
           "start": 0,
@@ -4923,7 +4925,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "63a14f5da7e4c725e43d1c1af5bf347215dc4ef2a1416889621d06516d14caff",
+      "contentHash": "ed651d9904596127119a3d875729b60df919a12e63ea39212adbf00f9a7c0852",
       "declarations": [
         null
       ],
@@ -4933,8 +4935,8 @@
         "node:timers/promises"
       ],
       "path": "src/runtime.js",
-      "semanticBytes": 370,
-      "sourceBytes": 2644
+      "semanticBytes": 390,
+      "sourceBytes": 3326
     },
     {
       "blocks": [
@@ -5250,7 +5252,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "29a8dbefc25e45aaa7939f8f20b8a78659902be930bf7d33d356b91e97285440",
+      "contentHash": "9ac5617cfcbc2e82a46653d0890ac351957ff91c632028da62405d3e63ec7cdf",
       "declarations": [
         null
       ],
@@ -5270,7 +5272,7 @@
       ],
       "path": "src/search.js",
       "semanticBytes": 464,
-      "sourceBytes": 33426
+      "sourceBytes": 33503
     },
     {
       "blocks": [],
@@ -5387,7 +5389,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "4c45116bcf1a3578103801013cce8ca30164cef65d6a111446a24d4dc3cdb619",
+      "contentHash": "d0c82487227ec5de20b0bb08dcc98cabe542747ac4a34698c781d0aa429dcf10",
       "declarations": [
         null
       ],
@@ -5583,7 +5585,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "de0049ba56686f022514acf5affe281fde17f4287170c7400dfcb23d4f22733e",
+      "contentHash": "fd78d7c0f8b06a3a40d0618da1bedad51a5bc6c2cc09bb734c334073e2775734",
       "declarations": [
         null
       ],
@@ -5596,7 +5598,7 @@
       ],
       "path": "src/transaction.js",
       "semanticBytes": 393,
-      "sourceBytes": 34112
+      "sourceBytes": 34412
     },
     {
       "blocks": [],
@@ -5962,7 +5964,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "d95dc504f1259c3c63561f1fefc5ff4e13c4f24dfed0452a8a6203e170bea5ff",
+      "contentHash": "17e0b2dfca4b0b65670ae79820768128f8f7faa009924c358ba910415e940b96",
       "declarations": [],
       "imports": [
         "../src/errors.js",
@@ -5971,7 +5973,7 @@
       ],
       "path": "tests/errors.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 5023
+      "sourceBytes": 5511
     },
     {
       "blocks": [],

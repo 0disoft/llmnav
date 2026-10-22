@@ -35,9 +35,9 @@ export async function auditProject(root, options = {}) {
   return (await analyzeAuditProject(root, options)).result;
 }
 
-export async function explainProjectFile(root, inputPath) {
+export async function explainProjectFile(root, inputPath, options = {}) {
   const file = normalizeExplanationPath(root, inputPath);
-  const analysis = await analyzeAuditProject(root);
+  const analysis = await analyzeAuditProject(root, options);
   const { project, fileByPath, candidates, result } = analysis;
   const moduleKey = fileByPath.has(file) ? moduleKeyForFile(file) : null;
   const navigationCards = [];
@@ -93,7 +93,7 @@ export async function explainProjectFile(root, inputPath) {
 
 async function analyzeAuditProject(root, options = {}) {
   throwIfAborted(options.signal);
-  const project = await scanProject(root, { signal: options.signal, ioConcurrency: options.ioConcurrency });
+  const project = await scanProject(root, options);
   const coverage = buildCoverageIndexes(project);
   const filesByModule = groupFilesByModule(coverage.fileByPath);
   const moduleKeys = new Set(filesByModule.keys());

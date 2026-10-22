@@ -23,7 +23,7 @@ import {
   toPosix,
 } from "./util.js";
 import { abortable, assertAbortSignal, throwIfAborted } from "./abort.js";
-import { DEFAULT_RUNTIME, DEFAULT_SCHEDULER } from "./runtime.js";
+import { DEFAULT_RUNTIME, MAX_TIMER_DELAY_MS, resolveScheduler } from "./runtime.js";
 
 export const TRANSACTION_SCHEMA_VERSION = 1;
 export const TRANSACTION_ABORT_EXIT_CODE = 86;
@@ -119,7 +119,7 @@ export async function acquireGenerationLock(root, options = {}) {
   const pollMs = requireLockInteger("pollMs", options.pollMs, DEFAULT_LOCK_POLL_MS, 1);
   const delays = options.delays;
   if (delays !== undefined) requireLockDelays(delays);
-  const scheduler = { ...DEFAULT_SCHEDULER, ...options.scheduler };
+  const scheduler = resolveScheduler(options.scheduler);
   const started = scheduler.now();
   const openImpl = options.openImpl ?? open;
   const linkImpl = options.linkImpl ?? link;
@@ -141,7 +141,7 @@ export async function acquireGenerationLock(root, options = {}) {
     for (let attempt = 0; delays === undefined || attempt < delays.length; attempt += 1) {
       const remaining = timeoutMs - (scheduler.now() - started);
       if (attempt > 0 && remaining <= 0) break;
-      const delay = Math.min(delays?.[attempt] ?? (attempt === 0 ? 0 : pollMs), Math.max(0, remaining));
+      const delay = Math.min(delays?.[attempt] ?? (attempt === 0 ? 0 : pollMs), Math.max(0, remaining), MAX_TIMER_DELAY_MS);
       // Waiting for a held lock must stay cancellable; a poll interval bounds
       // how late the cancellation is observed.
       throwIfAborted(signal);
@@ -200,10 +200,11 @@ export async function commitGeneratedCache(root, cacheDirectory, artifacts, opti
   if (!options.lockOwnerId) {
     return withGenerationLock(
       root,
-      (lock) => commitGeneratedCache(root, cacheDirectory, artifacts, { ...options, lockOwnerId: lock.ownerId }),
-      options.lockOptions,
+      (lock) => commitGeneratedCache(root, cacheDirectory, artifacts, { ...options, runtime: lock.runtime, lockOwnerId: lock.ownerId }),
+      { ...options.lockOptions, ...(options.runtime ? { runtime: options.runtime } : {}), ...(options.signal ? { signal: options.signal } : {}) },
     );
   }
+  options = { ...options, renameOptions: { runtime: options.runtime, ...options.renameOptions } };
   const transaction = await openTransaction(root, cacheDirectory, options);
   try {
     await stageArtifacts(transaction, artifacts, options);
@@ -680,7 +681,7 @@ async function removeOwnedLock(lockPath, ownerId, runtime = DEFAULT_RUNTIME) {
 }
 
 function requireRetryDelays(delays) {
-  if (!Array.isArray(delays) || delays.length === 0 || delays.some((delay) => !Number.isSafeInteger(delay) || delay < 0)) {
+  if (!Array.isArray(delays) || delays.length === 0 || delays.some((delay) => !Number.isSafeInteger(delay) || delay < 0 || delay > MAX_TIMER_DELAY_MS)) {
     throw new TypeError("Retry delays must be a non-empty array of non-negative safe integers.");
   }
 }

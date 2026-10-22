@@ -58,8 +58,9 @@ export async function scanProjectIncremental(root, options = {}) {
   }
 
   const { fileState, statHints } = buildIncrementalArtifacts(scan);
-  const registry = await loadRegistry(root);
+  const registry = await loadRegistry(root, options);
   const moduleResolution = await loadModuleResolution(root, scan.fileRecords);
+  throwIfAborted(options.signal);
   const project = {
     root,
     config,

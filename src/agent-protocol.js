@@ -59,6 +59,7 @@ export async function executeAgentOperation(root, name, input = {}, options = {}
   try {
     throwIfAborted(options.signal);
     const outcome = await OPERATION_HANDLERS.get(request.operation)(input, root, options);
+    throwIfAborted(options.signal);
     if (outcome.failure) {
       return failure(request.operation, outcome.failure.code, outcome.failure.message, outcome.failure.data ?? null);
     }
@@ -134,7 +135,6 @@ async function handleContext(input, root, options) {
   const { session, ...executionOptions } = options;
   const contextOptions = {
     ...executionOptions,
-    ...(options.signal ? { signal: options.signal } : {}),
     depth: input.depth ?? SEARCH_LIMITS.depth.default,
     budget: input.budget ?? SEARCH_LIMITS.budget.default,
     maxEdges: input.maxEdges ?? SEARCH_LIMITS.maxEdges.default,
@@ -163,7 +163,7 @@ async function handleAudit(input, root, options) {
 
 async function handleExplain(input, root, options) {
   throwIfAborted(options.signal);
-  return { data: await explainProjectFile(root, input.file.trim()) };
+  return { data: await explainProjectFile(root, input.file.trim(), options) };
 }
 
 async function handleCheck(input, root, options) {

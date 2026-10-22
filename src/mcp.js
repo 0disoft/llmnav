@@ -19,6 +19,7 @@ import { createProjectSession } from "./search.js";
 import { PACKAGE_VERSION } from "./spec.js";
 import { throwIfAborted } from "./abort.js";
 import { loadConfig } from "./config.js";
+import { MAX_TIMER_DELAY_MS } from "./runtime.js";
 
 export const MCP_PROTOCOL_VERSION = "2024-11-05";
 export const MCP_SERVER_NAME = "llmnav";
@@ -44,7 +45,7 @@ export function createMcpServer(options = {}) {
     : null;
   const tools = getAgentToolDefinitions().map(toMcpTool);
   const requestTimeoutMs = options.requestTimeoutMs ?? DEFAULT_REQUEST_TIMEOUT_MS;
-  if (!Number.isInteger(requestTimeoutMs) || requestTimeoutMs < 0 || requestTimeoutMs > 2_147_483_647) {
+  if (!Number.isInteger(requestTimeoutMs) || requestTimeoutMs < 0 || requestTimeoutMs > MAX_TIMER_DELAY_MS) {
     throw new TypeError(`createMcpServer requires a non-negative integer requestTimeoutMs: ${requestTimeoutMs}.`);
   }
 

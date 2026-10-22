@@ -9,7 +9,7 @@ stability=contract
 */
 
 import { abortable } from "./abort.js";
-import { DEFAULT_SCHEDULER } from "./runtime.js";
+import { MAX_TIMER_DELAY_MS, resolveScheduler } from "./runtime.js";
 
 export const ERROR_CODES = Object.freeze({
   ioRead: "LNV100",
@@ -104,12 +104,13 @@ export function toErrorPayload(error) {
  * reporting a write as timed out while it later succeeds would be a lie.
  */
 export async function withDeadline(operation, timeoutMs, promise, options = {}) {
-  if (!Number.isInteger(timeoutMs) || timeoutMs < 0 || timeoutMs > 2_147_483_647) {
+  if (!Number.isInteger(timeoutMs) || timeoutMs < 0 || timeoutMs > MAX_TIMER_DELAY_MS) {
     throw new TypeError(`Operation deadline for ${operation} must be a non-negative integer <= 2147483647: ${timeoutMs}.`);
   }
   if (timeoutMs === 0) return abortable(promise, options.signal);
-  const scheduler = { ...DEFAULT_SCHEDULER, ...options.scheduler };
-  let timer = null;
+  const scheduler = resolveScheduler(options.scheduler);
+  let timer;
+  let scheduled = false;
   try {
     return await abortable(Promise.race([
       promise,
@@ -121,9 +122,10 @@ export async function withDeadline(operation, timeoutMs, promise, options = {}) 
             retryable: false,
           }));
         }, timeoutMs);
+        scheduled = true;
       }),
     ]), options.signal);
   } finally {
-    if (timer !== null) scheduler.clearTimeout(timer);
+    if (scheduled) scheduler.clearTimeout(timer);
   }
 }

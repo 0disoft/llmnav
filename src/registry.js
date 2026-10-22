@@ -17,10 +17,10 @@ import { assertNoSymlinkTraversal, atomicWrite, parseJsonLines, readText } from 
 const REGISTRY_STATES = new Set(["active", "redirect", "replaced", "retired"]);
 const REGISTRY_KEYS = new Set(["id", "state", "to", "by"]);
 
-export async function loadRegistry(root) {
+export async function loadRegistry(root, options = {}) {
   const registryPath = path.join(root, ".llmnav", "ids.jsonl");
   await assertNoSymlinkTraversal(root, registryPath, ".llmnav/ids.jsonl");
-  const text = await readText(registryPath, "");
+  const text = await readText(registryPath, "", options);
   const parsed = parseJsonLines(text, registryPath);
   const byId = new Map();
   const errors = [...parsed.errors];

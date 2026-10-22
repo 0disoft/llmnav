@@ -120,3 +120,15 @@ test("injected deadline timers fire deterministically and clean abort listeners"
   assert.equal(cleared, 1);
   assert.equal(listeners.size, 0);
 });
+
+test("scheduler defaults survive undefined hooks and clear opaque null timer handles", async () => {
+  assert.equal(await withDeadline("query", 10, Promise.resolve(7), { scheduler: { setTimeout: undefined } }), 7);
+  let cleared = false;
+  assert.equal(await withDeadline("query", 10, Promise.resolve(7), {
+    scheduler: {
+      setTimeout: () => null,
+      clearTimeout: (handle) => { assert.equal(handle, null); cleared = true; },
+    },
+  }), 7);
+  assert.equal(cleared, true);
+});

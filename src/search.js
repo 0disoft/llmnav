@@ -247,13 +247,14 @@ function idCandidatePositions(prepared, normalizedQuery) {
 async function loadProjectSnapshot(root, options = {}) {
   return withGenerationLock(root, async (lock) => {
     const { index, lexicon, searchIndex, graph } = await loadSearchDataLocked(root, lock, options);
-    const registry = await loadRegistry(root);
+    const registry = await loadRegistry(root, options);
     const prompt = options.withPromptBundle ? await loadPromptPrefixBundleLocked(root, lock) : null;
     return { index, lexicon, searchIndex, graph, registry, promptBundle: prompt?.bundle, generationHash: prompt?.generationHash };
   }, options);
 }
 
 export function queryIndex(index, query, options = {}) {
+  throwIfAborted(options.signal);
   const searchIndex = options.invertedIndex ?? buildInvertedIndex(index).searchIndex;
   return detachSearchResults(queryPreparedIndex(index, searchIndex, query, options));
 }
@@ -266,6 +267,7 @@ export function queryIndex(index, query, options = {}) {
  * use `queryIndex` / `createProjectSession`, which detach their results.
  */
 export function queryPreparedIndex(index, searchIndex, query, options = {}) {
+  throwIfAborted(options.signal);
   const top = boundedInteger(options.top, SEARCH_LIMITS.top.default, SEARCH_LIMITS.top.minimum, SEARCH_LIMITS.top.maximum);
   const lexicon = options.lexicon ?? { aliases: {} };
   const metrics = options.metrics ?? null;

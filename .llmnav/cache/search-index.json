@@ -51,7 +51,7 @@
     "llmnav.support.runtime",
     "llmnav.syntax.parse"
   ],
-  "cardSetHash": "26a9cb3199c0ce4bb82e610e6237e78b9c6fe3c38927546218b54a7e87cb5448",
+  "cardSetHash": "54709e9db2daea92b3d516c923398cb61f6f83acff451777dfc25f86a9750490",
   "documentCount": 50,
   "documents": [
     [
@@ -661,7 +661,7 @@
       ]
     ],
     [
-      "dc443305770852a91bfbe0aa4ab8953c08a82ab01148eaaaf2df27ec78cbd32b",
+      "55dadb50198289a7ac2e28d4e11aa2bf8915a9e5fa80acc832bb79fe68ad5709",
       [
         "supply injectable clock, process identity, randomness, sleep, environment, and liveness probes for deterministic tests.",
         "runtime seam",
@@ -669,7 +669,8 @@
         "deterministic transaction ids",
         "runtime injection",
         "deterministic identity",
-        "process liveness"
+        "process liveness",
+        "deadline scheduling"
       ]
     ],
     [
@@ -3745,6 +3746,13 @@
           1,
           1,
           2,
+          1
+        ]
+      ],
+      [
+        48,
+        [
+          3,
           1
         ]
       ]
@@ -11591,6 +11599,13 @@
         46,
         [
           4,
+          1
+        ]
+      ],
+      [
+        48,
+        [
+          3,
           1
         ]
       ]

@@ -1,7 +1,7 @@
 /* llmnav/1 module
 id=llmnav.support.runtime
 role=Supply injectable clock, process identity, randomness, sleep, environment, and liveness probes for deterministic tests.
-owns=runtime injection|deterministic identity|process liveness
+owns=runtime injection|deterministic identity|process liveness|deadline scheduling
 excludes=filesystem access|generation policy
 search=runtime seam|injectable clock|deterministic transaction ids
 stability=architecture
@@ -16,6 +16,22 @@ export const DEFAULT_SCHEDULER = Object.freeze({
   setTimeout: (callback, milliseconds) => scheduleTimeout(callback, milliseconds),
   clearTimeout: (timer) => clearTimeout(timer),
 });
+
+export const MAX_TIMER_DELAY_MS = 2_147_483_647;
+
+export function resolveScheduler(overrides = {}) {
+  if (overrides === null || typeof overrides !== "object" || Array.isArray(overrides)) {
+    throw new TypeError("Scheduler overrides must be an object.");
+  }
+  const resolved = { ...DEFAULT_SCHEDULER };
+  for (const [key, value] of Object.entries(overrides)) {
+    if (!Object.hasOwn(resolved, key)) throw new TypeError(`Unknown scheduler override: ${key}.`);
+    if (value === undefined) continue;
+    if (typeof value !== "function") throw new TypeError(`Scheduler override ${key} must be a function.`);
+    resolved[key] = value;
+  }
+  return resolved;
+}
 
 export const DEFAULT_RUNTIME = Object.freeze({
   now: () => Date.now(),

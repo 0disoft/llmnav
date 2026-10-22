@@ -511,7 +511,7 @@
         "agent search decisions"
       ],
       "hashes": {
-        "body": "6728d59a5416919134fdee9d166c3ce2886231539c64859461f295f597f5a389",
+        "body": "382849ea19052552634253463ae4508e8ffc05c81296fa07d84a79bf6024e0d3",
         "semantic": "7052622c9732ab29e37c3ab87f848188e931f601684e811e7bb8adef31fbfe85",
         "structure": "aa3268053c71247ce97d79c75afc0dcdd2c67104a70f35b1691e7e003012be63"
       },
@@ -685,7 +685,7 @@
         "source mutation"
       ],
       "hashes": {
-        "body": "29a8dbefc25e45aaa7939f8f20b8a78659902be930bf7d33d356b91e97285440",
+        "body": "9ac5617cfcbc2e82a46653d0890ac351957ff91c632028da62405d3e63ec7cdf",
         "semantic": "945f325a2ad2abfa71212b02dd952c071d47ed6d3848a16d247afd48dbe5ced6",
         "structure": "a53c3b192c4f1a53461232c4516ebbfd79337f70a6fb27f2e6325213050a6cb6"
       },
@@ -835,7 +835,7 @@
         "cache directory commit"
       ],
       "hashes": {
-        "body": "ebeabfcc9b9924683bf68bac56359f126d7a394e1fa8d08aa019b47a4701ad68",
+        "body": "4df5e8654068ed69b464039592fa41f0a9e17e86996d238decd3d4d6c9451e7f",
         "semantic": "26e0abf92c39ff07a7eb622d795d5ecbc83c7704b7c1ed09cd3ad339e3c04865",
         "structure": "4533f320f5c701808b979357ece450b56bdbc35f1117a5d53a2556e684a33657"
       },
@@ -937,7 +937,7 @@
         "source indexing"
       ],
       "hashes": {
-        "body": "de0049ba56686f022514acf5affe281fde17f4287170c7400dfcb23d4f22733e",
+        "body": "fd78d7c0f8b06a3a40d0618da1bedad51a5bc6c2cc09bb734c334073e2775734",
         "semantic": "ce2cf8943f71d053f8cba914886bae20316e5b6106857f52abc4d8a59afb1ef1",
         "structure": "5de94f39bf7e761651c8294ee0af6202e494f6eb4a3f829ad9e27414fc3d9848"
       },
@@ -1316,7 +1316,7 @@
         "source mutation"
       ],
       "hashes": {
-        "body": "b857a606c442c869fdefdf9220b9a3d541e8830265d45d17a2a6f564760e198d",
+        "body": "e7ca33fec789ebf59a9fa5495db2802f73e942af8f297d0d0ec2fa3e5fe69a75",
         "semantic": "ce30fe54e5dab8eb3cda8e1e6afdcee3489c3f62267d99ff85257f4c819d21a4",
         "structure": "0fe64f939a8ed48926b7c3e733ab33492b32991aabf69887568a4d6611ad25bd"
       },
@@ -1674,7 +1674,7 @@
         "cache generation"
       ],
       "hashes": {
-        "body": "340aa5c349a5d3e253d46bc5c1bd45994c4feb62eb22a257b6303b29dad51367",
+        "body": "500a9e506be573d7a1475262971f2ad928867c46215a57837d84715063dd0f36",
         "semantic": "c7cfa511ec9a14754b58e0f03bae113bd850ef9c716034a56d82449368d41af2",
         "structure": "352c8ccb45a3ece68dbb4fb66ae09796efcd874a9c56d6425f6fea0e110962f6"
       },
@@ -1732,7 +1732,7 @@
         "search ranking"
       ],
       "hashes": {
-        "body": "5b43b986760f0a9cb77706efff2252d8700f93dd9994d118d8a423c4c8fb71db",
+        "body": "4f150fd6ba594f9ce73bc3625afa8a54dc1a1472d55154fc12936366a2b5d2a2",
         "semantic": "549b068d1ff836ecb828e847dcdd342ecd26a6c1023d4ea6e714f68daa76a733",
         "structure": "6793e0299206c78c48522d092c69db3ceda6a79311a8a5d6909cf74836cf78bd"
       },
@@ -1887,7 +1887,7 @@
         "source parsing"
       ],
       "hashes": {
-        "body": "4c45116bcf1a3578103801013cce8ca30164cef65d6a111446a24d4dc3cdb619",
+        "body": "d0c82487227ec5de20b0bb08dcc98cabe542747ac4a34698c781d0aa429dcf10",
         "semantic": "59aa3e9e793d505ecdf110fec023c201aaee0154d2f6c9cf71afe1bbf71a7be5",
         "structure": "e213e073414c75bc75df1c8669a7045096142b6c0845694191893d90bf23e3c2"
       },
@@ -1983,7 +1983,7 @@
         "semantic role generation"
       ],
       "hashes": {
-        "body": "0374f9eeb9643058f7af15eae289f4ba8f989c576befc6d804758def436769d0",
+        "body": "01f41260490c91a1ec8a2173438b8d34fede398c42520be4dbb2526275e7ece2",
         "semantic": "47c79f36d71a39ad0b795700686fce0f12733568534f1a69dca05cc3cc8348c7",
         "structure": "dadebd4777277877a18dfc53ddf5c741022f38159a84c18b7a153dadfe9b5e77"
       },
@@ -2209,9 +2209,9 @@
         "index preparation"
       ],
       "hashes": {
-        "body": "4fba35eb1d2b3c6c60ca0bdd857d5cdbd7f990ec41d3277e47cad7063cb2cb0a",
+        "body": "f7dfed0b3db8a917fce7ef42073a910daa04fb127d32f93a2ad1186be2cca37d",
         "semantic": "a1ec177829cdd462b6ea996d78d53c2c9071291f1dd14202e05d1236559a8973",
-        "structure": "1290cacf3e12de1cb5657b88a670ed8bd1d375705129900c46e0ae8897b5a5a3"
+        "structure": "fd2c72f319970d7506992f3c784af24cd80d6b5e288dbc5a8d662eff5ca73ff7"
       },
       "id": "llmnav.agent.mcp",
       "imports": [
@@ -2219,6 +2219,7 @@
         "./agent-protocol.js",
         "./config.js",
         "./errors.js",
+        "./runtime.js",
         "./search.js",
         "./spec.js",
         "node:events",
@@ -2268,8 +2269,8 @@
         "generation policy"
       ],
       "hashes": {
-        "body": "63a14f5da7e4c725e43d1c1af5bf347215dc4ef2a1416889621d06516d14caff",
-        "semantic": "449c48259d3d05d0001519d2cd2aa70817ee74b7d2950cd27ac48fe3b16b6f32",
+        "body": "ed651d9904596127119a3d875729b60df919a12e63ea39212adbf00f9a7c0852",
+        "semantic": "b103c8a97330a1bd194809a1ec49206b1cf21ca65d477bc9f1f09c472ee452f4",
         "structure": "fa81ec46b55265904a54a42d801a66c141e319bb7daa2470f07f22af943cfa89"
       },
       "id": "llmnav.support.runtime",
@@ -2294,7 +2295,8 @@
       "owns": [
         "runtime injection",
         "deterministic identity",
-        "process liveness"
+        "process liveness",
+        "deadline scheduling"
       ],
       "role": "Supply injectable clock, process identity, randomness, sleep, environment, and liveness probes for deterministic tests.",
       "scope": "module",
@@ -2399,7 +2401,7 @@
         "retry scheduling"
       ],
       "hashes": {
-        "body": "15d52864c94da0151ccc8e801cd58671b4a93664e79c2c80971e1c5a3564d514",
+        "body": "22f4fe8939c20973f9821ab6babad2136f92ae84891bfa788406e8bd651fce8e",
         "semantic": "d6cbc36ba531885f4ba3fda92bab5467687d9266cb42bc2114e6c278b7200850",
         "structure": "c8ec99a69c18ae22d0dc73d3921b769fc4fafe0264ee238395d6d9cad6a4b7a7"
       },
@@ -2497,9 +2499,9 @@
     },
     "schemaVersion": 1
   },
-  "generatedBy": "llmnav@0.13.0",
+  "generatedBy": "llmnav@0.13.1",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "3f6a7578d7e14a2fb1cac67d1a765000139e9bd031318f7c18e58312da1e1c65",
+  "sourceHash": "4f5394abf1607b27dfe4878811ee59e5528bd0e2a00a4037a5d854ed576faf94",
   "specVersion": "1"
 }

@@ -103,7 +103,7 @@ export async function generateProjectUnderLock(root, options, lock) {
 
 async function generateProjectLocked(root, options) {
   throwIfAborted(options.signal);
-  const { config } = await loadConfig(root);
+  const { config } = await loadConfig(root, options);
   const recovery = await recoverGenerationTransaction(root, {
     cacheDirectory: config.generation.cacheDirectory,
     renameOptions: options.renameOptions,
