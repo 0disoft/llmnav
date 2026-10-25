@@ -4,6 +4,59 @@ import { Script } from "node:vm";
 import { canonicalizeSource, formatLlmnavBlock, parseLlmnavBlocks } from "../src/parser.js";
 import { findAttachedDeclaration } from "../src/declaration.js";
 
+test("canonicalization assembles many edits without repeatedly slicing the whole source", (context) => {
+  const source = Array.from({ length: 500 }, (_, index) =>
+    `// ${"x".repeat(512)}\n/* llmnav/1 module\nrole=Own a stable fixture boundary.\nid=fixture.card.${index}\nstability=architecture\n*/\n`).join("");
+  const originalSlice = String.prototype.slice;
+  let slicedUnits = 0;
+  let result;
+  try {
+    String.prototype.slice = function (...args) {
+      const value = originalSlice.apply(this, args);
+      slicedUnits += value.length;
+      return value;
+    };
+    result = canonicalizeSource(source, "many-cards.js");
+  } finally {
+    String.prototype.slice = originalSlice;
+  }
+  assert.equal(result.changed, true);
+  assert.equal(result.blocks.length, 500);
+  assert.deepEqual(result.errors, []);
+  assert.ok(slicedUnits < source.length * 4, `Sliced ${slicedUnits} units for ${source.length}-unit source`);
+  assert.equal(canonicalizeSource(result.source, "many-cards.js").changed, false);
+  context.diagnostic(JSON.stringify({ sourceUnits: source.length, slicedUnits }));
+});
+
+test("canonicalization preserves untouched spans, invalid cards and mixed comment styles", () => {
+  const unchanged = "/* llmnav/1 module\nid=fixture.stable\nrole=Own an unchanged boundary.\nstability=architecture\n*/";
+  const unknown = "/* llmnav/1 module\nid=fixture.unknown\ncustom=preserve this field\n*/";
+  const duplicate = "/* llmnav/1 module\nid=fixture.first\nid=fixture.second\n*/";
+  const pairs = [
+    ["/* llmnav/1 module\n\nrole=  Own a block boundary.  \nid=fixture.block\n*/",
+      "/* llmnav/1 module\nid=fixture.block\nrole=Own a block boundary.\n*/"],
+    [unknown, unknown],
+    ["  // llmnav/1 module\n  // role=Own a line boundary.\n  // id=fixture.line\n  // /llmnav\n",
+      "  // llmnav/1 module\n  // id=fixture.line\n  // role=Own a line boundary.\n  // /llmnav\n"],
+    [duplicate, duplicate],
+    [unchanged, unchanged],
+    ["<!-- llmnav/1 module\nrole=Own an HTML boundary.\nid=fixture.html\n-->",
+      "<!-- llmnav/1 module\nid=fixture.html\nrole=Own an HTML boundary.\n-->"],
+  ];
+  for (const newline of ["\n", "\r\n"]) {
+    const assemble = (side) => ("const before = 1;\n" + pairs.map((pair) => pair[side]).join("\nconst between = 2;\n") + "\nconst after = 3;").replaceAll("\n", newline);
+    const result = canonicalizeSource(assemble(0), "mixed.js");
+    assert.equal(result.source, assemble(1));
+    assert.equal(result.changed, true);
+    assert.equal(result.errors.length, 2);
+    assert.ok(result.errors.some((error) => error.message === "Unknown field custom must be fixed before formatting."));
+    assert.ok(result.errors.some((error) => error.message === "Duplicate scalar field id must be fixed before formatting."));
+    const again = canonicalizeSource(result.source, "mixed.js");
+    assert.equal(again.changed, false);
+    assert.deepEqual(again.errors, result.errors.map((error) => ({ ...error, line: error.line - 1 })));
+  }
+});
+
 test("parses and canonicalizes an indented block card", () => {
   const source = `export function outer() {\n  /* llmnav/1 symbol\n  stability=contract\n  role=Rotate one token family.\n  search=refresh token|token rotation\n  id=auth.session.rotate\n  */\n  function rotate() {}\n}\n`;
   const blocks = parseLlmnavBlocks(source, "session.ts");

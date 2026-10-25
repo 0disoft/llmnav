@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.16.10] — 2026-10-26
+
+### Fixed
+
+* Assemble formatted source once from original spans and changed cards instead of repeatedly rebuilding the whole file for each card. Preserve parser order, untouched text, invalid cards, error locations, mixed comment styles and LF/CRLF output; skip canonical cards. A 500-card regression reduces cumulative slice lengths from 154,195,000 to 308,390 UTF-16 units. Record a reproducible local 2,000-card benchmark with identical output hashes.
+
 ## [0.16.9] — 2026-10-26
 
 ### Fixed

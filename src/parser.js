@@ -597,10 +597,19 @@ export function canonicalizeSource(source, filePath = "<memory>") {
     safeBlocks.push(block);
   }
 
-  let output = source;
-  for (const block of [...safeBlocks].sort((left, right) => right.start - left.start)) {
+  const parts = [];
+  let cursor = 0;
+  // Safe blocks retain parser order; offsets always refer to the untouched source.
+  for (const block of safeBlocks) {
     const formatted = formatLlmnavBlock(block);
-    output = `${output.slice(0, block.start)}${formatted}${output.slice(block.end)}`;
+    if (formatted === block.raw) continue;
+    parts.push(source.slice(cursor, block.start), formatted);
+    cursor = block.end;
+  }
+  let output = source;
+  if (parts.length > 0) {
+    parts.push(source.slice(cursor));
+    output = parts.join("");
   }
   return { source: output, changed: output !== source, blocks, errors };
 }

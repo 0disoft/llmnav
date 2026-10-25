@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "targetVersion": "0.16.10",
+  "baselineCommit": "59eec2527438b753d81c20ae8588604d08384ec8",
+  "command": "node --expose-gc benchmarks/formatting.js",
+  "measurement": "One fresh Node process per implementation. Identical input is constructed and byte-counted before explicit GC. Wall timing covers canonicalizeSource including parsing, validation and reconstruction; excludes process startup, fixture construction and output hashing. Heap delta is heapUsed immediately after minus before the call, without post-call GC: it includes collectible temporaries and is neither peak nor retained heap. Local single-run measurements, not production latency estimates.",
+  "before": {
+    "node": "v24.18.0",
+    "platform": "win32",
+    "blocks": 2000,
+    "sourceBytes": 2260890,
+    "outputBytes": 2260890,
+    "changed": true,
+    "errors": 0,
+    "outputHash": "15c961e5eb9aa97c288471d90dad14c59fde5ae9d5f3901bed4fe00f22c2cb45",
+    "elapsedMs": 3485.2704,
+    "heapDeltaBytes": 131207256
+  },
+  "after": {
+    "node": "v24.18.0",
+    "platform": "win32",
+    "blocks": 2000,
+    "sourceBytes": 2260890,
+    "outputBytes": 2260890,
+    "changed": true,
+    "errors": 0,
+    "outputHash": "15c961e5eb9aa97c288471d90dad14c59fde5ae9d5f3901bed4fe00f22c2cb45",
+    "elapsedMs": 411.233,
+    "heapDeltaBytes": 5831520
+  },
+  "deterministicRegression": {
+    "command": "node --test --test-name-pattern='canonicalization assembles' tests/parser.test.js",
+    "blocks": 500,
+    "sourceUnits": 308390,
+    "slicedUnitsBefore": 154195000,
+    "slicedUnitsAfter": 308390,
+    "measurement": "Sum of result.length across String.prototype.slice calls during synchronous canonicalizeSource, restored in finally. Counts logical UTF-16 slice lengths, not actual V8 memory copies."
+  },
+  "complexity": {
+    "notation": "N input length, L rendered output length, B safe blocks",
+    "reconstructionBefore": "O(B * max(N, L) + B log B) worst case",
+    "reconstructionAfter": "O(N + L + B)",
+    "additionalSpaceAfter": "O(L + B) for rendered chunks and reconstruction; input and parsing state are shared",
+    "scope": "Reconstruction only; lexical parsing, metadata checks and parser block ordering remain unchanged."
+  }
+}
