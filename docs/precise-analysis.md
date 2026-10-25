@@ -22,6 +22,10 @@ llmnav discover "rotateSession" --precise --json
 
 Without `--output`, analysis prints its result and writes nothing. `--project` is optional; without it the adapter uses selected TypeScript sources with NodeNext resolution. A project config selects compiler options and entry files, but emission and incremental compiler writes stay disabled. TypeScript is resolved from the target repository first, then the adapter installation. `--typescript /absolute/path/to/typescript.js` explicitly selects a compatible installed API. No compiler or target dependencies are downloaded by analysis.
 
+The project config, every configuration read through `extends`, and package manifests used to resolve those configurations are included in `sourceHashes`. Editing or deleting any of them invalidates the analysis, including changes made while analysis is running. Configuration files must stay inside the repository, including their resolved symlink targets; choose a repository root containing shared monorepo configurations. UTF-8 and UTF-16 BOMs remain supported.
+
+Configuration hashes cover the exact bytes consumed by the compiler. Injected I/O can supply optional `io.readBytes(path, { signal })` for byte-preserving validation; existing `io.readFile` remains supported for UTF-8 content. Existing graph inputs with decoded-text hashes remain accepted.
+
 The type checker resolves aliases, local names, cross-file symbols, class members and static call-site bindings. Instantiated symbols are matched through their compiler declaration identity. Dynamic dispatch and function values still require source review; a call edge identifies the compiler-resolved binding and does not enumerate runtime implementations.
 
 ## Go

@@ -607,7 +607,10 @@ export interface Scheduler {
 export interface ReadOptions {
   signal?: AbortSignalLike;
   readPolicy?: ReadPolicy;
-  io?: { readFile?(path: string, encoding: "utf8", options?: { signal: AbortSignalLike }): Promise<string> };
+  io?: {
+    readFile?(path: string, encoding: "utf8", options?: { signal: AbortSignalLike }): Promise<string>;
+    readBytes?(path: string, options?: { signal: AbortSignalLike }): Promise<Uint8Array>;
+  };
 }
 
 export interface ReadPolicy {

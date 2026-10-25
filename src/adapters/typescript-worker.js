@@ -13,6 +13,7 @@ stability=architecture
 import path from "node:path";
 import { createRequire } from "node:module";
 import { readFileSync, realpathSync } from "node:fs";
+import { createHash } from "node:crypto";
 
 let input = "";
 for await (const chunk of process.stdin) input += chunk;
@@ -26,14 +27,15 @@ function analyze(request) {
   }
   const root = path.resolve(request.root);
   const selectedPaths = request.files.map(file => path.resolve(file));
+  const configHashes = Object.create(null);
   let options = { target: ts.ScriptTarget.ESNext, module: ts.ModuleKind.NodeNext, moduleResolution: ts.ModuleResolutionKind.NodeNext, noEmit: true, skipLibCheck: true, types: [] };
   let names = selectedPaths;
   if (request.project) {
     const project = path.resolve(root, request.project);
     if (!inside(root, project)) throw new Error("TypeScript project must be inside the repository.");
-    const loaded = ts.readConfigFile(project, ts.sys.readFile);
+    const loaded = ts.readConfigFile(project, readConfig);
     if (loaded.error) throw new Error(ts.flattenDiagnosticMessageText(loaded.error.messageText, "\n"));
-    const parsed = ts.parseJsonConfigFileContent(loaded.config, ts.sys, path.dirname(project));
+    const parsed = ts.parseJsonConfigFileContent(loaded.config, { ...ts.sys, readFile: readConfig }, path.dirname(project));
     if (parsed.errors.length) throw new Error(parsed.errors.map(error => ts.flattenDiagnosticMessageText(error.messageText, "\n")).join("\n"));
     options = { ...parsed.options, noEmit: true, incremental: false };
     names = parsed.fileNames;
@@ -102,7 +104,22 @@ function analyze(request) {
     }
     uses(source);
   }
-  return { compiler: { name: "typescript", version: ts.version }, declarations, references, diagnostics, inputs: [...inputs].map(relative) };
+  return { compiler: { name: "typescript", version: ts.version }, declarations, references, diagnostics, inputs: [...inputs].map(relative), configHashes };
+  function readConfig(file) {
+    const absolute = path.resolve(file);
+    let bytes;
+    try {
+      const canonical = realpathSync(absolute);
+      if (!inside(root, absolute) || !inside(root, canonical)) throw new Error("TypeScript configuration must stay inside the repository without escaping symlinks.");
+      bytes = readFileSync(absolute);
+    } catch (error) { if (error.code === "ENOENT" || error.code === "ENOTDIR") return undefined; throw error; }
+    const name = path.relative(root, absolute).split(path.sep).join("/");
+    const hash = createHash("sha256").update(bytes).digest("hex");
+    if (configHashes[name] !== undefined && configHashes[name] !== hash) throw new Error(`Configuration changed during analysis: ${name}. Run analysis again.`);
+    configHashes[name] = hash;
+    const encoding = bytes[0] === 0xff && bytes[1] === 0xfe ? "utf-16le" : bytes[0] === 0xfe && bytes[1] === 0xff ? "utf-16be" : "utf-8";
+    return new TextDecoder(encoding).decode(bytes);
+  }
   function relative(file) { return path.relative(root, selected.get(fileKey(file)) ?? file).split(path.sep).join("/"); }
   function isCallTarget(node) {
     let expression = node;

@@ -1218,7 +1218,7 @@
         "source mutation"
       ],
       "hashes": {
-        "body": "394cbd35d4d6be2ba9409569bdf36fb800f0d2d389a9746dae6ee93a614c408f",
+        "body": "2d4c2290cb48cfbc96e7314e4475f51bc24b0d1c93c6c6bb4833e4ec9d010b6a",
         "semantic": "c4122aabf96e2489fbb8561b5614b963a8dabc6762a85e8fb378b472dd3fc9dd",
         "structure": "f0b28529b2d7749fc41965cc6056e0ecb652042968d1464c53532740835b66e9"
       },
@@ -1897,7 +1897,7 @@
         "source parsing"
       ],
       "hashes": {
-        "body": "b0ea0ebfc26463bc2ecd30c06889e8a55b96c507c31222c102419747a7bc7c7c",
+        "body": "2b2170fe2b319494a17b3741195516d3c6e8fe8cad60a1983835b685bf658d24",
         "semantic": "59aa3e9e793d505ecdf110fec023c201aaee0154d2f6c9cf71afe1bbf71a7be5",
         "structure": "e213e073414c75bc75df1c8669a7045096142b6c0845694191893d90bf23e3c2"
       },
@@ -2678,7 +2678,7 @@
         "runtime dispatch inference"
       ],
       "hashes": {
-        "body": "0e899d154ba8cddec05fcf7c74e3ad004404fe03869bec3f3c6933e3d07bcca8",
+        "body": "161f806965906a1874bf7d8c9d102ec0c6e31527a911540b170a6e550b90d849",
         "semantic": "98ef2c3c355aa7e08323d2912e94cda316620f1dd30eb971c33bb0ee26fd5653",
         "structure": "1433328f8d59f2065bf7bbf39ef19d8e32c8fc1092fb7724f4003d2bfe68bd17"
       },
@@ -2886,12 +2886,13 @@
         "project execution"
       ],
       "hashes": {
-        "body": "5f1c6baf01bb13ed5bf5b1cc0ff001a3ad6d59275064ceec64db02e9c296143b",
+        "body": "32cecc0bebc6e9aa76f5d4a318e2e4d28eeaf4ba1abe075e12194985f8be61fc",
         "semantic": "9174bc8af1e474db714ce23725d74727f07be95cb060cb71e5acf0d4f23d4ba5",
-        "structure": "335e838d65e61e0d42ba37c2ebd07f873a34fd837da9ddd88c5fbd18a12b096b"
+        "structure": "486bfee939be48d83fa9005cf52a1a769d488cbb745ca3513ba6ba862bb64981"
       },
       "id": "llmnav.structure.typescript-worker",
       "imports": [
+        "node:crypto",
         "node:fs",
         "node:module",
         "node:path"
@@ -3185,9 +3186,9 @@
     },
     "schemaVersion": 1
   },
-  "generatedBy": "llmnav@0.16.12",
+  "generatedBy": "llmnav@0.16.13",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "2440dc242fa0175e06418deedfaf98ee1471e1c74857a91ec212f2d53141deb7",
+  "sourceHash": "27b0a7431f065b8cacf65308a860ae02a329d33e806c510cf40328cbca594ef0",
   "specVersion": "1"
 }

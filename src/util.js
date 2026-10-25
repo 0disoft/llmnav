@@ -132,6 +132,21 @@ export async function readText(filePath, fallback = undefined, options = {}) {
   }
 }
 
+export async function readBytes(filePath, fallback = undefined, options = {}) {
+  throwIfAborted(options.signal);
+  try {
+    return await runRead("read file bytes", async ({ signal }) => {
+      if (options.io?.readBytes) return Buffer.from(await options.io.readBytes(filePath, { signal }));
+      if (options.io?.readFile) return Buffer.from(await options.io.readFile(filePath, "utf8", { signal }), "utf8");
+      return readFile(filePath, { signal });
+    }, { ...options.readPolicy, signal: options.signal });
+  } catch (error) {
+    throwIfAborted(options.signal);
+    if (fallback !== undefined && error?.code === "ENOENT") return fallback;
+    throw error;
+  }
+}
+
 export async function readJson(filePath, fallback = undefined, options = {}) {
   const text = await readText(filePath, fallback === undefined ? undefined : "", options);
   if (text === "" && fallback !== undefined) return structuredClone(fallback);

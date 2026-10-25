@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.16.13] — 2026-10-26
+
+### Fixed
+
+* Track the exact configuration bytes read by TypeScript, including transitive `extends` files and package configuration manifests, in compiler graph freshness proofs. Reject changed or deleted configuration before publication and graph loading, detect changes across analysis snapshots, and require configuration paths to stay inside the repository without escaping symlinks. Preserve UTF-8/UTF-16 BOM decoding and the existing graph schema. Cover an alias change that previously kept a stale call target without diagnostics.
+
 ## [0.16.12] — 2026-10-26
 
 ### Fixed

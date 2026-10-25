@@ -18,7 +18,7 @@ import { normalizeGraphInput, assertCompilerInputFresh } from "./graph-input.js"
 import { validateProject } from "./validator.js";
 import { loadConfig } from "./config.js";
 import { scanProject } from "./project.js";
-import { assertNoSymlinkTraversal, atomicWrite, compareText, readText, sha256, stableStringify } from "./util.js";
+import { assertNoSymlinkTraversal, atomicWrite, compareText, readBytes, sha256, stableStringify } from "./util.js";
 
 export async function analyzeProject(root, options = {}) {
   root = path.resolve(root);
@@ -34,15 +34,20 @@ export async function analyzeProject(root, options = {}) {
   for (const file of metadata) {
     const absolute = path.resolve(root, file);
     await assertNoSymlinkTraversal(root, absolute, file);
-    const content = await readText(absolute, null, options);
+    const content = await readBytes(absolute, null, options);
     if (content !== null) sourceHashes[file.split(path.sep).join("/")] = sha256(content);
   }
   const adapter = options.language === "go" ? analyzeGo : analyzeTypeScript;
   const raw = await adapter(root, selected.map(file => file.absolutePath), options);
   throwIfAborted(options.signal);
+  for (const [file, hash] of Object.entries(raw.configHashes ?? {})) {
+    if (Object.hasOwn(sourceHashes, file) && sourceHashes[file] !== hash) throw new Error(`Source changed during analysis: ${file}. Run analysis again.`);
+    sourceHashes[file] = hash;
+  }
   for (const [file, hash] of Object.entries(sourceHashes)) {
     await assertNoSymlinkTraversal(root, path.join(root, file), file);
-    if (sha256(await readText(path.join(root, file), undefined, options)) !== hash) throw new Error(`Source changed during analysis: ${file}. Run analysis again.`);
+    const bytes = await readBytes(path.join(root, file), undefined, options);
+    if (sha256(bytes) !== hash && sha256(bytes.toString("utf8")) !== hash) throw new Error(`Source changed during analysis: ${file}. Run analysis again.`);
   }
   const graph = connectDefinitions(project, raw, options.language, sourceHashes);
   normalizeGraphInput(graph);

@@ -12,7 +12,7 @@ import path from "node:path";
 import { throwIfAborted } from "./abort.js";
 import { collectSourceFiles } from "./files.js";
 import { ID_PATTERN, CROSS_REPO_ID_PATTERN } from "./spec.js";
-import { assertNoSymlinkTraversal, compareText, readText, sha256, toPosix } from "./util.js";
+import { assertNoSymlinkTraversal, compareText, readBytes, readText, sha256, toPosix } from "./util.js";
 import { diagnostic } from "./validator.js";
 
 export const GRAPH_INPUT_SCHEMA_VERSION = 2;
@@ -183,7 +183,8 @@ export async function assertCompilerInputFresh(root, parsed, config, options = {
   for (const [source, hash] of Object.entries(parsed.sourceHashes)) {
     const sourcePath = path.join(root, source);
     await assertNoSymlinkTraversal(root, sourcePath, source);
-    const content = await readText(sourcePath, null, options);
-    if (content === null || sha256(content) !== hash) throw new Error(`Stale compiler analysis for ${source}; run llmnav analyze again.`);
+    const bytes = await readBytes(sourcePath, null, options);
+    // Accept existing text hashes while new compiler configuration hashes preserve every byte.
+    if (bytes === null || sha256(bytes) !== hash && sha256(bytes.toString("utf8")) !== hash) throw new Error(`Stale compiler analysis for ${source}; run llmnav analyze again.`);
   }
 }

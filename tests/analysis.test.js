@@ -25,6 +25,111 @@ async function fixture(context, files) {
 }
 const card = "/* llmnav/1 symbol\nid=auth.session.rotate\nrole=Rotate a session token.\nsearch=rotate session|session token\nstability=contract\n*/\n";
 
+test("TypeScript invalidates compiler graphs when an extended configuration changes", async context => {
+  const root = await fixture(context, {
+    "first.mts": `${card}export function rotate(token: string) { return token; }\n`,
+    "second.mts": "export function rotate(token: string) { return token + '!'; }\n",
+    "main.mts": "import { rotate } from 'implementation';\nexport function invoke() { return rotate('ok'); }\n",
+    "tsconfig.json": JSON.stringify({ extends: "./config/base.json", files: ["first.mts", "second.mts", "main.mts"] }),
+    "config/base.json": JSON.stringify({ extends: "./shared.json", compilerOptions: { paths: { implementation: ["../first.mts"] } } }),
+    "config/shared.json": JSON.stringify({ compilerOptions: { module: "NodeNext", moduleResolution: "NodeNext", target: "ES2022", types: [] } }),
+  });
+  const options = { language: "typescript", project: "tsconfig.json" };
+  const result = await analyzeProject(root, options);
+  const caller = result.graph.definitions.find(item => item.symbol === "invoke");
+  assert.ok(result.graph.references.some(edge => edge.from === caller.id && edge.to === "auth.session.rotate" && edge.kind === "calls"));
+  await writeAnalysis(root, ".llmnav/imports/code.json", result);
+  const saved = await readFile(path.join(root, ".llmnav/imports/code.json"), "utf8");
+  const { config } = await loadConfig(root);
+  assert.equal((await loadGraphInputs(root, config)).diagnostics.length, 0);
+  await writeFile(path.join(root, "config/base.json"), JSON.stringify({ extends: "./shared.json", compilerOptions: { paths: { implementation: ["../second.mts"] } } }));
+  const loaded = await loadGraphInputs(root, config);
+  context.diagnostic(JSON.stringify({ acceptedStaleIndexes: loaded.indexes.length, diagnostics: loaded.diagnostics.length }));
+  assert.equal(loaded.indexes.length, 0);
+  assert.match(loaded.diagnostics[0].message, /Stale compiler analysis for config\/base\.json/u);
+  await assert.rejects(writeAnalysis(root, ".llmnav/imports/code.json", result), /Stale compiler analysis/u);
+  assert.equal(await readFile(path.join(root, ".llmnav/imports/code.json"), "utf8"), saved);
+  const refreshed = await analyzeProject(root, options);
+  const target = refreshed.graph.definitions.find(item => item.symbol === "rotate" && item.path === "second.mts");
+  assert.ok(refreshed.graph.references.some(edge => edge.from === caller.id && edge.to === target.id && edge.kind === "calls"));
+  assert.equal(refreshed.graph.references.some(edge => edge.from === caller.id && edge.to === "auth.session.rotate" && edge.kind === "calls"), false);
+  assert.ok(refreshed.graph.sourceHashes["config/shared.json"]);
+  assert.equal(Object.keys(result.graph.sourceHashes).length, 6);
+  assert.deepEqual((await analyzeProject(root, options)).graph, refreshed.graph);
+  await writeAnalysis(root, ".llmnav/imports/code.json", refreshed);
+  await writeFile(path.join(root, "config/shared.json"), JSON.stringify({ compilerOptions: { strict: true } }));
+  assert.match((await loadGraphInputs(root, config)).diagnostics[0].message, /Stale compiler analysis for config\/shared\.json/u);
+  await rm(path.join(root, "config/shared.json"));
+  assert.match((await loadGraphInputs(root, config)).diagnostics[0].message, /Stale compiler analysis for config\/shared\.json/u);
+});
+
+test("TypeScript tracks package-based config chains with UTF-8 and UTF-16 BOMs", async context => {
+  const shared = Buffer.concat([Buffer.from([0xfe, 0xff]), Buffer.from(JSON.stringify({ compilerOptions: { target: "ES2022", types: [] } }), "utf16le").swap16()]);
+  const encoded = condition => Buffer.concat([Buffer.from([0xff, 0xfe]), Buffer.from(JSON.stringify({ extends: "@fixture/config", files: ["main.mts"], compilerOptions: { customConditions: [condition] } }), "utf16le")]);
+  const original = encoded("\u2e80"), changed = encoded("\u2e81");
+  assert.equal(original.toString("utf8"), changed.toString("utf8"), "lossy decoding must not hide changed UTF-16 bytes");
+  const root = await fixture(context, {
+    "main.mts": "export const value = true;\n",
+    "tsconfig.json": original,
+    "node_modules/@fixture/config/package.json": JSON.stringify({ name: "@fixture/config", tsconfig: "base.json" }),
+    "node_modules/@fixture/config/base.json": `\ufeff${JSON.stringify({ extends: "./shared.json", compilerOptions: { module: "NodeNext", moduleResolution: "NodeNext" } })}`,
+    "node_modules/@fixture/config/shared.json": shared,
+  });
+  const result = await analyzeProject(root, { language: "typescript", project: "tsconfig.json" });
+  for (const file of ["tsconfig.json", "node_modules/@fixture/config/package.json", "node_modules/@fixture/config/base.json", "node_modules/@fixture/config/shared.json"]) {
+    assert.ok(result.graph.sourceHashes[file], file);
+  }
+  let byteReads = 0;
+  const io = { readBytes: (file, options) => { byteReads++; return readFile(file, options); } };
+  await writeAnalysis(root, ".llmnav/imports/code.json", result, { io });
+  const { config } = await loadConfig(root);
+  assert.equal((await loadGraphInputs(root, config, { io })).diagnostics.length, 0);
+  assert.ok(byteReads > 0);
+  await writeFile(path.join(root, "tsconfig.json"), changed);
+  assert.match((await loadGraphInputs(root, config)).diagnostics[0].message, /Stale compiler analysis for tsconfig\.json/u);
+  await writeFile(path.join(root, "tsconfig.json"), original);
+  await writeFile(path.join(root, "node_modules/@fixture/config/package.json"), JSON.stringify({ name: "@fixture/config", tsconfig: "shared.json" }));
+  assert.match((await loadGraphInputs(root, config)).diagnostics[0].message, /Stale compiler analysis/u);
+});
+
+test("TypeScript rejects configuration chains that escape the repository", async context => {
+  const outside = await fixture(context, { "base.json": JSON.stringify({ compilerOptions: { types: [] } }) });
+  const root = await fixture(context, {
+    "main.mts": "export const value = true;\n",
+    "tsconfig.json": JSON.stringify({ extends: path.join(outside, "base.json"), files: ["main.mts"] }),
+  });
+  await assert.rejects(analyzeProject(root, { language: "typescript", project: "tsconfig.json" }), /configuration must stay inside/u);
+  await symlink(outside, path.join(root, "config-link"), process.platform === "win32" ? "junction" : "dir");
+  await writeFile(path.join(root, "tsconfig.json"), JSON.stringify({ extends: "./config-link/base.json", files: ["main.mts"] }));
+  await assert.rejects(analyzeProject(root, { language: "typescript", project: "tsconfig.json" }), /configuration must stay inside/u);
+});
+
+test("TypeScript rejects configuration changes across compiler snapshot boundaries", async context => {
+  for (const changed of ["tsconfig.json", "base.json"]) {
+    const root = await fixture(context, {
+      "main.mts": "export const value = true;\n",
+      "tsconfig.json": JSON.stringify({ extends: "./base.json", files: ["main.mts"] }),
+      "base.json": JSON.stringify({ compilerOptions: { types: [] } }),
+    });
+    let changedOnce = false;
+    const io = { readFile: async (file, encoding, options) => {
+      if (file === path.join(root, changed) && !changedOnce) {
+        changedOnce = true;
+        const replacement = changed === "tsconfig.json"
+          ? { extends: "./base.json", files: ["main.mts"], compilerOptions: { strict: true } }
+          : { compilerOptions: { types: [], strict: true } };
+        // Root config: change after its initial snapshot. Base config: change after compiler use.
+        const original = await readFile(file, { encoding, ...options });
+        await writeFile(file, JSON.stringify(replacement));
+        return changed === "tsconfig.json" ? original : readFile(file, { encoding, ...options });
+      }
+      return readFile(file, { encoding, ...options });
+    } };
+    await assert.rejects(analyzeProject(root, { language: "typescript", project: "tsconfig.json", io }), /Source changed during analysis/u);
+    assert.equal(changedOnce, true);
+  }
+});
+
 test("TypeScript preserves definitions and card bindings when Windows tsconfig casing differs", { skip: process.platform !== "win32" }, async context => {
   const options = { compilerOptions: { module: "NodeNext", moduleResolution: "NodeNext", target: "ES2022", types: [] }, files: ["src/lib.mts", "src/main.mts"] };
   const root = await fixture(context, {

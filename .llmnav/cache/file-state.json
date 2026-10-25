@@ -2098,18 +2098,19 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "5f1c6baf01bb13ed5bf5b1cc0ff001a3ad6d59275064ceec64db02e9c296143b",
+      "contentHash": "32cecc0bebc6e9aa76f5d4a318e2e4d28eeaf4ba1abe075e12194985f8be61fc",
       "declarations": [
         null
       ],
       "imports": [
+        "node:crypto",
         "node:fs",
         "node:module",
         "node:path"
       ],
       "path": "src/adapters/typescript-worker.js",
       "semanticBytes": 546,
-      "sourceBytes": 8869
+      "sourceBytes": 9981
     },
     {
       "blocks": [
@@ -2654,7 +2655,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "0e899d154ba8cddec05fcf7c74e3ad004404fe03869bec3f3c6933e3d07bcca8",
+      "contentHash": "161f806965906a1874bf7d8c9d102ec0c6e31527a911540b170a6e550b90d849",
       "declarations": [
         null
       ],
@@ -2671,7 +2672,7 @@
       ],
       "path": "src/analysis.js",
       "semanticBytes": 632,
-      "sourceBytes": 6743
+      "sourceBytes": 7075
     },
     {
       "blocks": [
@@ -4571,7 +4572,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "394cbd35d4d6be2ba9409569bdf36fb800f0d2d389a9746dae6ee93a614c408f",
+      "contentHash": "2d4c2290cb48cfbc96e7314e4475f51bc24b0d1c93c6c6bb4833e4ec9d010b6a",
       "declarations": [
         null
       ],
@@ -4585,7 +4586,7 @@
       ],
       "path": "src/graph-input.js",
       "semanticBytes": 397,
-      "sourceBytes": 8709
+      "sourceBytes": 8854
     },
     {
       "blocks": [
@@ -4813,14 +4814,14 @@
     },
     {
       "blocks": [],
-      "contentHash": "d14fcd258a6d6123d504086a27b89fb0e9e6b61bafbbcf5c7b45a2603f03cef2",
+      "contentHash": "560fac6e92780cc970bd4bed99ac5ce4686f30d5e56f448e7ef60df92d8e5733",
       "declarations": [],
       "imports": [
         "./spec.js"
       ],
       "path": "src/index.d.ts",
       "semanticBytes": 0,
-      "sourceBytes": 36747
+      "sourceBytes": 36844
     },
     {
       "blocks": [],
@@ -6814,7 +6815,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "b0ea0ebfc26463bc2ecd30c06889e8a55b96c507c31222c102419747a7bc7c7c",
+      "contentHash": "2b2170fe2b319494a17b3741195516d3c6e8fe8cad60a1983835b685bf658d24",
       "declarations": [
         null
       ],
@@ -7028,7 +7029,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "41f9ae737e8f333c3a89d08571a9e50b58f9d4da09a1044b40b0c83069197d66",
+      "contentHash": "72b545cb2d15d7369752754b1bee66f797d3a9cf0c3a19d462c8893e1d6c678f",
       "declarations": [],
       "imports": [
         "./abort.js",
@@ -7043,7 +7044,7 @@
       ],
       "path": "src/util.js",
       "semanticBytes": 0,
-      "sourceBytes": 16452
+      "sourceBytes": 17123
     },
     {
       "blocks": [
@@ -7229,7 +7230,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "cd6c028bb079d85a9e2a324f40800ec4f9735fe7287b749cada0782f388db63e",
+      "contentHash": "71b0409626b51e26b7bf932ebef502951769c311e7e75d62f63cb4e1d2d28164",
       "declarations": [],
       "imports": [
         "../src/adapters/go.js",
@@ -7248,7 +7249,7 @@
       ],
       "path": "tests/analysis.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 11585
+      "sourceBytes": 19560
     },
     {
       "blocks": [],
