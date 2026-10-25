@@ -4,6 +4,7 @@ role=Serve the stable agent tool schema and operation protocol over the Model Co
 owns=JSON-RPC framing|capability negotiation|tool listing|tool call mapping|index snapshot reuse
 excludes=agent tool schemas|operation execution|provider SDK transport|index preparation
 search=mcp server|model context protocol|json rpc stdio|agent tool transport|session snapshot reuse
+invariant=Input failure cancels active requests and output waits, and owned transport listeners are released on exit.
 rel=workflow>llmnav.agent.tool-schema
 rel=workflow>llmnav.agent.protocol
 stability=contract
@@ -310,10 +311,13 @@ export async function serveMcpStdio(options = {}) {
   const onError = (error) => stop(error);
   try {
     options.signal?.addEventListener("abort", onAbort);
+    // The iterator cannot surface read failures while its body awaits a tool or drain.
+    reader.on("error", onError);
     output.on("close", onClose);
     output.on("error", onError);
     if (options.signal?.aborted) onAbort();
     if (output.destroyed || output.closed || output.writableEnded) onClose();
+    if (input.errored) onError(input.errored);
     throwIfAborted(controller.signal);
     for await (const line of reader) {
       throwIfAborted(controller.signal);
@@ -328,6 +332,7 @@ export async function serveMcpStdio(options = {}) {
   } finally {
     controller.abort();
     reader.close();
+    reader.removeListener("error", onError);
     options.signal?.removeEventListener?.("abort", onAbort);
     output.removeListener("close", onClose);
     output.removeListener("error", onError);

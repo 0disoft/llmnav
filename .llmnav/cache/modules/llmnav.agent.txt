@@ -36,6 +36,7 @@ rel workflow>llmnav.agent.protocol
 role Serve the stable agent tool schema and operation protocol over the Model Context Protocol stdio transport.
 owns JSON-RPC framing, capability negotiation, tool listing, tool call mapping, index snapshot reuse
 excludes agent tool schemas, operation execution, provider SDK transport, index preparation
+invariant Input failure cancels active requests and output waits, and owned transport listeners are released on exit.
 rel workflow>llmnav.agent.tool-schema, workflow>llmnav.agent.protocol
 
 @llmnav.agent.freshness

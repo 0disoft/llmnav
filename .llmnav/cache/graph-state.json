@@ -695,7 +695,7 @@
           "to": "llmnav/llmnav.support.runtime"
         }
       ],
-      "inputHash": "2310d53fe0df2ee7ee8ea4595787a2f5a15e0ccdf60ea49bc2061fe3c2490953",
+      "inputHash": "c2d3548e124b523eff95b6470445b9e8754f16233cfb975d5687aa59607f04ab",
       "key": "card:llmnav/llmnav.agent.mcp",
       "nodes": [
         {
@@ -713,7 +713,7 @@
           "key": "llmnav/llmnav.agent.mcp",
           "location": {
             "declarationLine": null,
-            "endLine": 10,
+            "endLine": 11,
             "exported": null,
             "kind": null,
             "language": null,
@@ -801,7 +801,7 @@
           "semanticId": "llmnav.support.runtime"
         }
       ],
-      "outputHash": "49f289dde4eb6ae082cb4272862e23cbeff2113572cf2ecb391e56e05990799c"
+      "outputHash": "ffe2115ed38a3ca4a41bb79f05f8280937fbe9669d7dea7092d39ef030b5e053"
     },
     {
       "edges": [

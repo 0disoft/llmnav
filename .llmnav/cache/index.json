@@ -1896,7 +1896,7 @@
         "source parsing"
       ],
       "hashes": {
-        "body": "2aed1a41e1012d86ef205f45954a69977ea362610e5f7a6ea0464f28d7bd48c5",
+        "body": "8b5411d72c5a77da505e699b0e8acc8f3e10beaaf86a08a2ec53907120d9a7a7",
         "semantic": "59aa3e9e793d505ecdf110fec023c201aaee0154d2f6c9cf71afe1bbf71a7be5",
         "structure": "e213e073414c75bc75df1c8669a7045096142b6c0845694191893d90bf23e3c2"
       },
@@ -2220,8 +2220,8 @@
         "index preparation"
       ],
       "hashes": {
-        "body": "c7cb61f1c4269736b6610f50174abdf811789f4a093122afc980a88b4dfb720b",
-        "semantic": "a1ec177829cdd462b6ea996d78d53c2c9071291f1dd14202e05d1236559a8973",
+        "body": "1e0bb71596dcd04fccf4ac444fc263e7d5f849d87ec2214d2860ed4b6511b688",
+        "semantic": "fa125be5af3d3d34e59efaeabf1e2fe69270db0c0363290603cf479e17f84a7e",
         "structure": "78e4d8d2614cbfb79ac3a7b19b1f3df4022a797dbb3dd967555bdc37b1a9861f"
       },
       "id": "llmnav.agent.mcp",
@@ -2238,9 +2238,12 @@
         "node:path",
         "node:readline"
       ],
+      "invariant": [
+        "Input failure cancels active requests and output waits, and owned transport listeners are released on exit."
+      ],
       "location": {
         "declarationLine": null,
-        "endLine": 10,
+        "endLine": 11,
         "exported": null,
         "kind": null,
         "language": null,
@@ -3178,9 +3181,9 @@
     },
     "schemaVersion": 1
   },
-  "generatedBy": "llmnav@0.16.3",
+  "generatedBy": "llmnav@0.16.4",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "86edea93872c3fcb22e5640d165a5e2457468c0a3a244f3f4cf5ef0a12fbecd3",
+  "sourceHash": "50d524941716d78bd29ece80c4d98a574d987848ebafddbd3129b118068b80e9",
   "specVersion": "1"
 }

@@ -244,6 +244,60 @@ test("stdio cancellation closes an idle reader and handles already-closed output
   input.destroy();
 });
 
+for (const phase of ["idle", "backpressure", "tool"]) {
+  test(`input failures settle stdio during ${phase} and release owned listeners`, { timeout: 5000 }, async (context) => {
+    const input = new PassThrough(), output = new EventEmitter();
+    const controller = new AbortController(), ready = Promise.withResolvers();
+    let requestSignal, settled = false, failure;
+    output.write = () => { ready.resolve(); return false; };
+    const session = { query: (_task, options) => {
+      requestSignal = options.signal;
+      ready.resolve();
+      return new Promise(() => {});
+    } };
+    const serving = serveMcpStdio({ root: os.tmpdir(), input, output, session,
+      signal: controller.signal, requestTimeoutMs: 0 });
+    const observed = serving.then(() => { settled = true; }, error => { settled = true; failure = error; });
+    context.after(async () => { controller.abort(); input.destroy(); await observed; });
+    if (phase === "backpressure") input.write('{"jsonrpc":"2.0","id":1,"method":"ping"}\n');
+    else if (phase === "tool") input.write(JSON.stringify({ jsonrpc: "2.0", id: 1, method: "tools/call",
+      params: { name: "llmnav_query", arguments: { task: "fixture" } } }) + "\n");
+    else ready.resolve();
+    await ready.promise;
+    const reason = Object.assign(new Error("input read failed"), { code: "EIO" });
+    input.destroy(reason);
+    await new Promise(resolve => setImmediate(resolve));
+    assert.equal(settled, true, "input failure must not wait for output drain or a request deadline");
+    assert.equal(failure, reason);
+    for (const event of ["drain", "close", "error"]) assert.equal(output.listenerCount(event), 0, event);
+    assert.equal(input.listenerCount("data"), 0);
+    assert.equal(getEventListeners(controller.signal, "abort").length, 0);
+    if (phase === "tool") {
+      assert.equal(requestSignal.aborted, true);
+      assert.equal(requestSignal.reason, reason);
+    }
+  });
+}
+
+test("stdio rejects an already-failed input instead of waiting for another error event", { timeout: 5000 }, async (context) => {
+  const input = new PassThrough(), output = new EventEmitter(), controller = new AbortController();
+  const reason = Object.assign(new Error("input already failed"), { code: "EIO" });
+  const onError = () => {};
+  input.on("error", onError);
+  await new Promise(resolve => { input.once("close", resolve); input.destroy(reason); });
+  let settled = false, failure;
+  output.write = () => true;
+  const observed = serveMcpStdio({ root: os.tmpdir(), input, output, signal: controller.signal })
+    .then(() => { settled = true; }, error => { settled = true; failure = error; });
+  context.after(async () => { controller.abort(); await observed; input.removeListener("error", onError); });
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(settled, true);
+  assert.equal(failure, reason);
+  assert.equal(input.listenerCount("error"), 1, "caller-owned listener must survive cleanup");
+  assert.equal(getEventListeners(controller.signal, "abort").length, 0);
+  for (const event of ["drain", "close", "error"]) assert.equal(output.listenerCount(event), 0, event);
+});
+
 test("synchronous output closure is observed before the write returns", async () => {
   const output = new EventEmitter();
   output.write = () => { output.emit("close"); return false; };

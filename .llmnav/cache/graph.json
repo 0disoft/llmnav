@@ -3914,7 +3914,7 @@
       "key": "llmnav/llmnav.agent.mcp",
       "location": {
         "declarationLine": null,
-        "endLine": 10,
+        "endLine": 11,
         "exported": null,
         "kind": null,
         "language": null,
@@ -5055,7 +5055,7 @@
   ],
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "5666d26d34ee4b52f53e0a3ff7cc43308c500d4cf8182de7f37c5bdea579cfc7",
+  "sourceHash": "dd152e99f03be235ab51d4b17dcd2cb2537ca78410247be0c5a29c9359ecf7b3",
   "stats": {
     "edgeCount": 259,
     "importedIndexCount": 0,

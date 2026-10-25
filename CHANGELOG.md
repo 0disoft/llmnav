@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.16.4] — 2026-10-25
+
+### Fixed
+
+* Propagate MCP input-stream errors to pending tool calls and output backpressure waits instead of leaving the server pending. Reject already-failed input, preserve the original error and remove owned listeners on exit. Regression coverage includes idle reads, blocked output, active requests and previously errored input while retaining ordinary EOF and output-close behavior.
+
 ## [0.16.3] — 2026-10-25
 
 ### Fixed
