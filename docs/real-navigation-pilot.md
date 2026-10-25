@@ -52,10 +52,12 @@ Keep ordinary discovery as the default for finding unannotated identifiers. It r
 
 Use precise analysis when a task needs compiler-bound imports, shadowing, receiver methods, or caller/reference context. The six checked call bindings passed. Focused regression tests additionally cover TypeScript receiver references and wrapped callees, Go local initializer ownership and generic calls, and the CLI analysis-to-discovery flow. Those are correctness benefits; this pilot does not establish a retrieval-ranking advantage for precise mode.
 
+The subsequent [controlled coding pilot](model-coding-evaluation.md) solved 8/8 tasks in each of the baseline, ordinary LLMNav and Serena conditions. LLMNav did not reduce reported uncached input against baseline in those small repairs. Better identifier ranks here therefore do not justify mandatory semantic navigation for every coding task or a token-savings claim.
+
 ## Evidence still held
 
 This is one author-reviewed, eight-case retrieval pilot on two small scopes. It is not a sealed holdout, natural-language workload, large-monorepo stress test, or repeated latency experiment. Filesystem caches were not flushed. `rg` includes child-process launch costs, whereas discovery uses its JavaScript API in the harness process; elapsed times do not establish a universal speed comparison or an MCP round-trip cost.
 
-The [Serena follow-up](serena-comparison.md) now records semantic lookup on these same corpus and task-plan hashes. Actual model coding outcomes are recorded separately when available; they must not be inferred from this retrieval pilot. Human card-authoring and maintenance time remain unmeasured. The copied sources have no semantic cards. A competitive score cannot be inferred from these ranks.
+The [Serena follow-up](serena-comparison.md) now records semantic lookup on these same corpus and task-plan hashes. [Actual model coding outcomes](model-coding-evaluation.md) are recorded separately and must not be inferred from this retrieval pilot. Human card-authoring and maintenance time remain unmeasured. The copied sources have no semantic cards. A competitive score cannot be inferred from these ranks.
 
 The earlier local reports were excluded after correcting `./` path normalization and the even-sample median calculation. Only the final 0.15.1 report is used above.

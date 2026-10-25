@@ -38,4 +38,4 @@ Install evaluation dependencies separately from LLMNav's runtime dependencies. T
 node benchmarks/serena-navigation.js --typescript-root <buildmarks-root> --go-root <GOROOT/src/go/token> --output <report.json>
 ```
 
-The harness supplies only copied source and trusted fixture configuration to Serena. See Serena's official [tool contracts](https://oraios.github.io/serena/01-about/035_tools.html) and [configuration](https://oraios.github.io/serena/02-usage/050_configuration.html). Actual edit success is measured separately in the model coding pilot; retrieval rank alone cannot establish it.
+The harness supplies only copied source and trusted fixture configuration to Serena. See Serena's official [tool contracts](https://oraios.github.io/serena/01-about/035_tools.html) and [configuration](https://oraios.github.io/serena/02-usage/050_configuration.html). [Actual edit success](model-coding-evaluation.md) is measured separately; retrieval rank alone cannot establish it.

@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-25T11:12:14.521Z",
+  "serena": "2.1.0",
+  "gopls": "golang.org/x/tools/gopls v0.23.0",
+  "serenaTypeScript": "5.9.3",
+  "serenaTypeScriptLanguageServer": "5.1.3",
+  "llmnavTypeScript": "6.0.3",
+  "packageVersion": "0.15.3",
+  "engineSources": {
+    "src/mcp.js": "c7cb61f1c4269736b6610f50174abdf811789f4a093122afc980a88b4dfb720b",
+    "src/discovery.js": "405eb20d2edf781e74a238882da6b98feb5acace265e34abe320870395685d8d",
+    "src/agent-tools.js": "5b41ccde74f53d86970af147f8b3b8c67a591a07c78bf74560b8d876a17fc4a8"
+  },
+  "goplsInstallation": {
+    "latestAttempt": "v0.24.0",
+    "latestAttemptOutcome": "requires Go >=1.27; local Go 1.26.4 retained",
+    "measuredVersion": "v0.23.0",
+    "installation": "isolated evaluation binary directory; child process PATH only"
+  },
+  "modelExecution": "codex exec with existing ChatGPT login, ephemeral sessions, no API keys provisioned"
+}

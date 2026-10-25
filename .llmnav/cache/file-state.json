@@ -11,6 +11,21 @@
     },
     {
       "blocks": [],
+      "contentHash": "4a879d3a785d12bfce797f6ce87a58d2954c22fbd2fdc673c1d8fe272cf9f041",
+      "declarations": [],
+      "imports": [
+        "../src/util.js",
+        "node:assert/strict",
+        "node:fs/promises",
+        "node:path",
+        "node:url"
+      ],
+      "path": "benchmarks/coding-summary.js",
+      "semanticBytes": 0,
+      "sourceBytes": 3909
+    },
+    {
+      "blocks": [],
       "contentHash": "3e66a523a48e2e1d61e97114735bd6cc9c0e28b55be36e351561f1ec76dace99",
       "declarations": [],
       "imports": [
@@ -7264,6 +7279,19 @@
       "path": "tests/cli.test.js",
       "semanticBytes": 0,
       "sourceBytes": 4801
+    },
+    {
+      "blocks": [],
+      "contentHash": "b22003d5f7d17a771724c76e5d2169fa5c430cb77a1732fbe175e83326230fa3",
+      "declarations": [],
+      "imports": [
+        "../benchmarks/coding-summary.js",
+        "node:assert/strict",
+        "node:test"
+      ],
+      "path": "tests/coding-summary.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 2198
     },
     {
       "blocks": [],
