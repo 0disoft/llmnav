@@ -4198,7 +4198,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "af00810bc9de6108ce9e3c320b39ee6657c8e94ae8b6b8df1320ed9bd163ebd1",
+      "contentHash": "7fd13b5c9813be8e6d83320a982ed22e4e4fb667c8d00806d8b5090f51aaa851",
       "declarations": [
         null
       ],
@@ -4211,7 +4211,7 @@
       ],
       "path": "src/files.js",
       "semanticBytes": 485,
-      "sourceBytes": 5230
+      "sourceBytes": 5303
     },
     {
       "blocks": [
@@ -6788,7 +6788,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "76a294f2bc571f43ca8797b36562cc3ee257f2fd363163586dc46b80878c69c6",
+      "contentHash": "212e4c73959b0a1baf6cf9d7f521fd243592eba19ef55572c8c3b5af7c124382",
       "declarations": [
         null
       ],
@@ -7464,11 +7464,13 @@
     },
     {
       "blocks": [],
-      "contentHash": "576ada3c840caa2879a1ac8e59340cf3793922d718290951f3ae7a6babff4793",
+      "contentHash": "ef09ae7fac18332a664acd39e9d178635bba42cbc44a0b2177628b041abdd94b",
       "declarations": [],
       "imports": [
         "../src/config.js",
+        "../src/discovery.js",
         "../src/files.js",
+        "../src/project.js",
         "../src/util.js",
         "node:assert/strict",
         "node:fs/promises",
@@ -7478,7 +7480,7 @@
       ],
       "path": "tests/file-selection.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 3965
+      "sourceBytes": 6354
     },
     {
       "blocks": [],

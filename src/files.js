@@ -13,7 +13,7 @@ import { lstat, readdir, stat } from "node:fs/promises";
 import path from "node:path";
 import { throwIfAborted } from "./abort.js";
 import { DEFAULT_IO_CONCURRENCY, mapWithConcurrency } from "./concurrency.js";
-import { compareText, matchesAnyGlob, relativePosix, toPosix } from "./util.js";
+import { assertNoSymlinkTraversal, compareText, matchesAnyGlob, relativePosix, toPosix } from "./util.js";
 
 const INTERNAL_DIRECTORIES = [".llmnav/tmp", ".llmnav/state", ".llmnav/.transactions"];
 
@@ -53,9 +53,9 @@ export async function collectSourceFiles(root, config, requestedPaths = [], opti
     assertInsideRoot(root, absolute, sourceRoot);
     if (isInternalPath(root, absolute, config)) continue;
     try {
-      const linkDetails = await lstat(absolute);
-      if (linkDetails.isSymbolicLink()) throw new Error(`Source path ${JSON.stringify(sourceRoot)} is a symbolic link.`);
-      const details = await stat(absolute);
+      await assertNoSymlinkTraversal(root, absolute, `Source path ${JSON.stringify(sourceRoot)}`);
+      const details = await lstat(absolute);
+      if (details.isSymbolicLink()) throw new Error(`Source path ${JSON.stringify(sourceRoot)} is a symbolic link.`);
       if (details.isFile()) {
         if (shouldIncludeFile(root, absolute, config)) files.set(absolute, true);
       } else if (details.isDirectory()) {

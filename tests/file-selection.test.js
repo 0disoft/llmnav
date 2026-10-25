@@ -1,11 +1,45 @@
 import assert from "node:assert/strict";
-import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, rm, symlink, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { loadConfig } from "../src/config.js";
 import { collectSourceFiles } from "../src/files.js";
+import { discoverProject } from "../src/discovery.js";
+import { scanProject } from "../src/project.js";
 import { globToRegExp, matchesAnyGlob } from "../src/util.js";
+
+test("source roots and explicit paths reject intermediate links before reading outside source", async context => {
+  const parent = await mkdtemp(path.join(os.tmpdir(), "llmnav-source-containment-"));
+  context.after(async () => {
+    assert.equal(path.dirname(parent), path.resolve(os.tmpdir()));
+    assert.ok(path.basename(parent).startsWith("llmnav-source-containment-"));
+    await rm(parent, { recursive: true, force: true });
+  });
+  const root = path.join(parent, "repository"), outside = path.join(parent, "outside");
+  await mkdir(path.join(root, "src"), { recursive: true });
+  await mkdir(path.join(outside, "nested"), { recursive: true });
+  await writeFile(path.join(root, "src/safe.js"), "export function safeFixture() {}\n");
+  await writeFile(path.join(outside, "nested/secret.js"), "export function outsideFixtureCanary() {}\n");
+  await symlink(outside, path.join(root, "src/link"), process.platform === "win32" ? "junction" : "dir");
+  const { config } = await loadConfig(root);
+  for (const selected of ["src/link", "src/link/nested", "src/link/nested/secret.js"]) {
+    await assert.rejects(collectSourceFiles(root, { ...config, sourceRoots: [selected] }), /symbolic link/u);
+    await assert.rejects(collectSourceFiles(root, config, [selected]), /symbolic link/u);
+  }
+  assert.deepEqual(await collectSourceFiles(root, { ...config, sourceRoots: ["src"] }), [path.join(root, "src/safe.js")]);
+  const alias = path.join(parent, "root-alias");
+  await symlink(root, alias, process.platform === "win32" ? "junction" : "dir");
+  await assert.rejects(collectSourceFiles(alias, { ...config, sourceRoots: ["."] }), /symbolic link/u);
+  await assert.rejects(scanProject(root, { paths: ["src/link/nested/secret.js"] }), /symbolic link/u);
+  await assert.rejects(discoverProject(root, "outsideFixtureCanary", {
+    paths: ["src/link/nested/secret.js"], includeSource: true,
+  }), /symbolic link/u);
+  await mkdir(path.join(root, ".llmnav"));
+  await writeFile(path.join(root, ".llmnav/config.json"), JSON.stringify({ repositoryId: "containment", sourceRoots: ["src/link/nested"] }));
+  await assert.rejects(scanProject(root), /symbolic link/u);
+  await assert.rejects(discoverProject(root, "outsideFixtureCanary", { includeSource: true }), /symbolic link/u);
+});
 
 test("globs without a separator match names at any depth", () => {
   assert.equal(matchesAnyGlob("app.min.js", ["*.min.js"]), true);

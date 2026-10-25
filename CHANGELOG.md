@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.16.1] — 2026-10-25
+
+### Fixed
+
+* Reject intermediate symbolic links and Windows junctions in configured source roots and explicit source paths before scanning or reading source. Reuse the existing component-wise path guard and retain final-entry link rejection. Regression coverage includes file/directory targets, both input routes, live discovery and ordinary source scans. This closes fixed-link traversal; concurrent path replacement is outside this change's guarantees.
+
 ## [0.16.0] — 2026-10-25
 
 ### Added
