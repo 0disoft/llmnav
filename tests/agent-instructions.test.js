@@ -3,7 +3,7 @@ import { mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
-import { installAgentInstructions } from "../src/agents.js";
+import { AGENT_PROTOCOL, installAgentInstructions } from "../src/agents.js";
 import { initializeProject } from "../src/initializer.js";
 
 async function fixture(context) {
@@ -15,6 +15,18 @@ async function fixture(context) {
   });
   return root;
 }
+
+test("every installed adapter permits targeted ordinary navigation and avoids redundant reads", async context => {
+  const root = await fixture(context);
+  await installAgentInstructions(root, ["all"]);
+  for (const file of ["AGENTS.md", "CLAUDE.md", ".github/copilot-instructions.md", ".cursor/rules/llmnav.mdc", ".llmnav/AGENT_INSTRUCTIONS.md"]) {
+    const text = await readFile(path.join(root, file), "utf8");
+    assert.ok(text.includes(AGENT_PROTOCOL));
+    assert.ok(text.includes("Skip semantic navigation"));
+    assert.ok(text.includes("only for missing contract detail"));
+    assert.ok(text.includes("Reuse sufficient excerpts"));
+  }
+});
 
 for (const heading of ["", "## Team navigation\n\n", "## LLMNav code navigation\n\nKeep this independent rule.\n\n"]) {
   test(`managed instruction updates preserve the prefix with heading ${JSON.stringify(heading)}`, async (context) => {

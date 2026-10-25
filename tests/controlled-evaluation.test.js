@@ -45,6 +45,15 @@ test("before and after coding conditions differ only in server installation", ()
   assert.ok(before.some(arg => arg.includes(options.beforeCli)));
 });
 
+test("adaptive coding makes discovery optional while keeping its installation identical", () => {
+  const options = { model: "test-model" };
+  const forced = modelArguments("/fixture", "llmnav", { prompt: "Fix." }, options);
+  const adaptive = modelArguments("/fixture", "llmnav-adaptive", { prompt: "Fix." }, options);
+  assert.deepEqual(forced.slice(0, -1), adaptive.slice(0, -1));
+  assert.match(adaptive.at(-1), /Skip redundant semantic lookup/u);
+  assert.doesNotMatch(adaptive.at(-1), /use the llmnav_discover MCP tool to find a candidate/u);
+});
+
 test("eight balanced coding mutations reject missing or ambiguous source anchors", () => {
   assert.equal(codingCases.filter(item => item.language === "typescript").length, 4);
   assert.equal(codingCases.filter(item => item.language === "go").length, 4);

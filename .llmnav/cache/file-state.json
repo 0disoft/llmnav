@@ -289,7 +289,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "72e96bd32bb9af32552843c30ec8fc974a3bfae4852644c349eff71f94f6ebc6",
+      "contentHash": "e5f5f8bba846e69b9e057171c041be44d4e80cdc89e9d9063313956b5dbd7781",
       "declarations": [
         null
       ],
@@ -310,7 +310,7 @@
       ],
       "path": "benchmarks/model-coding.js",
       "semanticBytes": 554,
-      "sourceBytes": 22850
+      "sourceBytes": 23325
     },
     {
       "blocks": [],
@@ -2523,7 +2523,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "e1b3c90d3d476e28f1d563524cdd01b6c85049d55c59f55557fa3453590798d9",
+      "contentHash": "a18aa849695b84d06f88af6c4bd3f2105dcbccfc32f9254c609612b4397cb9de",
       "declarations": [
         null
       ],
@@ -2533,7 +2533,7 @@
       ],
       "path": "src/agents.js",
       "semanticBytes": 374,
-      "sourceBytes": 6971
+      "sourceBytes": 7142
     },
     {
       "blocks": [
@@ -7165,7 +7165,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "edd5ddbb5acdf4fc388755322880d5099467b5bcad4f3ee7ad44e5a29793c588",
+      "contentHash": "98f951b7d620724a35822d0b09ecdc3a70b66eb463867801e42dba10f1aef170",
       "declarations": [],
       "imports": [
         "../src/agents.js",
@@ -7178,7 +7178,7 @@
       ],
       "path": "tests/agent-instructions.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 6384
+      "sourceBytes": 7052
     },
     {
       "blocks": [],
@@ -7362,7 +7362,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "14615e7dd3942ae7a29e5b6143b4216700b0f8983cd8cea2d6b2819bac2928bd",
+      "contentHash": "c5ba2188acd98d69683d14d6ead7b4ee528b7ea21b22a06ec8f20ad8935c50bb",
       "declarations": [],
       "imports": [
         "../benchmarks/coding-cases.js",
@@ -7373,7 +7373,7 @@
       ],
       "path": "tests/controlled-evaluation.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 3801
+      "sourceBytes": 4355
     },
     {
       "blocks": [],

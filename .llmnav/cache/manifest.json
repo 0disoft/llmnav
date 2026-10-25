@@ -3,11 +3,11 @@
   "fileStateSchemaVersion": 1,
   "files": {
     ".llmnav/cache/agent-context.md": "87eeffd836f36e8063fe3fdf0f3ef7925f14e82c6160e61eba6a6d45acedb9f8",
-    ".llmnav/cache/cards.jsonl": "18b8cb398c35a4c28d42f3f91b9e7e2df040a8b08eb9ef70d600a7f673a8be51",
-    ".llmnav/cache/file-state.json": "342f7f2fed9d498fb1bb90e67b28ba0b9027cdd35056600dd89c4ee94e2797fb",
+    ".llmnav/cache/cards.jsonl": "fa8686c5136cbe8328e568c87ce74bf80b6a40444433d92bebf165b6c9537689",
+    ".llmnav/cache/file-state.json": "03116a091b6cc20d24ae44183a05808ac9a9e71a082361721f6c3d20469b0391",
     ".llmnav/cache/graph-state.json": "b9deb9fba88ff1fb6163dcf98b87e4ec8a258d146211a4ef714b551f73a4104c",
     ".llmnav/cache/graph.json": "9e8d694f5d389baf1eacdfc7e2c5a83efb6a90a0a1f8edf85390d16153ed21d6",
-    ".llmnav/cache/index.json": "d161b62d428b9587aef784da5838199926843c9a7ce726339ea244c263a23866",
+    ".llmnav/cache/index.json": "7f8dc4a6af156e06cb137bef020cd2f95341635d092339dcbb6170fe39e474b3",
     ".llmnav/cache/modules/example.auth.txt": "ae0aebf37a7f541ec0af5a36c1584452703b5b4fcafd6f397d0a7a402c3a76e1",
     ".llmnav/cache/modules/example.billing.txt": "957e2c984d5c121e598956c4f78525016505b1c97d6a94273866d92c4166fecd",
     ".llmnav/cache/modules/example.privacy.txt": "0948627bfa62f11088fbbf1aec835cab50c35d2d03f49eadefbddc221169e0b7",
@@ -30,7 +30,7 @@
     ".llmnav/cache/modules/llmnav.structure.txt": "1de0af7b1f8591c6ac4be0f696cecb933c74693ecc3c11f77dd12a48682b7ae7",
     ".llmnav/cache/modules/llmnav.support.txt": "c3df0371405bd6a6f535078ed0e1c5d3e30526830e6f2aba1d2ceeb2a45b0427",
     ".llmnav/cache/modules/llmnav.syntax.txt": "a1f177762cc5a6e8d26ea4ca8c1ba36c840dbba98b0ed046ed4a1d19ed774916",
-    ".llmnav/cache/prompt-prefix.json": "ffb2439e0143c656851b29f5e66f256ae2ead52bea66cb0b096f8600c60a906c",
+    ".llmnav/cache/prompt-prefix.json": "9d88d44c85fef2fa9358d69bd35b9a3cc46457d7affd01fa38e9e52d07a25d97",
     ".llmnav/cache/repo-core.txt": "64dd71098e5ccd1b3e27fc943e155589107ef872b242094d72ec79ab43a115d9",
     ".llmnav/cache/search-index.json": "f166ba8af2bfd00a3df4bc65f3413b4bc683fee195f902cae8fc9f13c25972bf"
   },
@@ -43,6 +43,6 @@
   "searchCardSetHash": "0629e756991a944092336b45a143f0c738e25bdcb1014d8ff5cff56673b3ec71",
   "searchIndexSchemaVersion": 2,
   "searchShardSchemaVersion": null,
-  "sourceHash": "617dd32c4e072a5bdf1989867583bb9a4928a6404d8a2d167afb5cebadece333",
+  "sourceHash": "65cf612e993995b8de1c322142f2b24fe3dd97615a7bcb351a3d401206ba2b6b",
   "specVersion": "1"
 }

@@ -15,6 +15,10 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 
 * Add matched before/after coding conditions, independent installation preflights and sanitized item-type and source-payload counters.
 
+### Changed
+
+* Installed agent instructions start known-file or exact-identifier work with ordinary bounded reads/searches, use semantic navigation when location or responsibility is unclear, and avoid redundant show/context/file-read calls.
+
 ## [0.15.3] — 2026-10-25
 
 ### Fixed

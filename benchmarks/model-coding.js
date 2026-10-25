@@ -157,6 +157,7 @@ export function modelArguments(root, condition, task, options) {
       required: true, startup_timeout_sec: 120, tool_timeout_sec: 100 })) args.push("-c", `mcp_servers.eval_nav.${key}=${JSON.stringify(value)}`);
   }
   const navigation = condition === "baseline" ? "Use only ordinary shell/file navigation (rg, directory listings, source reads). Do not invoke LLMNav, Serena or another semantic navigation CLI, even if ancestor repository instructions recommend it; this trial's navigation condition takes precedence."
+    : condition === "llmnav-adaptive" ? "Use ordinary bounded source reads or targeted text search for known files or exact identifiers. LLMNav discovery is available when location or responsibility is unclear: use top:1 and includeSource:true when useful, and reuse sufficient excerpts. Skip redundant semantic lookup. Use only ordinary shell/file tools and the available LLMNav MCP tool, not semantic navigation CLIs."
     : condition.startsWith("llmnav") ? "Before reading source bodies or using broad text search, use the llmnav_discover MCP tool to find a candidate. Then use ordinary file/edit tools."
       : "Before reading source bodies or using broad text search, use Serena find_symbol or get_symbols_overview to find a candidate. Follow initial_instructions if required. Onboarding is already performed. Then use ordinary file/edit tools.";
   args.push(`Fix the following bug in this disposable production-source copy.\n${task.prompt}\n\n${navigation}\n\n` +
@@ -168,7 +169,7 @@ export function modelArguments(root, condition, task, options) {
 export async function runModelCoding(options) {
   const conditions = options.conditions ?? defaultConditions;
   assert.ok(conditions.length && new Set(conditions).size === conditions.length &&
-    conditions.every(condition => [...defaultConditions, "llmnav-before"].includes(condition)), "Invalid evaluation conditions");
+    conditions.every(condition => [...defaultConditions, "llmnav-before", "llmnav-adaptive"].includes(condition)), "Invalid evaluation conditions");
   assert.ok(!conditions.includes("llmnav-before") || typeof options.beforeCli === "string", "llmnav-before requires beforeCli");
   options = { ...options, conditions };
   const report = { schemaVersion: 1, packageVersion: PACKAGE_VERSION, measuredAt: new Date().toISOString(),
@@ -260,7 +261,7 @@ export async function runModelCoding(options) {
             (condition.startsWith("llmnav") ? tool.tool === "llmnav_discover" : ["find_symbol", "get_symbols_overview"].includes(tool.tool)));
           const row = { task: task.id, language: task.language, condition, elapsedMs: result.elapsedMs,
             exitCode: result.code, timedOut: result.timedOut, trace, navigationUsed,
-            conditionAdhered: condition === "baseline" ? !trace.tools.some(tool => tool.semanticCliMentioned) : navigationUsed,
+            conditionAdhered: condition === "baseline" || condition === "llmnav-adaptive" ? !trace.tools.some(tool => tool.semanticCliMentioned) : navigationUsed,
             changedFiles, scopePassed, acceptance,
             success: acceptance.passed && scopePassed && trace.completed && result.code === 0 && !result.timedOut,
             stderrHash: sha256(result.stderr) };

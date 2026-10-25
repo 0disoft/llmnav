@@ -3,13 +3,13 @@
 ## LLMNav code navigation
 
 <!-- llmnav:start -->
-Before broad grep, directory scans, or opening many source files, run `npm exec -- llmnav query "<task>" --top 5`.
+For a known file or exact identifier, start with one bounded source read or targeted text search. Skip semantic navigation when it would only repeat that lookup.
 
-Resolve the selected semantic ID with `npm exec -- llmnav show <id>`. Use `npm exec -- llmnav context <id> --depth 1 --budget 2500` when related policy, workflow, fallback, migration, or test cards are needed.
+For unclear locations or responsibilities, start with `npm exec -- llmnav query "<task>" --top 3`. Use `npm exec -- llmnav show <id>` only for missing contract detail, and `npm exec -- llmnav context <id> --depth 1 --budget 2500` only for related policy, workflow, fallback, migration, or test contracts.
 
 When the host supports structured tools, load the provider-neutral definitions from `npm exec -- llmnav tools --json`. Keep the repository root bound by the host rather than accepting it from model-generated tool input.
 
-Read generated cards and signatures before opening full symbol bodies. Treat paths, line numbers, signatures, imports, and hashes as generated data rather than source-of-truth annotations.
+For unannotated code or no credible card, use `npm exec -- llmnav discover "<task>" --top 1 --include-source --source-budget 4000 --json`, or MCP `llmnav_discover` with `{ task, top: 1, includeSource: true }`. Reuse sufficient excerpts; expand only for missing context, truncation or ambiguity. Fall back to ordinary text search when discovery has no credible candidate. Treat paths, line numbers, signatures, imports, and hashes as generated data.
 
 Keep an existing LLMNav ID when a symbol or file is renamed or moved. Change `role`, `invariant`, `effect`, `risk`, and semantic `rel` values only when behavior or contracts change.
 
@@ -19,5 +19,5 @@ After initialization and whenever public entrypoints, commands, routes, schemas,
 
 When deciding whether one specific file needs a card, run `npm exec -- llmnav explain <file>`. Use its coverage, score, and disposition evidence to guide review, but never turn its recommendation into automatic source annotation.
 
-After semantic changes, run `npm exec -- llmnav format`, `npm exec -- llmnav check`, and `npm exec -- llmnav generate`. Use broad text search only when LLMNav returns no credible candidate.
+After semantic changes, run `npm exec -- llmnav format`, `npm exec -- llmnav check`, and `npm exec -- llmnav generate`.
 <!-- llmnav:end -->
