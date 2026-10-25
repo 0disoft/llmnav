@@ -6241,7 +6241,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "b13b2f1354afb0835aad4e0ce8f9ca677b9ff4f8019c8b47e7da1ae35ca4818a",
+      "contentHash": "646af12b0d10a03ea80ba70bfb26ada17c0505379ec769bad145b8ca44915c82",
       "declarations": [
         null
       ],
@@ -6253,7 +6253,7 @@
       ],
       "path": "src/registry.js",
       "semanticBytes": 462,
-      "sourceBytes": 8295
+      "sourceBytes": 9388
     },
     {
       "blocks": [
@@ -6801,7 +6801,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "5e2d2b78ff14eeb960986cb0b7050167e41fac29650deb8c1bfae67c38bd3c7f",
+      "contentHash": "1c68a2db465d748ce2914fabddbea5e86ad5e37771d64ff1c0a9e5328b52a472",
       "declarations": [
         null
       ],
@@ -7121,7 +7121,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "e09c23ce92344f70e513f0983dd2b3d86022063c05b52ce2e4063869e68c8ccf",
+      "contentHash": "f3b8ecabdd25e9d7ec8121382fa8892d69f941e6aa4ac1992d3b218f46a88716",
       "declarations": [
         null
       ],
@@ -7134,7 +7134,7 @@
       ],
       "path": "src/validator.js",
       "semanticBytes": 359,
-      "sourceBytes": 21947
+      "sourceBytes": 22072
     },
     {
       "blocks": [],
@@ -7932,7 +7932,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "c695834b5011709a3964eafba6d7af0412dc2bece1915d0a2c6739ed1bfa5ac2",
+      "contentHash": "cc3c660be36a47efa39405e3d92735b147a6635fb7466b03f2397620b85f6d4e",
       "declarations": [],
       "imports": [
         "../src/project.js",
@@ -7945,7 +7945,7 @@
       ],
       "path": "tests/registry-resolution.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 5605
+      "sourceBytes": 6594
     },
     {
       "blocks": [],
@@ -8153,7 +8153,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "b0cfd413fe148b8959d15cc30dab6733b6eb6712cb818a44682edb390f28d747",
+      "contentHash": "2d4f249c60ead62c578b8be6476cb454c8e4f3ca3cf7f61e7e3aa2d79a786608",
       "declarations": [],
       "imports": [
         "../src/initializer.js",
@@ -8167,7 +8167,7 @@
       ],
       "path": "tests/validator.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 11501
+      "sourceBytes": 13542
     }
   ],
   "indexerVersion": 10,

@@ -3,7 +3,7 @@ import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
-import { cyclicRegistryIds, ensureActiveIds, loadRegistry, resolveRegistryId } from "../src/registry.js";
+import { createRegistryStateResolver, cyclicRegistryIds, ensureActiveIds, loadRegistry, resolveRegistryId } from "../src/registry.js";
 import { scanProject } from "../src/project.js";
 
 test("multi-target replacements remain explicit instead of choosing the first entry", () => {
@@ -81,6 +81,24 @@ test("scanning accepts a registry prepared by the caller", async (context) => {
 function registryFrom(records) {
   return { records, byId: new Map(records.map((record) => [record.id, record])) };
 }
+
+test("state-only validation matches full resolution across terminal, split, missing and cyclic paths", () => {
+  const variants = [
+    { state: "active" }, { state: "retired" },
+    { state: "redirect", to: "node.0" }, { state: "redirect", to: "node.1" },
+    { state: "redirect", to: "missing" }, { state: "replaced", by: [] },
+    { state: "replaced", by: ["node.2"] }, { state: "replaced", by: ["node.1", "node.2"] },
+  ];
+  const ids = ["node.0", "node.1", "node.2"];
+  for (let fixture = 0; fixture < variants.length ** ids.length; fixture++) {
+    const records = ids.map((id, index) => ({ id, ...variants[Math.floor(fixture / variants.length ** index) % variants.length] }));
+    const registry = registryFrom(records);
+    const resolveState = createRegistryStateResolver(registry);
+    for (const id of [...ids, "missing"]) {
+      assert.equal(resolveState(id), resolveRegistryId(registry, id).state, `fixture=${fixture}, id=${id}`);
+    }
+  }
+});
 
 test("long redirect chains resolve without recursive stack growth", () => {
   const records = Array.from({ length: 20000 }, (_, index) => ({

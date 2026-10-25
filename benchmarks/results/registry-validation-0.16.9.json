@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "targetVersion": "0.16.9",
+  "baselineCommit": "407ecbaca8bdbf5e6822168664b4b18eb5d80441",
+  "fixture": {
+    "relations": 2000,
+    "registryEntries": 2001,
+    "redirects": 2000,
+    "description": "Each source card references a different entry in one redirect chain ending in an active registry ID."
+  },
+  "measurement": "Count project.registry.byId.get calls through CountingMap during validateProject. Input setup and filesystem scanning are excluded. These are lookup counts, not wall-time or heap measurements.",
+  "command": "node --test --test-name-pattern='relation validation shares' tests/validator.test.js",
+  "before": {
+    "registryLookups": 2007000,
+    "relationErrors": 0,
+    "regression": "The new linear-lookup budget fails against the baseline implementation."
+  },
+  "after": {
+    "registryLookups": 6001,
+    "relationErrors": 0,
+    "lookupsAfterTerminalRetirement": 6001,
+    "relationErrorsAfterTerminalRetirement": 2000
+  },
+  "complexity": {
+    "notation": "R relations, V registry IDs, E redirect and replacement edges",
+    "stateResolutionBefore": "O(R * (V + E)) worst case",
+    "stateResolutionAfter": "O(V + E + R) per validation pass",
+    "additionalCacheSpace": "O(V + E), storing states rather than full resolution chains",
+    "scope": "Registry state analysis only; other validation work and diagnostic sorting are unchanged."
+  },
+  "compatibility": {
+    "smallGraphs": 512,
+    "stateComparisonsAgainstFullResolution": 2048,
+    "cases": ["active", "retired", "missing", "single replacement", "empty replacement", "split replacement", "cycle", "incoming cycle path"],
+    "cacheLifetime": "One synchronous validateProject call; the next call creates a fresh resolver."
+  }
+}

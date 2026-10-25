@@ -28,7 +28,7 @@ import {
   STABILITIES,
 } from "./spec.js";
 import { formatLlmnavBlock } from "./parser.js";
-import { cyclicRegistryIds, resolveRegistryId } from "./registry.js";
+import { createRegistryStateResolver, cyclicRegistryIds } from "./registry.js";
 import { compareText, matchesAnyGlob, unique } from "./util.js";
 
 export function validateProject(project) {
@@ -60,8 +60,10 @@ export function validateProject(project) {
     }
   }
 
-  validateRelations(project, idRecords, diagnostics);
-  validateRegistry(project, idRecords, diagnostics);
+  const cyclicIds = cyclicRegistryIds(project.registry);
+  const resolveState = createRegistryStateResolver(project.registry, cyclicIds);
+  validateRelations(project, idRecords, diagnostics, resolveState);
+  validateRegistry(project, idRecords, diagnostics, cyclicIds);
   validateCoverage(project, diagnostics);
   validateSearchSaturation(project, diagnostics);
   validateSemanticRatio(project, diagnostics);
@@ -418,17 +420,17 @@ function validateRelationsForRecord(record, config, diagnostics) {
   }
 }
 
-function validateRelations(project, idRecords, diagnostics) {
+function validateRelations(project, idRecords, diagnostics, resolveState) {
   for (const record of project.records) {
     for (const relation of record.card.rel) {
-      const message = relationTargetError(project, idRecords, relation);
+      const message = relationTargetError(project, idRecords, relation, resolveState);
       if (message === null) continue;
       diagnostics.push(diagnostic("error", "LNV008", message, record.relativePath, lineFor(record.block, "rel")));
     }
   }
 }
 
-function relationTargetError(project, idRecords, relation) {
+function relationTargetError(project, idRecords, relation, resolveState) {
   const separator = relation.indexOf(">");
   if (separator <= 0 || relation.slice(0, separator) === "cross-repo") return null;
   const target = relation.slice(separator + 1);
@@ -437,13 +439,12 @@ function relationTargetError(project, idRecords, relation) {
   }
   const registryTarget = project.registry.byId.get(target);
   if (!registryTarget || registryTarget.state === "active") return null;
-  const resolved = resolveRegistryId(project.registry, target);
-  if (resolved.state === "active") return null;
-  return `Relation target ${target} resolves to ${resolved.state}, not an active semantic ID.`;
+  const state = resolveState(target);
+  if (state === "active") return null;
+  return `Relation target ${target} resolves to ${state}, not an active semantic ID.`;
 }
 
-function validateRegistry(project, idRecords, diagnostics) {
-  const cyclicIds = cyclicRegistryIds(project.registry);
+function validateRegistry(project, idRecords, diagnostics, cyclicIds) {
   for (const [id, record] of idRecords) {
     const registryRecord = project.registry.byId.get(id);
     if (registryRecord && registryRecord.state !== "active") {

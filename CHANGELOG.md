@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.16.9] — 2026-10-26
+
+### Fixed
+
+* Resolve registry states once per shared redirect or single-target replacement tail during relation validation. Reuse the existing cycle analysis for split replacements while preserving error messages, candidate order and full resolution traces. Scope state caching to each synchronous validation pass so registry changes are visible on the next call. A 2,000-relation shared-chain regression reduces registry lookups from 2,007,000 to 6,001; compare state results against full resolution over 512 small graphs.
+
 ## [0.16.8] — 2026-10-26
 
 ### Fixed

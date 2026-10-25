@@ -145,6 +145,42 @@ function registryTargets(record) {
   return record?.state === "replaced" && Array.isArray(record.by) ? record.by : [];
 }
 
+// State-only queries share tails during one synchronous validation pass. Discard on mutation.
+// Full resolutions still use resolveRegistryId to preserve ordered candidates and cycle witnesses.
+export function createRegistryStateResolver(registry, cyclicIds = cyclicRegistryIds(registry)) {
+  const states = new Map();
+  return (id) => {
+    const trail = [];
+    let current = id;
+    let state;
+    for (;;) {
+      if (states.has(current)) {
+        state = states.get(current);
+        break;
+      }
+      if (cyclicIds.has(current)) {
+        state = "cycle";
+        break;
+      }
+      trail.push(current);
+      const record = registry.byId.get(current);
+      if (!record) {
+        state = "unknown";
+        break;
+      }
+      const targets = registryTargets(record);
+      if (targets.length === 1) {
+        current = targets[0];
+        continue;
+      }
+      state = record.state === "replaced" && Array.isArray(record.by) ? "ambiguous" : record.state ?? "unknown";
+      break;
+    }
+    for (const visited of trail) states.set(visited, state);
+    return state;
+  };
+}
+
 function cycleResult(current, chain, positions) {
   return { id: current, state: "cycle", chain: [...chain.slice(positions.get(current)), current] };
 }

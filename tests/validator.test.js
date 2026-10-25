@@ -16,6 +16,38 @@ async function fixture(source) {
   return root;
 }
 
+test("relation validation shares redirect tails and refreshes states on each pass", async (context) => {
+  const root = await fixture(`/* llmnav/1 module\nid=client.base\nrole=Validate semantic relation targets against durable registry identities.\nowns=reference validation\nsearch=registry state|reference check\nrel=workflow>node.0\nstability=architecture\n*/\n`);
+  context.after(() => rm(root, { recursive: true, force: true }));
+  const project = await scanProject(root);
+  const base = project.records.find((record) => record.card.id === "client.base");
+  const count = 2000;
+  project.records = Array.from({ length: count }, (_, index) => ({
+    ...base,
+    card: { ...base.card, id: `client.${index}`, search: [`registry ${index}`, `reference ${index}`], rel: [`workflow>node.${index}`] },
+  }));
+  const records = Array.from({ length: count }, (_, index) => ({ id: `node.${index}`, state: "redirect", to: `node.${index + 1}` }));
+  const terminal = { id: `node.${count}`, state: "active" };
+  records.push(terminal);
+  let lookups = 0;
+  class CountingMap extends Map {
+    get(id) { lookups++; return super.get(id); }
+  }
+  project.registry = { errors: [], records, byId: new CountingMap(records.map((record) => [record.id, record])) };
+  let diagnostics = validateProject(project);
+  assert.deepEqual(diagnostics.filter((item) => item.code === "LNV008"), []);
+  assert.ok(lookups <= count * 4 + 5, `Expected linear registry lookups; got ${lookups}`);
+  const activePassLookups = lookups;
+
+  terminal.state = "retired";
+  lookups = 0;
+  diagnostics = validateProject(project).filter((item) => item.code === "LNV008");
+  assert.equal(diagnostics.length, count);
+  assert.ok(diagnostics.every((item) => item.message.endsWith("resolves to retired, not an active semantic ID.")));
+  assert.ok(lookups <= count * 4 + 5, `Expected linear registry lookups after mutation; got ${lookups}`);
+  context.diagnostic(JSON.stringify({ relations: count, registryEntries: records.length, activePassLookups, retiredPassLookups: lookups }));
+});
+
 test("accepts a valid contract card", async (context) => {
   const root = await fixture(`/* llmnav/1 symbol\nid=auth.session.rotate\nrole=Rotate one refresh-token family and reject replayed tokens.\nsearch=refresh token|token rotation|replay detection\ninvariant=One token family has at most one live refresh token.\neffect=db.write(session_tokens)\nrisk=concurrency\nstability=contract\n*/\nexport function rotateSession() {}\n`);
   context.after(() => rm(root, { recursive: true, force: true }));
