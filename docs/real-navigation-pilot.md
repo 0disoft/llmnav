@@ -56,6 +56,6 @@ Use precise analysis when a task needs compiler-bound imports, shadowing, receiv
 
 This is one author-reviewed, eight-case retrieval pilot on two small scopes. It is not a sealed holdout, natural-language workload, large-monorepo stress test, or repeated latency experiment. Filesystem caches were not flushed. `rg` includes child-process launch costs, whereas discovery uses its JavaScript API in the harness process; elapsed times do not establish a universal speed comparison or an MCP round-trip cost.
 
-Serena comparison and model coding-task trials remain **held**: no equivalent Serena run or controlled model trial was captured. Task completion, wrong edits, uncached tokens, cache ratios, and human card-authoring/maintenance time remain unmeasured. The copied sources have no semantic cards. A competitive score or claim of improved agent coding success cannot be inferred from these ranks.
+The [Serena follow-up](serena-comparison.md) now records semantic lookup on these same corpus and task-plan hashes. Actual model coding outcomes are recorded separately when available; they must not be inferred from this retrieval pilot. Human card-authoring and maintenance time remain unmeasured. The copied sources have no semantic cards. A competitive score cannot be inferred from these ranks.
 
 The earlier local reports were excluded after correcting `./` path normalization and the even-sample median calculation. Only the final 0.15.1 report is used above.

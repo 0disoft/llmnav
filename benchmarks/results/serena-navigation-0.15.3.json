@@ -1,0 +1,338 @@
+{
+  "environment": {
+    "filesystemCacheFlushed": false,
+    "node": "v24.18.0",
+    "platform": "win32"
+  },
+  "harnessHash": "e2fce06ee31fcd9eec732dedbddc0c4db3e1272a65c7ba995cfd9b884c0710e9",
+  "limitations": [
+    "One author-curated identifier lookup per task, not model coding success or a sealed holdout.",
+    "Go LSP exposes flat method names (verified on a separate Box.Read fixture); queries use the frozen identifier without a receiver. No oracle file paths are supplied.",
+    "Different execution dates and cached dependencies prevent speedup claims against the earlier retrieval pilot.",
+    "Serena initialization is separate; the first lookup includes lazy language-server work. Dependency installation is excluded."
+  ],
+  "measuredAt": "2026-10-25T10:48:28.782Z",
+  "planHash": "acce8046400438ef47b5359c307c3081d8a6cf6fa85ca95e21f8af3add39e8aa",
+  "repositories": [
+    {
+      "corpusHash": "8d05d2b68366d419e659210a0d99aac9eebc1ed1a413008f38246f1eea4dd9e7",
+      "files": 13,
+      "id": "buildmarks",
+      "initializationMs": 12422.4794,
+      "originalsUnchanged": true,
+      "rows": [
+        {
+          "arguments": {
+            "include_body": false,
+            "name_path_pattern": "scoreRepository"
+          },
+          "candidates": [
+            {
+              "line": 26,
+              "path": "src/scoring/score-repo.ts",
+              "symbol": "scoreRepository"
+            }
+          ],
+          "condition": "serena",
+          "definitionAt1": true,
+          "definitionAt5": true,
+          "definitionRank": 1,
+          "error": null,
+          "expectedLine": 26,
+          "expectedPath": "src/scoring/score-repo.ts",
+          "fileAt1": true,
+          "fileAt5": true,
+          "fileRank": 1,
+          "inspectedFiles": [
+            "src/scoring/score-repo.ts"
+          ],
+          "inspectedSourceBytes": 2948,
+          "lookupMs": 12461.8392,
+          "responseBytes": 232,
+          "task": "repository-assessment",
+          "toolCalls": 2
+        },
+        {
+          "arguments": {
+            "include_body": false,
+            "name_path_pattern": "weightedRepositoryOverall"
+          },
+          "candidates": [
+            {
+              "line": 70,
+              "path": "src/scoring/score-repo.ts",
+              "symbol": "weightedRepositoryOverall"
+            }
+          ],
+          "condition": "serena",
+          "definitionAt1": true,
+          "definitionAt5": true,
+          "definitionRank": 1,
+          "error": null,
+          "expectedLine": 70,
+          "expectedPath": "src/scoring/score-repo.ts",
+          "fileAt1": true,
+          "fileAt5": true,
+          "fileRank": 1,
+          "inspectedFiles": [
+            "src/scoring/score-repo.ts"
+          ],
+          "inspectedSourceBytes": 2948,
+          "lookupMs": 141.81940000000031,
+          "responseBytes": 242,
+          "task": "weighted-overall",
+          "toolCalls": 2
+        },
+        {
+          "arguments": {
+            "include_body": false,
+            "name_path_pattern": "validatePrivateRepositoryRecord"
+          },
+          "candidates": [
+            {
+              "line": 38,
+              "path": "src/scoring/private-disclosure.ts",
+              "symbol": "validatePrivateRepositoryRecord"
+            }
+          ],
+          "condition": "serena",
+          "definitionAt1": true,
+          "definitionAt5": true,
+          "definitionRank": 1,
+          "error": null,
+          "expectedLine": 38,
+          "expectedPath": "src/scoring/private-disclosure.ts",
+          "fileAt1": true,
+          "fileAt5": true,
+          "fileRank": 1,
+          "inspectedFiles": [
+            "src/scoring/private-disclosure.ts"
+          ],
+          "inspectedSourceBytes": 2675,
+          "lookupMs": 132.40620000000126,
+          "responseBytes": 256,
+          "task": "private-validation",
+          "toolCalls": 2
+        },
+        {
+          "arguments": {
+            "include_body": false,
+            "name_path_pattern": "createEvidence"
+          },
+          "candidates": [
+            {
+              "line": 5,
+              "path": "src/scoring/evidence.ts",
+              "symbol": "createEvidence"
+            }
+          ],
+          "condition": "serena",
+          "definitionAt1": true,
+          "definitionAt5": true,
+          "definitionRank": 1,
+          "error": null,
+          "expectedLine": 5,
+          "expectedPath": "src/scoring/evidence.ts",
+          "fileAt1": true,
+          "fileAt5": true,
+          "fileRank": 1,
+          "inspectedFiles": [
+            "src/scoring/evidence.ts"
+          ],
+          "inspectedSourceBytes": 466,
+          "lookupMs": 139.4464999999982,
+          "responseBytes": 228,
+          "task": "evidence-builder",
+          "toolCalls": 2
+        }
+      ],
+      "server": {
+        "name": "Serena",
+        "version": "2.1.0",
+        "websiteUrl": "https://oraios.github.io/serena"
+      },
+      "summary": {
+        "cases": 4,
+        "condition": "serena",
+        "definitionAt1": 4,
+        "definitionAt5": 4,
+        "errors": 0,
+        "fileAt1": 4,
+        "fileAt5": 4,
+        "inspectedSourceBytes": 9037,
+        "medianLookupMs": 140.63294999999925,
+        "toolCalls": 8
+      },
+      "toolSchemaHash": "7430cdceb7bcb4ac036902463b570fb59e7ffeb9eaf6f22d576c153b0bef7f26"
+    },
+    {
+      "corpusHash": "ef917843f3cd187a6a0bcdd1082a13adfbefe2689c05bd31f99d9229d5fbdc27",
+      "files": 4,
+      "id": "go-token",
+      "initializationMs": 9978.795900000001,
+      "originalsUnchanged": true,
+      "rows": [
+        {
+          "arguments": {
+            "include_body": false,
+            "name_path_pattern": "PositionFor"
+          },
+          "candidates": [
+            {
+              "line": 395,
+              "path": "position.go",
+              "symbol": "PositionFor[0]"
+            },
+            {
+              "line": 599,
+              "path": "position.go",
+              "symbol": "PositionFor[1]"
+            }
+          ],
+          "condition": "serena",
+          "definitionAt1": false,
+          "definitionAt5": true,
+          "definitionRank": 2,
+          "error": null,
+          "expectedLine": 599,
+          "expectedPath": "position.go",
+          "fileAt1": true,
+          "fileAt5": true,
+          "fileRank": 1,
+          "inspectedFiles": [
+            "position.go"
+          ],
+          "inspectedSourceBytes": 21038,
+          "lookupMs": 5026.4568,
+          "responseBytes": 367,
+          "task": "fileset-position",
+          "toolCalls": 2
+        },
+        {
+          "arguments": {
+            "include_body": false,
+            "name_path_pattern": "PositionFor"
+          },
+          "candidates": [
+            {
+              "line": 395,
+              "path": "position.go",
+              "symbol": "PositionFor[0]"
+            },
+            {
+              "line": 599,
+              "path": "position.go",
+              "symbol": "PositionFor[1]"
+            }
+          ],
+          "condition": "serena",
+          "definitionAt1": true,
+          "definitionAt5": true,
+          "definitionRank": 1,
+          "error": null,
+          "expectedLine": 395,
+          "expectedPath": "position.go",
+          "fileAt1": true,
+          "fileAt5": true,
+          "fileRank": 1,
+          "inspectedFiles": [
+            "position.go"
+          ],
+          "inspectedSourceBytes": 21038,
+          "lookupMs": 113.7280000000028,
+          "responseBytes": 367,
+          "task": "file-position",
+          "toolCalls": 2
+        },
+        {
+          "arguments": {
+            "include_body": false,
+            "name_path_pattern": "String"
+          },
+          "candidates": [
+            {
+              "line": 44,
+              "path": "position.go",
+              "symbol": "String"
+            },
+            {
+              "line": 241,
+              "path": "token.go",
+              "symbol": "String"
+            }
+          ],
+          "condition": "serena",
+          "definitionAt1": false,
+          "definitionAt5": true,
+          "definitionRank": 2,
+          "error": null,
+          "expectedLine": 241,
+          "expectedPath": "token.go",
+          "fileAt1": false,
+          "fileAt5": true,
+          "fileRank": 2,
+          "inspectedFiles": [
+            "position.go",
+            "token.go"
+          ],
+          "inspectedSourceBytes": 27557,
+          "lookupMs": 111.46970000000147,
+          "responseBytes": 346,
+          "task": "token-string",
+          "toolCalls": 3
+        },
+        {
+          "arguments": {
+            "include_body": false,
+            "name_path_pattern": "AddFile"
+          },
+          "candidates": [
+            {
+              "line": 472,
+              "path": "position.go",
+              "symbol": "AddFile"
+            }
+          ],
+          "condition": "serena",
+          "definitionAt1": true,
+          "definitionAt5": true,
+          "definitionRank": 1,
+          "error": null,
+          "expectedLine": 472,
+          "expectedPath": "position.go",
+          "fileAt1": true,
+          "fileAt5": true,
+          "fileRank": 1,
+          "inspectedFiles": [
+            "position.go"
+          ],
+          "inspectedSourceBytes": 21038,
+          "lookupMs": 113.58499999999913,
+          "responseBytes": 204,
+          "task": "fileset-add",
+          "toolCalls": 2
+        }
+      ],
+      "server": {
+        "name": "Serena",
+        "version": "2.1.0",
+        "websiteUrl": "https://oraios.github.io/serena"
+      },
+      "summary": {
+        "cases": 4,
+        "condition": "serena",
+        "definitionAt1": 2,
+        "definitionAt5": 4,
+        "errors": 0,
+        "fileAt1": 3,
+        "fileAt5": 4,
+        "inspectedSourceBytes": 90671,
+        "medianLookupMs": 113.65650000000096,
+        "toolCalls": 9
+      },
+      "toolSchemaHash": "7430cdceb7bcb4ac036902463b570fb59e7ffeb9eaf6f22d576c153b0bef7f26"
+    }
+  ],
+  "schemaVersion": 1,
+  "serenaVersion": "2.1.0"
+}
