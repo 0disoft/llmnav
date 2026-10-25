@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.16.3] — 2026-10-25
+
+### Fixed
+
+* Reject symbolic links and Windows junctions on the configuration path before reading JSON. Live discovery and direct configuration loading no longer read linked external configuration or expose its contents through JSON parse errors. Preserve cancellation priority, missing-file defaults and ordinary configuration validation. This guards existing links; concurrent path replacement remains outside this change.
+
 ## [0.16.2] — 2026-10-25
 
 ### Fixed

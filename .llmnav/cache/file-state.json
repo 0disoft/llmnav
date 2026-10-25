@@ -3243,7 +3243,7 @@
             ],
             "id": "llmnav.config.load",
             "invariant": [
-              "Unknown configuration keys and escaping project paths are rejected before use."
+              "Configuration links, unknown keys, and escaping project paths are rejected before use."
             ],
             "owns": [
               "configuration loading",
@@ -3264,7 +3264,7 @@
             "stability": "contract",
             "unknown": []
           },
-          "end": 476,
+          "end": 484,
           "endLine": 10,
           "entries": [
             {
@@ -3301,7 +3301,7 @@
               "key": "invariant",
               "line": 7,
               "order": 5,
-              "value": "Unknown configuration keys and escaping project paths are rejected before use."
+              "value": "Configuration links, unknown keys, and escaping project paths are rejected before use."
             },
             {
               "key": "rel",
@@ -3320,7 +3320,7 @@
           "indent": "",
           "newline": "\n",
           "prefix": null,
-          "raw": "/* llmnav/1 module\nid=llmnav.config.load\nrole=Load, merge, and validate repository configuration before project operations observe it.\nowns=configuration loading|default merging|configuration schema validation\nexcludes=source-card validation|schema file generation\nsearch=load llmnav config|configuration validation|coverage rules\ninvariant=Unknown configuration keys and escaping project paths are rejected before use.\nrel=workflow>llmnav.rules.validate\nstability=contract\n*/",
+          "raw": "/* llmnav/1 module\nid=llmnav.config.load\nrole=Load, merge, and validate repository configuration before project operations observe it.\nowns=configuration loading|default merging|configuration schema validation\nexcludes=source-card validation|schema file generation\nsearch=load llmnav config|configuration validation|coverage rules\ninvariant=Configuration links, unknown keys, and escaping project paths are rejected before use.\nrel=workflow>llmnav.rules.validate\nstability=contract\n*/",
           "scope": "module",
           "specVersion": "1",
           "start": 0,
@@ -3329,18 +3329,19 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "b5be763c24f26033cf6d800b5d0ec9dcc70189c8d09a1c9ffe776af42e54534a",
+      "contentHash": "ac742e464a6fb41cd37d6a6a7545a5d251235fee0f3223cf67af12579383bf53",
       "declarations": [
         null
       ],
       "imports": [
+        "./abort.js",
         "./spec.js",
         "./util.js",
         "node:path"
       ],
       "path": "src/config.js",
-      "semanticBytes": 476,
-      "sourceBytes": 15653
+      "semanticBytes": 484,
+      "sourceBytes": 15841
     },
     {
       "blocks": [
@@ -6788,7 +6789,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "8cfb1728461f91b1bebbed893db60d0e2f5e27da938ddcfa74bd3d255b49e38b",
+      "contentHash": "2aed1a41e1012d86ef205f45954a69977ea362610e5f7a6ea0464f28d7bd48c5",
       "declarations": [
         null
       ],
@@ -7484,16 +7485,19 @@
     },
     {
       "blocks": [],
-      "contentHash": "0b29216e17e82eb44ce15d8d5b6f5767f8e84a5a27cb65c025629310f320df46",
+      "contentHash": "3e7163841e93cbb56ca6f583d56966dd820d26bbd84fb05d6c6351ada4bbdd77",
       "declarations": [],
       "imports": [
+        "../src/config.js",
         "../src/errors.js",
         "../src/formatter.js",
         "../src/incremental.js",
         "../src/initializer.js",
+        "../src/mcp.js",
         "../src/registry.js",
         "../src/runtime.js",
         "../src/search.js",
+        "../src/spec.js",
         "../src/util.js",
         "node:assert/strict",
         "node:fs/promises",
@@ -7504,7 +7508,7 @@
       ],
       "path": "tests/filesystem-safety.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 11283
+      "sourceBytes": 15309
     },
     {
       "blocks": [],

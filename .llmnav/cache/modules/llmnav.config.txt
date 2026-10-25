@@ -5,5 +5,5 @@ Read semantic cards before opening source. Resolve current paths and signatures 
 role Load, merge, and validate repository configuration before project operations observe it.
 owns configuration loading, default merging, configuration schema validation
 excludes source-card validation, schema file generation
-invariant Unknown configuration keys and escaping project paths are rejected before use.
+invariant Configuration links, unknown keys, and escaping project paths are rejected before use.
 rel workflow>llmnav.rules.validate

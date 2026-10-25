@@ -4,7 +4,7 @@ role=Load, merge, and validate repository configuration before project operation
 owns=configuration loading|default merging|configuration schema validation
 excludes=source-card validation|schema file generation
 search=load llmnav config|configuration validation|coverage rules
-invariant=Unknown configuration keys and escaping project paths are rejected before use.
+invariant=Configuration links, unknown keys, and escaping project paths are rejected before use.
 rel=workflow>llmnav.rules.validate
 stability=contract
 */
@@ -20,7 +20,8 @@ import {
   SCOPES,
   STABILITIES,
 } from "./spec.js";
-import { deepMerge, readJson } from "./util.js";
+import { throwIfAborted } from "./abort.js";
+import { assertNoSymlinkTraversal, deepMerge, readJson } from "./util.js";
 
 const REPOSITORY_ID_PATTERN = /^[a-z][a-z0-9-]{0,63}$/u;
 const CONTROLLED_KIND_PATTERN = /^[a-z][a-z0-9.-]*$/u;
@@ -35,7 +36,9 @@ const COVERAGE_KEYS = new Set(["name", "match", "scope", "requiredFields"]);
 const AUDIT_DISPOSITION_KEYS = new Set(["path", "reason"]);
 
 export async function loadConfig(root, options = {}) {
+  throwIfAborted(options.signal);
   const configPath = path.join(root, ".llmnav", "config.json");
+  await assertNoSymlinkTraversal(root, configPath, ".llmnav/config.json");
   const custom = await readJson(configPath, {}, options);
   const config = deepMerge(DEFAULT_CONFIG, custom);
   validateConfig(config, configPath);

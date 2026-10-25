@@ -63,7 +63,7 @@
     "llmnav.support.runtime",
     "llmnav.syntax.parse"
   ],
-  "cardSetHash": "0629e756991a944092336b45a143f0c738e25bdcb1014d8ff5cff56673b3ec71",
+  "cardSetHash": "1d890a8949c17b6f41f6d763c08c40059d43bd9eb84163122c820d73269b76a5",
   "documentCount": 62,
   "documents": [
     [
@@ -274,13 +274,13 @@
       ]
     ],
     [
-      "19277be082eb815a8929ee1cd4a41632d2bc794b7661706ff68936c7aabfc93a",
+      "276289c9864f85b9a81eb3b60a831fe52139d438b5a23653f34517cdcec83a66",
       [
         "load, merge, and validate repository configuration before project operations observe it.",
         "load llmnav config",
         "configuration validation",
         "coverage rules",
-        "unknown configuration keys and escaping project paths are rejected before use.",
+        "configuration links, unknown keys, and escaping project paths are rejected before use.",
         "configuration loading",
         "default merging",
         "configuration schema validation"
@@ -9702,6 +9702,13 @@
       ]
     ],
     [
+      [
+        17,
+        [
+          5,
+          1
+        ]
+      ],
       [
         44,
         [

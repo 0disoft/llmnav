@@ -12,6 +12,77 @@ import { loadSearchData } from "../src/search.js";
 import { atomicWrite, writeFileAndClose } from "../src/util.js";
 import { createRuntime } from "../src/runtime.js";
 import { toErrorPayload } from "../src/errors.js";
+import { loadConfig } from "../src/config.js";
+import { createMcpServer } from "../src/mcp.js";
+import { DEFAULT_CONFIG } from "../src/spec.js";
+
+test("configuration rejects a control-directory link before reading or exposing outside content", async (context) => {
+  const sandbox = await mkdtemp(path.join(os.tmpdir(), "llmnav-config-link-"));
+  assert.equal(path.dirname(sandbox), path.resolve(os.tmpdir()));
+  assert.ok(path.basename(sandbox).startsWith("llmnav-config-link-"));
+  context.after(() => rm(sandbox, { recursive: true, force: true }));
+  const root = path.join(sandbox, "repository"), external = path.join(sandbox, "outside");
+  await mkdir(root);
+  await mkdir(external);
+  const target = path.join(external, "config.json");
+  await writeFile(target, '{"repositoryId":"external-config"}\n');
+  await symlink(external, path.join(root, ".llmnav"), process.platform === "win32" ? "junction" : "dir");
+  let reads = 0;
+  const io = { readFile: async (file, encoding) => { reads++; return readFile(file, encoding); } };
+  await assert.rejects(() => loadConfig(root, { io }), /traverses symbolic link/u);
+  assert.equal(reads, 0);
+  const reason = new Error("cancel config read");
+  await assert.rejects(() => loadConfig(root, { io, signal: AbortSignal.abort(reason) }), error => error === reason);
+  assert.equal(reads, 0);
+
+  const canary = "SYNTHETIC_PRIVATE_CONFIG_CANARY";
+  await writeFile(target, canary);
+  const server = createMcpServer({ root, session: null });
+  const response = await server.handleMessage({ jsonrpc: "2.0", id: 1, method: "tools/call",
+    params: { name: "llmnav_discover", arguments: { task: "configuration" } } });
+  const result = JSON.parse(response.result.content[0].text);
+  assert.equal(result.ok, false);
+  assert.match(result.error.message, /traverses symbolic link/u);
+  assert.equal(JSON.stringify(response).includes(canary.slice(0, 8)), false);
+  assert.equal(await readFile(target, "utf8"), canary);
+});
+
+test("configuration rejects a final file symlink without reading its target", async (context) => {
+  const sandbox = await mkdtemp(path.join(os.tmpdir(), "llmnav-config-file-link-"));
+  assert.equal(path.dirname(sandbox), path.resolve(os.tmpdir()));
+  assert.ok(path.basename(sandbox).startsWith("llmnav-config-file-link-"));
+  context.after(() => rm(sandbox, { recursive: true, force: true }));
+  const root = path.join(sandbox, "repository");
+  await mkdir(path.join(root, ".llmnav"), { recursive: true });
+  const target = path.join(sandbox, "private.json");
+  await writeFile(target, '{"repositoryId":"linked-config"}\n');
+  try {
+    await symlink(target, path.join(root, ".llmnav", "config.json"), "file");
+  } catch (error) {
+    if (process.platform === "win32" && error.code === "EPERM") return context.skip("File symlinks require Windows developer mode or privilege.");
+    throw error;
+  }
+  let reads = 0;
+  await assert.rejects(() => loadConfig(root, { io: { readFile: async () => { reads++; return '{}'; } } }), /traverses symbolic link/u);
+  assert.equal(reads, 0);
+});
+
+test("ordinary configuration keeps defaults, overrides and JSON parse failures", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-config-ordinary-"));
+  assert.equal(path.dirname(root), path.resolve(os.tmpdir()));
+  assert.ok(path.basename(root).startsWith("llmnav-config-ordinary-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  assert.deepEqual((await loadConfig(root)).config, DEFAULT_CONFIG);
+  await mkdir(path.join(root, ".llmnav"));
+  assert.deepEqual((await loadConfig(root)).config, DEFAULT_CONFIG);
+  const configPath = path.join(root, ".llmnav", "config.json");
+  await writeFile(configPath, '{"repositoryId":"normal-config"}\n');
+  const loaded = await loadConfig(root);
+  assert.equal(loaded.config.repositoryId, "normal-config");
+  assert.deepEqual(loaded.config.generation, DEFAULT_CONFIG.generation);
+  await writeFile(configPath, '{broken');
+  await assert.rejects(() => loadConfig(root), SyntaxError);
+});
 
 test("write, close, and temporary cleanup failures retain every original error", async (context) => {
   const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-atomic-causes-"));
