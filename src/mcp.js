@@ -49,7 +49,7 @@ export function createMcpServer(options = {}) {
       autoGenerate: options.autoGenerate,
     })
     : null;
-  const tools = getAgentToolDefinitions().map(toMcpTool);
+  const tools = getAgentToolDefinitions().map(definition => toMcpTool(definition, options.autoGenerate === true));
   const requestTimeoutMs = options.requestTimeoutMs ?? DEFAULT_REQUEST_TIMEOUT_MS;
   if (!Number.isInteger(requestTimeoutMs) || requestTimeoutMs < 0 || requestTimeoutMs > MAX_TIMER_DELAY_MS) {
     throw new TypeError(`createMcpServer requires a non-negative integer requestTimeoutMs: ${requestTimeoutMs}.`);
@@ -268,11 +268,19 @@ async function statCacheFile(filePath) {
   }
 }
 
-function toMcpTool(definition) {
+function toMcpTool(definition, autoGenerate) {
   return {
     name: definition.name,
     description: definition.description,
     inputSchema: definition.inputSchema,
+    // Discovery never prepares an index. Other operations can write generated
+    // cache files only when the host explicitly opts into automatic generation.
+    annotations: {
+      readOnlyHint: !autoGenerate || definition.name === "llmnav_discover",
+      destructiveHint: false,
+      idempotentHint: true,
+      openWorldHint: false,
+    },
   };
 }
 

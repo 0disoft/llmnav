@@ -6,6 +6,10 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 
 ## [0.15.3] — 2026-10-25
 
+### Fixed
+
+* Publish MCP read-only annotations so automatic clients can classify repository reads; distinguish opt-in index generation from live discovery without changing input or result contracts.
+
 ### Evaluation
 
 * Add reproducible Serena symbol lookup and controlled model coding pilots on copied TypeScript and Go production source, with mutation controls, independent acceptance checks and sanitized tool metadata.

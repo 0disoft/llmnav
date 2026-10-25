@@ -75,12 +75,24 @@ test("serves the stable agent tool schema over JSON-RPC", async (context) => {
   const expected = getAgentToolDefinitions();
   assert.deepEqual(listed.result.tools.map((tool) => tool.name), expected.map((tool) => tool.name));
   for (const [index, tool] of listed.result.tools.entries()) {
-    assert.deepEqual(Object.keys(tool), ["name", "description", "inputSchema"]);
+    assert.deepEqual(Object.keys(tool), ["name", "description", "inputSchema", "annotations"]);
     assert.deepEqual(tool.inputSchema, expected[index].inputSchema);
+    assert.deepEqual(tool.annotations, { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false });
   }
 
   const ping = await server.handleMessage({ jsonrpc: "2.0", id: 3, method: "ping" });
   assert.deepEqual(ping.result, {});
+});
+
+test("MCP annotations distinguish automatic cache writes from live discovery", async () => {
+  const server = createMcpServer({ root: ".", autoGenerate: true });
+  const listed = await server.handleMessage({ jsonrpc: "2.0", id: 1, method: "tools/list" });
+  for (const tool of listed.result.tools) {
+    assert.equal(tool.annotations.readOnlyHint, tool.name === "llmnav_discover");
+    assert.equal(tool.annotations.destructiveHint, false);
+  }
+  // Transport-specific hints do not change the provider-neutral schema contract.
+  assert.ok(getAgentToolDefinitions().every(tool => !Object.hasOwn(tool, "annotations")));
 });
 
 test("executes agent operations over one stdio session in request order", async (context) => {
