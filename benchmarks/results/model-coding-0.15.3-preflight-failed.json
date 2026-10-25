@@ -1,0 +1,272 @@
+{
+  "casesHash": "c38b7f4ba59b32a73374e423f3745bb8dc86ae58f374dad538e130fbc3f813e8",
+  "complete": false,
+  "controls": [
+    {
+      "mutant": {
+        "command": "tsc --project tsconfig.json && node acceptance.cjs",
+        "exitCode": 1,
+        "outputHash": "eb3fe7683290e0abb750e741e8d80aa52a0bc3a59a2b1446acdbf8cb47be1cb1",
+        "passed": false,
+        "stage": "acceptance",
+        "timedOut": false
+      },
+      "pristine": {
+        "command": "tsc --project tsconfig.json && node acceptance.cjs",
+        "exitCode": 0,
+        "outputHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "passed": true,
+        "stage": "acceptance",
+        "timedOut": false
+      },
+      "task": "ts-weight-normalization"
+    },
+    {
+      "mutant": {
+        "command": "tsc --project tsconfig.json && node acceptance.cjs",
+        "exitCode": 1,
+        "outputHash": "002a220bef02e2bcb690b1b5d49039dfbddf9d4797a11f19613d641c08ac2782",
+        "passed": false,
+        "stage": "acceptance",
+        "timedOut": false
+      },
+      "pristine": {
+        "command": "tsc --project tsconfig.json && node acceptance.cjs",
+        "exitCode": 0,
+        "outputHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "passed": true,
+        "stage": "acceptance",
+        "timedOut": false
+      },
+      "task": "ts-positive-placeholder"
+    },
+    {
+      "mutant": {
+        "command": "tsc --project tsconfig.json && node acceptance.cjs",
+        "exitCode": 1,
+        "outputHash": "a91efc8d2de54bb08aee7ea2fa4d93e382ab4031372209bb9afcf112344218b3",
+        "passed": false,
+        "stage": "acceptance",
+        "timedOut": false
+      },
+      "pristine": {
+        "command": "tsc --project tsconfig.json && node acceptance.cjs",
+        "exitCode": 0,
+        "outputHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "passed": true,
+        "stage": "acceptance",
+        "timedOut": false
+      },
+      "task": "ts-evidence-empty-repo"
+    },
+    {
+      "mutant": {
+        "command": "tsc --project tsconfig.json && node acceptance.cjs",
+        "exitCode": 1,
+        "outputHash": "37e92023502faaf4e4fbd1afedd7b380dd71b093ca4205e5bd0815ffb863bcda",
+        "passed": false,
+        "stage": "acceptance",
+        "timedOut": false
+      },
+      "pristine": {
+        "command": "tsc --project tsconfig.json && node acceptance.cjs",
+        "exitCode": 0,
+        "outputHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "passed": true,
+        "stage": "acceptance",
+        "timedOut": false
+      },
+      "task": "ts-monorepo-threshold"
+    },
+    {
+      "mutant": {
+        "command": "go test -count=1 -run ^TestAcceptance$ .",
+        "exitCode": 1,
+        "outputHash": "44a81b44bf88dca2b144bfa4c1dd3ae5a66b35a1a74200f7d9c8032c64f02819",
+        "passed": false,
+        "timedOut": false
+      },
+      "pristine": {
+        "command": "go test -count=1 -run ^TestAcceptance$ .",
+        "exitCode": 0,
+        "outputHash": "4ba69df56e6c64dff19e5506e54f27daf92816c6b1804507b484ba0932597041",
+        "passed": true,
+        "timedOut": false
+      },
+      "task": "go-addline-eof"
+    },
+    {
+      "mutant": {
+        "command": "go test -count=1 -run ^TestAcceptance$ .",
+        "exitCode": 1,
+        "outputHash": "959a3f454ea0dda508c17e39faf609a58368d7ab81414d1cfaea2c4501864cf4",
+        "passed": false,
+        "timedOut": false
+      },
+      "pristine": {
+        "command": "go test -count=1 -run ^TestAcceptance$ .",
+        "exitCode": 0,
+        "outputHash": "8348ef475160a6407ac83af48b45c2d3ef5de4ff69774ac46b5958032566ba9b",
+        "passed": true,
+        "timedOut": false
+      },
+      "task": "go-setlines-duplicates"
+    },
+    {
+      "mutant": {
+        "command": "go test -count=1 -run ^TestAcceptance$ .",
+        "exitCode": 1,
+        "outputHash": "8b27c7c63825a05d1e6db59d02d340861498a30712d84cc6abf897094a4bcba0",
+        "passed": false,
+        "timedOut": false
+      },
+      "pristine": {
+        "command": "go test -count=1 -run ^TestAcceptance$ .",
+        "exitCode": 0,
+        "outputHash": "fe1fcabe59be6dbd650e34474ceaf479fd097c427db2815a946091cb2d384d20",
+        "passed": true,
+        "timedOut": false
+      },
+      "task": "go-tilde-operator"
+    },
+    {
+      "mutant": {
+        "command": "go test -count=1 -run ^TestAcceptance$ .",
+        "exitCode": 1,
+        "outputHash": "1c68397b0bd7420ca36d30c2d02cb837a6595e8fb5a6f14d117a5665c810bfe5",
+        "passed": false,
+        "timedOut": false
+      },
+      "pristine": {
+        "command": "go test -count=1 -run ^TestAcceptance$ .",
+        "exitCode": 0,
+        "outputHash": "1e560b65754691feca84a7d04d909264d9831a57e8da218257fadef89cffe8e6",
+        "passed": true,
+        "timedOut": false
+      },
+      "task": "go-leading-digit"
+    }
+  ],
+  "corpora": [
+    {
+      "corpusHash": "8d05d2b68366d419e659210a0d99aac9eebc1ed1a413008f38246f1eea4dd9e7",
+      "files": 13,
+      "id": "buildmarks",
+      "originalsUnchanged": true
+    },
+    {
+      "corpusHash": "ef917843f3cd187a6a0bcdd1082a13adfbefe2689c05bd31f99d9229d5fbdc27",
+      "files": 4,
+      "id": "go-token",
+      "originalsUnchanged": true
+    }
+  ],
+  "environment": {
+    "codex": "codex-cli 0.164.0-alpha.11.1",
+    "filesystemCacheFlushed": false,
+    "go": "go version go1.26.4 windows/amd64",
+    "gopls": "golang.org/x/tools/gopls v0.23.0",
+    "node": "v24.18.0",
+    "platform": "win32",
+    "typescript": "6.0.3"
+  },
+  "harnessHash": "c0aa5f8c76d2c60df68b65f0120c71a9b25b45a566aaed68ce9fe28757110c30",
+  "limitations": [
+    "Eight author-curated injected regressions in small real-source scopes, not discovered production bugs, blind holdouts, or representative maintenance work.",
+    "Go standard-library familiarity, small/easy tasks, one trial, cache state, and condition-specific MCP instructions limit generalization.",
+    "A successful edit does not prove the navigation tool caused success. Tool adherence is measured separately.",
+    "CLI token counts include its system/tool prompt. Monetary cost, human card authoring, maintenance and resolved provider model are unmeasured.",
+    "Only sanitized event metadata is retained; raw model reasoning, prompts and command output are not saved."
+  ],
+  "measuredAt": "2026-10-25T10:57:27.827Z",
+  "methodology": {
+    "concurrency": 1,
+    "conditionOrder": "rotate by task index",
+    "conditions": [
+      "baseline",
+      "llmnav",
+      "serena"
+    ],
+    "grading": "pristine-positive, mutant-negative, then hidden acceptance and source-scope checks",
+    "memoriesEnabled": false,
+    "perRunTimeoutMs": 180000,
+    "restrictions": "navigation instructions and read boundaries are prompt-enforced; not an adversarial isolation boundary",
+    "trialsPerTaskCondition": 1,
+    "windowsBackend": "unelevated",
+    "workspaceLocation": "ignored fixture directory inside the authorized repository"
+  },
+  "model": {
+    "authentication": "existing Codex CLI login",
+    "reasoningEffort": "high",
+    "requested": "gpt-6.1-sol",
+    "resolvedProviderModel": null
+  },
+  "packageVersion": "0.15.3",
+  "preflight": {
+    "elapsedMs": 40340.140400000004,
+    "exitCode": 0,
+    "llmnavPassed": false,
+    "serenaPassed": true,
+    "timedOut": false,
+    "trace": {
+      "completed": true,
+      "errors": 0,
+      "tools": [
+        {
+          "commandHash": null,
+          "exitCode": null,
+          "responseBytes": 4,
+          "server": "eval_nav",
+          "status": "failed",
+          "tool": "llmnav_discover",
+          "toolError": true,
+          "type": "mcp_tool_call"
+        },
+        {
+          "commandHash": null,
+          "exitCode": null,
+          "responseBytes": 9289,
+          "server": "eval_serena",
+          "status": "completed",
+          "tool": "initial_instructions",
+          "toolError": false,
+          "type": "mcp_tool_call"
+        },
+        {
+          "commandHash": null,
+          "exitCode": null,
+          "responseBytes": 224,
+          "server": "eval_serena",
+          "status": "completed",
+          "tool": "find_symbol",
+          "toolError": false,
+          "type": "mcp_tool_call"
+        },
+        {
+          "commandHash": "190beda24a1a57d7eab7fa631f6f05c8958b2a34b7c045114a30739cd2083d47",
+          "exitCode": 0,
+          "responseBytes": 0,
+          "server": null,
+          "status": "completed",
+          "tool": null,
+          "toolError": false,
+          "type": "command_execution"
+        }
+      ],
+      "uncachedInputTokens": 12535,
+      "usage": {
+        "cache_write_input_tokens": 0,
+        "cached_input_tokens": 124544,
+        "input_tokens": 137079,
+        "output_tokens": 307,
+        "reasoning_output_tokens": 0
+      }
+    },
+    "writePassed": true
+  },
+  "rows": [],
+  "schemaVersion": 1,
+  "serenaVersion": "2.1.0",
+  "validForComparison": false,
+  "exclusionReason": "Read/write and Serena preflight passed; LLMNav discover required MCP approval because behavior annotations were absent. No coding tasks were attempted in this cohort."
+}

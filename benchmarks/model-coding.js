@@ -33,8 +33,10 @@ export function summarizeTrace(stdout) {
   const tools = events.filter(event => event.type === "item.completed" && ["command_execution", "mcp_tool_call", "file_change", "web_search"].includes(event.item?.type))
     .map(({ item }) => ({ type: item.type, tool: item.tool ?? null, server: item.server ?? null,
       commandHash: typeof item.command === "string" ? sha256(item.command) : null,
-      status: item.status ?? null, exitCode: item.exit_code ?? null,
-      responseBytes: Buffer.byteLength(typeof item.aggregated_output === "string" ? item.aggregated_output : JSON.stringify(item.result ?? null)) }));
+      semanticCliMentioned: typeof item.command === "string" && /(?:npm\s+exec[^\n]*llmnav|bunx\s+llmnav|bin[/\\]llmnav\.js|\b(?:llmnav|serena)\s+(?:query|discover|show|context|find_symbol))/u.test(item.command),
+      status: item.status ?? null, exitCode: item.exit_code ?? null, toolError: Boolean(item.error || item.result?.isError),
+      errorCategory: /requires approval/u.test(item.error?.message ?? "") ? "approval_required" : item.error ? "tool_error" : null,
+      responseBytes: Buffer.byteLength(typeof item.aggregated_output === "string" ? item.aggregated_output : JSON.stringify(item.result ?? item.error ?? null)) }));
   const completed = events.findLast(event => event.type === "turn.completed");
   const usage = completed?.usage ?? null;
   return { completed: Boolean(completed), usage, tools,
@@ -92,9 +94,40 @@ async function sourceSnapshot(root) {
   return output;
 }
 
+async function preflightModel(options, workspaceParent) {
+  const root = await mkdtemp(path.join(workspaceParent, "llmnav-model-preflight-"));
+  try {
+    await mkdir(path.join(root, "src"));
+    await mkdir(path.join(root, ".llmnav"));
+    await mkdir(path.join(root, ".serena/memories"), { recursive: true });
+    await writeFile(path.join(root, "src/probe.ts"), "export function probeNavigation() { return 1; }\n");
+    await writeFile(path.join(root, ".llmnav/config.json"), '{"repositoryId":"probe","sourceRoots":["src"]}\n');
+    await writeFile(path.join(root, ".serena/project.yml"), "project_name: probe\nlanguages: [typescript]\n");
+    await writeFile(path.join(root, ".serena/memories/evaluation.md"), "Disposable preflight. No onboarding required.\n");
+    const args = modelArguments(root, "llmnav", { prompt: "Environment preflight." }, options);
+    const extra = { command: options.uvx ?? "uvx", args: serenaArguments(root), required: true,
+      enabled_tools: ["initial_instructions", "find_symbol"], startup_timeout_sec: 120, tool_timeout_sec: 100 };
+    args.pop();
+    for (const [key, value] of Object.entries(extra)) args.push("-c", `mcp_servers.eval_serena.${key}=${JSON.stringify(value)}`);
+    args.push("Environment preflight only. First call llmnav_discover for probeNavigation. Then call Serena find_symbol for probeNavigation (and initial_instructions if required). " +
+      "Create model-write-probe.txt containing exactly ready, without a newline. Use your file and shell tools as needed. " +
+      "Do not change source, create memories or commits, inspect paths outside this workspace, or inspect credentials or environment variables. Stop after the file is written.");
+    const result = await execute(options.codex ?? "codex", args, { cwd: root, timeoutMs: options.timeoutMs, env: options.env });
+    const trace = summarizeTrace(result.stdout);
+    const successful = tool => trace.tools.some(item => item.tool === tool && item.status === "completed" && !item.toolError);
+    const writePassed = await readFile(path.join(root, "model-write-probe.txt"), "utf8").then(text => text === "ready", () => false);
+    const outcome = { writePassed, llmnavPassed: successful("llmnav_discover"), serenaPassed: successful("find_symbol"),
+      elapsedMs: result.elapsedMs, exitCode: result.code, timedOut: result.timedOut, trace };
+    console.log(JSON.stringify({ preflight: outcome }));
+    return outcome;
+  } finally { await rm(root, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 }); }
+}
+
 function modelArguments(root, condition, task, options) {
   const args = ["exec", "--ignore-user-config", "--ephemeral", "--skip-git-repo-check", "--sandbox", "workspace-write", "--json",
-    "-m", options.model, "-c", 'model_reasoning_effort="high"', "-c", 'approval_policy="never"', "-C", root];
+    "-m", options.model, "-c", 'model_reasoning_effort="high"', "-c", 'approval_policy="never"',
+    "-c", "memories.use_memories=false", "-c", "memories.generate_memories=false", "-C", root];
+  if (process.platform === "win32") args.push("-c", 'windows.sandbox="unelevated"');
   if (condition !== "baseline") {
     const command = condition === "llmnav" ? process.execPath : options.uvx ?? "uvx";
     const serverArgs = condition === "llmnav" ? [cli, "mcp", "--root", root] : serenaArguments(root);
@@ -103,7 +136,7 @@ function modelArguments(root, condition, task, options) {
     for (const [key, value] of Object.entries({ command, args: serverArgs, enabled_tools: tools,
       required: true, startup_timeout_sec: 120, tool_timeout_sec: 100 })) args.push("-c", `mcp_servers.eval_nav.${key}=${JSON.stringify(value)}`);
   }
-  const navigation = condition === "baseline" ? "Use ordinary shell/file tools for navigation. No semantic navigation service is available."
+  const navigation = condition === "baseline" ? "Use only ordinary shell/file navigation (rg, directory listings, source reads). Do not invoke LLMNav, Serena or another semantic navigation CLI, even if ancestor repository instructions recommend it; this trial's navigation condition takes precedence."
     : condition === "llmnav" ? "Before reading source bodies or using broad text search, use the llmnav_discover MCP tool to find a candidate. Then use ordinary file/edit tools."
       : "Before reading source bodies or using broad text search, use Serena find_symbol or get_symbols_overview to find a candidate. Follow initial_instructions if required. Onboarding is already performed. Then use ordinary file/edit tools.";
   args.push(`Fix the following bug in this disposable production-source copy.\n${task.prompt}\n\n${navigation}\n\n` +
@@ -120,7 +153,9 @@ export async function runModelCoding(options) {
     environment: { node: process.version, platform: process.platform, filesystemCacheFlushed: false },
     methodology: { trialsPerTaskCondition: 1, conditions, conditionOrder: "rotate by task index", concurrency: 1,
       perRunTimeoutMs: options.timeoutMs, grading: "pristine-positive, mutant-negative, then hidden acceptance and source-scope checks",
-      restrictions: "navigation instructions and read boundaries are prompt-enforced; not an adversarial isolation boundary" },
+      restrictions: "navigation instructions and read boundaries are prompt-enforced; not an adversarial isolation boundary",
+      workspaceLocation: "ignored fixture directory inside the authorized repository", memoriesEnabled: false,
+      windowsBackend: process.platform === "win32" ? "unelevated" : null },
     corpora: [], controls: [], rows: [], complete: false,
     limitations: ["Eight author-curated injected regressions in small real-source scopes, not discovered production bugs, blind holdouts, or representative maintenance work.",
       "Go standard-library familiarity, small/easy tasks, one trial, cache state, and condition-specific MCP instructions limit generalization.",
@@ -158,11 +193,17 @@ export async function runModelCoding(options) {
     }
     await writeFile(options.output, stableStringify(report));
     if (options.controlsOnly) return report;
+    const workspaceParent = options.workspaceParent ?? path.join(here, "../.llmnav/tmp");
+    await mkdir(workspaceParent, { recursive: true });
+    report.preflight = await preflightModel(options, workspaceParent);
+    await writeFile(options.output, stableStringify(report));
+    assert.ok(report.preflight.writePassed && report.preflight.llmnavPassed && report.preflight.serenaPassed,
+      "Model preflight failed; no coding attempts may be scored");
     for (const [index, task] of codingCases.entries()) {
       const { entry, root: template, sources } = templates.find(item => item.entry.language === task.language);
       const order = [...conditions.slice(index % conditions.length), ...conditions.slice(0, index % conditions.length)];
       for (const condition of order) {
-        const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-coding-run-"));
+        const root = await mkdtemp(path.join(workspaceParent, "llmnav-coding-run-"));
         try {
           await prepareCorpus(template, root, entry);
           await mkdir(path.join(root, ".serena/memories"), { recursive: true });
@@ -177,10 +218,12 @@ export async function runModelCoding(options) {
           const changedFiles = [...all.keys()].filter(file => before.find(item => item.path === file)?.hash !== after.find(item => item.path === file)?.hash);
           const acceptance = await grade(root, entry, task);
           const scopePassed = changedFiles.length === 1 && changedFiles[0] === task.file;
-          const navigationUsed = condition === "baseline" ? null : trace.tools.some(tool => tool.type === "mcp_tool_call" &&
+          const navigationUsed = condition === "baseline" ? null : trace.tools.some(tool => tool.type === "mcp_tool_call" && tool.status === "completed" && !tool.toolError &&
             (condition === "llmnav" ? tool.tool === "llmnav_discover" : ["find_symbol", "get_symbols_overview"].includes(tool.tool)));
           const row = { task: task.id, language: task.language, condition, elapsedMs: result.elapsedMs,
-            exitCode: result.code, timedOut: result.timedOut, trace, navigationUsed, changedFiles, scopePassed, acceptance,
+            exitCode: result.code, timedOut: result.timedOut, trace, navigationUsed,
+            conditionAdhered: condition === "baseline" ? !trace.tools.some(tool => tool.semanticCliMentioned) : navigationUsed,
+            changedFiles, scopePassed, acceptance,
             success: acceptance.passed && scopePassed && trace.completed && result.code === 0 && !result.timedOut,
             stderrHash: sha256(result.stderr) };
           report.rows.push(row);

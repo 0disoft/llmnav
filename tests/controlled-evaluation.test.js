@@ -26,6 +26,13 @@ test("coding traces measure completed tools and cache counters without retaining
   assert.equal(JSON.stringify(trace).includes("canary"), false);
   assert.equal(summarizeTrace('{"type":"turn.failed"}').completed, false);
   assert.equal(summarizeTrace('{"type":"turn.completed","usage":{"input_tokens":12}}').uncachedInputTokens, null);
+  const denial = summarizeTrace(JSON.stringify({ type: "item.completed", item: {
+    type: "mcp_tool_call", tool: "llmnav_discover", status: "failed", error: { message: "MCP tool call requires approval, but approval policy is never" },
+  } }));
+  assert.equal(denial.tools[0].toolError, true);
+  assert.equal(denial.tools[0].errorCategory, "approval_required");
+  const semantic = summarizeTrace(JSON.stringify({ type: "item.completed", item: { type: "command_execution", command: 'npm exec -- llmnav discover example' } }));
+  assert.equal(semantic.tools[0].semanticCliMentioned, true);
 });
 
 test("eight balanced coding mutations reject missing or ambiguous source anchors", () => {
