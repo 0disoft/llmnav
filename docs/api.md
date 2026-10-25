@@ -385,7 +385,7 @@ Each query record requires a non-empty `query`. A positive case supplies at leas
 
 ## Agent operation protocol
 
-`getAgentToolDefinitions()` returns defensive copies of seven schemaVersion 4 tool definitions in fixed order. Their JSON Schema inputs reject unknown fields and deliberately omit the repository root.
+`getAgentToolDefinitions()` returns defensive copies of seven schemaVersion 5 tool definitions in fixed order. Their JSON Schema inputs reject unknown fields and deliberately omit the repository root.
 
 ```js
 import { executeAgentOperation, getAgentToolDefinitions } from "llmnav";
@@ -443,6 +443,10 @@ const result = await discoverProject(root, "rotate session", { top: 5, signal })
 ```
 
 Returns `{ schemaVersion: 1, repositoryId, results, matched, truncated }`. Each candidate carries `source` (`file` or `declaration`), `path`, one-based `line`, `cardIds`, `score`, and `reasons`. Declarations also carry `symbol`, `signature`, `kind`, and `language`. These are syntax heuristics, including nested declarations when within the shared scan budget; they do not provide type resolution, stable semantic IDs, or inferred business contracts. The operation reads selected live sources, honors include/exclude rules and cancellation, uses bounded file I/O, and writes nothing. `top` is an integer from 1 to 100.
+
+Use `{ top: 1, includeSource: true, sourceBudget: 4000 }` to locate and inspect a candidate in one call. The optional `sourceExcerpt` contains `{ scope, startLine, endLine, text, truncated }`. Text comes from the existing live scan, with LF normalization and no second file read. `sourceBudget` is a shared UTF-8 text-byte limit, default 4,000, minimum 256 and maximum 16,000; JSON metadata is additional. Later candidates omit the excerpt when the budget is exhausted. Default calls omit all excerpts and preserve existing result fields and ranking.
+
+`scope: "declaration"` uses the heuristic parser's declaration span. File hits and compiler definitions without body-end coordinates use `scope: "window"`, starting at the candidate line. `truncated` describes byte-budget clipping, not semantic completeness. Read surrounding code when dependencies or behavior remain unclear. MCP accepts the same options on `llmnav_discover`; tool schema version 5 adds optional inputs without changing operation envelopes.
 
 ## Compiler analysis
 

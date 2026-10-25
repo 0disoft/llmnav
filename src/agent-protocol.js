@@ -93,7 +93,8 @@ function resolveRequest(name, input) {
 }
 
 async function handleDiscover(input, root, options) {
-  return { data: await discoverProject(root, input.task.trim(), { ...options, top: input.top ?? SEARCH_LIMITS.top.default, precise: input.precise === true }) };
+  return { data: await discoverProject(root, input.task.trim(), { ...options, top: input.top ?? SEARCH_LIMITS.top.default,
+    precise: input.precise === true, includeSource: input.includeSource === true, sourceBudget: input.sourceBudget }) };
 }
 
 async function handleQuery(input, root, options) {

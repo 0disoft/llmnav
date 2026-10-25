@@ -257,7 +257,7 @@ Prints the active source specification version, canonical key order, stability v
 llmnav tools [--json]
 ```
 
-Prints the fixed provider-neutral tool definitions for `query`, `show`, `context`, `check`, `explain`, `audit`, and `discover`. Each definition carries schemaVersion 4; JSON output wraps the ordered definitions in a schemaVersion 1 command envelope. Tool inputs reject unknown fields and never accept a repository root; a trusted host binds repository scope when it calls the library dispatcher.
+Prints the fixed provider-neutral tool definitions for `query`, `show`, `context`, `check`, `explain`, `audit`, and `discover`. Each definition carries schemaVersion 5; JSON output wraps the ordered definitions in a schemaVersion 1 command envelope. Tool inputs reject unknown fields and never accept a repository root; a trusted host binds repository scope when it calls the library dispatcher.
 
 ## `llmnav mcp`
 
@@ -289,9 +289,12 @@ Use `llmnav mcp --auto-generate` for on-request source freshness. Without the fl
 
 ```sh
 llmnav discover "rotate session" --top 5 --json
+llmnav discover "rotateSession" --top 1 --include-source --source-budget 4000 --json
 ```
 
 Works before initialization or generation. Searches selected source paths, heuristic declaration names and signatures. Use identifiers in the repository language; JSON results distinguish `file` and `declaration` sources. Review source behavior before adding a semantic card. The corresponding provider-neutral operation is `llmnav_discover` with `{ task, top? }`.
+
+`--include-source` includes live source excerpts so a useful result can replace the next file read. `--source-budget` bounds excerpt text across all results in UTF-8 bytes (default 4,000; range 256–16,000), excluding JSON metadata. Start with `--top 1`; increase it for ambiguity. Excerpts carry one-based line coordinates, `scope` and `truncated`. Heuristic declaration spans and file/compiler windows do not certify semantic completeness. Read more when needed. Existing calls omit excerpts. MCP uses `{ task, top: 1, includeSource: true, sourceBudget: 4000 }`.
 
 ## Compiler analysis
 

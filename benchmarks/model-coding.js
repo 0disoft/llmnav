@@ -34,7 +34,8 @@ export function summarizeTrace(stdout) {
     .map(({ item }) => ({ type: item.type, tool: item.tool ?? null, server: item.server ?? null,
       commandHash: typeof item.command === "string" ? sha256(item.command) : null,
       semanticCliMentioned: typeof item.command === "string" && /(?:npm\s+exec[^\n]*llmnav|bunx\s+llmnav|bin[/\\]llmnav\.js|\b(?:llmnav|serena)\s+(?:query|discover|show|context|find_symbol))/u.test(item.command),
-      status: item.status ?? null, exitCode: item.exit_code ?? null, toolError: Boolean(item.error || item.result?.isError),
+      status: item.status ?? null, exitCode: item.exit_code ?? null, toolError: Boolean(item.error || item.result?.isError || item.result?.is_error),
+      discovery: item.tool === "llmnav_discover" ? discoveryMetrics(item) : null,
       errorCategory: /requires approval/u.test(item.error?.message ?? "") ? "approval_required" : item.error ? "tool_error" : null,
       responseBytes: Buffer.byteLength(typeof item.aggregated_output === "string" ? item.aggregated_output : JSON.stringify(item.result ?? item.error ?? null)) }));
   const completed = events.findLast(event => event.type === "turn.completed");
@@ -47,6 +48,17 @@ export function summarizeTrace(stdout) {
   return { completed: Boolean(completed), usage, tools, itemTypes,
     uncachedInputTokens: usage && Number.isFinite(usage.cached_input_tokens) ? usage.input_tokens - usage.cached_input_tokens : null,
     errors: events.filter(event => event.type === "error" || event.type === "turn.failed").length };
+}
+
+function discoveryMetrics(item) {
+  const content = item.result?.content?.find(block => block.type === "text")?.text;
+  let data;
+  try { data = JSON.parse(content).data; } catch { return { parsed: false }; }
+  const results = Array.isArray(data?.results) ? data.results : [];
+  const excerpts = results.flatMap(candidate => candidate.sourceExcerpt ? [candidate.sourceExcerpt] : []);
+  return { parsed: true, candidates: results.length, excerpts: excerpts.length,
+    sourceBytes: excerpts.reduce((sum, excerpt) => sum + Buffer.byteLength(excerpt.text), 0),
+    truncatedExcerpts: excerpts.filter(excerpt => excerpt.truncated).length };
 }
 
 async function execute(command, args, { cwd, timeoutMs = 90000, env = process.env } = {}) {
@@ -175,6 +187,14 @@ export async function runModelCoding(options) {
       "A successful edit does not prove the navigation tool caused success. Tool adherence is measured separately.",
       "CLI token counts include its system/tool prompt. Monetary cost, human card authoring, maintenance and resolved provider model are unmeasured.",
       "Only sanitized event metadata is retained; raw model reasoning, prompts and command output are not saved."] };
+  report.engines = {};
+  for (const [condition, executable] of [["llmnav", cli], ...(conditions.includes("llmnav-before") ? [["llmnav-before", options.beforeCli]] : [])]) {
+    const engineRoot = path.resolve(path.dirname(executable), "..");
+    report.engines[condition] = { version: JSON.parse(await readFile(path.join(engineRoot, "package.json"), "utf8")).version, hashes: {} };
+    for (const file of ["src/mcp.js", "src/discovery.js", "src/agent-tools.js", "src/agent-protocol.js"]) {
+      report.engines[condition].hashes[file] = sha256(await readFile(path.join(engineRoot, file), "utf8"));
+    }
+  }
   const prerequisites = [["codex", options.codex ?? "codex", ["--version"]], ["go", "go", ["version"]]];
   if (conditions.includes("serena")) prerequisites.push(["gopls", "gopls", ["version"]]);
   for (const [name, command, args] of prerequisites) {

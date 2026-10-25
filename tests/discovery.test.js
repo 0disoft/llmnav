@@ -87,3 +87,42 @@ test("source provenance links existing same-file cards without inventing semanti
   assert.equal(result.results[0].language, "typescript");
   assert.equal(Object.hasOwn(result.results[0], "role"), false);
 });
+
+test("opt-in source excerpts reuse the ranked live declaration and preserve default results", async context => {
+  const root = await fixture(context);
+  await rm(path.join(root, "src/session.go"));
+  const plain = await discoverProject(root, "rotateSession", { top: 1 });
+  assert.equal(Object.hasOwn(plain.results[0], "sourceExcerpt"), false);
+  const options = { top: 1, includeSource: true, sourceBudget: 256 };
+  const result = await discoverProject(root, "rotateSession", options);
+  const { sourceExcerpt, ...candidate } = result.results[0];
+  assert.deepEqual(candidate, plain.results[0]);
+  assert.deepEqual(sourceExcerpt, { scope: "declaration", startLine: 8, endLine: 8,
+    text: "export function rotateSession(token: string): string { return token; }", truncated: false });
+  const server = createMcpServer({ root });
+  const reply = await server.handleMessage({ jsonrpc: "2.0", id: 2, method: "tools/call", params: {
+    name: "llmnav_discover", arguments: { task: "rotateSession", ...options } } });
+  assert.deepEqual(JSON.parse(reply.result.content[0].text).data, result);
+  const process = spawnSync(globalThis.process.execPath, [cli, "discover", "rotateSession", "--root", root,
+    "--top", "1", "--include-source", "--source-budget", "256", "--json"], { encoding: "utf8" });
+  assert.equal(process.status, 0, process.stderr);
+  assert.deepEqual(JSON.parse(process.stdout), result);
+});
+
+test("source budget is shared, UTF-8 safe, newline normalized, and explicit about truncation", async context => {
+  const root = await fixture(context);
+  const source = `export function budgetFirst() {\r\n  return "${"한😀".repeat(100)}";\r\n}\r\nexport function budgetSecond() {}\r\n`;
+  await writeFile(path.join(root, "src/budget.ts"), source);
+  const result = await discoverProject(root, "budget", { top: 10, includeSource: true, sourceBudget: 256 });
+  const excerpts = result.results.flatMap(item => item.sourceExcerpt ? [item.sourceExcerpt] : []);
+  assert.ok(excerpts.length > 0);
+  assert.ok(excerpts.reduce((sum, item) => sum + Buffer.byteLength(item.text), 0) <= 256);
+  assert.equal(excerpts[0].truncated, true);
+  assert.ok(excerpts.every(item => !item.text.includes("\r") && !item.text.includes("\uFFFD")));
+  assert.ok(excerpts.every(item => item.endLine >= item.startLine));
+  assert.ok(excerpts.every(item => Buffer.from(item.text).toString("utf8") === item.text));
+  for (const sourceBudget of [255, 16001, 1.5, NaN]) {
+    await assert.rejects(discoverProject(root, "budget", { includeSource: true, sourceBudget }), RangeError);
+  }
+  await assert.rejects(discoverProject(root, "budget", { includeSource: "true" }), TypeError);
+});

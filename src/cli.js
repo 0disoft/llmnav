@@ -45,7 +45,7 @@ import { AUDIT_PRIORITIES, auditHasFindings, auditProject, explainProjectFile } 
 import { migrateProject } from "./migration.js";
 import { SEARCH_LIMITS } from "./policy.js";
 
-const VALUE_OPTIONS = new Set(["--root", "--format", "--top", "--depth", "--budget", "--max-edges", "--agents", "--file", "--fail-on", "--output", "--language", "--project", "--typescript"]);
+const VALUE_OPTIONS = new Set(["--root", "--format", "--top", "--depth", "--budget", "--max-edges", "--agents", "--file", "--fail-on", "--output", "--language", "--project", "--typescript", "--source-budget"]);
 
 const COMMAND_OPTIONS = Object.freeze({
   init: new Set(["--agents", "--package-scripts", "--force", "--root", "--json"]),
@@ -54,7 +54,7 @@ const COMMAND_OPTIONS = Object.freeze({
   generate: new Set(["--check", "--verify", "--full", "--root", "--json"]),
   index: new Set(["--check", "--verify", "--full", "--root", "--json"]),
   analyze: new Set(["--language", "--project", "--typescript", "--allow-errors", "--output", "--root", "--json"]),
-  discover: new Set(["--precise", "--top", "--root", "--json"]),
+  discover: new Set(["--precise", "--top", "--root", "--json", "--include-source", "--source-budget"]),
   query: new Set(["--top", "--root", "--json"]),
   show: new Set(["--root", "--json"]),
   context: new Set(["--depth", "--budget", "--max-edges", "--root", "--json"]),
@@ -265,7 +265,8 @@ async function runDiscover(root, args, json) {
   const query = getPositionals(args).join(" ").trim();
   if (!query) { console.error("discover requires search text."); return 2; }
   const top = parseCliIntegerOption(args, "--top", SEARCH_LIMITS.top.default);
-  const result = await discoverProject(root, query, { top, precise: hasFlag(args, "--precise") });
+  const result = await discoverProject(root, query, { top, precise: hasFlag(args, "--precise"),
+    includeSource: hasFlag(args, "--include-source"), sourceBudget: parseCliIntegerOption(args, "--source-budget", undefined) });
   if (json) console.log(JSON.stringify(result, null, 2));
   else if (result.results.length === 0) console.log("No matching source paths or declarations found. Try identifiers in the repository language.");
   else {
@@ -274,8 +275,12 @@ async function runDiscover(root, args, json) {
       console.log(`${index + 1}. [${candidate.source}] ${candidate.path}${symbol}:${candidate.line} score=${candidate.score}`);
       if (candidate.signature) console.log(`   ${candidate.signature}`);
       if (candidate.cardIds.length) console.log(`   cards: ${candidate.cardIds.join(", ")}`);
+      if (candidate.sourceExcerpt) {
+        const excerpt = candidate.sourceExcerpt;
+        console.log(`   source ${excerpt.startLine}-${excerpt.endLine} (${excerpt.scope}${excerpt.truncated ? ", truncated" : ""}):\n${excerpt.text}`);
+      }
     }
-    console.log("Read the source to verify behavior. Use llmnav explain <path> before adding a durable semantic card.");
+    console.log("Verify behavior against source; read more if an excerpt is insufficient. Use llmnav explain <path> before adding a durable semantic card.");
   }
   return 0;
 }
@@ -607,7 +612,7 @@ Usage
   llmnav format [paths...] [--check]
   llmnav generate [--check] [--full]
   llmnav analyze --language <typescript|go> [--project tsconfig.json] [--output .llmnav/imports/code.json]
-  llmnav discover "<text>" [--top <n>] [--root <path>] [--json]
+  llmnav discover "<text>" [--top <n>] [--include-source] [--source-budget <bytes>] [--root <path>] [--json]
   llmnav query "<task>" [--top ${SEARCH_LIMITS.top.default}]
   llmnav show <semantic-id>
   llmnav context <semantic-id> [--depth ${SEARCH_LIMITS.depth.default}] [--budget ${SEARCH_LIMITS.budget.default}] [--max-edges ${SEARCH_LIMITS.maxEdges.default}]

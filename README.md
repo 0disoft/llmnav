@@ -329,6 +329,8 @@ Default source selection includes `.mts` and `.cts`. Existing configurations wit
 
 Run `llmnav discover "rotate session" --top 5` before initialization or index generation. It reads selected live source files and ranks paths, declaration names and signatures, including camel-case identifiers. JSON output labels each candidate as `source: "file"` or `source: "declaration"` and lists any same-file `cardIds`. `llmnav_discover` exposes the same operation over MCP without loading or creating an index.
 
+For a focused edit, use `llmnav discover "rotateSession" --top 1 --include-source --source-budget 4000 --json`, or MCP `{ task: "rotateSession", top: 1, includeSource: true }`. A bounded live excerpt can replace the immediate follow-up file read; inspect more only if it is insufficient or truncated. The default is 4,000 UTF-8 source bytes shared across results. When you already know the file and symbol, a direct bounded read or exact text search may be cheaper than adding semantic navigation.
+
 Discovery uses syntax heuristics and the repository language; it does not infer business meaning or translate a query automatically. Read the candidate source, then run `llmnav explain <path>` or `llmnav audit` to decide whether one durable boundary deserves a card. Add a narrow coverage rule and one retrieval query after review. Existing `query`, `show`, and `context` keep their semantic-card contracts.
 
 For editing sessions, run `llmnav mcp --auto-generate` to prepare current indexes before semantic navigation calls.

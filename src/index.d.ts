@@ -330,7 +330,7 @@ export interface LlmnavConfig {
 }
 
 export interface AgentToolDefinition {
-  schemaVersion: 4;
+  schemaVersion: 5;
   name: "llmnav_query" | "llmnav_show" | "llmnav_context" | "llmnav_check" | "llmnav_explain" | "llmnav_audit" | "llmnav_discover";
   description: string;
   inputSchema: {
@@ -789,7 +789,7 @@ export const AUDIT_PRIORITIES: readonly AuditPriority[];
 export const AUDIT_SCHEMA_VERSION: 1;
 export const FILE_EXPLANATION_SCHEMA_VERSION: 1;
 export const AGENT_OPERATION_SCHEMA_VERSION: 1;
-export const AGENT_TOOL_SCHEMA_VERSION: 4;
+export const AGENT_TOOL_SCHEMA_VERSION: 5;
 export const BOUNDARY_KINDS: readonly DetectedBoundary["kind"][];
 export const GRAPH_INPUT_SCHEMA_VERSION: 2;
 export const MIGRATION_REPORT_SCHEMA_VERSION: 1;
@@ -942,10 +942,11 @@ export interface SourceCandidate {
   signature?: string;
   kind?: string;
   language?: string;
+  sourceExcerpt?: { scope: "declaration" | "window"; startLine: number; endLine: number; text: string; truncated: boolean };
 }
 
 /** Read live source paths and heuristic declarations without requiring generated indexes. */
-export function discoverProject(root: string, query: string, options?: ReadOptions & { paths?: string[]; ioConcurrency?: number; top?: number; precise?: boolean }): Promise<{
+export function discoverProject(root: string, query: string, options?: ReadOptions & { paths?: string[]; ioConcurrency?: number; top?: number; precise?: boolean; includeSource?: boolean; sourceBudget?: number }): Promise<{
   schemaVersion: 1;
   repositoryId: string;
   results: SourceCandidate[];

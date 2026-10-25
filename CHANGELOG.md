@@ -4,6 +4,17 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.16.0] — 2026-10-25
+
+### Added
+
+* Opt-in, shared-budget live source excerpts in discovery (`includeSource`, `sourceBudget`; CLI `--include-source`, `--source-budget`). Agents can locate and inspect a candidate in one call instead of immediately rereading the file. Default discovery results and ranking stay unchanged.
+* Agent tool schema version 5 describes the optional excerpt inputs; excerpt text uses normalized LF, UTF-8 byte limits and explicit truncation.
+
+### Evaluation
+
+* Add matched before/after coding conditions, independent installation preflights and sanitized item-type and source-payload counters.
+
 ## [0.15.3] — 2026-10-25
 
 ### Fixed

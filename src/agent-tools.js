@@ -8,9 +8,9 @@ rel=workflow>llmnav.agent.protocol
 stability=contract
 */
 
-import { AUDIT_LIMITS, SEARCH_LIMITS } from "./policy.js";
+import { AUDIT_LIMITS, DISCOVERY_SOURCE_LIMITS, SEARCH_LIMITS } from "./policy.js";
 
-export const AGENT_TOOL_SCHEMA_VERSION = 4;
+export const AGENT_TOOL_SCHEMA_VERSION = 5;
 
 // Duplicated from AUDIT_PRIORITIES on purpose: importing the audit module would load
 // repository execution code into the definition-only surface. A contract test keeps them equal.
@@ -45,9 +45,11 @@ const DEFINITIONS = [
     priority: enumProperty("Lowest audit priority to include.", AUDIT_PRIORITY_VALUES, "low"),
     top: integerProperty("Maximum candidates.", AUDIT_LIMITS.top.minimum, AUDIT_LIMITS.top.maximum, AUDIT_LIMITS.top.default),
   }),
-  tool("llmnav_discover", "Find live source paths and heuristic declarations without requiring cards or an index. Results are structural candidates, not reviewed business rules.", {
+  tool("llmnav_discover", "Locate live source without cards or an index. Use top:1 and includeSource:true to locate and read a candidate in one call; read more only if the excerpt is insufficient or truncated. Declaration boundaries are heuristic, not reviewed business rules.", {
     task: stringProperty("Source identifiers or task language to search for."),
     precise: { type: "boolean", description: "Use configured compiler definitions; reject stale analysis.", default: false },
+    includeSource: { type: "boolean", description: "Include bounded live source excerpts; use these before another file read.", default: false },
+    sourceBudget: integerProperty("Total UTF-8 source bytes across results; excludes JSON metadata.", DISCOVERY_SOURCE_LIMITS.minimum, DISCOVERY_SOURCE_LIMITS.maximum, DISCOVERY_SOURCE_LIMITS.default),
     top: integerProperty("Maximum results.", SEARCH_LIMITS.top.minimum, SEARCH_LIMITS.top.maximum, SEARCH_LIMITS.top.default),
   }, ["task"]),
 ];

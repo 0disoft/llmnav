@@ -31,6 +31,9 @@ export const SEARCH_LIMITS = Object.freeze({
   maxEdges: Object.freeze({ default: 24, minimum: 0, maximum: 1000 }),
 });
 
+// UTF-8 source text across all discovery results, excluding JSON metadata.
+export const DISCOVERY_SOURCE_LIMITS = Object.freeze({ default: 4000, minimum: 256, maximum: 16000 });
+
 export const AUDIT_LIMITS = Object.freeze({
   top: Object.freeze({ default: 10, minimum: 1, maximum: 50 }),
 });

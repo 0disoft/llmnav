@@ -11,7 +11,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "4a879d3a785d12bfce797f6ce87a58d2954c22fbd2fdc673c1d8fe272cf9f041",
+      "contentHash": "17301b3f62019cf57dbcfd2fd4c485e6aaa74bb687966bc84d2bea99bb4b8ca1",
       "declarations": [],
       "imports": [
         "../src/util.js",
@@ -22,7 +22,7 @@
       ],
       "path": "benchmarks/coding-summary.js",
       "semanticBytes": 0,
-      "sourceBytes": 3909
+      "sourceBytes": 4174
     },
     {
       "blocks": [],
@@ -289,7 +289,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "b01b4041b3b78168427f65eca6124c20d14996661a283827f3a93ac499361ac3",
+      "contentHash": "72e96bd32bb9af32552843c30ec8fc974a3bfae4852644c349eff71f94f6ebc6",
       "declarations": [
         null
       ],
@@ -310,7 +310,7 @@
       ],
       "path": "benchmarks/model-coding.js",
       "semanticBytes": 554,
-      "sourceBytes": 19912
+      "sourceBytes": 22850
     },
     {
       "blocks": [],
@@ -2313,7 +2313,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "8827c694e022ac0c808af0d8fb3d3024913c06a009fd187f85ce83fa02892bec",
+      "contentHash": "3460274c499e117fc5849b920c2f6651bb9f7c7fb2ccd64774cc59660b15c832",
       "declarations": [
         null
       ],
@@ -2331,7 +2331,7 @@
       ],
       "path": "src/agent-protocol.js",
       "semanticBytes": 528,
-      "sourceBytes": 9945
+      "sourceBytes": 10028
     },
     {
       "blocks": [
@@ -2424,7 +2424,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "5b41ccde74f53d86970af147f8b3b8c67a591a07c78bf74560b8d876a17fc4a8",
+      "contentHash": "81b84614b17c41821ee51c2a41b15c2783cb5afeeedf562cd1579962e173fd66",
       "declarations": [
         null
       ],
@@ -2433,7 +2433,7 @@
       ],
       "path": "src/agent-tools.js",
       "semanticBytes": 411,
-      "sourceBytes": 4032
+      "sourceBytes": 4504
     },
     {
       "blocks": [
@@ -3097,7 +3097,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "d318559ae9a7240890466b893966ed2b006c0abb1178eb5d4ed2f017251bb746",
+      "contentHash": "758e28e8aa0a636ab50cffc0657e674471e7138967038e145567b11bd91172de",
       "declarations": [
         null
       ],
@@ -3129,7 +3129,7 @@
       ],
       "path": "src/cli.js",
       "semanticBytes": 508,
-      "sourceBytes": 25798
+      "sourceBytes": 26311
     },
     {
       "blocks": [
@@ -3660,7 +3660,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "405eb20d2edf781e74a238882da6b98feb5acace265e34abe320870395685d8d",
+      "contentHash": "7105ed8d243f07174a29ed29afc8d09ad77676f632f4190995263c10dc43fde6",
       "declarations": [
         null
       ],
@@ -3675,7 +3675,7 @@
       ],
       "path": "src/discovery.js",
       "semanticBytes": 597,
-      "sourceBytes": 5066
+      "sourceBytes": 7524
     },
     {
       "blocks": [
@@ -4799,14 +4799,14 @@
     },
     {
       "blocks": [],
-      "contentHash": "d1810525b5a533f8acaa0a10a99041d4be27981b8de2dce838715a7bb5289e98",
+      "contentHash": "d14fcd258a6d6123d504086a27b89fb0e9e6b61bafbbcf5c7b45a2603f03cef2",
       "declarations": [],
       "imports": [
         "./spec.js"
       ],
       "path": "src/index.d.ts",
       "semanticBytes": 0,
-      "sourceBytes": 36574
+      "sourceBytes": 36747
     },
     {
       "blocks": [],
@@ -5775,14 +5775,14 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "40e81525100fe39846b85a957628a669f8eb483e93bd47452794f10e4d4106ea",
+      "contentHash": "f78be7822ae894933b1c2eac3dafe1f0e396b5fd6ee55454aacba52d24363f0a",
       "declarations": [
         null
       ],
       "imports": [],
       "path": "src/policy.js",
       "semanticBytes": 556,
-      "sourceBytes": 2322
+      "sourceBytes": 2502
     },
     {
       "blocks": [
@@ -6788,7 +6788,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "45587b644a380d9053dfa39f9b89401be16062d74e1b65347de507ef7af3a169",
+      "contentHash": "76a294f2bc571f43ca8797b36562cc3ee257f2fd363163586dc46b80878c69c6",
       "declarations": [
         null
       ],
@@ -7182,7 +7182,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "e8da3b773c7fc482d8b2d5c1a5700afc309e4c30ffdf74381e2467587b0ea3d0",
+      "contentHash": "0b833f90bf7f1bda64a7501265d83c055a43b837ed96db0e9d4b84bcbc70681e",
       "declarations": [],
       "imports": [
         "../src/agent-protocol.js",
@@ -7282,7 +7282,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "b22003d5f7d17a771724c76e5d2169fa5c430cb77a1732fbe175e83326230fa3",
+      "contentHash": "6d72fe89d6e71cd77f5db8b5de153ebe85aea525a04ad44674a98b667486d5bf",
       "declarations": [],
       "imports": [
         "../benchmarks/coding-summary.js",
@@ -7291,7 +7291,7 @@
       ],
       "path": "tests/coding-summary.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 2198
+      "sourceBytes": 2680
     },
     {
       "blocks": [],
@@ -7362,7 +7362,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "102999264b02f7b99054e6a2f8979626b28e3786a6972b7cf19f7e3939bed925",
+      "contentHash": "14615e7dd3942ae7a29e5b6143b4216700b0f8983cd8cea2d6b2819bac2928bd",
       "declarations": [],
       "imports": [
         "../benchmarks/coding-cases.js",
@@ -7373,7 +7373,7 @@
       ],
       "path": "tests/controlled-evaluation.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 3112
+      "sourceBytes": 3801
     },
     {
       "blocks": [],
@@ -7415,7 +7415,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "b8965f7408e3bb5adc099ecb35bb8eaf55e797e23eec7b622b5eacf456f94753",
+      "contentHash": "993bad195320c88c78db9ad69ab7ad26b36b1cbcc28309a72302158fc9ee3eb7",
       "declarations": [],
       "imports": [
         "../src/agent-protocol.js",
@@ -7431,7 +7431,7 @@
       ],
       "path": "tests/discovery.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 5594
+      "sourceBytes": 8259
     },
     {
       "blocks": [],
