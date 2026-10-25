@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.16.8] — 2026-10-26
+
+### Fixed
+
+* Count ASCII units directly during token estimation instead of spreading and filtering whole strings into temporary arrays. Preserve existing UTF-16 non-ASCII weighting, rounding and minimum estimates for prompt partitions and context budgets, while reducing auxiliary counting space from linear to constant. Cover Unicode boundaries and large-input estimation plus trimming under a 64 MiB child heap limit.
+
 ## [0.16.7] — 2026-10-26
 
 ### Fixed

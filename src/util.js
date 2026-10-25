@@ -294,7 +294,12 @@ export function parseInteger(value, fallback) {
 }
 
 export function approximateTokens(value) {
-  const ascii = [...value].filter((character) => character.codePointAt(0) < 128).length;
+  let ascii = 0;
+  // ASCII is one UTF-16 unit; non-ASCII keeps the existing code-unit estimate,
+  // including surrogate pairs. Do not allocate arrays proportional to the text.
+  for (let index = 0; index < value.length; index++) {
+    if (value.charCodeAt(index) < 128) ascii++;
+  }
   const nonAscii = value.length - ascii;
   return Math.max(1, Math.ceil(ascii / TOKEN_ESTIMATION.asciiCharactersPerToken + nonAscii / TOKEN_ESTIMATION.nonAsciiCodeUnitsPerToken));
 }

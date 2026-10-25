@@ -6801,7 +6801,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "67d368d2176bc8b8d47d3364f443731541fe0217823b7c8e66b1060d0e77732d",
+      "contentHash": "5e2d2b78ff14eeb960986cb0b7050167e41fac29650deb8c1bfae67c38bd3c7f",
       "declarations": [
         null
       ],
@@ -7015,7 +7015,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "d5f6ef610a3d159e8bac7dc48f434facff2079f268cadc55af4717cc8bf92148",
+      "contentHash": "41f9ae737e8f333c3a89d08571a9e50b58f9d4da09a1044b40b0c83069197d66",
       "declarations": [],
       "imports": [
         "./abort.js",
@@ -7030,7 +7030,7 @@
       ],
       "path": "src/util.js",
       "semanticBytes": 0,
-      "sourceBytes": 16256
+      "sourceBytes": 16452
     },
     {
       "blocks": [
@@ -8084,16 +8084,17 @@
     },
     {
       "blocks": [],
-      "contentHash": "74c04709480fc77bfb6bcfa76dd83717c09704f582e0a43d363732fae8107448",
+      "contentHash": "c850c7409344c241e49800bc6256b3bad9a3f83b4e22e9ed2479e61ac856a847",
       "declarations": [],
       "imports": [
         "../src/util.js",
         "node:assert/strict",
+        "node:child_process",
         "node:test"
       ],
       "path": "tests/text-budget.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 1379
+      "sourceBytes": 2668
     },
     {
       "blocks": [],

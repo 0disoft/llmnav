@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "targetVersion": "0.16.8",
+  "baselineCommit": "e536f2c6aecd79ff9a20eeaf4b60e950e4b3047c",
+  "node": "v24.18.0",
+  "platform": "win32",
+  "fixture": {
+    "bytes": 4194304,
+    "contents": "ASCII a, flat UTF-8 string"
+  },
+  "measurement": "One fresh Node child per implementation with --expose-gc. Input constructed before explicit GC; compare heapUsed immediately before and after one token estimate without GC after the call. Heap delta includes collectible temporaries; it is not peak or retained heap. Local wall timing excludes startup and input construction.",
+  "before": {
+    "tokens": 1048576,
+    "elapsedMs": 477.9971,
+    "heapDeltaBytes": 137454328
+  },
+  "after": {
+    "tokens": 1048576,
+    "elapsedMs": 40.259799999999984,
+    "heapDeltaBytes": 11760
+  },
+  "complexity": {
+    "timeBefore": "O(N)",
+    "timeAfter": "O(N)",
+    "auxiliarySpaceBefore": "O(N)",
+    "auxiliarySpaceAfter": "O(1)",
+    "fullSizeTemporaryArraysBefore": 2,
+    "fullSizeTemporaryArraysAfter": 0
+  },
+  "regression": "4 MiB ASCII estimation plus budget trimming succeeds in a fresh Node child with --max-old-space-size=64."
+}
