@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.16.2] — 2026-10-25
+
+### Fixed
+
+* Scan JavaScript import candidates with a forward-only lexical cursor per regex instead of rescanning each source prefix. Preserve comment/string exclusion, duplicate removal and sorted output. On a local Node 24 microbenchmark with 4,000 imports (118,890 bytes), median extraction time across three trials decreased from 4,684.6 ms to 10.3 ms; tracked-source import results matched across 132 files.
+
 ## [0.16.1] — 2026-10-25
 
 ### Fixed

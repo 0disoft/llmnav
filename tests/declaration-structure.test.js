@@ -102,6 +102,36 @@ test("JavaScript import extraction ignores unrelated string literals and comment
   ]);
 });
 
+test("import cursors keep pattern-local lexical state, deduplication and sorted output", () => {
+  const source = [
+    '/* require("./blocked.cjs");',
+    'import "./blocked.js";',
+    'export { x } from "./blocked-export.js"; */',
+    'const escaped = "a\\\" require(\'./blocked-string.js\')";',
+    'const template = `',
+    'import "./blocked-template.js";',
+    '`;',
+    'import "./z.js";',
+    'export { x } from "./a.js";',
+    'require("./b.js"); import("./a.js");',
+    '// require("./blocked-line.js")',
+  ].join("\r\n");
+  assert.deepEqual(extractImports(source, "fixture.ts"), ["./a.js", "./b.js", "./z.js"]);
+  assert.deepEqual(extractImports('/* require("./blocked.js")', "broken.js"), []);
+  assert.deepEqual(extractImports('require("./fresh.js")', "fresh.js"), ["./fresh.js"]);
+});
+
+test("large interleaved import forms retain every real dependency and exclude comment matches", () => {
+  const expected = [];
+  const lines = [];
+  for (let index = 0; index < 1000; index++) {
+    const name = `./dependency${index}.js`;
+    expected.push(name);
+    lines.push(`import '${name}';`, `export { x } from '${name}';`, `require('${name}');`, `// import('./blocked${index}.js')`);
+  }
+  assert.deepEqual(extractImports(lines.join("\n"), "barrel.js"), expected.sort());
+});
+
 test("shared declaration scan contexts cap aggregate malformed-source work", () => {
   const source = `export function broken() {\n${"x".repeat(100_000)}`;
   const block = { scope: "symbol", end: 0 };

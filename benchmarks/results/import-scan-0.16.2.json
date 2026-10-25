@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "scope": "Local single-process import extraction microbenchmark; not end-to-end or production latency.",
+  "node": "v24.18.0",
+  "platform": "win32",
+  "architecture": "x64",
+  "cpu": "Intel(R) Core(TM) i5-8265U CPU @ 1.60GHz",
+  "baselineCommit": "3c7ece1847844c69253c6ae4effd898f2c793883",
+  "targetVersion": "0.16.2",
+  "fixture": {
+    "definition": "count unique side-effect imports in ascending numeric order",
+    "lineTemplate": "import './dependency${i}.js';\n"
+  },
+  "method": "Five 100-import warmups per implementation; three measured trials per input, alternating implementation order. Timing excludes fixture construction and assertions. All outputs match independent sorted expectations.",
+  "trackedSourceFilesWithIdenticalImports": 132,
+  "results": [
+    {
+      "imports": 500,
+      "bytes": 14390,
+      "inputSha256": "5625cb45d0b7d3409198e016cc0e6483bfded250425356c3790e10014a7e4130",
+      "samplesMs": {
+        "before": [
+          104.52440000000001,
+          84.15119999999996,
+          83.82069999999999
+        ],
+        "after": [
+          1.6963999999999828,
+          0.9511000000000536,
+          3.029899999999998
+        ]
+      },
+      "medianBeforeMs": 84.15119999999996,
+      "medianAfterMs": 1.6963999999999828,
+      "speedup": 49.60575336005707
+    },
+    {
+      "imports": 1000,
+      "bytes": 28890,
+      "inputSha256": "6ff4519924591eecde30b7bb5bd9a8489858516e1b39189e37b272236c9e373b",
+      "samplesMs": {
+        "before": [
+          350.51160000000004,
+          379.8289,
+          320.5945999999999
+        ],
+        "after": [
+          1.9510000000000218,
+          1.8236000000000558,
+          2.107200000000148
+        ]
+      },
+      "medianBeforeMs": 350.51160000000004,
+      "medianAfterMs": 1.9510000000000218,
+      "speedup": 179.65740645822456
+    },
+    {
+      "imports": 2000,
+      "bytes": 58890,
+      "inputSha256": "098fc7596769d04255e1d7cc77bd446fde5921527b1318d15620638bc570c855",
+      "samplesMs": {
+        "before": [
+          1024.0156,
+          1372.5447,
+          1287.225
+        ],
+        "after": [
+          6.569800000000214,
+          6.936799999999948,
+          3.1494999999995343
+        ]
+      },
+      "medianBeforeMs": 1287.225,
+      "medianAfterMs": 6.569800000000214,
+      "speedup": 195.93062193673444
+    },
+    {
+      "imports": 4000,
+      "bytes": 118890,
+      "inputSha256": "79ccadce5c310b778979ecc13db82c65ac3f56b16136ff2aac8011145832a988",
+      "samplesMs": {
+        "before": [
+          4684.582600000001,
+          4574.360000000001,
+          4727.9997
+        ],
+        "after": [
+          6.876200000000608,
+          11.245600000000195,
+          10.304700000000594
+        ]
+      },
+      "medianBeforeMs": 4684.582600000001,
+      "medianAfterMs": 10.304700000000594,
+      "speedup": 454.60640290350335
+    }
+  ]
+}

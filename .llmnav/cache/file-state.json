@@ -3541,7 +3541,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "d9b92be1c11517fbe535700475a0d2d8f4a62d5fa8bbe1133edae88ebb0cb061",
+      "contentHash": "11f1b0229ea6bba8463b2cf1d1ae5c686dba345dca2083ed9dc389ff32d314e1",
       "declarations": [
         null
       ],
@@ -3553,7 +3553,7 @@
       ],
       "path": "src/declaration.js",
       "semanticBytes": 507,
-      "sourceBytes": 21366
+      "sourceBytes": 21650
     },
     {
       "blocks": [
@@ -6788,7 +6788,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "212e4c73959b0a1baf6cf9d7f521fd243592eba19ef55572c8c3b5af7c124382",
+      "contentHash": "8cfb1728461f91b1bebbed893db60d0e2f5e27da938ddcfa74bd3d255b49e38b",
       "declarations": [
         null
       ],
@@ -7377,7 +7377,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "8e5d719c426eeb13d2df66bbf53573a8974e7b74c35b847aed2d011953de5a2e",
+      "contentHash": "4ddf7145b5693c1877f1a01dee3d9bfdf0f03640f033cc2749d39667e8d56546",
       "declarations": [],
       "imports": [
         "../src/boundaries.js",
@@ -7393,7 +7393,7 @@
       ],
       "path": "tests/declaration-structure.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 14331
+      "sourceBytes": 15616
     },
     {
       "blocks": [],

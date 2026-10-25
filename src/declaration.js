@@ -491,8 +491,9 @@ export function extractImports(source, filePath) {
       /\b(?:require|import)\s*\(\s*["']([^"']+)["']\s*\)/gu,
     ];
     for (const pattern of patterns) {
+      const isCodeAt = createJavaScriptCodeCursor(normalized);
       for (const match of normalized.matchAll(pattern)) {
-        if (match[1] && isJavaScriptCodeOffset(normalized, match.index ?? 0)) results.add(match[1]);
+        if (match[1] && isCodeAt(match.index ?? 0)) results.add(match[1]);
       }
     }
   } else if (extension === ".go") {
@@ -509,38 +510,43 @@ export function extractImports(source, filePath) {
   return [...results].sort();
 }
 
-function isJavaScriptCodeOffset(source, targetOffset) {
+// Each matchAll iterator yields ascending offsets. Keep lexical state local to
+// that pattern and source, so prefixes are scanned once instead of per match.
+function createJavaScriptCodeCursor(source) {
   let state = "normal";
   let escaped = false;
-  for (let index = 0; index < targetOffset; index += 1) {
-    const character = source[index];
-    const next = source[index + 1];
-    if (state === "line-comment") {
-      if (character === "\n") state = "normal";
-      continue;
-    }
-    if (state === "block-comment") {
-      if (character === "*" && next === "/") {
-        state = "normal";
-        index += 1;
+  let index = 0;
+  return targetOffset => {
+    for (; index < targetOffset; index += 1) {
+      const character = source[index];
+      const next = source[index + 1];
+      if (state === "line-comment") {
+        if (character === "\n") state = "normal";
+        continue;
       }
-      continue;
+      if (state === "block-comment") {
+        if (character === "*" && next === "/") {
+          state = "normal";
+          index += 1;
+        }
+        continue;
+      }
+      if (state !== "normal") {
+        if (escaped) escaped = false;
+        else if (character === "\\") escaped = true;
+        else if (character === state) state = "normal";
+        continue;
+      }
+      if (character === "/" && next === "/") {
+        state = "line-comment";
+        index += 1;
+      } else if (character === "/" && next === "*") {
+        state = "block-comment";
+        index += 1;
+      } else if (character === '"' || character === "'" || character === "`") {
+        state = character;
+      }
     }
-    if (state !== "normal") {
-      if (escaped) escaped = false;
-      else if (character === "\\") escaped = true;
-      else if (character === state) state = "normal";
-      continue;
-    }
-    if (character === "/" && next === "/") {
-      state = "line-comment";
-      index += 1;
-    } else if (character === "/" && next === "*") {
-      state = "block-comment";
-      index += 1;
-    } else if (character === '"' || character === "'" || character === "`") {
-      state = character;
-    }
-  }
-  return state === "normal";
+    return state === "normal";
+  };
 }
