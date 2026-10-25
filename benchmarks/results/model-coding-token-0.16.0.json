@@ -1,0 +1,2370 @@
+{
+  "beforePreflight": {
+    "elapsedMs": 21119.718999999997,
+    "exitCode": 0,
+    "llmnavPassed": true,
+    "serenaPassed": null,
+    "timedOut": false,
+    "trace": {
+      "completed": true,
+      "errors": 0,
+      "itemTypes": {
+        "agent_message": 2,
+        "command_execution": 1,
+        "mcp_tool_call": 1
+      },
+      "tools": [
+        {
+          "commandHash": null,
+          "discovery": {
+            "candidates": 1,
+            "excerpts": 0,
+            "parsed": true,
+            "sourceBytes": 0,
+            "truncatedExcerpts": 0
+          },
+          "errorCategory": null,
+          "exitCode": null,
+          "responseBytes": 531,
+          "semanticCliMentioned": false,
+          "server": "eval_nav",
+          "status": "completed",
+          "tool": "llmnav_discover",
+          "toolError": false,
+          "type": "mcp_tool_call"
+        },
+        {
+          "commandHash": "190beda24a1a57d7eab7fa631f6f05c8958b2a34b7c045114a30739cd2083d47",
+          "discovery": null,
+          "errorCategory": null,
+          "exitCode": 0,
+          "responseBytes": 0,
+          "semanticCliMentioned": false,
+          "server": null,
+          "status": "completed",
+          "tool": null,
+          "toolError": false,
+          "type": "command_execution"
+        }
+      ],
+      "uncachedInputTokens": 17128,
+      "usage": {
+        "cache_write_input_tokens": 0,
+        "cached_input_tokens": 45440,
+        "input_tokens": 62568,
+        "output_tokens": 236,
+        "reasoning_output_tokens": 0
+      }
+    },
+    "writePassed": true
+  },
+  "casesHash": "c38b7f4ba59b32a73374e423f3745bb8dc86ae58f374dad538e130fbc3f813e8",
+  "complete": true,
+  "controls": [
+    {
+      "mutant": {
+        "command": "tsc --project tsconfig.json && node acceptance.cjs",
+        "exitCode": 1,
+        "outputHash": "b693d1ae58650f39f10229e1c13795fcfd9494883a6a3db58c4af92febe5783f",
+        "passed": false,
+        "stage": "acceptance",
+        "timedOut": false
+      },
+      "pristine": {
+        "command": "tsc --project tsconfig.json && node acceptance.cjs",
+        "exitCode": 0,
+        "outputHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "passed": true,
+        "stage": "acceptance",
+        "timedOut": false
+      },
+      "task": "ts-weight-normalization"
+    },
+    {
+      "mutant": {
+        "command": "tsc --project tsconfig.json && node acceptance.cjs",
+        "exitCode": 1,
+        "outputHash": "71947ce7ccfc100510c15623f59457e972bf5d255964fb4c68eb66ccb4c5ab97",
+        "passed": false,
+        "stage": "acceptance",
+        "timedOut": false
+      },
+      "pristine": {
+        "command": "tsc --project tsconfig.json && node acceptance.cjs",
+        "exitCode": 0,
+        "outputHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "passed": true,
+        "stage": "acceptance",
+        "timedOut": false
+      },
+      "task": "ts-positive-placeholder"
+    },
+    {
+      "mutant": {
+        "command": "tsc --project tsconfig.json && node acceptance.cjs",
+        "exitCode": 1,
+        "outputHash": "111b69fdc2847d262ae379cf1f287fc2b396a62917ae5db6c32d1d13d629aa44",
+        "passed": false,
+        "stage": "acceptance",
+        "timedOut": false
+      },
+      "pristine": {
+        "command": "tsc --project tsconfig.json && node acceptance.cjs",
+        "exitCode": 0,
+        "outputHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "passed": true,
+        "stage": "acceptance",
+        "timedOut": false
+      },
+      "task": "ts-evidence-empty-repo"
+    },
+    {
+      "mutant": {
+        "command": "tsc --project tsconfig.json && node acceptance.cjs",
+        "exitCode": 1,
+        "outputHash": "d6e539bba2c69972c05d7c8d2d2e9b8f0ba51c36be4aa2f17f2188ec789a702a",
+        "passed": false,
+        "stage": "acceptance",
+        "timedOut": false
+      },
+      "pristine": {
+        "command": "tsc --project tsconfig.json && node acceptance.cjs",
+        "exitCode": 0,
+        "outputHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "passed": true,
+        "stage": "acceptance",
+        "timedOut": false
+      },
+      "task": "ts-monorepo-threshold"
+    },
+    {
+      "mutant": {
+        "command": "go test -count=1 -run ^TestAcceptance$ .",
+        "exitCode": 1,
+        "outputHash": "cdc6b24b8fdac963f306859d92bcac1a7e533cb9091708d3f46b011adfc4e7f6",
+        "passed": false,
+        "timedOut": false
+      },
+      "pristine": {
+        "command": "go test -count=1 -run ^TestAcceptance$ .",
+        "exitCode": 0,
+        "outputHash": "5efe83eba85bf8167445703d6a9280f6737c618f9d01f233a6eef565c785c5cf",
+        "passed": true,
+        "timedOut": false
+      },
+      "task": "go-addline-eof"
+    },
+    {
+      "mutant": {
+        "command": "go test -count=1 -run ^TestAcceptance$ .",
+        "exitCode": 1,
+        "outputHash": "624cfccc6d43abdc0ec85c4fdb8173d492121d4de9047b60b82878a376ade309",
+        "passed": false,
+        "timedOut": false
+      },
+      "pristine": {
+        "command": "go test -count=1 -run ^TestAcceptance$ .",
+        "exitCode": 0,
+        "outputHash": "98686a2dddb2fa368387714ca95a7ca0a6a9c62fed978a498ee00ba3d21514ab",
+        "passed": true,
+        "timedOut": false
+      },
+      "task": "go-setlines-duplicates"
+    },
+    {
+      "mutant": {
+        "command": "go test -count=1 -run ^TestAcceptance$ .",
+        "exitCode": 1,
+        "outputHash": "c92157474013eabec033044f5cccb4be8523989163009a761d945380b80fd805",
+        "passed": false,
+        "timedOut": false
+      },
+      "pristine": {
+        "command": "go test -count=1 -run ^TestAcceptance$ .",
+        "exitCode": 0,
+        "outputHash": "b2251f7c40fc5726636e424113d8c89fd542ad1f9098928901b36f984fc5161c",
+        "passed": true,
+        "timedOut": false
+      },
+      "task": "go-tilde-operator"
+    },
+    {
+      "mutant": {
+        "command": "go test -count=1 -run ^TestAcceptance$ .",
+        "exitCode": 1,
+        "outputHash": "115e5069e433eed74478204e948a5ab18d45a975aef0ea128dd9fdf3b6676e99",
+        "passed": false,
+        "timedOut": false
+      },
+      "pristine": {
+        "command": "go test -count=1 -run ^TestAcceptance$ .",
+        "exitCode": 0,
+        "outputHash": "a4d9822fbe18b2277d94787036e21b849f86b75a97d79d700395f7ea89e89b16",
+        "passed": true,
+        "timedOut": false
+      },
+      "task": "go-leading-digit"
+    }
+  ],
+  "corpora": [
+    {
+      "corpusHash": "8d05d2b68366d419e659210a0d99aac9eebc1ed1a413008f38246f1eea4dd9e7",
+      "files": 13,
+      "id": "buildmarks",
+      "originalsUnchanged": true
+    },
+    {
+      "corpusHash": "ef917843f3cd187a6a0bcdd1082a13adfbefe2689c05bd31f99d9229d5fbdc27",
+      "files": 4,
+      "id": "go-token",
+      "originalsUnchanged": true
+    }
+  ],
+  "engines": {
+    "llmnav": {
+      "hashes": {
+        "src/agent-protocol.js": "3460274c499e117fc5849b920c2f6651bb9f7c7fb2ccd64774cc59660b15c832",
+        "src/agent-tools.js": "81b84614b17c41821ee51c2a41b15c2783cb5afeeedf562cd1579962e173fd66",
+        "src/discovery.js": "7105ed8d243f07174a29ed29afc8d09ad77676f632f4190995263c10dc43fde6",
+        "src/mcp.js": "c7cb61f1c4269736b6610f50174abdf811789f4a093122afc980a88b4dfb720b"
+      },
+      "version": "0.16.0"
+    },
+    "llmnav-before": {
+      "hashes": {
+        "src/agent-protocol.js": "8827c694e022ac0c808af0d8fb3d3024913c06a009fd187f85ce83fa02892bec",
+        "src/agent-tools.js": "5b41ccde74f53d86970af147f8b3b8c67a591a07c78bf74560b8d876a17fc4a8",
+        "src/discovery.js": "405eb20d2edf781e74a238882da6b98feb5acace265e34abe320870395685d8d",
+        "src/mcp.js": "c7cb61f1c4269736b6610f50174abdf811789f4a093122afc980a88b4dfb720b"
+      },
+      "version": "0.15.3"
+    }
+  },
+  "environment": {
+    "codex": "codex-cli 0.164.0-alpha.11.1",
+    "filesystemCacheFlushed": false,
+    "go": "go version go1.26.4 windows/amd64",
+    "node": "v24.18.0",
+    "platform": "win32",
+    "typescript": "6.0.3"
+  },
+  "harnessHash": "72e96bd32bb9af32552843c30ec8fc974a3bfae4852644c349eff71f94f6ebc6",
+  "limitations": [
+    "Eight author-curated injected regressions in small real-source scopes, not discovered production bugs, blind holdouts, or representative maintenance work.",
+    "Go standard-library familiarity, small/easy tasks, one trial, cache state, and condition-specific MCP instructions limit generalization.",
+    "A successful edit does not prove the navigation tool caused success. Tool adherence is measured separately.",
+    "CLI token counts include its system/tool prompt. Monetary cost, human card authoring, maintenance and resolved provider model are unmeasured.",
+    "Only sanitized event metadata is retained; raw model reasoning, prompts and command output are not saved."
+  ],
+  "measuredAt": "2026-10-25T11:55:56.466Z",
+  "methodology": {
+    "concurrency": 1,
+    "conditionOrder": "rotate by task index",
+    "conditions": [
+      "baseline",
+      "llmnav-before",
+      "llmnav"
+    ],
+    "grading": "pristine-positive, mutant-negative, then hidden acceptance and source-scope checks",
+    "memoriesEnabled": false,
+    "perRunTimeoutMs": 180000,
+    "restrictions": "navigation instructions and read boundaries are prompt-enforced; not an adversarial isolation boundary",
+    "trialsPerTaskCondition": 1,
+    "windowsBackend": "unelevated",
+    "workspaceLocation": "ignored fixture directory inside the authorized repository"
+  },
+  "model": {
+    "authentication": "existing Codex CLI login",
+    "reasoningEffort": "high",
+    "requested": "gpt-6.1-sol",
+    "resolvedProviderModel": null
+  },
+  "packageVersion": "0.16.0",
+  "preflight": {
+    "elapsedMs": 31668.0947,
+    "exitCode": 0,
+    "llmnavPassed": true,
+    "serenaPassed": null,
+    "timedOut": false,
+    "trace": {
+      "completed": true,
+      "errors": 0,
+      "itemTypes": {
+        "agent_message": 2,
+        "command_execution": 1,
+        "mcp_tool_call": 1
+      },
+      "tools": [
+        {
+          "commandHash": null,
+          "discovery": {
+            "candidates": 1,
+            "excerpts": 1,
+            "parsed": true,
+            "sourceBytes": 47,
+            "truncatedExcerpts": 0
+          },
+          "errorCategory": null,
+          "exitCode": null,
+          "responseBytes": 688,
+          "semanticCliMentioned": false,
+          "server": "eval_nav",
+          "status": "completed",
+          "tool": "llmnav_discover",
+          "toolError": false,
+          "type": "mcp_tool_call"
+        },
+        {
+          "commandHash": "190beda24a1a57d7eab7fa631f6f05c8958b2a34b7c045114a30739cd2083d47",
+          "discovery": null,
+          "errorCategory": null,
+          "exitCode": 0,
+          "responseBytes": 0,
+          "semanticCliMentioned": false,
+          "server": null,
+          "status": "completed",
+          "tool": null,
+          "toolError": false,
+          "type": "command_execution"
+        }
+      ],
+      "uncachedInputTokens": 17776,
+      "usage": {
+        "cache_write_input_tokens": 0,
+        "cached_input_tokens": 66304,
+        "input_tokens": 84080,
+        "output_tokens": 245,
+        "reasoning_output_tokens": 0
+      }
+    },
+    "writePassed": true
+  },
+  "rows": [
+    {
+      "acceptance": {
+        "command": "tsc --project tsconfig.json && node acceptance.cjs",
+        "exitCode": 0,
+        "outputHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "passed": true,
+        "stage": "acceptance",
+        "timedOut": false
+      },
+      "changedFiles": [
+        "src/scoring/score-repo.ts"
+      ],
+      "condition": "baseline",
+      "conditionAdhered": true,
+      "elapsedMs": 30335.3033,
+      "exitCode": 0,
+      "language": "typescript",
+      "navigationUsed": null,
+      "scopePassed": true,
+      "stderrHash": "22ada3b2319e9b3e2b0e2cb3b84fd737949f683b22c0222809cbbe8cc88d8881",
+      "success": true,
+      "task": "ts-weight-normalization",
+      "timedOut": false,
+      "trace": {
+        "completed": true,
+        "errors": 0,
+        "itemTypes": {
+          "agent_message": 2,
+          "command_execution": 3
+        },
+        "tools": [
+          {
+            "commandHash": "f6c36981697098615b98f6ddf2b03fd3569cebbf176805c2806b7c6e43686cbe",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 3072,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "22f3d2f09b3a9212d800a3b8639aca993c421d8f00fada799eec1fee47a43077",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 3028,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "0fc77e63936cccb783e6b969d90676cfe4cc01585f2e6a5cc006108f552da934",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 0,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          }
+        ],
+        "uncachedInputTokens": 10731,
+        "usage": {
+          "cache_write_input_tokens": 0,
+          "cached_input_tokens": 77568,
+          "input_tokens": 88299,
+          "output_tokens": 401,
+          "reasoning_output_tokens": 31
+        }
+      }
+    },
+    {
+      "acceptance": {
+        "command": "tsc --project tsconfig.json && node acceptance.cjs",
+        "exitCode": 0,
+        "outputHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "passed": true,
+        "stage": "acceptance",
+        "timedOut": false
+      },
+      "changedFiles": [
+        "src/scoring/score-repo.ts"
+      ],
+      "condition": "llmnav-before",
+      "conditionAdhered": true,
+      "elapsedMs": 26467.9957,
+      "exitCode": 0,
+      "language": "typescript",
+      "navigationUsed": true,
+      "scopePassed": true,
+      "stderrHash": "e1305f86a545f5d354c77ba3bfe8994452bf7a2997b4cbc166ab1e3ff47e34e3",
+      "success": true,
+      "task": "ts-weight-normalization",
+      "timedOut": false,
+      "trace": {
+        "completed": true,
+        "errors": 0,
+        "itemTypes": {
+          "agent_message": 2,
+          "command_execution": 1,
+          "file_change": 1,
+          "mcp_tool_call": 1
+        },
+        "tools": [
+          {
+            "commandHash": null,
+            "discovery": {
+              "candidates": 5,
+              "excerpts": 0,
+              "parsed": true,
+              "sourceBytes": 0,
+              "truncatedExcerpts": 0
+            },
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 2273,
+            "semanticCliMentioned": false,
+            "server": "eval_nav",
+            "status": "completed",
+            "tool": "llmnav_discover",
+            "toolError": false,
+            "type": "mcp_tool_call"
+          },
+          {
+            "commandHash": "0bd436a5acd3addbe6b55b06e0206e7fe42ea4c993ad04bc4e77654c1c622ece",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 3028,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": null,
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 4,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "file_change"
+          }
+        ],
+        "uncachedInputTokens": 20998,
+        "usage": {
+          "cache_write_input_tokens": 0,
+          "cached_input_tokens": 87936,
+          "input_tokens": 108934,
+          "output_tokens": 352,
+          "reasoning_output_tokens": 0
+        }
+      }
+    },
+    {
+      "acceptance": {
+        "command": "tsc --project tsconfig.json && node acceptance.cjs",
+        "exitCode": 0,
+        "outputHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "passed": true,
+        "stage": "acceptance",
+        "timedOut": false
+      },
+      "changedFiles": [
+        "src/scoring/score-repo.ts"
+      ],
+      "condition": "llmnav",
+      "conditionAdhered": true,
+      "elapsedMs": 20448.97709999999,
+      "exitCode": 0,
+      "language": "typescript",
+      "navigationUsed": true,
+      "scopePassed": true,
+      "stderrHash": "65d1105620327d3f11c8460cca52c4c047c1033f5eb18860115c02369ac0353e",
+      "success": true,
+      "task": "ts-weight-normalization",
+      "timedOut": false,
+      "trace": {
+        "completed": true,
+        "errors": 0,
+        "itemTypes": {
+          "agent_message": 2,
+          "file_change": 1,
+          "mcp_tool_call": 1
+        },
+        "tools": [
+          {
+            "commandHash": null,
+            "discovery": {
+              "candidates": 1,
+              "excerpts": 1,
+              "parsed": true,
+              "sourceBytes": 579,
+              "truncatedExcerpts": 0
+            },
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 1396,
+            "semanticCliMentioned": false,
+            "server": "eval_nav",
+            "status": "completed",
+            "tool": "llmnav_discover",
+            "toolError": false,
+            "type": "mcp_tool_call"
+          },
+          {
+            "commandHash": null,
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 4,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "file_change"
+          }
+        ],
+        "uncachedInputTokens": 9501,
+        "usage": {
+          "cache_write_input_tokens": 0,
+          "cached_input_tokens": 75264,
+          "input_tokens": 84765,
+          "output_tokens": 313,
+          "reasoning_output_tokens": 0
+        }
+      }
+    },
+    {
+      "acceptance": {
+        "command": "tsc --project tsconfig.json && node acceptance.cjs",
+        "exitCode": 0,
+        "outputHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "passed": true,
+        "stage": "acceptance",
+        "timedOut": false
+      },
+      "changedFiles": [
+        "src/scoring/private-disclosure.ts"
+      ],
+      "condition": "llmnav-before",
+      "conditionAdhered": true,
+      "elapsedMs": 37770.15530000001,
+      "exitCode": 0,
+      "language": "typescript",
+      "navigationUsed": true,
+      "scopePassed": true,
+      "stderrHash": "3823466d32c6100963de8484137587414aa5730a415963efec4f410a2a5aac0e",
+      "success": true,
+      "task": "ts-positive-placeholder",
+      "timedOut": false,
+      "trace": {
+        "completed": true,
+        "errors": 0,
+        "itemTypes": {
+          "agent_message": 2,
+          "command_execution": 1,
+          "file_change": 1,
+          "mcp_tool_call": 1
+        },
+        "tools": [
+          {
+            "commandHash": null,
+            "discovery": {
+              "candidates": 5,
+              "excerpts": 0,
+              "parsed": true,
+              "sourceBytes": 0,
+              "truncatedExcerpts": 0
+            },
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 2034,
+            "semanticCliMentioned": false,
+            "server": "eval_nav",
+            "status": "completed",
+            "tool": "llmnav_discover",
+            "toolError": false,
+            "type": "mcp_tool_call"
+          },
+          {
+            "commandHash": "e4ce5685caf64b75a3e1e44c64936cc4e079716c6eb1378d7bf067c3763a521a",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 2741,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": null,
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 4,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "file_change"
+          }
+        ],
+        "uncachedInputTokens": 10463,
+        "usage": {
+          "cache_write_input_tokens": 0,
+          "cached_input_tokens": 97536,
+          "input_tokens": 107999,
+          "output_tokens": 672,
+          "reasoning_output_tokens": 278
+        }
+      }
+    },
+    {
+      "acceptance": {
+        "command": "tsc --project tsconfig.json && node acceptance.cjs",
+        "exitCode": 0,
+        "outputHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "passed": true,
+        "stage": "acceptance",
+        "timedOut": false
+      },
+      "changedFiles": [
+        "src/scoring/private-disclosure.ts"
+      ],
+      "condition": "llmnav",
+      "conditionAdhered": true,
+      "elapsedMs": 52650.128600000025,
+      "exitCode": 0,
+      "language": "typescript",
+      "navigationUsed": true,
+      "scopePassed": true,
+      "stderrHash": "a5808bc23e2bb2b09f2f8cb28ea4bf0da8bee2b8869fc3946785f3bb6a71914d",
+      "success": true,
+      "task": "ts-positive-placeholder",
+      "timedOut": false,
+      "trace": {
+        "completed": true,
+        "errors": 0,
+        "itemTypes": {
+          "agent_message": 2,
+          "command_execution": 1,
+          "file_change": 1,
+          "mcp_tool_call": 1
+        },
+        "tools": [
+          {
+            "commandHash": null,
+            "discovery": {
+              "candidates": 1,
+              "excerpts": 1,
+              "parsed": true,
+              "sourceBytes": 137,
+              "truncatedExcerpts": 0
+            },
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 899,
+            "semanticCliMentioned": false,
+            "server": "eval_nav",
+            "status": "completed",
+            "tool": "llmnav_discover",
+            "toolError": false,
+            "type": "mcp_tool_call"
+          },
+          {
+            "commandHash": "6352227d9651fe035b8fefcc456faabe96db5f75a7b46f466450c4d86490abd3",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 2741,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": null,
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 4,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "file_change"
+          }
+        ],
+        "uncachedInputTokens": 20447,
+        "usage": {
+          "cache_write_input_tokens": 0,
+          "cached_input_tokens": 87936,
+          "input_tokens": 108383,
+          "output_tokens": 954,
+          "reasoning_output_tokens": 578
+        }
+      }
+    },
+    {
+      "acceptance": {
+        "command": "tsc --project tsconfig.json && node acceptance.cjs",
+        "exitCode": 0,
+        "outputHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "passed": true,
+        "stage": "acceptance",
+        "timedOut": false
+      },
+      "changedFiles": [
+        "src/scoring/private-disclosure.ts"
+      ],
+      "condition": "baseline",
+      "conditionAdhered": true,
+      "elapsedMs": 43252.98920000001,
+      "exitCode": 0,
+      "language": "typescript",
+      "navigationUsed": null,
+      "scopePassed": true,
+      "stderrHash": "59313ddb437d824957af62846af5dde1285e9ba7e3d6ce43253db8b98438582d",
+      "success": true,
+      "task": "ts-positive-placeholder",
+      "timedOut": false,
+      "trace": {
+        "completed": true,
+        "errors": 0,
+        "itemTypes": {
+          "agent_message": 2,
+          "command_execution": 3
+        },
+        "tools": [
+          {
+            "commandHash": "33d18c3cf8616fdaf04eba91a315f5328b5b4442e17e250738cc79f336d1363a",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 602,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "533477f7014da750a45e23ace353416473a523167f1da5c7eacf0d58b390b77f",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 2741,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "6236e5a6757d63c79d569939da625228a8c16ff00e2e2f6d02453e8c5026fd04",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 0,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          }
+        ],
+        "uncachedInputTokens": 6426,
+        "usage": {
+          "cache_write_input_tokens": 0,
+          "cached_input_tokens": 65664,
+          "input_tokens": 72090,
+          "output_tokens": 752,
+          "reasoning_output_tokens": 416
+        }
+      }
+    },
+    {
+      "acceptance": {
+        "command": "tsc --project tsconfig.json && node acceptance.cjs",
+        "exitCode": 0,
+        "outputHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "passed": true,
+        "stage": "acceptance",
+        "timedOut": false
+      },
+      "changedFiles": [
+        "src/scoring/evidence.ts"
+      ],
+      "condition": "llmnav",
+      "conditionAdhered": true,
+      "elapsedMs": 23166.5012,
+      "exitCode": 0,
+      "language": "typescript",
+      "navigationUsed": true,
+      "scopePassed": true,
+      "stderrHash": "74aa9603fb90559610334c786ce438b5c4e46c40d10b7ce83e89813078697b1e",
+      "success": true,
+      "task": "ts-evidence-empty-repo",
+      "timedOut": false,
+      "trace": {
+        "completed": true,
+        "errors": 0,
+        "itemTypes": {
+          "agent_message": 2,
+          "file_change": 1,
+          "mcp_tool_call": 1
+        },
+        "tools": [
+          {
+            "commandHash": null,
+            "discovery": {
+              "candidates": 1,
+              "excerpts": 1,
+              "parsed": true,
+              "sourceBytes": 284,
+              "truncatedExcerpts": 0
+            },
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 1168,
+            "semanticCliMentioned": false,
+            "server": "eval_nav",
+            "status": "completed",
+            "tool": "llmnav_discover",
+            "toolError": false,
+            "type": "mcp_tool_call"
+          },
+          {
+            "commandHash": null,
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 4,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "file_change"
+          }
+        ],
+        "uncachedInputTokens": 9500,
+        "usage": {
+          "cache_write_input_tokens": 0,
+          "cached_input_tokens": 75136,
+          "input_tokens": 84636,
+          "output_tokens": 323,
+          "reasoning_output_tokens": 18
+        }
+      }
+    },
+    {
+      "acceptance": {
+        "command": "tsc --project tsconfig.json && node acceptance.cjs",
+        "exitCode": 0,
+        "outputHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "passed": true,
+        "stage": "acceptance",
+        "timedOut": false
+      },
+      "changedFiles": [
+        "src/scoring/evidence.ts"
+      ],
+      "condition": "baseline",
+      "conditionAdhered": true,
+      "elapsedMs": 24270.982799999998,
+      "exitCode": 0,
+      "language": "typescript",
+      "navigationUsed": null,
+      "scopePassed": true,
+      "stderrHash": "67b7eeb360be64697ae2c28f7076b2eac5ca78af31b2372ed1b51425585ba8f8",
+      "success": true,
+      "task": "ts-evidence-empty-repo",
+      "timedOut": false,
+      "trace": {
+        "completed": true,
+        "errors": 0,
+        "itemTypes": {
+          "agent_message": 2,
+          "command_execution": 2,
+          "file_change": 1
+        },
+        "tools": [
+          {
+            "commandHash": "f375ffe217ef178f654c063429bf8161ed699c6dd7c2bf448fec3f54f09ec1d7",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 867,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "39523abbdb3f8613d8983646b6f0872d693bb10522a9914ee267fd7a64f7ec6a",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 468,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": null,
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 4,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "file_change"
+          }
+        ],
+        "uncachedInputTokens": 30820,
+        "usage": {
+          "cache_write_input_tokens": 0,
+          "cached_input_tokens": 54016,
+          "input_tokens": 84836,
+          "output_tokens": 304,
+          "reasoning_output_tokens": 0
+        }
+      }
+    },
+    {
+      "acceptance": {
+        "command": "tsc --project tsconfig.json && node acceptance.cjs",
+        "exitCode": 0,
+        "outputHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "passed": true,
+        "stage": "acceptance",
+        "timedOut": false
+      },
+      "changedFiles": [
+        "src/scoring/evidence.ts"
+      ],
+      "condition": "llmnav-before",
+      "conditionAdhered": true,
+      "elapsedMs": 23445.808099999966,
+      "exitCode": 0,
+      "language": "typescript",
+      "navigationUsed": true,
+      "scopePassed": true,
+      "stderrHash": "ac1581fd593f41cb5cda2b244b34197e2ad3085cf84fe46152d542906fa567b5",
+      "success": true,
+      "task": "ts-evidence-empty-repo",
+      "timedOut": false,
+      "trace": {
+        "completed": true,
+        "errors": 0,
+        "itemTypes": {
+          "agent_message": 2,
+          "command_execution": 1,
+          "file_change": 1,
+          "mcp_tool_call": 1
+        },
+        "tools": [
+          {
+            "commandHash": null,
+            "discovery": {
+              "candidates": 5,
+              "excerpts": 0,
+              "parsed": true,
+              "sourceBytes": 0,
+              "truncatedExcerpts": 0
+            },
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 2181,
+            "semanticCliMentioned": false,
+            "server": "eval_nav",
+            "status": "completed",
+            "tool": "llmnav_discover",
+            "toolError": false,
+            "type": "mcp_tool_call"
+          },
+          {
+            "commandHash": "39523abbdb3f8613d8983646b6f0872d693bb10522a9914ee267fd7a64f7ec6a",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 468,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": null,
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 4,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "file_change"
+          }
+        ],
+        "uncachedInputTokens": 10166,
+        "usage": {
+          "cache_write_input_tokens": 0,
+          "cached_input_tokens": 97280,
+          "input_tokens": 107446,
+          "output_tokens": 350,
+          "reasoning_output_tokens": 0
+        }
+      }
+    },
+    {
+      "acceptance": {
+        "command": "tsc --project tsconfig.json && node acceptance.cjs",
+        "exitCode": 0,
+        "outputHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "passed": true,
+        "stage": "acceptance",
+        "timedOut": false
+      },
+      "changedFiles": [
+        "src/scoring/repository-kind.ts"
+      ],
+      "condition": "baseline",
+      "conditionAdhered": true,
+      "elapsedMs": 26948.687199999986,
+      "exitCode": 0,
+      "language": "typescript",
+      "navigationUsed": null,
+      "scopePassed": true,
+      "stderrHash": "38e8d505192860316e182cc859f606cbf78949d77f0f106065c3d81a46451a6f",
+      "success": true,
+      "task": "ts-monorepo-threshold",
+      "timedOut": false,
+      "trace": {
+        "completed": true,
+        "errors": 0,
+        "itemTypes": {
+          "agent_message": 2,
+          "command_execution": 3
+        },
+        "tools": [
+          {
+            "commandHash": "b9435d2a83dc5532c43f1049071bff224701acfaa2b8c949819b39c8ed6483f7",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 485,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "f73a7d4dd62bb7adec6b06e53fe84c8a813095bdcd3689f668b44b792ff9e6a4",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 4307,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "2b7c9a826443637559364238c8f83419313c2b9cd1c9b800fbf9a1af6f00e6b3",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 0,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          }
+        ],
+        "uncachedInputTokens": 7212,
+        "usage": {
+          "cache_write_input_tokens": 0,
+          "cached_input_tokens": 65920,
+          "input_tokens": 73132,
+          "output_tokens": 391,
+          "reasoning_output_tokens": 0
+        }
+      }
+    },
+    {
+      "acceptance": {
+        "command": "tsc --project tsconfig.json && node acceptance.cjs",
+        "exitCode": 0,
+        "outputHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "passed": true,
+        "stage": "acceptance",
+        "timedOut": false
+      },
+      "changedFiles": [
+        "src/scoring/repository-kind.ts"
+      ],
+      "condition": "llmnav-before",
+      "conditionAdhered": true,
+      "elapsedMs": 27616.930799999973,
+      "exitCode": 0,
+      "language": "typescript",
+      "navigationUsed": true,
+      "scopePassed": true,
+      "stderrHash": "3e4af1a2d67db81f0c4af657cc391178e3f60dc80f4314936d598fc36b5453be",
+      "success": true,
+      "task": "ts-monorepo-threshold",
+      "timedOut": false,
+      "trace": {
+        "completed": true,
+        "errors": 0,
+        "itemTypes": {
+          "agent_message": 2,
+          "command_execution": 1,
+          "file_change": 1,
+          "mcp_tool_call": 1
+        },
+        "tools": [
+          {
+            "commandHash": null,
+            "discovery": {
+              "candidates": 5,
+              "excerpts": 0,
+              "parsed": true,
+              "sourceBytes": 0,
+              "truncatedExcerpts": 0
+            },
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 2379,
+            "semanticCliMentioned": false,
+            "server": "eval_nav",
+            "status": "completed",
+            "tool": "llmnav_discover",
+            "toolError": false,
+            "type": "mcp_tool_call"
+          },
+          {
+            "commandHash": "26139efae9d4864d61c236b82512d50d0103747a34c27fbc333a289597a98853",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 4307,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": null,
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 4,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "file_change"
+          }
+        ],
+        "uncachedInputTokens": 21755,
+        "usage": {
+          "cache_write_input_tokens": 0,
+          "cached_input_tokens": 87680,
+          "input_tokens": 109435,
+          "output_tokens": 357,
+          "reasoning_output_tokens": 0
+        }
+      }
+    },
+    {
+      "acceptance": {
+        "command": "tsc --project tsconfig.json && node acceptance.cjs",
+        "exitCode": 0,
+        "outputHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "passed": true,
+        "stage": "acceptance",
+        "timedOut": false
+      },
+      "changedFiles": [
+        "src/scoring/repository-kind.ts"
+      ],
+      "condition": "llmnav",
+      "conditionAdhered": true,
+      "elapsedMs": 31542.870900000038,
+      "exitCode": 0,
+      "language": "typescript",
+      "navigationUsed": true,
+      "scopePassed": true,
+      "stderrHash": "35ffbb1ec90b54c031e83dd01731b2e3ad7502d94182e66977af12b5c58e77e2",
+      "success": true,
+      "task": "ts-monorepo-threshold",
+      "timedOut": false,
+      "trace": {
+        "completed": true,
+        "errors": 0,
+        "itemTypes": {
+          "agent_message": 2,
+          "command_execution": 1,
+          "file_change": 1,
+          "mcp_tool_call": 1
+        },
+        "tools": [
+          {
+            "commandHash": null,
+            "discovery": {
+              "candidates": 1,
+              "excerpts": 1,
+              "parsed": true,
+              "sourceBytes": 203,
+              "truncatedExcerpts": 0
+            },
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 1103,
+            "semanticCliMentioned": false,
+            "server": "eval_nav",
+            "status": "completed",
+            "tool": "llmnav_discover",
+            "toolError": false,
+            "type": "mcp_tool_call"
+          },
+          {
+            "commandHash": "c1d80718e6143b846e490f52830a007de6687b8417338c05e7f8b0a500dd1e0d",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 4307,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": null,
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 4,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "file_change"
+          }
+        ],
+        "uncachedInputTokens": 10921,
+        "usage": {
+          "cache_write_input_tokens": 0,
+          "cached_input_tokens": 98048,
+          "input_tokens": 108969,
+          "output_tokens": 396,
+          "reasoning_output_tokens": 34
+        }
+      }
+    },
+    {
+      "acceptance": {
+        "command": "go test -count=1 -run ^TestAcceptance$ .",
+        "exitCode": 0,
+        "outputHash": "50d40f2efa415c92f72b32a6c1e7255917ded09467d847887fbb1f5530fe4f6c",
+        "passed": true,
+        "timedOut": false
+      },
+      "changedFiles": [
+        "position.go"
+      ],
+      "condition": "llmnav-before",
+      "conditionAdhered": true,
+      "elapsedMs": 27494.42109999992,
+      "exitCode": 0,
+      "language": "go",
+      "navigationUsed": true,
+      "scopePassed": true,
+      "stderrHash": "973118b0284721238f7eedda0106b2bc0067224d657c0637885f3b7ee0dc9a5b",
+      "success": true,
+      "task": "go-addline-eof",
+      "timedOut": false,
+      "trace": {
+        "completed": true,
+        "errors": 0,
+        "itemTypes": {
+          "agent_message": 2,
+          "command_execution": 1,
+          "file_change": 1,
+          "mcp_tool_call": 1
+        },
+        "tools": [
+          {
+            "commandHash": null,
+            "discovery": {
+              "candidates": 5,
+              "excerpts": 0,
+              "parsed": true,
+              "sourceBytes": 0,
+              "truncatedExcerpts": 0
+            },
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 1572,
+            "semanticCliMentioned": false,
+            "server": "eval_nav",
+            "status": "completed",
+            "tool": "llmnav_discover",
+            "toolError": false,
+            "type": "mcp_tool_call"
+          },
+          {
+            "commandHash": "a99d598ea93bc03c9c02ec645ee8493773e5b473d600af55839e53800983daf5",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 2958,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": null,
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 4,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "file_change"
+          }
+        ],
+        "uncachedInputTokens": 10603,
+        "usage": {
+          "cache_write_input_tokens": 0,
+          "cached_input_tokens": 97536,
+          "input_tokens": 108139,
+          "output_tokens": 402,
+          "reasoning_output_tokens": 0
+        }
+      }
+    },
+    {
+      "acceptance": {
+        "command": "go test -count=1 -run ^TestAcceptance$ .",
+        "exitCode": 0,
+        "outputHash": "90e1deae3c3b684601211f0756447f00ff4238780aeea515d8746c9c0a97f08b",
+        "passed": true,
+        "timedOut": false
+      },
+      "changedFiles": [
+        "position.go"
+      ],
+      "condition": "llmnav",
+      "conditionAdhered": true,
+      "elapsedMs": 22373.881799999974,
+      "exitCode": 0,
+      "language": "go",
+      "navigationUsed": true,
+      "scopePassed": true,
+      "stderrHash": "63ca3e84e3f905fccde462117ae2b33196beeb4f59bfd2f80f10d2218ba238ae",
+      "success": true,
+      "task": "go-addline-eof",
+      "timedOut": false,
+      "trace": {
+        "completed": true,
+        "errors": 0,
+        "itemTypes": {
+          "agent_message": 2,
+          "file_change": 1,
+          "mcp_tool_call": 1
+        },
+        "tools": [
+          {
+            "commandHash": null,
+            "discovery": {
+              "candidates": 1,
+              "excerpts": 1,
+              "parsed": true,
+              "sourceBytes": 190,
+              "truncatedExcerpts": 0
+            },
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 858,
+            "semanticCliMentioned": false,
+            "server": "eval_nav",
+            "status": "completed",
+            "tool": "llmnav_discover",
+            "toolError": false,
+            "type": "mcp_tool_call"
+          },
+          {
+            "commandHash": null,
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 4,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "file_change"
+          }
+        ],
+        "uncachedInputTokens": 23368,
+        "usage": {
+          "cache_write_input_tokens": 0,
+          "cached_input_tokens": 61184,
+          "input_tokens": 84552,
+          "output_tokens": 365,
+          "reasoning_output_tokens": 0
+        }
+      }
+    },
+    {
+      "acceptance": {
+        "command": "go test -count=1 -run ^TestAcceptance$ .",
+        "exitCode": 0,
+        "outputHash": "7ff0dfb9e3789ba6608e6fdb0cb5263f8b5508a651721f6b6b7abc8412d8ec74",
+        "passed": true,
+        "timedOut": false
+      },
+      "changedFiles": [
+        "position.go"
+      ],
+      "condition": "baseline",
+      "conditionAdhered": true,
+      "elapsedMs": 27834.351200000034,
+      "exitCode": 0,
+      "language": "go",
+      "navigationUsed": null,
+      "scopePassed": true,
+      "stderrHash": "5f3be9828f99adadb0f8f4140566634ad3a5e94624a06555e9e77a2160563afc",
+      "success": true,
+      "task": "go-addline-eof",
+      "timedOut": false,
+      "trace": {
+        "completed": true,
+        "errors": 0,
+        "itemTypes": {
+          "agent_message": 2,
+          "command_execution": 3
+        },
+        "tools": [
+          {
+            "commandHash": "f0691c9c618162a4b60770a1c04bd3c2d739e9ed54144bfe4967fd36866b6930",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 241,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "738072672d95896f47c1a46dec6b4c5f94e4312d103260437ad5dfa41ab5db21",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 7222,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "d1ee7f794a3b00ffc95d08d37eb79a308b711606dddbce708ac50f7b0afd2fcf",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 0,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          }
+        ],
+        "uncachedInputTokens": 12907,
+        "usage": {
+          "cache_write_input_tokens": 0,
+          "cached_input_tokens": 61568,
+          "input_tokens": 74475,
+          "output_tokens": 375,
+          "reasoning_output_tokens": 0
+        }
+      }
+    },
+    {
+      "acceptance": {
+        "command": "go test -count=1 -run ^TestAcceptance$ .",
+        "exitCode": 0,
+        "outputHash": "a4d9822fbe18b2277d94787036e21b849f86b75a97d79d700395f7ea89e89b16",
+        "passed": true,
+        "timedOut": false
+      },
+      "changedFiles": [
+        "position.go"
+      ],
+      "condition": "llmnav",
+      "conditionAdhered": true,
+      "elapsedMs": 20954.63120000006,
+      "exitCode": 0,
+      "language": "go",
+      "navigationUsed": true,
+      "scopePassed": true,
+      "stderrHash": "a937ab92446c2db7ca3a3d830b90d4a441a54335f505a07eb3fa9d6a3ba993bc",
+      "success": true,
+      "task": "go-setlines-duplicates",
+      "timedOut": false,
+      "trace": {
+        "completed": true,
+        "errors": 0,
+        "itemTypes": {
+          "agent_message": 2,
+          "file_change": 1,
+          "mcp_tool_call": 2
+        },
+        "tools": [
+          {
+            "commandHash": null,
+            "discovery": {
+              "candidates": 1,
+              "excerpts": 1,
+              "parsed": true,
+              "sourceBytes": 44,
+              "truncatedExcerpts": 0
+            },
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 663,
+            "semanticCliMentioned": false,
+            "server": "eval_nav",
+            "status": "completed",
+            "tool": "llmnav_discover",
+            "toolError": false,
+            "type": "mcp_tool_call"
+          },
+          {
+            "commandHash": null,
+            "discovery": {
+              "candidates": 1,
+              "excerpts": 1,
+              "parsed": true,
+              "sourceBytes": 290,
+              "truncatedExcerpts": 0
+            },
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 985,
+            "semanticCliMentioned": false,
+            "server": "eval_nav",
+            "status": "completed",
+            "tool": "llmnav_discover",
+            "toolError": false,
+            "type": "mcp_tool_call"
+          },
+          {
+            "commandHash": null,
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 4,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "file_change"
+          }
+        ],
+        "uncachedInputTokens": 18862,
+        "usage": {
+          "cache_write_input_tokens": 0,
+          "cached_input_tokens": 87552,
+          "input_tokens": 106414,
+          "output_tokens": 422,
+          "reasoning_output_tokens": 13
+        }
+      }
+    },
+    {
+      "acceptance": {
+        "command": "go test -count=1 -run ^TestAcceptance$ .",
+        "exitCode": 0,
+        "outputHash": "98686a2dddb2fa368387714ca95a7ca0a6a9c62fed978a498ee00ba3d21514ab",
+        "passed": true,
+        "timedOut": false
+      },
+      "changedFiles": [
+        "position.go"
+      ],
+      "condition": "baseline",
+      "conditionAdhered": true,
+      "elapsedMs": 33981.48029999994,
+      "exitCode": 0,
+      "language": "go",
+      "navigationUsed": null,
+      "scopePassed": true,
+      "stderrHash": "aaa61e946acb080ba5dfb63966da181783374baeb8c5792d5d34eaf38f818fe3",
+      "success": true,
+      "task": "go-setlines-duplicates",
+      "timedOut": false,
+      "trace": {
+        "completed": true,
+        "errors": 0,
+        "itemTypes": {
+          "agent_message": 2,
+          "command_execution": 3
+        },
+        "tools": [
+          {
+            "commandHash": "3b01fc86b4b4302a030365c05416b571aae87fc0cf3c85fd079376946e3ec77a",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 658,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "6599cc9f9f851040b86258b9e57dc4ca4c54528b8712922a0f834496b6dc2683",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 2848,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "fb54ac673e642b0a805aa6a0f6decb0ea9fc7a7f7f83387318b31d1fe50a047e",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 0,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          }
+        ],
+        "uncachedInputTokens": 12858,
+        "usage": {
+          "cache_write_input_tokens": 0,
+          "cached_input_tokens": 59392,
+          "input_tokens": 72250,
+          "output_tokens": 372,
+          "reasoning_output_tokens": 0
+        }
+      }
+    },
+    {
+      "acceptance": {
+        "command": "go test -count=1 -run ^TestAcceptance$ .",
+        "exitCode": 0,
+        "outputHash": "42e30f1ae55d29208ee31268d7c19e5dedf1ec363b4b387b2a5c3aba72a42d10",
+        "passed": true,
+        "timedOut": false
+      },
+      "changedFiles": [
+        "position.go"
+      ],
+      "condition": "llmnav-before",
+      "conditionAdhered": true,
+      "elapsedMs": 29216.514199999976,
+      "exitCode": 0,
+      "language": "go",
+      "navigationUsed": true,
+      "scopePassed": true,
+      "stderrHash": "e015a1c28e8e324e8829bf801397c12e87fda1104f14a3ed1ceae6339f4b5221",
+      "success": true,
+      "task": "go-setlines-duplicates",
+      "timedOut": false,
+      "trace": {
+        "completed": true,
+        "errors": 0,
+        "itemTypes": {
+          "agent_message": 2,
+          "command_execution": 1,
+          "file_change": 1,
+          "mcp_tool_call": 1
+        },
+        "tools": [
+          {
+            "commandHash": null,
+            "discovery": {
+              "candidates": 5,
+              "excerpts": 0,
+              "parsed": true,
+              "sourceBytes": 0,
+              "truncatedExcerpts": 0
+            },
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 1477,
+            "semanticCliMentioned": false,
+            "server": "eval_nav",
+            "status": "completed",
+            "tool": "llmnav_discover",
+            "toolError": false,
+            "type": "mcp_tool_call"
+          },
+          {
+            "commandHash": "274a71ad8520bb3b05c05cf99701293175e70052888728fdd82eb99f5143bb60",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 1247,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": null,
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 4,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "file_change"
+          }
+        ],
+        "uncachedInputTokens": 19442,
+        "usage": {
+          "cache_write_input_tokens": 0,
+          "cached_input_tokens": 87552,
+          "input_tokens": 106994,
+          "output_tokens": 375,
+          "reasoning_output_tokens": 16
+        }
+      }
+    },
+    {
+      "acceptance": {
+        "command": "go test -count=1 -run ^TestAcceptance$ .",
+        "exitCode": 0,
+        "outputHash": "58aa3c6ded0434876649ccb99fd59801de7ccf09b33752696fab05da9d1c7e26",
+        "passed": true,
+        "timedOut": false
+      },
+      "changedFiles": [
+        "token.go"
+      ],
+      "condition": "baseline",
+      "conditionAdhered": true,
+      "elapsedMs": 33078.48590000009,
+      "exitCode": 0,
+      "language": "go",
+      "navigationUsed": null,
+      "scopePassed": true,
+      "stderrHash": "1e2277fc5b3b1e654a7df288381016a76d6f4df827b279781c8738b0d475f126",
+      "success": true,
+      "task": "go-tilde-operator",
+      "timedOut": false,
+      "trace": {
+        "completed": true,
+        "errors": 0,
+        "itemTypes": {
+          "agent_message": 2,
+          "command_execution": 3
+        },
+        "tools": [
+          {
+            "commandHash": "49bb8e08ecee9ce2fffbc1ed5328b8c2e8940f7a1b0706535a9ce5a10410cf2d",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 342,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "f330411f3bf05298fc002a52b46304f6059116710db3ee3ce38bc3b8b15e4b4d",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 6862,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "3d21855dd7b95d612b5dd21c46a702c583dd1eacc6973e35ac5f1a43c159d2bd",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 0,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          }
+        ],
+        "uncachedInputTokens": 11963,
+        "usage": {
+          "cache_write_input_tokens": 0,
+          "cached_input_tokens": 77696,
+          "input_tokens": 89659,
+          "output_tokens": 360,
+          "reasoning_output_tokens": 0
+        }
+      }
+    },
+    {
+      "acceptance": {
+        "command": "go test -count=1 -run ^TestAcceptance$ .",
+        "exitCode": 0,
+        "outputHash": "7ff0dfb9e3789ba6608e6fdb0cb5263f8b5508a651721f6b6b7abc8412d8ec74",
+        "passed": true,
+        "timedOut": false
+      },
+      "changedFiles": [
+        "token.go"
+      ],
+      "condition": "llmnav-before",
+      "conditionAdhered": true,
+      "elapsedMs": 24328.188599999994,
+      "exitCode": 0,
+      "language": "go",
+      "navigationUsed": true,
+      "scopePassed": true,
+      "stderrHash": "09c057456b501db72a7e7bfbb53ef42a66cd3bc6639cd14dfc620731d5005e03",
+      "success": true,
+      "task": "go-tilde-operator",
+      "timedOut": false,
+      "trace": {
+        "completed": true,
+        "errors": 0,
+        "itemTypes": {
+          "agent_message": 2,
+          "command_execution": 1,
+          "file_change": 1,
+          "mcp_tool_call": 1
+        },
+        "tools": [
+          {
+            "commandHash": null,
+            "discovery": {
+              "candidates": 5,
+              "excerpts": 0,
+              "parsed": true,
+              "sourceBytes": 0,
+              "truncatedExcerpts": 0
+            },
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 1319,
+            "semanticCliMentioned": false,
+            "server": "eval_nav",
+            "status": "completed",
+            "tool": "llmnav_discover",
+            "toolError": false,
+            "type": "mcp_tool_call"
+          },
+          {
+            "commandHash": "f659d3690b9cfcafbc392978790c3ddd26a0aeec524e0496dc4235aa3438fa3d",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 6862,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": null,
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 4,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "file_change"
+          }
+        ],
+        "uncachedInputTokens": 21199,
+        "usage": {
+          "cache_write_input_tokens": 0,
+          "cached_input_tokens": 90368,
+          "input_tokens": 111567,
+          "output_tokens": 366,
+          "reasoning_output_tokens": 0
+        }
+      }
+    },
+    {
+      "acceptance": {
+        "command": "go test -count=1 -run ^TestAcceptance$ .",
+        "exitCode": 0,
+        "outputHash": "d7177556aef2b99d1cebadd5ab1832651614a8982a08ddfa08f738ccda3b43b4",
+        "passed": true,
+        "timedOut": false
+      },
+      "changedFiles": [
+        "token.go"
+      ],
+      "condition": "llmnav",
+      "conditionAdhered": true,
+      "elapsedMs": 26368.842500000028,
+      "exitCode": 0,
+      "language": "go",
+      "navigationUsed": true,
+      "scopePassed": true,
+      "stderrHash": "ea6ecf34dedd8fe6ddd9154b6a90ebbbf029adea4f7f09790cfdf0f6558340a3",
+      "success": true,
+      "task": "go-tilde-operator",
+      "timedOut": false,
+      "trace": {
+        "completed": true,
+        "errors": 0,
+        "itemTypes": {
+          "agent_message": 2,
+          "command_execution": 1,
+          "file_change": 1,
+          "mcp_tool_call": 1
+        },
+        "tools": [
+          {
+            "commandHash": null,
+            "discovery": {
+              "candidates": 1,
+              "excerpts": 1,
+              "parsed": true,
+              "sourceBytes": 107,
+              "truncatedExcerpts": 0
+            },
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 740,
+            "semanticCliMentioned": false,
+            "server": "eval_nav",
+            "status": "completed",
+            "tool": "llmnav_discover",
+            "toolError": false,
+            "type": "mcp_tool_call"
+          },
+          {
+            "commandHash": "d10217dd1ffc76a930db955bb353bab46f30f89ad361cefc916a4e8e4e35002d",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 1858,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": null,
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 4,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "file_change"
+          }
+        ],
+        "uncachedInputTokens": 10674,
+        "usage": {
+          "cache_write_input_tokens": 0,
+          "cached_input_tokens": 98176,
+          "input_tokens": 108850,
+          "output_tokens": 422,
+          "reasoning_output_tokens": 0
+        }
+      }
+    },
+    {
+      "acceptance": {
+        "command": "go test -count=1 -run ^TestAcceptance$ .",
+        "exitCode": 0,
+        "outputHash": "b16d7d129c6095861083874e6a4eecec9173db06ed10c669189a264752f26822",
+        "passed": true,
+        "timedOut": false
+      },
+      "changedFiles": [
+        "token.go"
+      ],
+      "condition": "llmnav-before",
+      "conditionAdhered": true,
+      "elapsedMs": 73933.47970000003,
+      "exitCode": 0,
+      "language": "go",
+      "navigationUsed": true,
+      "scopePassed": true,
+      "stderrHash": "a947d9bb64af14fe780b248bb3745b5b1882e563ca7145f812c31264b12bf31b",
+      "success": true,
+      "task": "go-leading-digit",
+      "timedOut": false,
+      "trace": {
+        "completed": true,
+        "errors": 0,
+        "itemTypes": {
+          "agent_message": 2,
+          "command_execution": 1,
+          "file_change": 1,
+          "mcp_tool_call": 1
+        },
+        "tools": [
+          {
+            "commandHash": null,
+            "discovery": {
+              "candidates": 2,
+              "excerpts": 0,
+              "parsed": true,
+              "sourceBytes": 0,
+              "truncatedExcerpts": 0
+            },
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 739,
+            "semanticCliMentioned": false,
+            "server": "eval_nav",
+            "status": "completed",
+            "tool": "llmnav_discover",
+            "toolError": false,
+            "type": "mcp_tool_call"
+          },
+          {
+            "commandHash": "4641af32eca32b3a4f0c050a7451347b5f815638620b1e6991bcf61bd5f5535c",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 1201,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": null,
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 4,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "file_change"
+          }
+        ],
+        "uncachedInputTokens": 9329,
+        "usage": {
+          "cache_write_input_tokens": 0,
+          "cached_input_tokens": 97024,
+          "input_tokens": 106353,
+          "output_tokens": 410,
+          "reasoning_output_tokens": 0
+        }
+      }
+    },
+    {
+      "acceptance": {
+        "command": "go test -count=1 -run ^TestAcceptance$ .",
+        "exitCode": 0,
+        "outputHash": "c741726d50ec274bd665d3f9c354a32ba66de64b886c4199895bcad671e64f8e",
+        "passed": true,
+        "timedOut": false
+      },
+      "changedFiles": [
+        "token.go"
+      ],
+      "condition": "llmnav",
+      "conditionAdhered": true,
+      "elapsedMs": 28645.747500000056,
+      "exitCode": 0,
+      "language": "go",
+      "navigationUsed": true,
+      "scopePassed": true,
+      "stderrHash": "4404134ffbe67110b26d6a3bdd9fb796744a09e5cd6ed93ed37f7ca72a7109be",
+      "success": true,
+      "task": "go-leading-digit",
+      "timedOut": false,
+      "trace": {
+        "completed": true,
+        "errors": 0,
+        "itemTypes": {
+          "agent_message": 2,
+          "command_execution": 1,
+          "file_change": 1,
+          "mcp_tool_call": 1
+        },
+        "tools": [
+          {
+            "commandHash": null,
+            "discovery": {
+              "candidates": 1,
+              "excerpts": 1,
+              "parsed": true,
+              "sourceBytes": 29,
+              "truncatedExcerpts": 0
+            },
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 653,
+            "semanticCliMentioned": false,
+            "server": "eval_nav",
+            "status": "completed",
+            "tool": "llmnav_discover",
+            "toolError": false,
+            "type": "mcp_tool_call"
+          },
+          {
+            "commandHash": "9fcf829a6d34c0f5e5d1f57aca1c99c99b4306a5825dcea1b189e909fd6045b0",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 2094,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": null,
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 4,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "file_change"
+          }
+        ],
+        "uncachedInputTokens": 23366,
+        "usage": {
+          "cache_write_input_tokens": 0,
+          "cached_input_tokens": 92800,
+          "input_tokens": 116166,
+          "output_tokens": 415,
+          "reasoning_output_tokens": 0
+        }
+      }
+    },
+    {
+      "acceptance": {
+        "command": "go test -count=1 -run ^TestAcceptance$ .",
+        "exitCode": 0,
+        "outputHash": "fd82030b9f962fcd7eb5003a9cd7496e465763674be3c9006cdf6f2acd97604e",
+        "passed": true,
+        "timedOut": false
+      },
+      "changedFiles": [
+        "token.go"
+      ],
+      "condition": "baseline",
+      "conditionAdhered": true,
+      "elapsedMs": 24318.6455000001,
+      "exitCode": 0,
+      "language": "go",
+      "navigationUsed": null,
+      "scopePassed": true,
+      "stderrHash": "ebb7615b54b0437c5ea0d8813c529679e7e16824bdfaf6a4f14f70ab4b0a053f",
+      "success": true,
+      "task": "go-leading-digit",
+      "timedOut": false,
+      "trace": {
+        "completed": true,
+        "errors": 0,
+        "itemTypes": {
+          "agent_message": 2,
+          "command_execution": 3
+        },
+        "tools": [
+          {
+            "commandHash": "dd4ffd138b6112b564bb0574cabb46bdf5f109622857ef0446368defbde987f6",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 334,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "af4d72f1f515b1680e86453b1e9a0e4b862f3fa7de7fd43189d63854ff7307f0",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 1046,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "aed7c53b81d90dea315cef6e7ecc49fd737e8fc2832fa3911f840a14a9fc7aeb",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 0,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          }
+        ],
+        "uncachedInputTokens": 9492,
+        "usage": {
+          "cache_write_input_tokens": 0,
+          "cached_input_tokens": 75264,
+          "input_tokens": 84756,
+          "output_tokens": 374,
+          "reasoning_output_tokens": 0
+        }
+      }
+    }
+  ],
+  "schemaVersion": 1,
+  "serenaVersion": "2.1.0"
+}

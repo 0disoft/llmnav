@@ -1,0 +1,90 @@
+{
+  "conditions": [
+    {
+      "attempts": 8,
+      "cacheShare": 0.8398600775296835,
+      "cachedInputTokens": 537088,
+      "condition": "baseline",
+      "conditionViolations": 0,
+      "inputTokens": 639497,
+      "languages": [
+        {
+          "attempts": 4,
+          "language": "typescript",
+          "successes": 4
+        },
+        {
+          "attempts": 4,
+          "language": "go",
+          "successes": 4
+        }
+      ],
+      "mcpFailures": 0,
+      "medianElapsedMs": 29084.827250000017,
+      "navigationSuccesses": null,
+      "scopeFailures": 0,
+      "successes": 8,
+      "timeouts": 0,
+      "toolEvents": 24,
+      "uncachedInputTokens": 102409
+    },
+    {
+      "attempts": 8,
+      "cacheShare": 0.857008053138486,
+      "cachedInputTokens": 742912,
+      "condition": "llmnav-before",
+      "conditionViolations": 0,
+      "inputTokens": 866867,
+      "languages": [
+        {
+          "attempts": 4,
+          "language": "typescript",
+          "successes": 4
+        },
+        {
+          "attempts": 4,
+          "language": "go",
+          "successes": 4
+        }
+      ],
+      "mcpFailures": 0,
+      "medianElapsedMs": 27555.675949999946,
+      "navigationSuccesses": 8,
+      "scopeFailures": 0,
+      "successes": 8,
+      "timeouts": 0,
+      "toolEvents": 24,
+      "uncachedInputTokens": 123955
+    },
+    {
+      "attempts": 8,
+      "cacheShare": 0.8422405899829957,
+      "cachedInputTokens": 676096,
+      "condition": "llmnav",
+      "conditionViolations": 0,
+      "inputTokens": 802735,
+      "languages": [
+        {
+          "attempts": 4,
+          "language": "typescript",
+          "successes": 4
+        },
+        {
+          "attempts": 4,
+          "language": "go",
+          "successes": 4
+        }
+      ],
+      "mcpFailures": 0,
+      "medianElapsedMs": 24767.671850000013,
+      "navigationSuccesses": 8,
+      "scopeFailures": 0,
+      "successes": 8,
+      "timeouts": 0,
+      "toolEvents": 21,
+      "uncachedInputTokens": 126639
+    }
+  ],
+  "inputHash": "4bb36e38a0dfc56a33f01a860932c2af1a1a9066a0e0bed6aa4600dabff7e618",
+  "schemaVersion": 1
+}

@@ -14,6 +14,7 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 ### Evaluation
 
 * Add matched before/after coding conditions, independent installation preflights and sanitized item-type and source-payload counters.
+* Record 40 coding attempts: bounded excerpts reduced required-navigation total input 7.4%, while neither the required-use nor optional-use cohort established uncached-token savings against ordinary navigation. Preserve all attempts and cache counters in the token cost review.
 
 ### Changed
 

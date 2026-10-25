@@ -1,0 +1,62 @@
+{
+  "conditions": [
+    {
+      "attempts": 8,
+      "cacheShare": 0.8842593502486193,
+      "cachedInputTokens": 629888,
+      "condition": "baseline",
+      "conditionViolations": 0,
+      "inputTokens": 712334,
+      "languages": [
+        {
+          "attempts": 4,
+          "language": "typescript",
+          "successes": 4
+        },
+        {
+          "attempts": 4,
+          "language": "go",
+          "successes": 4
+        }
+      ],
+      "mcpFailures": 0,
+      "medianElapsedMs": 39137.629899999985,
+      "navigationSuccesses": null,
+      "scopeFailures": 0,
+      "successes": 8,
+      "timeouts": 0,
+      "toolEvents": 26,
+      "uncachedInputTokens": 82446
+    },
+    {
+      "attempts": 8,
+      "cacheShare": 0.8570675037960163,
+      "cachedInputTokens": 669440,
+      "condition": "llmnav-adaptive",
+      "conditionViolations": 0,
+      "inputTokens": 781082,
+      "languages": [
+        {
+          "attempts": 4,
+          "language": "typescript",
+          "successes": 4
+        },
+        {
+          "attempts": 4,
+          "language": "go",
+          "successes": 4
+        }
+      ],
+      "mcpFailures": 0,
+      "medianElapsedMs": 32371.543649999985,
+      "navigationSuccesses": 0,
+      "scopeFailures": 0,
+      "successes": 8,
+      "timeouts": 0,
+      "toolEvents": 28,
+      "uncachedInputTokens": 111642
+    }
+  ],
+  "inputHash": "018efa2e2b4df3cb7a35bdd8a3f22f7e97f64e1d618dba92b6f7672d16e47bbf",
+  "schemaVersion": 1
+}

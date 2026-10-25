@@ -1,0 +1,260 @@
+{
+  "excludedInteractionProbe": {
+    "reason": "One discovery attempt failed before a subsequent successful call. Unequal executed tool counts prevent attribution of the input difference to schemas or transport alone.",
+    "rows": [
+      {
+        "condition": "baseline",
+        "events": [
+          {
+            "type": "thread.started"
+          },
+          {
+            "type": "turn.started"
+          },
+          {
+            "itemType": "agent_message",
+            "type": "item.completed"
+          },
+          {
+            "itemType": "command_execution",
+            "type": "item.started"
+          },
+          {
+            "itemType": "command_execution",
+            "type": "item.completed"
+          },
+          {
+            "itemType": "agent_message",
+            "type": "item.completed"
+          },
+          {
+            "type": "turn.completed"
+          }
+        ],
+        "exitCode": 0,
+        "trace": {
+          "completed": true,
+          "errors": 0,
+          "itemTypes": {
+            "agent_message": 2,
+            "command_execution": 1
+          },
+          "tools": [
+            {
+              "commandHash": "f5d19e4598544a4792e3ddd31165e30e6c80d13971444e06c3712f9eaf23b985",
+              "errorCategory": null,
+              "exitCode": 0,
+              "responseBytes": 49,
+              "semanticCliMentioned": false,
+              "server": null,
+              "status": "completed",
+              "tool": null,
+              "toolError": false,
+              "type": "command_execution"
+            }
+          ],
+          "uncachedInputTokens": 4787,
+          "usage": {
+            "cache_write_input_tokens": 0,
+            "cached_input_tokens": 29440,
+            "input_tokens": 34227,
+            "output_tokens": 122,
+            "reasoning_output_tokens": 55
+          }
+        }
+      },
+      {
+        "condition": "llmnav",
+        "events": [
+          {
+            "type": "thread.started"
+          },
+          {
+            "type": "turn.started"
+          },
+          {
+            "itemType": "agent_message",
+            "type": "item.completed"
+          },
+          {
+            "itemType": "mcp_tool_call",
+            "tool": "llmnav_discover",
+            "type": "item.started"
+          },
+          {
+            "itemType": "mcp_tool_call",
+            "tool": "llmnav_discover",
+            "type": "item.completed"
+          },
+          {
+            "itemType": "mcp_tool_call",
+            "tool": "llmnav_discover",
+            "type": "item.started"
+          },
+          {
+            "itemType": "mcp_tool_call",
+            "tool": "llmnav_discover",
+            "type": "item.completed"
+          },
+          {
+            "itemType": "agent_message",
+            "type": "item.completed"
+          },
+          {
+            "type": "turn.completed"
+          }
+        ],
+        "exitCode": 0,
+        "trace": {
+          "completed": true,
+          "errors": 0,
+          "itemTypes": {
+            "agent_message": 2,
+            "mcp_tool_call": 2
+          },
+          "tools": [
+            {
+              "commandHash": null,
+              "errorCategory": null,
+              "exitCode": null,
+              "responseBytes": 221,
+              "semanticCliMentioned": false,
+              "server": "eval_nav",
+              "status": "failed",
+              "tool": "llmnav_discover",
+              "toolError": false,
+              "type": "mcp_tool_call"
+            },
+            {
+              "commandHash": null,
+              "errorCategory": null,
+              "exitCode": null,
+              "responseBytes": 535,
+              "semanticCliMentioned": false,
+              "server": "eval_nav",
+              "status": "completed",
+              "tool": "llmnav_discover",
+              "toolError": false,
+              "type": "mcp_tool_call"
+            }
+          ],
+          "uncachedInputTokens": 16934,
+          "usage": {
+            "cache_write_input_tokens": 0,
+            "cached_input_tokens": 45312,
+            "input_tokens": 62246,
+            "output_tokens": 227,
+            "reasoning_output_tokens": 50
+          }
+        }
+      }
+    ]
+  },
+  "limitations": [
+    "A four-run no-tool probe only bounds the initial input in this host configuration. It does not establish that tool activation, later schemas, or MCP interaction has zero overhead.",
+    "CLI usage is aggregated across model requests and does not attribute individual internal requests or prompt blocks. No raw model content is retained."
+  ],
+  "methodology": {
+    "authentication": "existing Codex CLI login",
+    "conditions": [
+      "baseline",
+      "llmnav"
+    ],
+    "engineHashes": {
+      "src/agent-tools.js": "5b41ccde74f53d86970af147f8b3b8c67a591a07c78bf74560b8d876a17fc4a8",
+      "src/discovery.js": "405eb20d2edf781e74a238882da6b98feb5acace265e34abe320870395685d8d",
+      "src/mcp.js": "c7cb61f1c4269736b6610f50174abdf811789f4a093122afc980a88b4dfb720b"
+    },
+    "ignoreUserConfig": true,
+    "memory": false,
+    "model": "gpt-6.1-sol",
+    "order": [
+      "baseline",
+      "llmnav",
+      "baseline",
+      "llmnav"
+    ],
+    "prompt": "Reply exactly ready. Do not use any tools.",
+    "reasoningEffort": "high",
+    "scope": "initial no-tool input counters; not coding task costs",
+    "server": {
+      "enabled_tools": [
+        "llmnav_discover"
+      ],
+      "required": true
+    },
+    "windowsBackend": "unelevated"
+  },
+  "packageVersion": "0.15.3",
+  "rows": [
+    {
+      "condition": "baseline",
+      "exitCode": 0,
+      "trace": {
+        "completed": true,
+        "errors": 0,
+        "tools": [],
+        "uncachedInputTokens": 8107,
+        "usage": {
+          "cache_write_input_tokens": 0,
+          "cached_input_tokens": 12416,
+          "input_tokens": 20523,
+          "output_tokens": 5,
+          "reasoning_output_tokens": 0
+        }
+      }
+    },
+    {
+      "condition": "llmnav",
+      "exitCode": 0,
+      "trace": {
+        "completed": true,
+        "errors": 0,
+        "tools": [],
+        "uncachedInputTokens": 8107,
+        "usage": {
+          "cache_write_input_tokens": 0,
+          "cached_input_tokens": 12416,
+          "input_tokens": 20523,
+          "output_tokens": 5,
+          "reasoning_output_tokens": 0
+        }
+      }
+    },
+    {
+      "condition": "baseline",
+      "exitCode": 0,
+      "trace": {
+        "completed": true,
+        "errors": 0,
+        "tools": [],
+        "uncachedInputTokens": 8107,
+        "usage": {
+          "cache_write_input_tokens": 0,
+          "cached_input_tokens": 12416,
+          "input_tokens": 20523,
+          "output_tokens": 5,
+          "reasoning_output_tokens": 0
+        }
+      }
+    },
+    {
+      "condition": "llmnav",
+      "exitCode": 0,
+      "trace": {
+        "completed": true,
+        "errors": 0,
+        "tools": [],
+        "uncachedInputTokens": 8107,
+        "usage": {
+          "cache_write_input_tokens": 0,
+          "cached_input_tokens": 12416,
+          "input_tokens": 20523,
+          "output_tokens": 5,
+          "reasoning_output_tokens": 0
+        }
+      }
+    }
+  ],
+  "schemaVersion": 1
+}

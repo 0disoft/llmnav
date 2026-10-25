@@ -1,5 +1,7 @@
 # Controlled model coding pilot
 
+For the subsequent investigation, measured before/after costs and conditional navigation changes, see the [token cost review](token-cost-review.md).
+
 This pilot runs actual coding-agent turns and grades the resulting source edits. It is separate from [identifier retrieval](real-navigation-pilot.md) and [Serena symbol lookup](serena-comparison.md). The model is requested as `gpt-6.1-sol` with high reasoning effort through Codex CLI 0.164.0-alpha.11.1 and the existing ChatGPT login. The CLI does not expose a resolved provider model identifier, so that field remains null.
 
 ## Measured outcomes
