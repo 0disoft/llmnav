@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { codingCases, mutateSource } from "../benchmarks/coding-cases.js";
 import { serenaCandidates } from "../benchmarks/serena-navigation.js";
-import { summarizeTrace } from "../benchmarks/model-coding.js";
+import { modelArguments, summarizeTrace } from "../benchmarks/model-coding.js";
 
 test("Serena locations normalize Windows paths and zero-based physical lines", () => {
   assert.deepEqual(serenaCandidates(JSON.stringify([{ relative_path: "src\\entry.ts", name_path: "find",
@@ -23,6 +23,7 @@ test("coding traces measure completed tools and cache counters without retaining
   assert.equal(trace.tools.length, 2);
   assert.equal(trace.uncachedInputTokens, 30);
   assert.equal(trace.completed, true);
+  assert.deepEqual(trace.itemTypes, { reasoning: 1, mcp_tool_call: 1, command_execution: 1 });
   assert.equal(JSON.stringify(trace).includes("canary"), false);
   assert.equal(summarizeTrace('{"type":"turn.failed"}').completed, false);
   assert.equal(summarizeTrace('{"type":"turn.completed","usage":{"input_tokens":12}}').uncachedInputTokens, null);
@@ -33,6 +34,15 @@ test("coding traces measure completed tools and cache counters without retaining
   assert.equal(denial.tools[0].errorCategory, "approval_required");
   const semantic = summarizeTrace(JSON.stringify({ type: "item.completed", item: { type: "command_execution", command: 'npm exec -- llmnav discover example' } }));
   assert.equal(semantic.tools[0].semanticCliMentioned, true);
+});
+
+test("before and after coding conditions differ only in server installation", () => {
+  const options = { model: "test-model", beforeCli: "/before/bin/llmnav.js" };
+  const before = modelArguments("/fixture", "llmnav-before", { prompt: "Fix the bug." }, options);
+  const after = modelArguments("/fixture", "llmnav", { prompt: "Fix the bug." }, options);
+  const normalize = args => args.filter(arg => !arg.startsWith("mcp_servers.eval_nav.args="));
+  assert.deepEqual(normalize(before), normalize(after));
+  assert.ok(before.some(arg => arg.includes(options.beforeCli)));
 });
 
 test("eight balanced coding mutations reject missing or ambiguous source anchors", () => {

@@ -6,7 +6,10 @@ import { sha256, stableStringify } from "../src/util.js";
 
 export function summarizeCoding(report) {
   assert.ok(report.complete === true && (report.validForComparison === undefined || report.validForComparison === true), "Incomplete or excluded coding cohort");
-  assert.ok(report.preflight?.writePassed === true && report.preflight.llmnavPassed === true && report.preflight.serenaPassed === true, "Failed tool preflight");
+  assert.ok(report.preflight?.writePassed === true && report.preflight.llmnavPassed === true &&
+    (!report.methodology.conditions.includes("serena") || report.preflight.serenaPassed === true), "Failed tool preflight");
+  assert.ok(!report.methodology.conditions.includes("llmnav-before") ||
+    report.beforePreflight?.writePassed === true && report.beforePreflight.llmnavPassed === true, "Failed before-version preflight");
   assert.ok(report.corpora.length > 0 && report.corpora.every(item => item.originalsUnchanged === true), "Unverified original sources");
   assert.ok(report.controls.length > 0 && report.controls.every(item => item.pristine.passed === true && item.mutant.passed === false && item.mutant.timedOut === false), "Invalid oracle controls");
   const tasks = new Set(report.controls.map(item => item.task));

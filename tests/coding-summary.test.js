@@ -37,3 +37,13 @@ test("coding summary refuses incomplete, duplicate, or environmentally excluded 
   const unknownMutant = fixture(); delete unknownMutant.controls[0].mutant.passed;
   assert.throws(() => summarizeCoding(unknownMutant), /controls/u);
 });
+
+test("before/after cohorts require both installation preflights but do not require Serena", () => {
+  const report = fixture();
+  report.methodology.conditions = ["llmnav-before"];
+  report.rows.forEach(row => { row.condition = "llmnav-before"; });
+  report.preflight.serenaPassed = null;
+  assert.throws(() => summarizeCoding(report), /preflight/u);
+  report.beforePreflight = { writePassed: true, llmnavPassed: true };
+  assert.equal(summarizeCoding(report)[0].attempts, 2);
+});
