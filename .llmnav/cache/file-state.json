@@ -6254,7 +6254,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "646af12b0d10a03ea80ba70bfb26ada17c0505379ec769bad145b8ca44915c82",
+      "contentHash": "56f1dc8c89617e74abaca4924d28e3fc91ea4c488063adc11cc940519b4a497b",
       "declarations": [
         null
       ],
@@ -6266,7 +6266,7 @@
       ],
       "path": "src/registry.js",
       "semanticBytes": 462,
-      "sourceBytes": 9388
+      "sourceBytes": 9524
     },
     {
       "blocks": [
@@ -6814,7 +6814,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "b5167d540768f418da5191517eeecff7d80ee21aea301a8a17dca9cf1d6bc805",
+      "contentHash": "6ed6f90a4f75b431e1716e9f4dc1942c5c565f4f43390c49ee46963be94085ab",
       "declarations": [
         null
       ],
@@ -7945,7 +7945,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "cc3c660be36a47efa39405e3d92735b147a6635fb7466b03f2397620b85f6d4e",
+      "contentHash": "58b9b6175721044b3c07f6ab2dff769366ea35d77065d2a7401ef766fd39572b",
       "declarations": [],
       "imports": [
         "../src/project.js",
@@ -7958,7 +7958,7 @@
       ],
       "path": "tests/registry-resolution.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 6594
+      "sourceBytes": 7940
     },
     {
       "blocks": [],

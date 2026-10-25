@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
@@ -59,6 +59,32 @@ test("merging active IDs re-reads the registry inside the generation lock", asyn
   await ensureActiveIds(root, stale, ["beta.two"]);
   const final = await loadRegistry(root);
   assert.deepEqual(final.records.map((record) => record.id), ["alpha.one", "beta.two"]);
+  assert.deepEqual(final.errors, []);
+});
+
+test("active-ID merges never replace an invalid current registry with a stale snapshot", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-registry-invalid-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await ensureActiveIds(root, await loadRegistry(root), ["alpha.one"]);
+  const stale = await loadRegistry(root);
+  const current = '{"id":"alpha.one","state":"retired"}\n{"id":"beta.two","state":"active"}\n{unfinished\n';
+  await writeFile(stale.registryPath, current);
+  let failure;
+  try { await ensureActiveIds(root, stale, ["gamma.three"]); }
+  catch (error) { failure = error; }
+  assert.equal(await readFile(stale.registryPath, "utf8"), current);
+  assert.match(failure?.message ?? "", /invalid.*registry/iu);
+  assert.deepEqual(stale.records, [{ id: "alpha.one", state: "active" }]);
+
+  // Rejection must release the lock so a corrected current registry can be merged.
+  await writeFile(stale.registryPath, current.slice(0, current.indexOf("{unfinished")));
+  await ensureActiveIds(root, stale, ["gamma.three"]);
+  const final = await loadRegistry(root);
+  assert.deepEqual(final.records, [
+    { id: "alpha.one", state: "retired" },
+    { id: "beta.two", state: "active" },
+    { id: "gamma.three", state: "active" },
+  ]);
   assert.deepEqual(final.errors, []);
 });
 

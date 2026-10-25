@@ -79,22 +79,25 @@ export async function ensureActiveIds(root, registry, ids, options = {}) {
     throw new Error("Registry path does not belong to the requested project root.");
   }
   if (options.lockOwnerId !== undefined) {
-    return mergeActiveIdsUnderLock(root, registryPath, registry, ids);
+    return mergeActiveIdsUnderLock(root, registryPath, ids);
   }
   return withGenerationLock(
     root,
-    () => mergeActiveIdsUnderLock(root, registryPath, registry, ids),
+    () => mergeActiveIdsUnderLock(root, registryPath, ids),
     options.lockOptions,
   );
 }
 
-async function mergeActiveIdsUnderLock(root, registryPath, registry, ids) {
+async function mergeActiveIdsUnderLock(root, registryPath, ids) {
   await assertNoSymlinkTraversal(root, registryPath, ".llmnav/ids.jsonl");
   // Re-read inside the lock: the caller's snapshot may predate another writer,
   // and the registry is briefly absent while generation swaps control artifacts.
   const current = await loadRegistry(root);
-  const base = current.errors.length === 0 ? current : registry;
-  const { records, changed } = mergeActiveIds(base, ids);
+  // A stale snapshot cannot repair invalid current data without losing lifecycle changes.
+  if (current.errors.length > 0) {
+    throw new Error(`Cannot update invalid semantic ID registry:\n${current.errors.join("\n")}`);
+  }
+  const { records, changed } = mergeActiveIds(current, ids);
   if (changed) await atomicWrite(root, registryPath, renderRegistryRecords(records));
   return { records, changed };
 }

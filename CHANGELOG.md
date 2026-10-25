@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.16.11] — 2026-10-26
+
+### Fixed
+
+* Reject active-ID merges when the current on-disk registry has parse or validation errors instead of falling back to a caller's stale snapshot. Preserve the current file and its lifecycle changes, report registry diagnostics, and release the generation lock so corrected data can be retried. Keep valid merges and the public API signature unchanged.
+
 ## [0.16.10] — 2026-10-26
 
 ### Fixed

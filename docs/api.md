@@ -431,6 +431,10 @@ The typed `llmnav/examples/provider-neutral-host.mjs` export composes these APIs
 
 `buildPromptPrefixBundle(input)` constructs ordered package, repository, and module partitions with normalized newlines, SHA-256 content hashes, estimated token counts, and explicit cache-boundary hints. `renderPromptPrefixBundle` serializes it deterministically. `loadPromptPrefixBundle(root)` accepts only a schema-compatible artifact whose exact bytes match `manifest.json`.
 
+## Registry updates
+
+`ensureActiveIds(root, registry, ids, options?)` re-reads the current on-disk registry under the generation lock before merging new IDs. If that file has parse or validation errors, the operation rejects with registry diagnostics and preserves its contents. Correct the current file before retrying; a caller's earlier snapshot is never used to overwrite invalid current data.
+
 ## Compatibility boundary
 
 The public API follows package semantic versioning. `index.json` schemaVersion 1 and `llmnav/1` source syntax remain compatible. Contract fingerprints are optional additive index fields. `search-index.json`, `file-state.json`, `graph-state.json`, transaction journals, and performance metrics retain their own schema or implementation versions.
