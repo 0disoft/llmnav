@@ -747,12 +747,13 @@
         "repository search"
       ],
       "hashes": {
-        "body": "b4a74150feffcb32610d4530570f0fc3c2faf8cc6e0d1bcde2ea70941d8470ce",
+        "body": "a736a1fd65ea256f8098c539bdb8f9a64fc7ea4fc1941bd4046668a4bd7dc770",
         "semantic": "6fe19b8340b0f5a5ba89cf953692dfd02bb937b04718dfc19ea14b936de5fb80",
-        "structure": "976d8125d028a5788c1f5b74b77a43ba06dcd0b54702a2ddf99c64b436c7896d"
+        "structure": "c26d5c5ab74ee1426d430bc6478c89d8576940f74e5926212eb5f9e49a174e3d"
       },
       "id": "llmnav.syntax.parse",
       "imports": [
+        "./policy.js",
         "./spec.js",
         "./util.js"
       ],
@@ -837,7 +838,7 @@
         "cache directory commit"
       ],
       "hashes": {
-        "body": "bcb0c64929c9ef31f70a0e3402bfa987d280244dd0703d17fe9bdc668a42c8f1",
+        "body": "6aa1e9f6021f80be03e6612a03eb8da1e2ead8eaf7097257be66b914d838a7b7",
         "semantic": "26e0abf92c39ff07a7eb622d795d5ecbc83c7704b7c1ed09cd3ad339e3c04865",
         "structure": "4533f320f5c701808b979357ece450b56bdbc35f1117a5d53a2556e684a33657"
       },
@@ -1684,7 +1685,7 @@
         "cache generation"
       ],
       "hashes": {
-        "body": "508c928b788f65921a579323924707e3ee3476c008abb1dcb19d1a3d6beb3bd8",
+        "body": "13628d9db1736cf8050d23d756da09cb138b243615c02b5e62c182ca3ae6a83b",
         "semantic": "c7cfa511ec9a14754b58e0f03bae113bd850ef9c716034a56d82449368d41af2",
         "structure": "517aaddbddf27c31e036025d481e979e53150796b717f0201c2bf800f623eb90"
       },
@@ -1844,7 +1845,7 @@
         "generated cache formatting"
       ],
       "hashes": {
-        "body": "a0f870b646f759771e80ac7f2d78ab2f7c3b00180ab3cbe47225867e10f10ea8",
+        "body": "feb10b133d8334fd3955a6e0e4e9c5cd2bb12c8a15320b0aa04063465bdb13fc",
         "semantic": "96da0bbe3ce024aae971854f5333d10bf58c99073f1236d1be40b435a0d7191b",
         "structure": "dc1237f3835a25375141f1cea90bdac0eb8cca91c439326de38eb186159a5035"
       },
@@ -1896,7 +1897,7 @@
         "source parsing"
       ],
       "hashes": {
-        "body": "8b5411d72c5a77da505e699b0e8acc8f3e10beaaf86a08a2ec53907120d9a7a7",
+        "body": "44d3495f1bfb07f95172b7d96da119989fb4be54540ed4d44beb045230a76116",
         "semantic": "59aa3e9e793d505ecdf110fec023c201aaee0154d2f6c9cf71afe1bbf71a7be5",
         "structure": "e213e073414c75bc75df1c8669a7045096142b6c0845694191893d90bf23e3c2"
       },
@@ -2368,8 +2369,8 @@
         "agent transport"
       ],
       "hashes": {
-        "body": "f78be7822ae894933b1c2eac3dafe1f0e396b5fd6ee55454aacba52d24363f0a",
-        "semantic": "1c3e0a746691316d75d33f3aaef87db10419c52cae67bbcc5dc26c25b7dcff74",
+        "body": "bc2e1b53c47a5945b3d18614e17b231963f2d3aaeb9c024641fd24d3ba06cf19",
+        "semantic": "b244749b801867c5f8b291b42300ef51fa4bee7fb85c3630a0dcc3c346e54c95",
         "structure": "79d75218e26f6313afbe080aa88e5ab3e9fb12e97d17ac3c2168c1c1ccf0c935"
       },
       "id": "llmnav.support.policy",
@@ -2391,6 +2392,7 @@
         "search ranking weights",
         "search input limits",
         "audit scoring",
+        "source byte limits",
         "declaration scan limits",
         "token estimates"
       ],
@@ -2399,7 +2401,7 @@
         "workflow>llmnav.agent.tool-schema",
         "workflow>llmnav.audit.coverage"
       ],
-      "role": "Keep named policies for search ranking, audit prioritization, declaration scanning, and context sizing.",
+      "role": "Keep named policies for search ranking, audit prioritization, source limits, declaration scanning, and context sizing.",
       "scope": "module",
       "search": [
         "search ranking constants",
@@ -3181,9 +3183,9 @@
     },
     "schemaVersion": 1
   },
-  "generatedBy": "llmnav@0.16.4",
+  "generatedBy": "llmnav@0.16.5",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "50d524941716d78bd29ece80c4d98a574d987848ebafddbd3129b118068b80e9",
+  "sourceHash": "16d2aa751ddaae2745415ff4bb75e2b7c8db52b0863fb0552f84e80a1196f981",
   "specVersion": "1"
 }

@@ -4311,7 +4311,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "a0f870b646f759771e80ac7f2d78ab2f7c3b00180ab3cbe47225867e10f10ea8",
+      "contentHash": "feb10b133d8334fd3955a6e0e4e9c5cd2bb12c8a15320b0aa04063465bdb13fc",
       "declarations": [
         null
       ],
@@ -4324,7 +4324,7 @@
       ],
       "path": "src/formatter.js",
       "semanticBytes": 461,
-      "sourceBytes": 1806
+      "sourceBytes": 1818
     },
     {
       "blocks": [
@@ -4777,7 +4777,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "bcb0c64929c9ef31f70a0e3402bfa987d280244dd0703d17fe9bdc668a42c8f1",
+      "contentHash": "6aa1e9f6021f80be03e6612a03eb8da1e2ead8eaf7097257be66b914d838a7b7",
       "declarations": [
         null
       ],
@@ -4796,7 +4796,7 @@
       ],
       "path": "src/incremental.js",
       "semanticBytes": 381,
-      "sourceBytes": 12926
+      "sourceBytes": 12939
     },
     {
       "blocks": [],
@@ -5664,17 +5664,18 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "b4a74150feffcb32610d4530570f0fc3c2faf8cc6e0d1bcde2ea70941d8470ce",
+      "contentHash": "a736a1fd65ea256f8098c539bdb8f9a64fc7ea4fc1941bd4046668a4bd7dc770",
       "declarations": [
         null
       ],
       "imports": [
+        "./policy.js",
         "./spec.js",
         "./util.js"
       ],
       "path": "src/parser.js",
       "semanticBytes": 336,
-      "sourceBytes": 20392
+      "sourceBytes": 20443
     },
     {
       "blocks": [
@@ -5692,6 +5693,7 @@
               "search ranking weights",
               "search input limits",
               "audit scoring",
+              "source byte limits",
               "declaration scan limits",
               "token estimates"
             ],
@@ -5701,7 +5703,7 @@
               "workflow>llmnav.audit.coverage"
             ],
             "risk": [],
-            "role": "Keep named policies for search ranking, audit prioritization, declaration scanning, and context sizing.",
+            "role": "Keep named policies for search ranking, audit prioritization, source limits, declaration scanning, and context sizing.",
             "scope": "module",
             "search": [
               "search ranking constants",
@@ -5713,7 +5715,7 @@
             "stability": "architecture",
             "unknown": []
           },
-          "end": 556,
+          "end": 590,
           "endLine": 11,
           "entries": [
             {
@@ -5726,13 +5728,13 @@
               "key": "role",
               "line": 3,
               "order": 1,
-              "value": "Keep named policies for search ranking, audit prioritization, declaration scanning, and context sizing."
+              "value": "Keep named policies for search ranking, audit prioritization, source limits, declaration scanning, and context sizing."
             },
             {
               "key": "owns",
               "line": 4,
               "order": 2,
-              "value": "search ranking weights|search input limits|audit scoring|declaration scan limits|token estimates"
+              "value": "search ranking weights|search input limits|audit scoring|source byte limits|declaration scan limits|token estimates"
             },
             {
               "key": "excludes",
@@ -5775,7 +5777,7 @@
           "indent": "",
           "newline": "\n",
           "prefix": null,
-          "raw": "/* llmnav/1 module\nid=llmnav.support.policy\nrole=Keep named policies for search ranking, audit prioritization, declaration scanning, and context sizing.\nowns=search ranking weights|search input limits|audit scoring|declaration scan limits|token estimates\nexcludes=query execution|configuration loading|agent transport\nsearch=search ranking constants|query input limits|audit candidate limits|policy defaults|token estimation\nrel=workflow>llmnav.search.query\nrel=workflow>llmnav.agent.tool-schema\nrel=workflow>llmnav.audit.coverage\nstability=architecture\n*/",
+          "raw": "/* llmnav/1 module\nid=llmnav.support.policy\nrole=Keep named policies for search ranking, audit prioritization, source limits, declaration scanning, and context sizing.\nowns=search ranking weights|search input limits|audit scoring|source byte limits|declaration scan limits|token estimates\nexcludes=query execution|configuration loading|agent transport\nsearch=search ranking constants|query input limits|audit candidate limits|policy defaults|token estimation\nrel=workflow>llmnav.search.query\nrel=workflow>llmnav.agent.tool-schema\nrel=workflow>llmnav.audit.coverage\nstability=architecture\n*/",
           "scope": "module",
           "specVersion": "1",
           "start": 0,
@@ -5784,14 +5786,14 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "f78be7822ae894933b1c2eac3dafe1f0e396b5fd6ee55454aacba52d24363f0a",
+      "contentHash": "bc2e1b53c47a5945b3d18614e17b231963f2d3aaeb9c024641fd24d3ba06cf19",
       "declarations": [
         null
       ],
       "imports": [],
       "path": "src/policy.js",
-      "semanticBytes": 556,
-      "sourceBytes": 2502
+      "semanticBytes": 590,
+      "sourceBytes": 2645
     },
     {
       "blocks": [
@@ -5897,7 +5899,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "508c928b788f65921a579323924707e3ee3476c008abb1dcb19d1a3d6beb3bd8",
+      "contentHash": "13628d9db1736cf8050d23d756da09cb138b243615c02b5e62c182ca3ae6a83b",
       "declarations": [
         null
       ],
@@ -5914,7 +5916,7 @@
       ],
       "path": "src/project.js",
       "semanticBytes": 510,
-      "sourceBytes": 3495
+      "sourceBytes": 3496
     },
     {
       "blocks": [
@@ -6797,7 +6799,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "8b5411d72c5a77da505e699b0e8acc8f3e10beaaf86a08a2ec53907120d9a7a7",
+      "contentHash": "44d3495f1bfb07f95172b7d96da119989fb4be54540ed4d44beb045230a76116",
       "declarations": [
         null
       ],
@@ -7011,7 +7013,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "2089030500dc3a6797a42d55bea3f7cd3f5c2d35a7dda294bb53e6e4f6e2a13f",
+      "contentHash": "ce851f1d467c34bc02b573d77d7dda7db43e0c3ca8d637e9e20f5647f67dc523",
       "declarations": [],
       "imports": [
         "./abort.js",
@@ -7019,12 +7021,14 @@
         "./read-operation.js",
         "./runtime.js",
         "node:crypto",
+        "node:fs",
         "node:fs/promises",
-        "node:path"
+        "node:path",
+        "node:stream/promises"
       ],
       "path": "src/util.js",
       "semanticBytes": 0,
-      "sourceBytes": 12758
+      "sourceBytes": 14363
     },
     {
       "blocks": [
@@ -8034,6 +8038,29 @@
       "path": "tests/session-concurrency.test.js",
       "semanticBytes": 0,
       "sourceBytes": 4146
+    },
+    {
+      "blocks": [],
+      "contentHash": "f37b3194c2c9710d6764a1978df02afc873aa0b1245000e6810ec2bf6b6f2374",
+      "declarations": [],
+      "imports": [
+        "../src/formatter.js",
+        "../src/incremental.js",
+        "../src/policy.js",
+        "../src/project.js",
+        "../src/util.js",
+        "node:assert/strict",
+        "node:events",
+        "node:fs",
+        "node:fs/promises",
+        "node:module",
+        "node:os",
+        "node:path",
+        "node:test"
+      ],
+      "path": "tests/source-read.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 5333
     },
     {
       "blocks": [],

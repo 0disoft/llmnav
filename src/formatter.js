@@ -12,7 +12,7 @@ stability=contract
 import { loadConfig } from "./config.js";
 import { collectSourceFiles } from "./files.js";
 import { canonicalizeSource } from "./parser.js";
-import { atomicWrite, readText, relativePosix } from "./util.js";
+import { atomicWrite, readSourceText, relativePosix } from "./util.js";
 import { withGenerationLock } from "./transaction.js";
 
 export async function formatProject(root, options = {}) {
@@ -26,7 +26,7 @@ async function formatProjectLocked(root, options) {
   const changedFiles = [];
   const errors = [];
   for (const filePath of files) {
-    const source = await readText(filePath);
+    const source = await readSourceText(filePath);
     const relativePath = relativePosix(root, filePath);
     const result = canonicalizeSource(source, relativePath);
     errors.push(...result.errors.map((error) => ({ file: relativePath, ...error })));

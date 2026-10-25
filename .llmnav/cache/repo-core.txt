@@ -172,8 +172,8 @@ owns abort checks, abort error normalization
 excludes cancellation sources, retry policy
 
 @llmnav.support.policy
-role Keep named policies for search ranking, audit prioritization, declaration scanning, and context sizing.
-owns search ranking weights, search input limits, audit scoring, declaration scan limits, token estimates
+role Keep named policies for search ranking, audit prioritization, source limits, declaration scanning, and context sizing.
+owns search ranking weights, search input limits, audit scoring, source byte limits, declaration scan limits, token estimates
 excludes query execution, configuration loading, agent transport
 rel workflow>llmnav.search.query, workflow>llmnav.agent.tool-schema, workflow>llmnav.audit.coverage
 

@@ -7328,7 +7328,7 @@
           "to": "llmnav/llmnav.search.query"
         }
       ],
-      "inputHash": "b6d2a82f24a7e059d842a65620ed1cb4d244eac52e347edc05c96941df5d727b",
+      "inputHash": "5a3f1093c8535e13e9c3326c180d993ff655d199e355d0c03d643b1734e200f8",
       "key": "card:llmnav/llmnav.support.policy",
       "nodes": [
         {
@@ -7376,11 +7376,11 @@
             "visibility": null
           },
           "repositoryId": "llmnav",
-          "role": "Keep named policies for search ranking, audit prioritization, declaration scanning, and context sizing.",
+          "role": "Keep named policies for search ranking, audit prioritization, source limits, declaration scanning, and context sizing.",
           "semanticId": "llmnav.support.policy"
         }
       ],
-      "outputHash": "25b83357106435b76ee74cda7448831d4388f72f84f3a328d8d6390ceae637d5"
+      "outputHash": "7b6e993a1c339d150b1b050255e9c32f125c814f785dff676032ab227aa4705f"
     },
     {
       "edges": [
@@ -7525,9 +7525,23 @@
             "type": "local-import"
           },
           "to": "llmnav/llmnav.spec.contract"
+        },
+        {
+          "confidence": 0.85,
+          "from": "llmnav/llmnav.syntax.parse",
+          "id": "14029f9bc57bb08e907e9b744778f1a31d2274267fa6eccff72e48d0b57f5e2b",
+          "kind": "imports",
+          "provenance": {
+            "generator": "llmnav",
+            "line": null,
+            "path": "src/parser.js",
+            "source": "src/parser.js",
+            "type": "local-import"
+          },
+          "to": "llmnav/llmnav.support.policy"
         }
       ],
-      "inputHash": "2c08435273eb59529e850c9e11ce4adfcd3991ed1e762e8beafe74a94d9c080d",
+      "inputHash": "b9c8e44ad4017dcd27ddb8ac86adaec5be21897251d6b6e2064e086aed260c8c",
       "key": "card:llmnav/llmnav.syntax.parse",
       "nodes": [
         {
@@ -7538,6 +7552,15 @@
           "repositoryId": "llmnav",
           "role": null,
           "semanticId": "llmnav.spec.contract"
+        },
+        {
+          "definitions": [],
+          "external": false,
+          "key": "llmnav/llmnav.support.policy",
+          "location": null,
+          "repositoryId": "llmnav",
+          "role": null,
+          "semanticId": "llmnav.support.policy"
         },
         {
           "definitions": [],
@@ -7561,7 +7584,7 @@
           "semanticId": "llmnav.syntax.parse"
         }
       ],
-      "outputHash": "570cd843ae015d760d496d311bf2d24260c2d1c60138b14c3fccff873b084c20"
+      "outputHash": "8e71dbd6a65e23a61ab6f44ec958b7a73db891a4f131af80e640ddc2e708c14d"
     }
   ],
   "repositoryId": "llmnav",

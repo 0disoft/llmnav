@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "targetVersion": "0.16.5",
+  "baselineCommit": "f162ce54290eab2b48da4fc9361cbfa2d150a649",
+  "node": "v24.18.0",
+  "platform": "win32",
+  "fixture": {
+    "bytes": 33554432,
+    "construction": "A temporary large.js file extended to 32 MiB with FileHandle.truncate; all bytes decode as one-byte NUL characters."
+  },
+  "measurement": "Full scan rejection. Count UTF-8 source bytes returned by readFile before the change and native ReadStream.bytesRead after the change. Metadata reads are excluded; these are logical source I/O bytes, not physical disk traffic.",
+  "before": {
+    "bytesRead": 33554432,
+    "loader": "readFile",
+    "rejected": true
+  },
+  "after": {
+    "bytesRead": 16777217,
+    "loader": "bounded ReadStream",
+    "rejected": true,
+    "streamClosedOnReturn": true
+  },
+  "limitBytes": 16777216,
+  "memoryEvidence": "Complexity evidence only: rejected native reads accumulate at most the source budget in chunks and do not decode a source string. No RSS or heap measurement."
+}

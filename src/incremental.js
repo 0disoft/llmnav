@@ -23,6 +23,7 @@ import {
   atomicWrite,
   compareText,
   readJsonSafe,
+  readSourceText,
   readText,
   relativePosix,
   sha256,
@@ -162,7 +163,7 @@ async function reuseOrParseFile(scan, { absolutePath, relativePath, fingerprint,
     fingerprintsEqual(previousHint, fingerprint)) {
     return { stateFile: previousFile, counters: { reusedFiles: 1, reusedFilesByStat: 1, cardsReused: previousFile.blocks.length } };
   }
-  const source = await readText(absolutePath, undefined, scan.options);
+  const source = await readSourceText(absolutePath, scan.options);
   const bytesRead = Buffer.byteLength(source);
   const contentHash = sha256(source);
   if (previousFile?.contentHash === contentHash) {

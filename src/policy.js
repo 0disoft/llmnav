@@ -1,7 +1,7 @@
 /* llmnav/1 module
 id=llmnav.support.policy
-role=Keep named policies for search ranking, audit prioritization, declaration scanning, and context sizing.
-owns=search ranking weights|search input limits|audit scoring|declaration scan limits|token estimates
+role=Keep named policies for search ranking, audit prioritization, source limits, declaration scanning, and context sizing.
+owns=search ranking weights|search input limits|audit scoring|source byte limits|declaration scan limits|token estimates
 excludes=query execution|configuration loading|agent transport
 search=search ranking constants|query input limits|audit candidate limits|policy defaults|token estimation
 rel=workflow>llmnav.search.query
@@ -68,6 +68,11 @@ export const DECLARATION_SCAN_POLICY = Object.freeze({
   attachmentWindowCharacters: 3000,
   signatureLines: 12,
   workUnitsPerCharacter: 2,
+});
+
+export const SOURCE_LIMITS = Object.freeze({
+  maxBytes: 16 * 1024 * 1024,
+  readChunkBytes: 64 * 1024,
 });
 
 export const TOKEN_ESTIMATION = Object.freeze({

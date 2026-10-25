@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.16.5] — 2026-10-26
+
+### Fixed
+
+* Enforce the existing 16 MiB source budget during native file reads in full scans, incremental scans and formatting, before allocating a decoded source string. Read at most one extra byte to detect overflow, including files that grow while open, and await owned stream closure on success or failure. Preserve UTF-8/CRLF contents, cancellation, read policies and custom readFile hooks. The parser and reader share one size policy; metadata and generated artifacts retain their existing read behavior.
+
 ## [0.16.4] — 2026-10-25
 
 ### Fixed

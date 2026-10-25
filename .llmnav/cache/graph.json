@@ -3625,6 +3625,20 @@
         "type": "local-import"
       },
       "to": "llmnav/llmnav.spec.contract"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.syntax.parse",
+      "id": "14029f9bc57bb08e907e9b744778f1a31d2274267fa6eccff72e48d0b57f5e2b",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/parser.js",
+        "source": "src/parser.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.support.policy"
     }
   ],
   "nodes": [
@@ -4982,7 +4996,7 @@
         "visibility": null
       },
       "repositoryId": "llmnav",
-      "role": "Keep named policies for search ranking, audit prioritization, declaration scanning, and context sizing.",
+      "role": "Keep named policies for search ranking, audit prioritization, source limits, declaration scanning, and context sizing.",
       "semanticId": "llmnav.support.policy",
       "unresolved": false
     },
@@ -5055,9 +5069,9 @@
   ],
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "dd152e99f03be235ab51d4b17dcd2cb2537ca78410247be0c5a29c9359ecf7b3",
+  "sourceHash": "2e6f9c98b77a164390f7c459c403206d7133eeea6d88d3cbbc9ad370c500186e",
   "stats": {
-    "edgeCount": 259,
+    "edgeCount": 260,
     "importedIndexCount": 0,
     "nodeCount": 62,
     "unresolvedNodeCount": 0

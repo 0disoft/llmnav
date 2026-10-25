@@ -22,6 +22,7 @@ import {
   normalizeNewlines,
   splitPipe,
 } from "./util.js";
+import { SOURCE_LIMITS } from "./policy.js";
 
 const BLOCK_PATTERNS = [
   {
@@ -37,7 +38,7 @@ const BLOCK_PATTERNS = [
     terminator: "-->",
   },
 ];
-const MAX_SOURCE_BYTES = 16 * 1024 * 1024;
+const MAX_SOURCE_BYTES = SOURCE_LIMITS.maxBytes;
 const MAX_BLOCKS_PER_FILE = 10_000;
 const JAVASCRIPT_EXTENSIONS = new Set([".js", ".mjs", ".cjs", ".jsx", ".ts", ".tsx", ".mts", ".cts"]);
 const REGEX_PREFIX_KEYWORDS = new Set([

@@ -1,7 +1,9 @@
 import { createHash } from "node:crypto";
+import { createReadStream } from "node:fs";
 import { lstat, mkdir, open, readFile, realpath, rename, rm } from "node:fs/promises";
 import path from "node:path";
-import { TOKEN_ESTIMATION } from "./policy.js";
+import { pipeline } from "node:stream/promises";
+import { SOURCE_LIMITS, TOKEN_ESTIMATION } from "./policy.js";
 import { DEFAULT_RUNTIME } from "./runtime.js";
 import { throwIfAborted } from "./abort.js";
 import { runRead } from "./read-operation.js";
@@ -134,6 +136,41 @@ export async function readJson(filePath, fallback = undefined, options = {}) {
   const text = await readText(filePath, fallback === undefined ? undefined : "", options);
   if (text === "" && fallback !== undefined) return structuredClone(fallback);
   return JSON.parse(text);
+}
+
+/** Bound native source I/O before decoding; the parser retains its decoded-byte check. */
+export async function readSourceText(filePath, options = {}) {
+  return runRead("read source file", async ({ signal }) => {
+    if (options.io?.readFile) {
+      const source = await options.io.readFile(filePath, "utf8", { signal });
+      if (Buffer.byteLength(source) > SOURCE_LIMITS.maxBytes) throw sourceReadLimitError(filePath);
+      return source;
+    }
+    const chunks = [];
+    let bytes = 0;
+    // Inclusive end reads one extra byte to distinguish an exact fit from overflow,
+    // even if the file grows while open. Pipeline owns destruction and file closure.
+    const stream = createReadStream(filePath, { end: SOURCE_LIMITS.maxBytes,
+      highWaterMark: SOURCE_LIMITS.readChunkBytes });
+    const closed = new Promise(resolve => stream.once("close", resolve));
+    try {
+      await pipeline(stream, async input => {
+        for await (const chunk of input) {
+          bytes += chunk.length;
+          if (bytes > SOURCE_LIMITS.maxBytes) throw sourceReadLimitError(filePath);
+          chunks.push(chunk);
+        }
+      }, { signal });
+    } finally {
+      if (!stream.destroyed) stream.destroy();
+      await closed;
+    }
+    return Buffer.concat(chunks, bytes).toString("utf8");
+  }, { ...options.readPolicy, signal: options.signal });
+}
+
+function sourceReadLimitError(filePath) {
+  return new Error(`${filePath} exceeds the ${SOURCE_LIMITS.maxBytes}-byte source read limit.`);
 }
 
 export async function readJsonSafe(filePath, fallback = null, options = {}) {
