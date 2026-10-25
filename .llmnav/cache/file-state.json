@@ -5584,7 +5584,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "d45d99f473c00ac6e7ed6baf74d22a6954a5d78cbf012b432a3d54a21cbd9044",
+      "contentHash": "777d193650c552eb35b67bfe5bc5e8d819d43c14c599e07f06b2cd07255e3157",
       "declarations": [
         null
       ],
@@ -5597,7 +5597,7 @@
       ],
       "path": "src/module-resolution.js",
       "semanticBytes": 609,
-      "sourceBytes": 6046
+      "sourceBytes": 6388
     },
     {
       "blocks": [
@@ -6815,7 +6815,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "af104c608fb70c21dd10a29aba49c5028992d750f1e2d3e4631c9d0c1f6b6995",
+      "contentHash": "7894dd1af318bcd8645261cdd37ead80b32dd0f57049a900d8fa5e9b35d97391",
       "declarations": [
         null
       ],
@@ -7789,7 +7789,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "18a35660738fa0f43113b553b75fe5b3a4564d0527018b624f7a6fe1ac03f8ce",
+      "contentHash": "2583b966ca3819a9002da4523e167da3e01c6eba36e437b3822666de1016fcb1",
       "declarations": [],
       "imports": [
         "../src/module-resolution.js",
@@ -7801,7 +7801,7 @@
       ],
       "path": "tests/module-resolution.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 3870
+      "sourceBytes": 5756
     },
     {
       "blocks": [],

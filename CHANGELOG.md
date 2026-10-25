@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.16.15] — 2026-10-26
+
+### Changed
+
+* Index Go module paths by slash-delimited prefixes once per immutable resolution snapshot instead of filtering every module for every imported package. Preserve longest-prefix selection, duplicate-module priority, segment boundaries and rejection when the selected package is unavailable. A 1,000-module, 200-import regression reduces warm module-path reads from 400,400 to 400 without changing graph output, public signatures or runtime dependencies.
+
 ## [0.16.14] — 2026-10-26
 
 ### Fixed

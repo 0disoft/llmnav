@@ -84,9 +84,13 @@ export function moduleKeyForFile(file) {
 
 export function resolveGoImportModule(sourcePath, specifier, resolution, availableModuleKeys = null) {
   if (path.posix.extname(toPosix(sourcePath)).toLowerCase() !== ".go") return null;
-  const modules = goModulesByLength(compatibleModuleResolution(resolution))
-    .filter((item) => specifier === item.modulePath || specifier.startsWith(`${item.modulePath}/`));
-  const selected = modules[0];
+  let node = goModulePrefixes(compatibleModuleResolution(resolution));
+  let selected = null;
+  for (const segment of specifier.split("/")) {
+    node = node.children.get(segment);
+    if (!node) break;
+    if (node.module) selected = node.module;
+  }
   if (!selected) return null;
   const suffix = specifier === selected.modulePath ? "" : specifier.slice(selected.modulePath.length + 1);
   const directory = path.posix.normalize(path.posix.join(selected.directory || ".", suffix || "."));
@@ -97,7 +101,7 @@ export function resolveGoImportModule(sourcePath, specifier, resolution, availab
 }
 
 const moduleResolutionCache = new WeakMap();
-const goModuleOrderCache = new WeakMap();
+const goModulePrefixCache = new WeakMap();
 
 // Resolution snapshots are immutable once loaded, so each input object is normalized
 // once instead of once per imported specifier.
@@ -114,13 +118,25 @@ export function compatibleModuleResolution(value) {
   return resolution;
 }
 
-function goModulesByLength(resolution) {
-  const cached = goModuleOrderCache.get(resolution);
+function goModulePrefixes(resolution) {
+  const cached = goModulePrefixCache.get(resolution);
   if (cached !== undefined) return cached;
-  const ordered = [...resolution.goModules]
-    .sort((left, right) => right.modulePath.length - left.modulePath.length || compareText(left.modulePath, right.modulePath));
-  goModuleOrderCache.set(resolution, ordered);
-  return ordered;
+  const root = { children: new Map() };
+  for (const module of resolution.goModules) {
+    let node = root;
+    for (const segment of module.modulePath.split("/")) {
+      let child = node.children.get(segment);
+      if (child === undefined) {
+        child = { children: new Map() };
+        node.children.set(segment, child);
+      }
+      node = child;
+    }
+    // Normalized directory order breaks duplicate module-path ties as before.
+    node.module ??= module;
+  }
+  goModulePrefixCache.set(resolution, root);
+  return root;
 }
 
 function compareDirectories(left, right) {

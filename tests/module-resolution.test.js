@@ -9,6 +9,43 @@ function resolutionOf(goModules) {
   return { schemaVersion: 1, resolverVersion: 1, goModules };
 }
 
+test("Go import lookup does not rescan every module for each imported package", context => {
+  const moduleCount = 1000, importCount = 200;
+  const raw = resolutionOf(Array.from({ length: moduleCount }, (_, index) => ({
+    directory: `services/m${index}`, modulePath: `example.test/m${index}`,
+  })));
+  const normalized = compatibleModuleResolution(raw);
+  resolveGoImportModule("main.go", "example.test/m0/pkg", raw);
+  let reads = 0;
+  for (const module of normalized.goModules) {
+    const value = module.modulePath;
+    Object.defineProperty(module, "modulePath", { get() { reads++; return value; } });
+  }
+  for (let index = 0; index < importCount; index++) {
+    assert.equal(resolveGoImportModule("main.go", `example.test/m${index}/pkg`, raw), `go:services/m${index}/pkg`);
+  }
+  context.diagnostic(JSON.stringify({ moduleCount, importCount, modulePathReads: reads }));
+  assert.ok(reads <= importCount * 3, `repeated full-module scans: ${reads} module-path reads`);
+});
+
+test("Go prefix lookup preserves duplicate priority, segment boundaries and longest-match rejection", () => {
+  const raw = resolutionOf([
+    { directory: "z", modulePath: "example.test/root" },
+    { directory: "a", modulePath: "example.test/root" },
+    { directory: "nested", modulePath: "example.test/root/pkg" },
+  ]);
+  for (const [specifier, expected] of [
+    ["example.test/root", "go:a"],
+    ["example.test/root/pkg", "go:nested"],
+    ["example.test/root/pkg/api", "go:nested/api"],
+    ["example.test/root/pkgextra", "go:a/pkgextra"],
+    ["example.test/rooted", null],
+    ["example.test/absent", null],
+  ]) assert.equal(resolveGoImportModule("main.go", specifier, raw), expected, specifier);
+  assert.equal(resolveGoImportModule("main.go", "example.test/root/pkg", raw, new Set(["go:a/pkg"])), null);
+  assert.equal(resolveGoImportModule("main.ts", "example.test/root", raw), null);
+});
+
 test("Go metadata reads respect concurrency while keeping sorted results and error order", { timeout: 5000 }, async (context) => {
   const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-module-io-"));
   context.after(() => rm(root, { recursive: true, force: true }));
