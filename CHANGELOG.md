@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.16.6] — 2026-10-26
+
+### Fixed
+
+* Replace runtime glob regular-expression backtracking with bounded finite-state matching for source exclusions and coverage rules. Repeated wildcard near misses can no longer monopolize scanning through combinatorial backtracking. Preserve basename matching, root anchoring, whole-segment double stars, Unicode and literal metacharacters; retain the old translator only as a bounded test oracle.
+
 ## [0.16.5] — 2026-10-26
 
 ### Fixed

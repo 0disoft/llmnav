@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
 import { mkdir, mkdtemp, rm, symlink, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -7,7 +8,42 @@ import { loadConfig } from "../src/config.js";
 import { collectSourceFiles } from "../src/files.js";
 import { discoverProject } from "../src/discovery.js";
 import { scanProject } from "../src/project.js";
-import { globToRegExp, matchesAnyGlob } from "../src/util.js";
+import { escapeRegExp, matchesAnyGlob, toPosix } from "../src/util.js";
+
+test("runtime glob matching agrees with the compatibility regexp on bounded inputs", () => {
+  function words(alphabet, depth) {
+    let layer = [""];
+    const result = [...layer];
+    for (let index = 0; index < depth; index++) {
+      layer = layer.flatMap(prefix => alphabet.map(character => prefix + character));
+      result.push(...layer);
+    }
+    return result;
+  }
+  const patterns = [...words(["a", "*", "?", "/"], 4),
+    "a/**/c", "**/**/?.js", "src/[a].js", "😀*?", "**", "***", "a\\**\\?.js", "a\n*", "a\r*", "a\u2028*", "a\u2029*"];
+  const paths = [...words(["a", "/", "😀", "\n"], 3),
+    "a/xc", "a/c", "a/x/c", "a/x/y/c", "src/[a].js", "a\\x\\b.js", "a\r", "a\r\n", "a\u2028", "a\u2029"];
+  for (const pattern of patterns) {
+    const reference = legacyGlobToRegExp(pattern);
+    for (const file of paths) {
+      assert.equal(matchesAnyGlob(file, [pattern]), reference.test(toPosix(file)), JSON.stringify({ pattern, file }));
+    }
+  }
+});
+
+test("repeated wildcard near misses finish without blocking the scanning process", () => {
+  const util = new URL("../src/util.js", import.meta.url).href;
+  const script = `import assert from "node:assert/strict";
+    import { matchesAnyGlob } from ${JSON.stringify(util)};
+    const pattern = "*a".repeat(24) + "b.js";
+    assert.equal(matchesAnyGlob("a".repeat(48) + ".js", [pattern]), false);
+    assert.equal(matchesAnyGlob("a".repeat(48) + "b.js", [pattern]), true);
+    assert.equal(matchesAnyGlob("a/".repeat(48) + "x.js", ["**/".repeat(24) + "b.js"]), false);`;
+  const result = spawnSync(process.execPath, ["--input-type=module", "-e", script], { encoding: "utf8", timeout: 3000 });
+  assert.equal(result.error, undefined);
+  assert.equal(result.status, 0, result.stderr);
+});
 
 test("source roots and explicit paths reject intermediate links before reading outside source", async context => {
   const parent = await mkdtemp(path.join(os.tmpdir(), "llmnav-source-containment-"));
@@ -73,7 +109,7 @@ test("a double star spans directories only as a whole segment", () => {
   assert.equal(matchesAnyGlob("aXb.txt", ["a**b.txt"]), true);
   assert.equal(matchesAnyGlob("any/deep/file.txt", ["**"]), true);
   assert.equal(matchesAnyGlob("docs/readme.md", ["?.md"]), false);
-  assert.equal(globToRegExp("src/[a].js").test("src/a.js"), false);
+  assert.equal(matchesAnyGlob("src/a.js", ["src/[a].js"]), false);
 });
 
 test("source collection applies the documented defaults to nested files", async (context) => {
@@ -108,3 +144,36 @@ test("default selection treats MTS and CTS and their declarations like TS", asyn
   const { config } = await loadConfig(root);
   assert.deepEqual((await collectSourceFiles(root, config)).map(file => path.basename(file)), names.sort());
 });
+
+// Previous implementation retained only as a bounded compatibility oracle.
+function legacyGlobToRegExp(glob) {
+  const normalized = toPosix(glob);
+  const anchored = normalized.includes("/");
+  let pattern = anchored ? "^" : "(?:^|/)";
+  for (let index = 0; index < normalized.length; index += 1) {
+    const character = normalized[index];
+    if (character === "*") {
+      const startsSegment = index === 0 || normalized[index - 1] === "/";
+      const after = normalized[index + 2];
+      if (normalized[index + 1] === "*" && startsSegment) {
+        if (after === "/") {
+          pattern += "(?:.*/)?";
+          index += 2;
+          continue;
+        }
+        if (after === undefined) {
+          pattern += ".*";
+          index += 1;
+          continue;
+        }
+      }
+      pattern += "[^/]*";
+    } else if (character === "?") {
+      pattern += "[^/]";
+    } else {
+      pattern += escapeRegExp(character);
+    }
+  }
+  pattern += "$";
+  return new RegExp(pattern, "u");
+}

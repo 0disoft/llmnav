@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "targetVersion": "0.16.6",
+  "baselineCommit": "0ca38fbdf6b3bdef39191619d37df2bc1a94b76a",
+  "node": "v24.18.0",
+  "platform": "win32",
+  "fixture": {
+    "path": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.js",
+    "pattern": "*a*a*a*a*a*a*a*a*a*a*a*a*a*a*a*a*a*a*a*a*a*a*a*ab.js"
+  },
+  "measurement": "One fresh child process per implementation, 1500 ms child timeout. Wall time includes Node startup. The baseline is the pre-edit reproducer from this session; it did not complete. Match-only timing is available only after the fix.",
+  "before": {
+    "childWallMs": 1531,
+    "timeoutMs": 1500,
+    "error": "ETIMEDOUT",
+    "completed": false
+  },
+  "after": {
+    "matched": false,
+    "matchMs": 1.9001999999999981,
+    "childWallMs": 250.2155,
+    "completed": true
+  },
+  "complexity": {
+    "time": "O(path code points * glob tokens)",
+    "extraSpace": "O(glob tokens)",
+    "fixtureTokens": 52,
+    "fixturePathCodePoints": 51,
+    "stateArrayBytes": 106
+  },
+  "correctness": {
+    "differentialCases": 33440,
+    "oracle": "Previous regexp translator, bounded patterns only"
+  },
+  "limits": "Local Windows/Node measurement; not a production throughput or heap benchmark."
+}

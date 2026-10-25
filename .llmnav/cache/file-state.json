@@ -6799,7 +6799,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "44d3495f1bfb07f95172b7d96da119989fb4be54540ed4d44beb045230a76116",
+      "contentHash": "89508bd6c1aee1ce009c6adaa2732f3de579ac59a0c50f7199bdd974c12a81d4",
       "declarations": [
         null
       ],
@@ -7013,7 +7013,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "ce851f1d467c34bc02b573d77d7dda7db43e0c3ca8d637e9e20f5647f67dc523",
+      "contentHash": "d5f6ef610a3d159e8bac7dc48f434facff2079f268cadc55af4717cc8bf92148",
       "declarations": [],
       "imports": [
         "./abort.js",
@@ -7028,7 +7028,7 @@
       ],
       "path": "src/util.js",
       "semanticBytes": 0,
-      "sourceBytes": 14363
+      "sourceBytes": 16256
     },
     {
       "blocks": [
@@ -7477,7 +7477,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "ef09ae7fac18332a664acd39e9d178635bba42cbc44a0b2177628b041abdd94b",
+      "contentHash": "7548aae8ca18cb6c81feaeda6afb7abc5a43e8f6d4903a94f8e0582280dfafed",
       "declarations": [],
       "imports": [
         "../src/config.js",
@@ -7486,6 +7486,7 @@
         "../src/project.js",
         "../src/util.js",
         "node:assert/strict",
+        "node:child_process",
         "node:fs/promises",
         "node:os",
         "node:path",
@@ -7493,7 +7494,7 @@
       ],
       "path": "tests/file-selection.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 6354
+      "sourceBytes": 9155
     },
     {
       "blocks": [],

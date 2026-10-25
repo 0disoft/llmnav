@@ -333,7 +333,7 @@ export function escapeRegExp(value) {
 }
 
 /**
- * Translate a repository-relative glob into a matcher.
+ * Match repository-relative globs without regular-expression backtracking.
  *
  * A pattern without "/" matches a file name at any depth, so the documented
  * defaults such as "*.min.js" also cover generated bundles in subdirectories.
@@ -342,41 +342,83 @@ export function escapeRegExp(value) {
  * "**" spans directories only when it occupies a whole path segment; anywhere
  * else it behaves like "*" and never crosses a separator.
  */
-export function globToRegExp(glob) {
-  const normalized = toPosix(glob);
-  const anchored = normalized.includes("/");
-  let pattern = anchored ? "^" : "(?:^|/)";
-  for (let index = 0; index < normalized.length; index += 1) {
-    const character = normalized[index];
+export function matchesAnyGlob(relativePath, patterns) {
+  const normalized = toPosix(relativePath);
+  return patterns.some((pattern) => matchGlob(normalized, toPosix(pattern)));
+}
+
+// Simulate the glob's finite states instead of backtracking over wildcard
+// partitions. Each path code point performs bounded passes over the tokens.
+function matchGlob(value, pattern) {
+  const tokens = globTokens(pattern);
+  const anchored = pattern.includes("/");
+  let active = new Uint8Array(tokens.length + 1);
+  let next = new Uint8Array(tokens.length + 1);
+  active[0] = 1;
+  expandGlobStates(active, tokens);
+  for (const character of value) {
+    next.fill(0);
+    if (!anchored && character === "/") next[0] = 1;
+    for (let index = 0; index < tokens.length; index++) {
+      if (!active[index]) continue;
+      const token = tokens[index];
+      if (token.kind === "star" && globCharacterMatches(token, character)) next[index] = 1;
+      else if ((token.kind === "character" && token.value === character) ||
+        (token.kind === "question" && character !== "/")) next[index + 1] = 1;
+    }
+    expandGlobStates(next, tokens);
+    [active, next] = [next, active];
+  }
+  return active[tokens.length] === 1;
+}
+
+function globTokens(pattern) {
+  const characters = [...pattern];
+  const tokens = [];
+  for (let index = 0; index < characters.length; index++) {
+    const character = characters[index];
     if (character === "*") {
-      const startsSegment = index === 0 || normalized[index - 1] === "/";
-      const after = normalized[index + 2];
-      if (normalized[index + 1] === "*" && startsSegment) {
+      const startsSegment = index === 0 || characters[index - 1] === "/";
+      const after = characters[index + 2];
+      if (characters[index + 1] === "*" && startsSegment) {
         if (after === "/") {
-          pattern += "(?:.*/)?";
+          // The skip bypasses the entire optional .*/ group, never a suffix
+          // of a consumed directory name. The star itself can exit only at /.
+          tokens.push({ kind: "skipDirectory" }, { kind: "star", directories: true }, { kind: "character", value: "/" });
           index += 2;
           continue;
         }
         if (after === undefined) {
-          pattern += ".*";
-          index += 1;
+          tokens.push({ kind: "star", directories: true });
+          index++;
           continue;
         }
       }
-      pattern += "[^/]*";
+      tokens.push({ kind: "star", directories: false });
     } else if (character === "?") {
-      pattern += "[^/]";
+      tokens.push({ kind: "question" });
     } else {
-      pattern += escapeRegExp(character);
+      tokens.push({ kind: "character", value: character });
     }
   }
-  pattern += "$";
-  return new RegExp(pattern, "u");
+  return tokens;
 }
 
-export function matchesAnyGlob(relativePath, patterns) {
-  const normalized = toPosix(relativePath);
-  return patterns.some((pattern) => globToRegExp(pattern).test(normalized));
+function expandGlobStates(states, tokens) {
+  for (let index = 0; index < tokens.length; index++) {
+    if (!states[index]) continue;
+    if (tokens[index].kind === "star") states[index + 1] = 1;
+    else if (tokens[index].kind === "skipDirectory") {
+      states[index + 1] = 1;
+      states[index + 3] = 1;
+    }
+  }
+}
+
+function globCharacterMatches(token, character) {
+  // Match the existing non-dotAll regexp semantics for **, including unusual
+  // POSIX filenames containing a line terminator. * and ? still match those.
+  return token.directories ? !/[\n\r\u2028\u2029]/u.test(character) : character !== "/";
 }
 
 export function parseJsonLines(text, sourceName = "JSONL") {
