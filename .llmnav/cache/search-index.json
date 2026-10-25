@@ -63,7 +63,7 @@
     "llmnav.support.runtime",
     "llmnav.syntax.parse"
   ],
-  "cardSetHash": "494e29d537beda7c5a22177bb017ea413982af390cfcb5e0162692639dd4165d",
+  "cardSetHash": "64d341191a5b0adf60c0b39e35e362778e88b1e49c9afffb77c41f4098a6dc78",
   "documentCount": 62,
   "documents": [
     [
@@ -177,7 +177,7 @@
       ]
     ],
     [
-      "6607391dadff3d967a91a7c8e45d591b03f10cdd5e695dc5db73caad580b4303",
+      "a9628a0d3cf3fde87ab32b47095202ef484d3b0046a038407499a9e4da8a0cd2",
       [
         "serve the stable agent tool schema and operation protocol over the model context protocol stdio transport.",
         "mcp server",
@@ -185,7 +185,7 @@
         "json rpc stdio",
         "agent tool transport",
         "session snapshot reuse",
-        "input failure cancels active requests and output waits, and owned transport listeners are released on exit.",
+        "input failure or frame overflow cancels active requests and output waits, and owned transport listeners are released on exit.",
         "json-rpc framing",
         "capability negotiation",
         "tool listing",
@@ -7242,6 +7242,15 @@
     ],
     [
       [
+        10,
+        [
+          5,
+          1
+        ]
+      ]
+    ],
+    [
+      [
         48,
         [
           4,
@@ -11863,6 +11872,13 @@
     ],
     [
       [
+        10,
+        [
+          5,
+          1
+        ]
+      ],
+      [
         19,
         [
           5,
@@ -12090,6 +12106,15 @@
         10,
         [
           1,
+          1
+        ]
+      ]
+    ],
+    [
+      [
+        10,
+        [
+          5,
           1
         ]
       ]
@@ -19617,6 +19642,7 @@
     "format",
     "formatter",
     "formatting",
+    "frame",
     "framework",
     "framing",
     "freshness",
@@ -19826,6 +19852,7 @@
     "outcomes",
     "output",
     "over",
+    "overflow",
     "overrides",
     "oversized",
     "own",

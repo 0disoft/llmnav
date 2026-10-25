@@ -75,6 +75,10 @@ export const SOURCE_LIMITS = Object.freeze({
   readChunkBytes: 64 * 1024,
 });
 
+export const MCP_TRANSPORT_LIMITS = Object.freeze({
+  maxFrameBytes: 1024 * 1024,
+});
+
 export const TOKEN_ESTIMATION = Object.freeze({
   asciiCharactersPerToken: 4,
   nonAsciiCodeUnitsPerToken: 1.8,

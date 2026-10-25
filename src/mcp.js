@@ -4,7 +4,7 @@ role=Serve the stable agent tool schema and operation protocol over the Model Co
 owns=JSON-RPC framing|capability negotiation|tool listing|tool call mapping|index snapshot reuse
 excludes=agent tool schemas|operation execution|provider SDK transport|index preparation
 search=mcp server|model context protocol|json rpc stdio|agent tool transport|session snapshot reuse
-invariant=Input failure cancels active requests and output waits, and owned transport listeners are released on exit.
+invariant=Input failure or frame overflow cancels active requests and output waits, and owned transport listeners are released on exit.
 rel=workflow>llmnav.agent.tool-schema
 rel=workflow>llmnav.agent.protocol
 stability=contract
@@ -13,6 +13,7 @@ stability=contract
 import { stat } from "node:fs/promises";
 import path from "node:path";
 import readline from "node:readline";
+import { Transform } from "node:stream";
 import { executeAgentOperation, getAgentToolDefinitions } from "./agent-protocol.js";
 import { createIoError, DEFAULT_REQUEST_TIMEOUT_MS, toErrorPayload, withDeadline } from "./errors.js";
 import { createProjectSession } from "./search.js";
@@ -21,6 +22,7 @@ import { abortable, assertAbortSignal, createAbortError, throwIfAborted } from "
 import { loadConfig } from "./config.js";
 import { createSourcePreparation } from "./mcp-refresh.js";
 import { MAX_TIMER_DELAY_MS } from "./runtime.js";
+import { MCP_TRANSPORT_LIMITS } from "./policy.js";
 
 export const MCP_PROTOCOL_VERSION = "2024-11-05";
 export const MCP_SERVER_NAME = "llmnav";
@@ -59,6 +61,9 @@ export function createMcpServer(options = {}) {
   return {
     status() { return sessionCache?.status() ?? { phase: "ready", error: null }; },
     async handleLine(line) {
+      if ((typeof line === "string" || Buffer.isBuffer(line)) && Buffer.byteLength(line) > MCP_TRANSPORT_LIMITS.maxFrameBytes) {
+        return failure(null, INVALID_REQUEST, oversizedFrameError().message);
+      }
       let message;
       try {
         message = JSON.parse(line);
@@ -304,7 +309,9 @@ export async function serveMcpStdio(options = {}) {
   const server = createMcpServer({ ...options, signal: controller.signal });
   const input = options.input ?? process.stdin;
   const output = options.output ?? process.stdout;
-  const reader = readline.createInterface({ input, crlfDelay: Infinity });
+  const framedInput = boundedFrameInput();
+  const framedInputClosed = new Promise(resolve => framedInput.once("close", resolve));
+  const reader = readline.createInterface({ input: framedInput, crlfDelay: Infinity });
   const stop = (reason) => { controller.abort(reason); reader.close(); };
   const onAbort = () => stop(createAbortError(options.signal));
   const onClose = () => stop(closedOutputError());
@@ -313,12 +320,15 @@ export async function serveMcpStdio(options = {}) {
     options.signal?.addEventListener("abort", onAbort);
     // The iterator cannot surface read failures while its body awaits a tool or drain.
     reader.on("error", onError);
+    framedInput.on("error", onError);
+    input.on("error", onError);
     output.on("close", onClose);
     output.on("error", onError);
     if (options.signal?.aborted) onAbort();
     if (output.destroyed || output.closed || output.writableEnded) onClose();
     if (input.errored) onError(input.errored);
     throwIfAborted(controller.signal);
+    input.pipe(framedInput);
     for await (const line of reader) {
       throwIfAborted(controller.signal);
       if (line.trim().length === 0) continue;
@@ -332,12 +342,41 @@ export async function serveMcpStdio(options = {}) {
   } finally {
     controller.abort();
     reader.close();
+    input.unpipe(framedInput);
+    framedInput.destroy();
+    await framedInputClosed;
+    input.removeListener("error", onError);
+    framedInput.removeListener("error", onError);
     reader.removeListener("error", onError);
     options.signal?.removeEventListener?.("abort", onAbort);
     output.removeListener("close", onClose);
     output.removeListener("error", onError);
   }
   return 0;
+}
+
+// This stream owns only its byte counter. Reject before readline retains or
+// decodes an oversized frame; CR, LF and split CRLF delimiters reset the budget.
+function boundedFrameInput() {
+  let bytes = 0;
+  return new Transform({
+    decodeStrings: false,
+    transform(chunk, _encoding, callback) {
+      const text = typeof chunk === "string";
+      for (const unit of chunk) {
+        const delimiter = text ? unit === "\r" || unit === "\n" : unit === 13 || unit === 10;
+        bytes = delimiter ? 0 : bytes + (text ? Buffer.byteLength(unit) : 1);
+        if (bytes > MCP_TRANSPORT_LIMITS.maxFrameBytes) return callback(oversizedFrameError());
+      }
+      callback(null, chunk);
+    },
+  });
+}
+
+function oversizedFrameError() {
+  return Object.assign(new Error(`MCP frame exceeds the ${MCP_TRANSPORT_LIMITS.maxFrameBytes}-byte input limit.`), {
+    code: "LLMNAV_MCP_FRAME_LIMIT",
+  });
 }
 
 function closedOutputError() {

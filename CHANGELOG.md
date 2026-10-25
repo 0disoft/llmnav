@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.16.7] — 2026-10-26
+
+### Fixed
+
+* Limit MCP request frames to 1 MiB of UTF-8 before readline can accumulate an oversized line. Reject unterminated oversized input without waiting for EOF or a request timeout, cancel active tools and output waits, and close the owned framing stream while preserving caller-owned streams. Preserve CR/LF framing and split UTF-8 decoding; direct handleLine calls reject oversized input before JSON parsing.
+
 ## [0.16.6] — 2026-10-26
 
 ### Fixed

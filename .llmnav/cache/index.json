@@ -1897,7 +1897,7 @@
         "source parsing"
       ],
       "hashes": {
-        "body": "89508bd6c1aee1ce009c6adaa2732f3de579ac59a0c50f7199bdd974c12a81d4",
+        "body": "67d368d2176bc8b8d47d3364f443731541fe0217823b7c8e66b1060d0e77732d",
         "semantic": "59aa3e9e793d505ecdf110fec023c201aaee0154d2f6c9cf71afe1bbf71a7be5",
         "structure": "e213e073414c75bc75df1c8669a7045096142b6c0845694191893d90bf23e3c2"
       },
@@ -2221,9 +2221,9 @@
         "index preparation"
       ],
       "hashes": {
-        "body": "1e0bb71596dcd04fccf4ac444fc263e7d5f849d87ec2214d2860ed4b6511b688",
-        "semantic": "fa125be5af3d3d34e59efaeabf1e2fe69270db0c0363290603cf479e17f84a7e",
-        "structure": "78e4d8d2614cbfb79ac3a7b19b1f3df4022a797dbb3dd967555bdc37b1a9861f"
+        "body": "94be853ab91fa0ef134b5868e92e0df49d85234f80c6e0329cbf17d7fb45a55a",
+        "semantic": "27353c21e442ab2e82f1729de2ce8d5050e2b297ca7e9f232f148945e717e6f7",
+        "structure": "a0d8880b7f51b2c27eaddd723978ca343a74453304ba725cc7ae530b2b301b0d"
       },
       "id": "llmnav.agent.mcp",
       "imports": [
@@ -2232,15 +2232,17 @@
         "./config.js",
         "./errors.js",
         "./mcp-refresh.js",
+        "./policy.js",
         "./runtime.js",
         "./search.js",
         "./spec.js",
         "node:fs/promises",
         "node:path",
-        "node:readline"
+        "node:readline",
+        "node:stream"
       ],
       "invariant": [
-        "Input failure cancels active requests and output waits, and owned transport listeners are released on exit."
+        "Input failure or frame overflow cancels active requests and output waits, and owned transport listeners are released on exit."
       ],
       "location": {
         "declarationLine": null,
@@ -2369,7 +2371,7 @@
         "agent transport"
       ],
       "hashes": {
-        "body": "bc2e1b53c47a5945b3d18614e17b231963f2d3aaeb9c024641fd24d3ba06cf19",
+        "body": "48ee33d835a2df5e8c204a2434c04bc7aaa790f975b92c5038426df936e59319",
         "semantic": "b244749b801867c5f8b291b42300ef51fa4bee7fb85c3630a0dcc3c346e54c95",
         "structure": "79d75218e26f6313afbe080aa88e5ab3e9fb12e97d17ac3c2168c1c1ccf0c935"
       },
@@ -3183,9 +3185,9 @@
     },
     "schemaVersion": 1
   },
-  "generatedBy": "llmnav@0.16.6",
+  "generatedBy": "llmnav@0.16.7",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "4c26a3b9b612b20c44f696bb36aa47abcaa41776cce13568210d8972d350ddfc",
+  "sourceHash": "ab09dd270efe75ceac2f2a99a7c7132a92201dfff4528d387637be5db26d9031",
   "specVersion": "1"
 }

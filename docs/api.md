@@ -419,6 +419,8 @@ await session.refresh(); // after generation or checkout changes
 
 The MCP server refreshes sessions when configuration, aliases, registry records, or generated search artifacts change. Its artifact stamp follows `generation.cacheDirectory`, including non-default cache locations. The stdio transport observes cancellation while idle or waiting for output drainage, closes its reader, and removes its listeners on every exit. A closed output ends the transport successfully; other output errors and cancellation reject the serving operation. Caller-owned streams remain under caller control.
 
+Each stdio request frame is limited to 1 MiB of UTF-8 bytes, excluding its CR/LF delimiter. The limit is enforced before line assembly, even without a delimiter or EOF. Overflow cancels active work and rejects `serveMcpStdio` with code `LLMNAV_MCP_FRAME_LIMIT`. Direct `handleLine` calls check the supplied line before JSON parsing and return JSON-RPC error `-32600` with a null ID on overflow.
+
 Pass `{ withPromptBundle: true }` to `createProjectSession` when a host needs prompt partitions and navigation from the same generation. The returned session exposes `promptBundle` and a content-derived `generationHash`; `refresh()` replaces both alongside the search snapshot. The hash identifies generated cache content, not whether ungenerated source edits exist in the working tree.
 
 Sessions prepare graph adjacency and traversal order once per snapshot for reuse by `query` and `context`. Refreshing prepares a new graph, and obsolete prepared state can be garbage-collected with the previous snapshot. Direct `queryIndex` and `queryPreparedIndex` calls do not cache caller-owned graphs, so in-place changes to supplied edges remain visible on the next call.

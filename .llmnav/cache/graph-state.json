@@ -683,6 +683,20 @@
         {
           "confidence": 0.85,
           "from": "llmnav/llmnav.agent.mcp",
+          "id": "c700b4196f8aa533b56f337def9cbc289c8cc5c7889c277742daa5f14a78e702",
+          "kind": "imports",
+          "provenance": {
+            "generator": "llmnav",
+            "line": null,
+            "path": "src/mcp.js",
+            "source": "src/mcp.js",
+            "type": "local-import"
+          },
+          "to": "llmnav/llmnav.support.policy"
+        },
+        {
+          "confidence": 0.85,
+          "from": "llmnav/llmnav.agent.mcp",
           "id": "d6f7734e9537c74a0d81520c913c21d1bc6ce369f089fab8c8ac502725517c0d",
           "kind": "imports",
           "provenance": {
@@ -695,7 +709,7 @@
           "to": "llmnav/llmnav.support.runtime"
         }
       ],
-      "inputHash": "c2d3548e124b523eff95b6470445b9e8754f16233cfb975d5687aa59607f04ab",
+      "inputHash": "3fa885c2ef57d68b88bad0053386dd27f753a24ee1cea5a54ba57d95d5c42240",
       "key": "card:llmnav/llmnav.agent.mcp",
       "nodes": [
         {
@@ -794,6 +808,15 @@
         {
           "definitions": [],
           "external": false,
+          "key": "llmnav/llmnav.support.policy",
+          "location": null,
+          "repositoryId": "llmnav",
+          "role": null,
+          "semanticId": "llmnav.support.policy"
+        },
+        {
+          "definitions": [],
+          "external": false,
           "key": "llmnav/llmnav.support.runtime",
           "location": null,
           "repositoryId": "llmnav",
@@ -801,7 +824,7 @@
           "semanticId": "llmnav.support.runtime"
         }
       ],
-      "outputHash": "ffe2115ed38a3ca4a41bb79f05f8280937fbe9669d7dea7092d39ef030b5e053"
+      "outputHash": "fc9879bc6d5638eca51acf912c6ae70459e8bad220312ed54d939dc17d303829"
     },
     {
       "edges": [

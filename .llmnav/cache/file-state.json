@@ -5214,7 +5214,7 @@
             ],
             "id": "llmnav.agent.mcp",
             "invariant": [
-              "Input failure cancels active requests and output waits, and owned transport listeners are released on exit."
+              "Input failure or frame overflow cancels active requests and output waits, and owned transport listeners are released on exit."
             ],
             "owns": [
               "JSON-RPC framing",
@@ -5240,7 +5240,7 @@
             "stability": "contract",
             "unknown": []
           },
-          "end": 649,
+          "end": 667,
           "endLine": 11,
           "entries": [
             {
@@ -5277,7 +5277,7 @@
               "key": "invariant",
               "line": 7,
               "order": 5,
-              "value": "Input failure cancels active requests and output waits, and owned transport listeners are released on exit."
+              "value": "Input failure or frame overflow cancels active requests and output waits, and owned transport listeners are released on exit."
             },
             {
               "key": "rel",
@@ -5302,7 +5302,7 @@
           "indent": "",
           "newline": "\n",
           "prefix": null,
-          "raw": "/* llmnav/1 module\nid=llmnav.agent.mcp\nrole=Serve the stable agent tool schema and operation protocol over the Model Context Protocol stdio transport.\nowns=JSON-RPC framing|capability negotiation|tool listing|tool call mapping|index snapshot reuse\nexcludes=agent tool schemas|operation execution|provider SDK transport|index preparation\nsearch=mcp server|model context protocol|json rpc stdio|agent tool transport|session snapshot reuse\ninvariant=Input failure cancels active requests and output waits, and owned transport listeners are released on exit.\nrel=workflow>llmnav.agent.tool-schema\nrel=workflow>llmnav.agent.protocol\nstability=contract\n*/",
+          "raw": "/* llmnav/1 module\nid=llmnav.agent.mcp\nrole=Serve the stable agent tool schema and operation protocol over the Model Context Protocol stdio transport.\nowns=JSON-RPC framing|capability negotiation|tool listing|tool call mapping|index snapshot reuse\nexcludes=agent tool schemas|operation execution|provider SDK transport|index preparation\nsearch=mcp server|model context protocol|json rpc stdio|agent tool transport|session snapshot reuse\ninvariant=Input failure or frame overflow cancels active requests and output waits, and owned transport listeners are released on exit.\nrel=workflow>llmnav.agent.tool-schema\nrel=workflow>llmnav.agent.protocol\nstability=contract\n*/",
           "scope": "module",
           "specVersion": "1",
           "start": 0,
@@ -5311,7 +5311,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "1e0bb71596dcd04fccf4ac444fc263e7d5f849d87ec2214d2860ed4b6511b688",
+      "contentHash": "94be853ab91fa0ef134b5868e92e0df49d85234f80c6e0329cbf17d7fb45a55a",
       "declarations": [
         null
       ],
@@ -5321,16 +5321,18 @@
         "./config.js",
         "./errors.js",
         "./mcp-refresh.js",
+        "./policy.js",
         "./runtime.js",
         "./search.js",
         "./spec.js",
         "node:fs/promises",
         "node:path",
-        "node:readline"
+        "node:readline",
+        "node:stream"
       ],
       "path": "src/mcp.js",
-      "semanticBytes": 649,
-      "sourceBytes": 14662
+      "semanticBytes": 667,
+      "sourceBytes": 16310
     },
     {
       "blocks": [
@@ -5786,14 +5788,14 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "bc2e1b53c47a5945b3d18614e17b231963f2d3aaeb9c024641fd24d3ba06cf19",
+      "contentHash": "48ee33d835a2df5e8c204a2434c04bc7aaa790f975b92c5038426df936e59319",
       "declarations": [
         null
       ],
       "imports": [],
       "path": "src/policy.js",
       "semanticBytes": 590,
-      "sourceBytes": 2645
+      "sourceBytes": 2732
     },
     {
       "blocks": [
@@ -6799,7 +6801,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "89508bd6c1aee1ce009c6adaa2732f3de579ac59a0c50f7199bdd974c12a81d4",
+      "contentHash": "67d368d2176bc8b8d47d3364f443731541fe0217823b7c8e66b1060d0e77732d",
       "declarations": [
         null
       ],
@@ -7709,6 +7711,23 @@
       "path": "tests/inverted-index.test.js",
       "semanticBytes": 0,
       "sourceBytes": 3552
+    },
+    {
+      "blocks": [],
+      "contentHash": "a3b0633dc3a7af2b1824a6d8642567d4266c0e48add698e8da0974d632a0da1d",
+      "declarations": [],
+      "imports": [
+        "../src/mcp.js",
+        "../src/policy.js",
+        "node:assert/strict",
+        "node:events",
+        "node:os",
+        "node:stream",
+        "node:test"
+      ],
+      "path": "tests/mcp-frame-limits.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 4526
     },
     {
       "blocks": [],

@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "targetVersion": "0.16.7",
+  "baselineCommit": "331cb485a30a9c2420042495b96b6826876aabb2",
+  "node": "v24.18.0",
+  "platform": "win32",
+  "fixture": {
+    "bytes": 4194304,
+    "chunkBytes": 65536,
+    "delimiter": false
+  },
+  "measurement": "Bytes delivered to readline for a 4 MiB unfinished frame. Baseline observed the original direct input stream before this edit; after-change observed the owned framing stream. Caller-allocated chunks and input-side buffering are excluded. No RSS or heap measurement.",
+  "before": {
+    "deliveredBytes": 4194304,
+    "settled": false
+  },
+  "after": {
+    "deliveredBytes": 1048576,
+    "error": "LLMNAV_MCP_FRAME_LIMIT",
+    "settled": true
+  },
+  "limitBytes": 1048576,
+  "complexity": "Per-frame line assembly is bounded by the frame budget; processing remains linear in received bytes. This is not a bound on caller-owned buffers or on a queue of multiple valid frames."
+}
