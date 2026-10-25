@@ -25,9 +25,9 @@ function analyze(request) {
     throw new Error("This adapter supports TypeScript Compiler API 5.x and 6.x. Native TypeScript 7 requires its own API adapter.");
   }
   const root = path.resolve(request.root);
-  const selected = new Set(request.files.map(file => path.resolve(file)));
+  const selectedPaths = request.files.map(file => path.resolve(file));
   let options = { target: ts.ScriptTarget.ESNext, module: ts.ModuleKind.NodeNext, moduleResolution: ts.ModuleResolutionKind.NodeNext, noEmit: true, skipLibCheck: true, types: [] };
-  let names = [...selected];
+  let names = selectedPaths;
   if (request.project) {
     const project = path.resolve(root, request.project);
     if (!inside(root, project)) throw new Error("TypeScript project must be inside the repository.");
@@ -36,9 +36,13 @@ function analyze(request) {
     const parsed = ts.parseJsonConfigFileContent(loaded.config, ts.sys, path.dirname(project));
     if (parsed.errors.length) throw new Error(parsed.errors.map(error => ts.flattenDiagnosticMessageText(error.messageText, "\n")).join("\n"));
     options = { ...parsed.options, noEmit: true, incremental: false };
-    names = parsed.fileNames.filter(file => selected.has(path.resolve(file)));
+    names = parsed.fileNames;
   }
   const host = ts.createCompilerHost(options);
+  // Compare file identities with the compiler's case rules, but emit scanner-owned spelling.
+  const fileKey = file => host.getCanonicalFileName(path.resolve(file));
+  const selected = new Map(selectedPaths.map(file => [fileKey(file), file]));
+  names = names.map(file => selected.get(fileKey(file))).filter(file => file !== undefined);
   const originalRead = host.readFile;
   const inputs = new Set();
   host.readFile = file => {
@@ -62,9 +66,9 @@ function analyze(request) {
   }));
   if (!request.allowErrors && diagnostics.some(error => error.category === "Error")) throw new Error(JSON.stringify(diagnostics));
   const declarations = [], references = [], bySymbol = new Map(), byDeclaration = new Map(), owners = new Map();
-  const sources = program.getSourceFiles().filter(source => selected.has(path.resolve(source.fileName)));
+  const sources = program.getSourceFiles().filter(source => selected.has(fileKey(source.fileName)));
   for (const source of sources) {
-    const module = { key: `${relative(source.fileName)}:module`, symbol: path.basename(source.fileName), path: relative(source.fileName), line: 1, offset: -1, kind: "module", qualified: "module" };
+    const module = { key: `${relative(source.fileName)}:module`, symbol: path.basename(relative(source.fileName)), path: relative(source.fileName), line: 1, offset: -1, kind: "module", qualified: "module" };
     declarations.push(module); owners.set(source, module.key);
     function definitions(node, scope) {
       let next = scope;
@@ -99,7 +103,7 @@ function analyze(request) {
     uses(source);
   }
   return { compiler: { name: "typescript", version: ts.version }, declarations, references, diagnostics, inputs: [...inputs].map(relative) };
-  function relative(file) { return path.relative(root, file).split(path.sep).join("/"); }
+  function relative(file) { return path.relative(root, selected.get(fileKey(file)) ?? file).split(path.sep).join("/"); }
   function isCallTarget(node) {
     let expression = node;
     if (ts.isPropertyAccessExpression(node.parent) && node.parent.name === node) expression = node.parent;

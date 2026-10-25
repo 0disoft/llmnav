@@ -25,6 +25,28 @@ async function fixture(context, files) {
 }
 const card = "/* llmnav/1 symbol\nid=auth.session.rotate\nrole=Rotate a session token.\nsearch=rotate session|session token\nstability=contract\n*/\n";
 
+test("TypeScript preserves definitions and card bindings when Windows tsconfig casing differs", { skip: process.platform !== "win32" }, async context => {
+  const options = { compilerOptions: { module: "NodeNext", moduleResolution: "NodeNext", target: "ES2022", types: [] }, files: ["src/lib.mts", "src/main.mts"] };
+  const root = await fixture(context, {
+    "src/lib.mts": `${card}export function rotate(token: string) { return token; }\n`,
+    "src/main.mts": "import { rotate } from './lib.mjs';\nexport function invoke() { return rotate('ok'); }\n",
+    "tsconfig.json": JSON.stringify(options),
+  });
+  const canonical = await analyzeProject(root, { language: "typescript", project: "tsconfig.json" });
+  options.files = ["SRC/LIB.mts", "Src/MAIN.mts"];
+  await writeFile(path.join(root, "tsconfig.json"), JSON.stringify(options));
+  const varied = await analyzeProject(root, { language: "typescript", project: "tsconfig.json" });
+  assert.ok(canonical.graph.definitions.length > 0);
+  assert.equal(canonical.counts.cardBindings, 1);
+  assert.deepEqual(varied.graph.definitions, canonical.graph.definitions);
+  assert.deepEqual(varied.graph.references, canonical.graph.references);
+  assert.equal(varied.counts.cardBindings, 1);
+  assert.deepEqual(varied.diagnostics, canonical.diagnostics);
+  const caller = varied.graph.definitions.find(item => item.symbol === "invoke");
+  assert.ok(varied.graph.references.some(edge => edge.from === caller.id && edge.to === "auth.session.rotate" && edge.kind === "calls"));
+  context.diagnostic(JSON.stringify({ sourceFiles: 2, definitions: varied.counts.definitions, references: varied.counts.references, cardBindings: varied.counts.cardBindings }));
+});
+
 test("TypeScript resolves renamed imports and shadowed symbols with fresh compiler provenance", async context => {
   const root = await fixture(context, {
     "wrappers.mts": "import { rotate } from './lib.mjs';\nexport function wrapped() { return (rotate)('ok'); }\nexport function referenceOnly() { return rotate; }\n",

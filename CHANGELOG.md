@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.16.12] — 2026-10-26
+
+### Fixed
+
+* Match selected TypeScript files using the compiler host's canonical filename rules. Windows tsconfig paths with different casing no longer silently produce an empty analysis. Preserve scanner-owned path spelling in compiler roots, definitions, module names and diagnostics so source-card bindings and generated semantic IDs remain stable. Cover a two-source fixture whose five definitions, five references and one card binding match the canonical-casing result.
+
 ## [0.16.11] — 2026-10-26
 
 ### Fixed
