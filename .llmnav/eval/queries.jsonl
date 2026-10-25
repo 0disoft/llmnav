@@ -29,3 +29,5 @@
 {"query":"find source declarations before writing semantic cards","expected":["llmnav.search.discover"]}
 {"query":"resolve precise TypeScript and Go references using compiler adapters","expected":["llmnav.structure.analyze"]}
 {"query":"compare real TypeScript and Go source navigation with rg and precise discovery","expected":["llmnav.eval.real-navigation"]}
+{"query":"compare Serena semantic symbol lookup on real source","expected":["llmnav.eval.serena-navigation"]}
+{"query":"grade actual model coding tasks with hidden acceptance tests","expected":["llmnav.eval.model-coding"]}

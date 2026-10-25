@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.15.3] — 2026-10-25
+
+### Evaluation
+
+* Add reproducible Serena symbol lookup and controlled model coding pilots on copied TypeScript and Go production source, with mutation controls, independent acceptance checks and sanitized tool metadata.
+
 ## [0.15.2] — 2026-10-23
 
 ### Fixed

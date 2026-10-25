@@ -1388,6 +1388,34 @@
     },
     {
       "confidence": 0.85,
+      "from": "llmnav/llmnav.eval.model-coding",
+      "id": "917563c88d1a006179d04fb9c0f5fc91e2f04c32fdc6361c8d2e1f112c9d012a",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "benchmarks/model-coding.js",
+        "source": "benchmarks/model-coding.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.eval.real-navigation"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.eval.model-coding",
+      "id": "8155bdb06a425dcddf7bbe65ad9266b1f2b523bc002b6cedf14a13345a2ddd52",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "benchmarks/model-coding.js",
+        "source": "benchmarks/model-coding.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.spec.contract"
+    },
+    {
+      "confidence": 0.85,
       "from": "llmnav/llmnav.eval.real-navigation",
       "id": "ca2fdbf7c4df7555fb50eca68326a704c3158ad0dec80803803ff91c61af5982",
       "kind": "imports",
@@ -1497,6 +1525,20 @@
         "type": "local-import"
       },
       "to": "llmnav/llmnav.structure.compiler-process"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.eval.serena-navigation",
+      "id": "111f4ead1652b7e01a520ea93d243487db6e1fdd89f854827f7c60330b23b56e",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "benchmarks/serena-navigation.js",
+        "source": "benchmarks/serena-navigation.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.eval.real-navigation"
     },
     {
       "confidence": 1,
@@ -4185,6 +4227,28 @@
     {
       "definitions": [],
       "external": false,
+      "key": "llmnav/llmnav.eval.model-coding",
+      "location": {
+        "declarationLine": null,
+        "endLine": 9,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "benchmarks/model-coding.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Grade actual model edits on isolated mutated real source with acceptance tests unavailable in the model workspace.",
+      "semanticId": "llmnav.eval.model-coding",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
       "key": "llmnav/llmnav.eval.real-navigation",
       "location": {
         "declarationLine": null,
@@ -4202,6 +4266,28 @@
       "repositoryId": "llmnav",
       "role": "Measure repeatable source navigation tasks on copied real TypeScript and Go code without altering original repositories.",
       "semanticId": "llmnav.eval.real-navigation",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
+      "key": "llmnav/llmnav.eval.serena-navigation",
+      "location": {
+        "declarationLine": null,
+        "endLine": 9,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "benchmarks/serena-navigation.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Compare semantic lookup on copied real source using Serena and the frozen declaration oracles.",
+      "semanticId": "llmnav.eval.serena-navigation",
       "unresolved": false
     },
     {
@@ -4955,11 +5041,11 @@
   ],
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "6c89d2dcf97e6a2a53a527e623a61a3c5cb9da541fbc0f3822917cc8952fd1c7",
+  "sourceHash": "e77398fdd5eacf7c2e278042166a39cdb31d94e5e9d2f4fbfbb5ff21914e23e3",
   "stats": {
-    "edgeCount": 255,
+    "edgeCount": 258,
     "importedIndexCount": 0,
-    "nodeCount": 60,
+    "nodeCount": 62,
     "unresolvedNodeCount": 0
   }
 }

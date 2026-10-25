@@ -251,3 +251,15 @@ owns real-source corpus provenance, retrieval condition comparison, index mainte
 excludes model coding success claims, human authoring time estimates, original source mutation
 invariant Candidate retrieval measurements never stand in for model task completion or unmeasured human maintenance.
 rel workflow>llmnav.structure.analyze
+
+@llmnav.eval.model-coding
+role Grade actual model edits on isolated mutated real source with acceptance tests unavailable in the model workspace.
+owns coding outcome oracles, condition rotation, sanitized tool traces, model usage accounting
+excludes production source modification, sealed holdout claims, self-reported success grading
+invariant Every scored mutation first passes a pristine-positive and mutant-negative oracle control.
+
+@llmnav.eval.serena-navigation
+role Compare semantic lookup on copied real source using Serena and the frozen declaration oracles.
+owns Serena retrieval measurements, symbol input mapping, external tool provenance
+excludes model coding outcomes, timing superiority claims
+invariant Tool failures remain failed observations and never become substitute text searches.

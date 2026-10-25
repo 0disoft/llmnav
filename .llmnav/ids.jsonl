@@ -58,3 +58,5 @@
 {"id":"llmnav.structure.analyze","state":"active"}
 {"id":"llmnav.structure.go-worker","state":"active"}
 {"id":"llmnav.eval.real-navigation","state":"active"}
+{"id":"llmnav.eval.model-coding","state":"active"}
+{"id":"llmnav.eval.serena-navigation","state":"active"}

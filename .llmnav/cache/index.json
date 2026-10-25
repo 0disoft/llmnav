@@ -1895,7 +1895,7 @@
         "source parsing"
       ],
       "hashes": {
-        "body": "04b7d4bcf1baf7d27135117d4c3f94f46c60faded5cc9054debb9d31bcab4ff0",
+        "body": "45587b644a380d9053dfa39f9b89401be16062d74e1b65347de507ef7af3a169",
         "semantic": "59aa3e9e793d505ecdf110fec023c201aaee0154d2f6c9cf71afe1bbf71a7be5",
         "structure": "e213e073414c75bc75df1c8669a7045096142b6c0845694191893d90bf23e3c2"
       },
@@ -2997,7 +2997,7 @@
         "original source mutation"
       ],
       "hashes": {
-        "body": "b35dc89f75d1179ed2814e1f93252b25c82933cc6e9693051130ae37082e77de",
+        "body": "ebb8ed9ccd1b7c09a39050a92d4a77cd79b2dff3db89047c0fbfaeca72e79b48",
         "semantic": "9a2e5bf028db47b4acce826b182866cee851464357c1de84507f90b023703c37",
         "structure": "c0f116b9f72b14bd866f8b6d6b443b1701ed2a66e465a45af11d0ece1de1bfa7"
       },
@@ -3052,11 +3052,124 @@
         "retrieval time evaluation"
       ],
       "stability": "architecture"
+    },
+    {
+      "boundaries": [],
+      "excludes": [
+        "production source modification",
+        "sealed holdout claims",
+        "self-reported success grading"
+      ],
+      "hashes": {
+        "body": "3b233612b7833739d777a918fcf05cc6d34ffbe2ef10467af42bd198b4c9f03a",
+        "semantic": "e2dd4b3590091b64555ca578c16c854505ebd7cbdc9019ad5572958855a87c85",
+        "structure": "b8cebc3556a8d558fad6e758d11acb3b001f4db6dc2faa395dba438c3b7ca734"
+      },
+      "id": "llmnav.eval.model-coding",
+      "imports": [
+        "../src/spec.js",
+        "../src/util.js",
+        "./coding-cases.js",
+        "./evaluation-corpus.js",
+        "./mcp-client.js",
+        "./real-navigation.js",
+        "node:assert/strict",
+        "node:child_process",
+        "node:fs/promises",
+        "node:os",
+        "node:path",
+        "node:perf_hooks",
+        "node:url"
+      ],
+      "invariant": [
+        "Every scored mutation first passes a pristine-positive and mutant-negative oracle control."
+      ],
+      "location": {
+        "declarationLine": null,
+        "endLine": 9,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "benchmarks/model-coding.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "owns": [
+        "coding outcome oracles",
+        "condition rotation",
+        "sanitized tool traces",
+        "model usage accounting"
+      ],
+      "role": "Grade actual model edits on isolated mutated real source with acceptance tests unavailable in the model workspace.",
+      "scope": "module",
+      "search": [
+        "model coding evaluation",
+        "Serena agent comparison",
+        "baseline coding trial"
+      ],
+      "stability": "architecture"
+    },
+    {
+      "boundaries": [],
+      "excludes": [
+        "model coding outcomes",
+        "timing superiority claims"
+      ],
+      "hashes": {
+        "body": "e2fce06ee31fcd9eec732dedbddc0c4db3e1272a65c7ba995cfd9b884c0710e9",
+        "semantic": "8e3004e90ad8a8741fd1177b75d8b3c1d781ea1b84ffc47de0343ef3012e3c36",
+        "structure": "0647963110c6e0324ea36e4b0cc1897570ebcec7f1f33a3688ad19aa40a233c7"
+      },
+      "id": "llmnav.eval.serena-navigation",
+      "imports": [
+        "../src/util.js",
+        "./evaluation-corpus.js",
+        "./mcp-client.js",
+        "./real-navigation.js",
+        "node:assert/strict",
+        "node:fs/promises",
+        "node:os",
+        "node:path",
+        "node:perf_hooks",
+        "node:url"
+      ],
+      "invariant": [
+        "Tool failures remain failed observations and never become substitute text searches."
+      ],
+      "location": {
+        "declarationLine": null,
+        "endLine": 9,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "benchmarks/serena-navigation.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "owns": [
+        "Serena retrieval measurements",
+        "symbol input mapping",
+        "external tool provenance"
+      ],
+      "role": "Compare semantic lookup on copied real source using Serena and the frozen declaration oracles.",
+      "scope": "module",
+      "search": [
+        "Serena comparison",
+        "semantic lookup evaluation",
+        "language server benchmark"
+      ],
+      "stability": "architecture"
     }
   ],
   "contractFingerprints": {
     "configuration": {
-      "sha256": "5388fc5b2bafbf044a0ba52b5654dc137d7aaaa74f66931ddd6a334135a1d562"
+      "sha256": "bfe82e5e909dcfcd3a5fd448d0ad49d9dbc1834f73cca088cb16df7a44f5f16c"
     },
     "exportedApi": {
       "count": 5,
@@ -3064,9 +3177,9 @@
     },
     "schemaVersion": 1
   },
-  "generatedBy": "llmnav@0.15.2",
+  "generatedBy": "llmnav@0.15.3",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "72f40cc31246fc2e61449dbdddfed5dd3821e2b749c85ba2d4ae54d7be747ab9",
+  "sourceHash": "0adb377ef32e123a42cf4e4cb8b8c56909cefa7185aad40743c120f71782f659",
   "specVersion": "1"
 }

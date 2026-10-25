@@ -58,3 +58,5 @@ llmnav.structure.typescript
 llmnav.structure.typescript-worker
 llmnav.structure.go-worker
 llmnav.eval.real-navigation
+llmnav.eval.model-coding
+llmnav.eval.serena-navigation

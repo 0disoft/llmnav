@@ -157,7 +157,7 @@ export function summarizeMeasurements(rows, condition) {
     inspectedSourceBytes: rows.reduce((sum,row)=>sum+row.inspectedSourceBytes,0),
     toolCalls: rows.reduce((sum,row)=>sum+row.toolCalls,0) };
 }
-async function copyCorpus(original, target, entry) {
+export async function copyCorpus(original, target, entry) {
   const records = [];
   async function visit(relative) {
     const entries = await readdir(path.join(original, relative), { withFileTypes: true });
@@ -176,8 +176,8 @@ async function copyCorpus(original, target, entry) {
   for (const source of entry.sourceRoots) await visit(source);
   return records.sort((a,b)=>compareText(a.path,b.path));
 }
-async function readOriginals(root, records) { const output=[]; for (const record of records) output.push({ path:record.path, text:await readFile(path.join(root,record.path),"utf8") }); return output; }
-function digest(sources) { return sha256(JSON.stringify(sources.map(file=>[file.path,sha256(file.text)]))); }
+export async function readOriginals(root, records) { const output=[]; for (const record of records) output.push({ path:record.path, text:await readFile(path.join(root,record.path),"utf8") }); return output; }
+export function digest(sources) { return sha256(JSON.stringify(sources.map(file=>[file.path,sha256(file.text)]))); }
 function version(command,args) { const result=spawnSync(command,args,{encoding:"utf8",windowsHide:true,shell:false,timeout:10000}); if(result.status!==0) throw new Error(result.stderr||"Version unavailable"); return result.stdout.trim(); }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
