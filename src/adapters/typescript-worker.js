@@ -77,13 +77,21 @@ function analyze(request) {
       if (node.name && ts.isIdentifier(node.name) && isDeclaration(node)) {
         let symbol = checker.getSymbolAtLocation(node.name);
         if (symbol && !bySymbol.has(symbol)) {
+          const declaration = (ts.isFunctionDeclaration(node) || ts.isMethodDeclaration(node))
+            ? symbol.declarations?.find(candidate => candidate.kind === node.kind && candidate.body && candidate.getSourceFile() === source) ?? node
+            : node;
           const kind = ts.SyntaxKind[node.kind];
-          const key = `${relative(source.fileName)}:${node.getStart(source)}`;
+          const key = `${relative(source.fileName)}:${declaration.getStart(source)}`;
           const qualified = `${scope}/${kind}:${node.name.text}`;
           const display = (ts.isMethodDeclaration(node) || ts.isMethodSignature(node)) && node.parent.name ? `${node.parent.name.text}.${node.name.text}` : node.name.text;
-          const record = { key, symbol: node.name.text, display, path: relative(source.fileName), line: source.getLineAndCharacterOfPosition(node.name.getStart(source)).line + 1, offset: node.getStart(source), kind, qualified, parent: nearestOwner(node.parent) };
-          declarations.push(record); bySymbol.set(symbol, key); byDeclaration.set(node, key); owners.set(node, key); next = qualified;
-        } else if (symbol) { owners.set(node, bySymbol.get(symbol)); next = `${scope}/${node.name.text}`; }
+          const record = { key, symbol: node.name.text, display, path: relative(source.fileName), line: source.getLineAndCharacterOfPosition(declaration.name.getStart(source)).line + 1, offset: declaration.getStart(source), kind, qualified, parent: nearestOwner(node.parent) };
+          // Retain card attachment to the first signature when the implementation has no card.
+          if (declaration !== node) {
+            record.signatureOffset = node.getStart(source);
+            record.signatureLine = source.getLineAndCharacterOfPosition(node.name.getStart(source)).line + 1;
+          }
+          declarations.push(record); bySymbol.set(symbol, key); byDeclaration.set(node, key); byDeclaration.set(declaration, key); owners.set(node, key); next = qualified;
+        } else if (symbol) { byDeclaration.set(node, bySymbol.get(symbol)); owners.set(node, bySymbol.get(symbol)); next = `${scope}/${node.name.text}`; }
       }
       ts.forEachChild(node, child => definitions(child, next));
     }

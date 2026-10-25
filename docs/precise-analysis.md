@@ -48,6 +48,8 @@ Results include compiler identity/version, diagnostics, counts, and a graph inpu
 
 An exactly attached reviewed card retains its existing ID. Other definitions receive `code.ts.s<hash>` or `code.go.s<hash>` IDs derived from source identity. They are generated navigation identifiers; moving or renaming unannotated code can change them. Business invariants and effects are never inferred or written into source comments.
 
+TypeScript overloads share one definition per compiler symbol. Functions and methods with an implementation use its source location. An implementation-attached card takes precedence; a card on the first signature remains supported when the implementation has no card. Declaration-only overload groups retain their first signature location.
+
 Errors abort analysis before output replacement by default. `--allow-errors` explicitly permits partial type information, reports diagnostics and lowers reference confidence to 0.8. Syntax, dependency-export or configuration errors can still make analysis impossible. Subprocesses have bounded output and deadlines, and API callers may supply `signal` and `timeoutMs`.
 
 ```js

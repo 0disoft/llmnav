@@ -25,6 +25,63 @@ async function fixture(context, files) {
 }
 const card = "/* llmnav/1 symbol\nid=auth.session.rotate\nrole=Rotate a session token.\nsearch=rotate session|session token\nstability=contract\n*/\n";
 
+test("TypeScript binds overloaded implementations to reviewed cards and call edges", async context => {
+  const lib = "function helper(token: string | number) { return token; }\n" +
+    "export function rotate(token: string): string;\nexport function rotate(token: number): number;\n" +
+    `${card}export function rotate(token: string | number) { return helper(token); }\n` +
+    "export class Session<T> {\n  rotate(token: string): string;\n  rotate(token: T): T;\n" +
+    "  rotate(token: string | T) { return token; }\n}\n";
+  const root = await fixture(context, {
+    "lib.mts": lib,
+    "ambient.d.mts": "export declare function ambient(token: string): string;\nexport declare function ambient(token: number): number;\n",
+    "main.mts": "import { rotate as renamed, Session } from './lib.mjs';\nimport { ambient } from './ambient.mjs';\n" +
+      "export function invoke() { return renamed('ok'); }\nexport function invokeNumber() { return renamed(1); }\n" +
+      "export function methodString() { return new Session<number>().rotate('ok'); }\nexport function methodNumber() { return new Session<number>().rotate(1); }\n" +
+      "export function ambientCall() { return ambient(1); }\n",
+  });
+  const result = await analyzeProject(root, { language: "typescript" });
+  const definitions = result.graph.definitions;
+  const method = definitions.find(item => item.symbol === "Session.rotate");
+  const incoming = ["invoke", "invokeNumber", "methodString", "methodNumber"].map(name => {
+    const caller = definitions.find(item => item.symbol === name);
+    const target = name.startsWith("method") ? method.id : "auth.session.rotate";
+    return result.graph.references.some(edge => edge.from === caller.id && edge.to === target && edge.kind === "calls");
+  });
+  context.diagnostic(JSON.stringify({ cardBindings: result.counts.cardBindings, incomingFunctionCalls: incoming.slice(0, 2).filter(Boolean).length, incomingMethodCalls: incoming.slice(2).filter(Boolean).length }));
+  assert.equal(result.counts.cardBindings, 1);
+  assert.deepEqual(incoming, [true, true, true, true]);
+  for (const [symbol, id, implementation] of [["rotate", "auth.session.rotate", "export function rotate(token: string | number)"], ["Session.rotate", method.id, "  rotate(token: string | T)"]]) {
+    const matches = definitions.filter(item => item.symbol === symbol);
+    assert.equal(matches.length, 1);
+    assert.equal(matches[0].id, id);
+    assert.equal(matches[0].line, lib.slice(0, lib.indexOf(implementation)).split("\n").length);
+  }
+  const helper = definitions.find(item => item.symbol === "helper");
+  assert.ok(result.graph.references.some(edge => edge.from === "auth.session.rotate" && edge.to === helper.id && edge.kind === "calls"));
+  const ambient = definitions.filter(item => item.symbol === "ambient");
+  assert.equal(ambient.length, 1);
+  assert.equal(ambient[0].line, 1);
+  const ambientCaller = definitions.find(item => item.symbol === "ambientCall");
+  assert.ok(result.graph.references.some(edge => edge.from === ambientCaller.id && edge.to === ambient[0].id && edge.kind === "calls"));
+  assert.deepEqual((await analyzeProject(root, { language: "typescript" })).graph, result.graph);
+  normalizeGraphInput(result.graph);
+  await writeAnalysis(root, ".llmnav/imports/code.json", result);
+  assert.equal((await generateProject(root)).ok, true);
+  const precise = (await discoverProject(root, "rotate", { precise: true, top: 10 })).results.find(item => item.id === "compiler-fixture/auth.session.rotate");
+  assert.equal(precise.source, "compiler");
+  assert.equal(precise.line, definitions.find(item => item.id === "auth.session.rotate").line);
+  assert.equal((await showProjectCard(root, "auth.session.rotate")).card.id, "auth.session.rotate");
+  const signatureCard = lib.replace(card, "").replace("export function rotate(token: string): string;", `${card}export function rotate(token: string): string;`);
+  await writeFile(path.join(root, "lib.mts"), signatureCard);
+  const legacy = await analyzeProject(root, { language: "typescript" });
+  assert.equal(legacy.counts.cardBindings, 1);
+  assert.equal(legacy.graph.definitions.find(item => item.id === "auth.session.rotate").line, precise.line);
+  for (const name of ["invoke", "invokeNumber"]) {
+    const caller = legacy.graph.definitions.find(item => item.symbol === name);
+    assert.ok(legacy.graph.references.some(edge => edge.from === caller.id && edge.to === "auth.session.rotate" && edge.kind === "calls"));
+  }
+});
+
 test("TypeScript invalidates compiler graphs when an extended configuration changes", async context => {
   const root = await fixture(context, {
     "first.mts": `${card}export function rotate(token: string) { return token; }\n`,

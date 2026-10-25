@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.16.14] — 2026-10-26
+
+### Fixed
+
+* Prefer the implementation declaration when TypeScript overloads share a compiler symbol, restoring reviewed implementation-card bindings, call targets and implementation source locations. Preserve first-signature card bindings when the implementation has no card and keep declaration-only overloads anchored to the first signature. Map every overload declaration to its existing symbol identity, including instantiated generic methods. Cover renamed imports, both overload call forms, outgoing implementation calls, deterministic output and precise discovery without changing the graph schema.
+
 ## [0.16.13] — 2026-10-26
 
 ### Fixed

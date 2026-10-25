@@ -71,8 +71,12 @@ function connectDefinitions(project, raw, language, sourceHashes) {
   const definitionIds = new Set();
   const declarations = [...raw.declarations].sort((left, right) => compareText(left.path, right.path) || left.offset - right.offset || compareText(left.key, right.key));
   for (const item of declarations) {
-    const matches = item.kind === "module" ? modules.get(item.path) ?? [] :
-      (symbols.get(`${item.path}:${item.symbol}`) ?? []).filter(record => record.declaration.offset === item.offset || record.declaration.line === item.line);
+    const candidates = symbols.get(`${item.path}:${item.symbol}`) ?? [];
+    let matches = item.kind === "module" ? modules.get(item.path) ?? [] :
+      candidates.filter(record => record.declaration.offset === item.offset || record.declaration.line === item.line);
+    if (matches.length === 0 && item.signatureOffset !== undefined) {
+      matches = candidates.filter(record => record.declaration.offset === item.signatureOffset || record.declaration.line === item.signatureLine);
+    }
     const identity = `${language}:${item.path}:${item.qualified}`;
     const occurrence = occurrences.get(identity) ?? 0; occurrences.set(identity, occurrence + 1);
     const id = matches.length === 1 ? matches[0].card.id : `code.${language === "go" ? "go" : "ts"}.s${sha256(`${identity}:${occurrence}`).slice(0, 32)}`;

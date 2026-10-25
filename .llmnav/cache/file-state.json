@@ -2098,7 +2098,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "32cecc0bebc6e9aa76f5d4a318e2e4d28eeaf4ba1abe075e12194985f8be61fc",
+      "contentHash": "d3cc6d1dcadd84dbd47e778a0581875b8312fcb92503d9e3e84d5a8194a973a5",
       "declarations": [
         null
       ],
@@ -2110,7 +2110,7 @@
       ],
       "path": "src/adapters/typescript-worker.js",
       "semanticBytes": 546,
-      "sourceBytes": 9981
+      "sourceBytes": 10666
     },
     {
       "blocks": [
@@ -2655,7 +2655,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "161f806965906a1874bf7d8c9d102ec0c6e31527a911540b170a6e550b90d849",
+      "contentHash": "db1b5bdab4a8498a4d3ac5e956e81118df4e900f912697177681dde08c757048",
       "declarations": [
         null
       ],
@@ -2672,7 +2672,7 @@
       ],
       "path": "src/analysis.js",
       "semanticBytes": 632,
-      "sourceBytes": 7075
+      "sourceBytes": 7329
     },
     {
       "blocks": [
@@ -6815,7 +6815,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "2b2170fe2b319494a17b3741195516d3c6e8fe8cad60a1983835b685bf658d24",
+      "contentHash": "af104c608fb70c21dd10a29aba49c5028992d750f1e2d3e4631c9d0c1f6b6995",
       "declarations": [
         null
       ],
@@ -7230,7 +7230,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "71b0409626b51e26b7bf932ebef502951769c311e7e75d62f63cb4e1d2d28164",
+      "contentHash": "450481df80213fc97e2c558babd98edb7409372f11427dfe7b281c7080d71f52",
       "declarations": [],
       "imports": [
         "../src/adapters/go.js",
@@ -7249,7 +7249,7 @@
       ],
       "path": "tests/analysis.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 19560
+      "sourceBytes": 24049
     },
     {
       "blocks": [],
