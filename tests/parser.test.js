@@ -4,6 +4,59 @@ import { Script } from "node:vm";
 import { canonicalizeSource, formatLlmnavBlock, parseLlmnavBlocks } from "../src/parser.js";
 import { findAttachedDeclaration } from "../src/declaration.js";
 
+test("comment placement does not rescan a shared long-line prefix", (context) => {
+  for (const [open, close, filePath] of [["/*", "*/", "long.js"], ["<!--", "-->", "long.html"]]) {
+    for (const prefixCharacter of ["x", " "]) {
+      const count = 1000;
+      const prefix = prefixCharacter.repeat(100_000);
+      const comment = `${open} llmnav/1 module ${close}`;
+      const source = prefix + comment.repeat(count);
+      const originalLastIndexOf = String.prototype.lastIndexOf;
+      const originalTest = RegExp.prototype.test;
+      let backwardSearchUnits = 0, longPrefixChecks = 0, whitespaceChecks = 0, blocks;
+      try {
+        String.prototype.lastIndexOf = function (needle, position) {
+          const found = originalLastIndexOf.call(this, needle, position);
+          if (needle === "\n" && this.length === source.length) backwardSearchUnits += Math.max(0, position - found);
+          return found;
+        };
+        RegExp.prototype.test = function (value) {
+          if (this.source === "^\\s*$" && typeof value === "string" && value.length >= prefix.length) longPrefixChecks++;
+          if (this.source === "\\s" && typeof value === "string" && value.length === 1) whitespaceChecks++;
+          return originalTest.call(this, value);
+        };
+        blocks = parseLlmnavBlocks(source, filePath);
+      } finally {
+        String.prototype.lastIndexOf = originalLastIndexOf;
+        RegExp.prototype.test = originalTest;
+      }
+      assert.equal(blocks.length, count);
+      assert.equal(blocks[0].start, prefixCharacter === " " ? 0 : prefix.length);
+      assert.equal(blocks[0].indent, prefixCharacter === " " ? prefix : "");
+      assert.equal(blocks.at(-1).start, prefix.length + (count - 1) * comment.length);
+      assert.equal(blocks.at(-1).end, source.length);
+      assert.ok(blocks.every(block => block.startLine === 1 && block.endLine === 1));
+      context.diagnostic(JSON.stringify({ filePath, prefixCharacter, sourceUnits: source.length, backwardSearchUnits, longPrefixChecks, whitespaceChecks }));
+      assert.ok(backwardSearchUnits < source.length * 4, `Rescanned ${backwardSearchUnits} units for ${source.length}-unit source`);
+      assert.ok(longPrefixChecks <= 1, `Rechecked the shared prefix ${longPrefixChecks} times`);
+      assert.ok(whitespaceChecks < source.length * 4, `Checked whitespace ${whitespaceChecks} times for ${source.length}-unit source`);
+    }
+  }
+});
+
+test("comment placement preserves mixed-style indentation and unterminated offsets", () => {
+  const html = "<!-- llmnav/1 module -->";
+  const block = "/* llmnav/1 module */";
+  const firstLine = `\r\n\t\u2003${html} ${block}\r\n`;
+  const source = firstLine + " \t/* llmnav/1 symbol\nid=fixture.open\n";
+  const blocks = parseLlmnavBlocks(source, "mixed.html");
+  assert.deepEqual(blocks.map(item => item.start), [2, 4 + html.length + 1, firstLine.length]);
+  assert.deepEqual(blocks.map(item => item.indent), ["\t\u2003", "", " \t"]);
+  assert.deepEqual(blocks.map(item => item.startLine), [2, 2, 3]);
+  assert.deepEqual(blocks.map(item => item.raw), ["\t\u2003" + html, block, source.slice(firstLine.length)]);
+  assert.ok(blocks.at(-1).syntaxErrors.some(error => error.message === "Block-comment LLMNav blocks must end with */."));
+});
+
 test("canonicalization assembles many edits without repeatedly slicing the whole source", (context) => {
   const source = Array.from({ length: 500 }, (_, index) =>
     `// ${"x".repeat(512)}\n/* llmnav/1 module\nrole=Own a stable fixture boundary.\nid=fixture.card.${index}\nstability=architecture\n*/\n`).join("");

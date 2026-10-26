@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.16.26] — 2026-10-27
+
+### Fixed
+
+* Resolve block-comment placement through the existing line index and a parse-local indentation cache shared by complete and unterminated C-style and HTML cards. Repeated headers on a long line no longer search backward through the same prefix or recheck its whitespace for every card. A 121,000-character regression with 1,000 headers reduces backward-search span from 110,489,500 characters to zero and whole-prefix regular-expression tests from 1,000 to zero; preserve indentation, raw spans, mixed-style ordering, CRLF and unterminated-card diagnostics.
+
 ## [0.16.25] — 2026-10-27
 
 ### Fixed

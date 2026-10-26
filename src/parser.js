@@ -50,17 +50,15 @@ export function parseLlmnavBlocks(source, filePath = "<memory>") {
   }
   const literalMask = buildLiteralMask(source, filePath);
   const lineStarts = buildLineStarts(source);
+  const commentPlacement = createCommentPlacement(source, lineStarts);
   const blockBudget = { count: 0 };
   const blocks = [];
   for (const definition of BLOCK_PATTERNS) {
     for (const match of terminatedBlockComments(source, definition)) {
       const matchStart = match.index ?? 0;
       if (literalMask[matchStart] === 1) continue;
-      const lineStart = source.lastIndexOf("\n", matchStart - 1) + 1;
-      const leading = source.slice(lineStart, matchStart);
-      const start = /^\s*$/u.test(leading) ? lineStart : matchStart;
+      const { start, indent } = commentPlacement(matchStart);
       const end = match.end;
-      const indent = start === lineStart ? leading : "";
       const raw = source.slice(start, end);
       reserveBlock(blockBudget, filePath);
       blocks.push(
@@ -81,7 +79,7 @@ export function parseLlmnavBlocks(source, filePath = "<memory>") {
   }
 
   blocks.push(...parseLineBlocks(source, filePath, literalMask, lineStarts, blockBudget));
-  blocks.push(...parseUnterminatedBlockComments(source, filePath, blocks, literalMask, lineStarts, blockBudget));
+  blocks.push(...parseUnterminatedBlockComments(source, filePath, blocks, literalMask, lineStarts, blockBudget, commentPlacement));
   blocks.sort((left, right) => left.start - right.start);
 
   const overlapping = [];
@@ -100,6 +98,22 @@ export function parseLlmnavBlocks(source, filePath = "<memory>") {
   }
 
   return blocks;
+}
+
+// Reuse the line index and scan each line's indentation once across comment styles.
+function createCommentPlacement(source, lineStarts) {
+  const indentEnds = new Map();
+  return offset => {
+    const lineStart = lineStarts[lineAtOffsetFromStarts(lineStarts, offset) - 1];
+    let indentEnd = indentEnds.get(lineStart);
+    if (indentEnd === undefined) {
+      indentEnd = lineStart;
+      while (indentEnd < offset && /\s/u.test(source[indentEnd])) indentEnd++;
+      indentEnds.set(lineStart, indentEnd);
+    }
+    const start = offset === indentEnd ? lineStart : offset;
+    return { start, indent: start === lineStart ? source.slice(lineStart, offset) : "" };
+  };
 }
 
 function* terminatedBlockComments(source, definition) {
@@ -191,7 +205,7 @@ function readLineBlockBody(source, lineStarts, index, prefix) {
   };
 }
 
-function parseUnterminatedBlockComments(source, filePath, parsedBlocks, literalMask, lineStarts, blockBudget) {
+function parseUnterminatedBlockComments(source, filePath, parsedBlocks, literalMask, lineStarts, blockBudget, commentPlacement) {
   const blocks = [];
   const parsedIntervals = [...parsedBlocks].sort((left, right) => left.start - right.start);
   for (const definition of BLOCK_PATTERNS) {
@@ -205,10 +219,7 @@ function parseUnterminatedBlockComments(source, filePath, parsedBlocks, literalM
       if (interval && tokenStart >= interval.start && tokenStart < interval.end) continue;
       const bodyStart = tokenStart + match[0].length;
 
-      const lineStart = source.lastIndexOf("\n", tokenStart - 1) + 1;
-      const leading = source.slice(lineStart, tokenStart);
-      const start = /^\s*$/u.test(leading) ? lineStart : tokenStart;
-      const indent = start === lineStart ? leading : "";
+      const { start, indent } = commentPlacement(tokenStart);
       const end = source.length;
       reserveBlock(blockBudget, filePath);
       const block = createBlock({
