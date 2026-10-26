@@ -38,9 +38,8 @@ export function buildRepositoryGraphIncremental(project, index, previousState = 
   const resolutionHash = sha256(stableJson({
     resolverVersion: MODULE_RESOLVER_VERSION,
     moduleResolution,
-    cardsByPath: [...cardsByPath.entries()]
-      .sort(([left], [right]) => compareText(left, right))
-      .map(([file, cards]) => [file, cards.map((card) => card.id).sort(compareText)]),
+    cardsByPath: importTargetIds(cardsByPath),
+    cardsByModule: importTargetIds(cardsByModule),
   }));
   const previousPartitions = compatibleGraphState(previousState, repositoryId)
     ? new Map(previousState.partitions.map((partition) => [partition.key, partition]))
@@ -405,6 +404,12 @@ function finalizeNode(node) {
 
 function qualifyId(id, repositoryId) {
   return String(id).includes("/") ? String(id) : `${repositoryId}/${id}`;
+}
+
+function importTargetIds(groups) {
+  return [...groups.entries()]
+    .sort(([left], [right]) => compareText(left, right))
+    .map(([key, cards]) => [key, cards.map((card) => card.id).sort(compareText)]);
 }
 
 function groupCardsByPath(cards) {

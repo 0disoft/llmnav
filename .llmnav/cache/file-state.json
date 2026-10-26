@@ -4690,7 +4690,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "e52ada303923af66997a7273155c50091168e3e6c7c3e40e559d26f4315dcd46",
+      "contentHash": "c160917c838d1eb64c1cf0af5a03c7daa757cfebc2583d3deea031cd42e3dc7c",
       "declarations": [
         null
       ],
@@ -4701,7 +4701,7 @@
       ],
       "path": "src/graph.js",
       "semanticBytes": 548,
-      "sourceBytes": 16895
+      "sourceBytes": 17012
     },
     {
       "blocks": [
@@ -6817,7 +6817,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "d9395104d24d38c345268ace37de1e6a01b2393800ff60ebd41b47aca5c492d7",
+      "contentHash": "0ea781d56891931ca8eae78cfc53434ac16745fe20d3ad1557576930983cb289",
       "declarations": [
         null
       ],
@@ -7556,7 +7556,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "61e6fbf2aaa5ab3c2177ab0efdf4857edd8f6ef1eee0afce8f7b097b73f91fd5",
+      "contentHash": "9081c382a7b56ae84d88eff584196abbdde176677f692ab28f22704cd31e219e",
       "declarations": [],
       "imports": [
         "../src/graph.js",
@@ -7565,7 +7565,7 @@
       ],
       "path": "tests/graph-incremental.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 4724
+      "sourceBytes": 7093
     },
     {
       "blocks": [],

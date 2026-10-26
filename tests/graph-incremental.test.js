@@ -74,6 +74,59 @@ test("rebuilds card partitions when local module resolution changes", () => {
   assert.equal(changed.stats.reusedPartitions, 1);
 });
 
+test("Go import targets stay identical to full rebuilds across module scope changes", () => {
+  const project = {
+    moduleResolution: {
+      schemaVersion: 1,
+      goModules: [{ directory: "", modulePath: "example.com/app" }],
+    },
+  };
+  const index = {
+    repositoryId: "go-fixture",
+    cards: [
+      card("entry.run", "cmd/main.go", [], ["example.com/app/lib"]),
+      card("lib.boundary", "lib/boundary.go"),
+      card("lib.helper", "lib/helper.go"),
+    ],
+  };
+  for (const item of index.cards) {
+    item.scope = "symbol";
+    item.location.language = "go";
+  }
+  const targets = graph => graph.edges.filter(edge => edge.kind === "imports").map(edge => edge.to);
+  let previous = buildRepositoryGraphIncremental(project, index);
+  assert.deepEqual(targets(previous.graph), ["go-fixture/lib.boundary", "go-fixture/lib.helper"]);
+
+  for (const [scope, expected] of [
+    ["module", ["go-fixture/lib.boundary"]],
+    ["file", ["go-fixture/lib.boundary", "go-fixture/lib.helper"]],
+    ["module", ["go-fixture/lib.boundary"]],
+  ]) {
+    const changed = structuredClone(index);
+    changed.cards[1].scope = scope;
+    const full = buildRepositoryGraphIncremental(project, changed);
+    const incremental = buildRepositoryGraphIncremental(project, changed, previous.state);
+    assert.deepEqual(targets(incremental.graph), expected, `scope=${scope}`);
+    assert.deepEqual(incremental.graph, full.graph);
+    assert.deepEqual(incremental.state, full.state);
+    assert.equal(incremental.stats.rebuiltPartitions, 3);
+    const warm = buildRepositoryGraphIncremental(project, changed, incremental.state);
+    assert.equal(warm.stats.rebuiltPartitions, 0);
+    assert.equal(warm.stats.reusedPartitions, 3);
+    const reordered = { ...changed, cards: [...changed.cards].reverse() };
+    const shuffled = buildRepositoryGraphIncremental(project, reordered, incremental.state);
+    assert.deepEqual(shuffled.graph, full.graph);
+    assert.equal(shuffled.stats.rebuiltPartitions, 0);
+    previous = incremental;
+  }
+  const unchangedTargets = structuredClone(index);
+  unchangedTargets.cards[1].scope = "module";
+  unchangedTargets.cards[2].scope = "file";
+  const unchanged = buildRepositoryGraphIncremental(project, unchangedTargets, previous.state);
+  assert.deepEqual(unchanged.graph, previous.graph);
+  assert.equal(unchanged.stats.reusedPartitions, 3);
+});
+
 function fixtureIndex() {
   return {
     repositoryId: "llmnav-fixture",

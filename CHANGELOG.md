@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.16.22] — 2026-10-26
+
+### Fixed
+
+* Include the effective module import targets in graph partition dependency hashes. Promoting or demoting a Go package's module card now invalidates dependent import edges even when card IDs and paths stay unchanged. Share deterministic target-ID serialization between file and module lookups; preserve cache reuse when target sets stay unchanged. Regression coverage compares incremental and full graph output across three scope transitions, verifies traversal-order independence and checks unchanged partitions are reused.
+
 ## [0.16.21] — 2026-10-26
 
 ### Fixed
