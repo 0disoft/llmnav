@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.16.17] — 2026-10-26
+
+### Changed
+
+* Validate compiler-graph dependency hashes with bounded concurrent reads instead of serial reads, using the existing `ioConcurrency` option (default 8). Preserve source-set validation before dependency reads, input-order failure reporting, byte/text hash compatibility, safe-path checks and cancellation reasons. Regression coverage verifies 32 reads reach a configured concurrency of 4 without exceeding it, waits for active validation on failure, and stops scheduling after cancellation.
+
 ## [0.16.16] — 2026-10-26
 
 ### Fixed

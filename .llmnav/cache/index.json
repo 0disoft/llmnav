@@ -1218,13 +1218,14 @@
         "source mutation"
       ],
       "hashes": {
-        "body": "2a1858035973835798408a4300eefd690e2ccfbb711094302eac3fc0975783f0",
+        "body": "e138c74e514159103f962ef4633eaefa5155113affd43c9909d16118b668a08a",
         "semantic": "c4122aabf96e2489fbb8561b5614b963a8dabc6762a85e8fb378b472dd3fc9dd",
-        "structure": "f0b28529b2d7749fc41965cc6056e0ecb652042968d1464c53532740835b66e9"
+        "structure": "ba878cd399d75921e61e7a4bbf8a620124f1e141aa77a14fa300b434a2dcae8c"
       },
       "id": "llmnav.graph.import",
       "imports": [
         "./abort.js",
+        "./concurrency.js",
         "./files.js",
         "./spec.js",
         "./util.js",
@@ -1897,7 +1898,7 @@
         "source parsing"
       ],
       "hashes": {
-        "body": "9e4b0e360051cf552ea935a43cc84a38490f3dcc2d75b8a075e1d00a6c4fbc86",
+        "body": "560f483f303d743bf366053185e059604855cc5bb2e5520320bb50f4a7065e4e",
         "semantic": "59aa3e9e793d505ecdf110fec023c201aaee0154d2f6c9cf71afe1bbf71a7be5",
         "structure": "e213e073414c75bc75df1c8669a7045096142b6c0845694191893d90bf23e3c2"
       },
@@ -3187,9 +3188,9 @@
     },
     "schemaVersion": 1
   },
-  "generatedBy": "llmnav@0.16.16",
+  "generatedBy": "llmnav@0.16.17",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "111b0f978859b7c90e477ef5c0bc622e984a1f44aa7d39d1ae48d578821d16c1",
+  "sourceHash": "88de033e8c7d1fafb417cee7cbf68054dbe03d9ff7b1b629c4c1d9f4b705ab6d",
   "specVersion": "1"
 }

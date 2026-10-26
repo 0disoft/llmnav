@@ -11,6 +11,7 @@ stability=architecture
 import path from "node:path";
 import { throwIfAborted } from "./abort.js";
 import { collectSourceFiles } from "./files.js";
+import { DEFAULT_IO_CONCURRENCY, mapWithConcurrency } from "./concurrency.js";
 import { ID_PATTERN, CROSS_REPO_ID_PATTERN } from "./spec.js";
 import { assertNoSymlinkTraversal, compareText, readBytes, readText, sha256, toPosix } from "./util.js";
 import { diagnostic } from "./validator.js";
@@ -186,11 +187,11 @@ export async function assertCompilerInputFresh(root, parsed, config, options = {
     const expected = Object.keys(parsed.sourceHashes).filter(source => extension.test(source)).sort(compareText);
     if (JSON.stringify(current) !== JSON.stringify(expected)) throw new Error("Compiler source set changed; run llmnav analyze again.");
   }
-  for (const [source, hash] of Object.entries(parsed.sourceHashes)) {
+  await mapWithConcurrency(Object.entries(parsed.sourceHashes), options.ioConcurrency ?? DEFAULT_IO_CONCURRENCY, async ([source, hash]) => {
     const sourcePath = path.join(root, source);
     await assertNoSymlinkTraversal(root, sourcePath, source);
     const bytes = await readBytes(sourcePath, null, options);
     // Accept existing text hashes while new compiler configuration hashes preserve every byte.
     if (bytes === null || sha256(bytes) !== hash && sha256(bytes.toString("utf8")) !== hash) throw new Error(`Stale compiler analysis for ${source}; run llmnav analyze again.`);
-  }
+  }, { signal: options.signal });
 }

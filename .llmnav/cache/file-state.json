@@ -4572,12 +4572,13 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "2a1858035973835798408a4300eefd690e2ccfbb711094302eac3fc0975783f0",
+      "contentHash": "e138c74e514159103f962ef4633eaefa5155113affd43c9909d16118b668a08a",
       "declarations": [
         null
       ],
       "imports": [
         "./abort.js",
+        "./concurrency.js",
         "./files.js",
         "./spec.js",
         "./util.js",
@@ -4586,7 +4587,7 @@
       ],
       "path": "src/graph-input.js",
       "semanticBytes": 397,
-      "sourceBytes": 8942
+      "sourceBytes": 9122
     },
     {
       "blocks": [
@@ -6816,7 +6817,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "9e4b0e360051cf552ea935a43cc84a38490f3dcc2d75b8a075e1d00a6c4fbc86",
+      "contentHash": "560f483f303d743bf366053185e059604855cc5bb2e5520320bb50f4a7065e4e",
       "declarations": [
         null
       ],
@@ -7555,11 +7556,12 @@
     },
     {
       "blocks": [],
-      "contentHash": "6c0a09ce22ccce897b701416e2bd8d07d73e522d6dc25abfef745a0efa6f1465",
+      "contentHash": "b4c9ec7ec399d8b7015abdf36d6393376bc6bbc43350d72dde909ba12dfe800b",
       "declarations": [],
       "imports": [
         "../src/graph-input.js",
         "../src/spec.js",
+        "../src/util.js",
         "node:assert/strict",
         "node:fs/promises",
         "node:os",
@@ -7568,7 +7570,7 @@
       ],
       "path": "tests/graph-input.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 2937
+      "sourceBytes": 5815
     },
     {
       "blocks": [],
