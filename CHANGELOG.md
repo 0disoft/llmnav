@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.16.19] — 2026-10-26
+
+### Changed
+
+* Reuse the parser's existing line-start index for line-comment cards instead of allocating a complete source-line array and a second offset array. Read current lines on demand for header and body scanning while preserving CRLF, EOF offsets, missing-terminator diagnostics and following-card recovery. An allocation regression covers 200,005 source lines and verifies that only the three-line card body is split.
+
 ## [0.16.18] — 2026-10-26
 
 ### Fixed

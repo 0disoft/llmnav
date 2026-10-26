@@ -117,25 +117,18 @@ function* terminatedBlockComments(source, definition) {
 
 function parseLineBlocks(source, filePath, literalMask, lineStarts, blockBudget) {
   const blocks = [];
-  const lines = source.split(/(?<=\n)/u);
-  const offsets = [];
-  let runningOffset = 0;
-  for (const line of lines) {
-    offsets.push(runningOffset);
-    runningOffset += line.length;
-  }
 
-  for (let index = 0; index < lines.length; index += 1) {
-    const line = lines[index];
+  for (let index = 0; index < lineStarts.length; index += 1) {
+    const line = sourceLine(source, lineStarts, index);
     const header = line.match(/^(\s*)(\/\/|#|--)\s*llmnav\/1\s+(file|module|symbol)\s*(?:\r?\n)?$/iu);
     if (!header) continue;
 
-    const start = offsets[index];
+    const start = lineStarts[index];
     if (literalMask[start] === 1) continue;
     const indent = header[1];
     const prefix = header[2];
     const scope = header[3].toLowerCase();
-    const parsed = readLineBlockBody(lines, index, prefix);
+    const parsed = readLineBlockBody(source, lineStarts, index, prefix);
     const end = start + parsed.length;
     const raw = source.slice(start, end);
     reserveBlock(blockBudget, filePath);
@@ -164,17 +157,21 @@ function parseLineBlocks(source, filePath, literalMask, lineStarts, blockBudget)
   return blocks;
 }
 
-function readLineBlockBody(lines, index, prefix) {
+function sourceLine(source, lineStarts, index) {
+  return source.slice(lineStarts[index], lineStarts[index + 1] ?? source.length);
+}
+
+function readLineBlockBody(source, lineStarts, index, prefix) {
   const escapedPrefix = prefix === "//" ? "\\/\\/" : prefix === "#" ? "#" : "--";
   const endPattern = new RegExp(`^\\s*${escapedPrefix}\\s*\\/llmnav\\s*(?:\\r?\\n)?$`, "iu");
   const contentPattern = new RegExp(`^\\s*${escapedPrefix}(?:\\s?)(.*?)(?:\\r?\\n)?$`, "u");
   const bodyLines = [];
   let cursor = index + 1;
-  let length = lines[index].length;
+  let length = sourceLine(source, lineStarts, index).length;
   let foundEnd = false;
 
-  for (; cursor < lines.length; cursor += 1) {
-    const candidate = lines[cursor];
+  for (; cursor < lineStarts.length; cursor += 1) {
+    const candidate = sourceLine(source, lineStarts, cursor);
     if (endPattern.test(candidate)) {
       length += candidate.length;
       foundEnd = true;
@@ -190,7 +187,7 @@ function readLineBlockBody(lines, index, prefix) {
     body: bodyLines.join("\n"),
     length,
     foundEnd,
-    nextIndex: foundEnd ? cursor : Math.min(lines.length - 1, Math.max(index, cursor - 1)),
+    nextIndex: foundEnd ? cursor : Math.min(lineStarts.length - 1, Math.max(index, cursor - 1)),
   };
 }
 

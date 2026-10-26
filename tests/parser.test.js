@@ -80,6 +80,34 @@ test("parses explicit line-comment cards", () => {
   assert.equal(findAttachedDeclaration(source, block, "session.py")?.symbol, "rotate");
 });
 
+test("line-card parsing reuses line boundaries without materializing all source lines", context => {
+  const prefix = "\n".repeat(200_000);
+  const card = "// llmnav/1 module\n// id=fixture.lines\n// role=Own the fixture line boundary.\n// stability=architecture\n// /llmnav\n";
+  const source = prefix + card;
+  const originalSplit = String.prototype.split;
+  let largestSplit = 0;
+  let blocks;
+  try {
+    String.prototype.split = function (...args) {
+      const parts = originalSplit.apply(this, args);
+      largestSplit = Math.max(largestSplit, parts.length);
+      return parts;
+    };
+    blocks = parseLlmnavBlocks(source, "many-lines.js");
+  } finally {
+    String.prototype.split = originalSplit;
+  }
+  assert.equal(blocks.length, 1);
+  assert.equal(blocks[0].card.id, "fixture.lines");
+  assert.equal(blocks[0].start, prefix.length);
+  assert.equal(blocks[0].end, source.length);
+  assert.equal(blocks[0].startLine, 200_001);
+  assert.equal(blocks[0].endLine, 200_005);
+  assert.equal(blocks[0].raw, card);
+  context.diagnostic(JSON.stringify({ sourceLines: 200_005, largestSplit }));
+  assert.ok(largestSplit <= 16, `Materialized ${largestSplit} line entries to parse one card.`);
+});
+
 test("reports an unterminated line-comment card", () => {
   const source = `// llmnav/1 file\n// id=api.users\n// role=Expose user lookup.\n// stability=contract\nconst x = 1;\n`;
   const [block] = parseLlmnavBlocks(source, "users.ts");
