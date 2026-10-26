@@ -110,7 +110,7 @@ async function generateProjectLocked(root, options) {
     lockOwnerId: options.lockOwnerId,
   });
   const cacheDirectory = path.join(root, config.generation.cacheDirectory);
-  const previous = await loadPreviousArtifacts(cacheDirectory);
+  const previous = await loadPreviousArtifacts(cacheDirectory, config);
   const scan = await scanForGeneration(root, options);
   const project = scan.project;
 
@@ -150,10 +150,22 @@ async function generateProjectLocked(root, options) {
   };
 }
 
-async function loadPreviousArtifacts(cacheDirectory) {
+async function loadPreviousArtifacts(cacheDirectory, config) {
+  const manifest = await readJsonSafe(path.join(cacheDirectory, "manifest.json"), null);
+  const searchText = await readText(path.join(cacheDirectory, "search-index.json"), null);
+  const cacheRelative = toPosix(config.generation.cacheDirectory).replace(/\/+$/u, "");
+  let searchIndex = null;
+  if (searchText !== null && manifest?.repositoryId === config.repositoryId &&
+    manifest.files?.[`${cacheRelative}/search-index.json`] === sha256(searchText)) {
+    try {
+      searchIndex = JSON.parse(searchText);
+    } catch (error) {
+      if (!(error instanceof SyntaxError)) throw error;
+    }
+  }
   return {
     index: await readJsonSafe(path.join(cacheDirectory, "index.json"), null),
-    searchIndex: await readJsonSafe(path.join(cacheDirectory, "search-index.json"), null),
+    searchIndex,
     graphState: await readJsonSafe(path.join(cacheDirectory, "graph-state.json"), null),
   };
 }

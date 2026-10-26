@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.16.21] — 2026-10-26
+
+### Fixed
+
+* Require a matching manifest file hash before reusing persisted search postings in queries, sessions or incremental generation. Structural validation and matching document hashes alone cannot detect altered term weights. Rebuild disposable search accelerators from the primary index during reads, or from source during generation, when integrity cannot be established; manifestless primary indexes remain readable. Regression coverage reproduces a two-card ranking inversion, verifies byte-identical repair and preserves reuse of both unchanged cards on the next generation.
+
 ## [0.16.20] — 2026-10-26
 
 ### Changed

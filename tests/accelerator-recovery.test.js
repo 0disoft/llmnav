@@ -6,15 +6,21 @@ import test from "node:test";
 import { doctorProject } from "../src/doctor.js";
 import { generateProject } from "../src/generator.js";
 import { initializeProject } from "../src/initializer.js";
-import { queryProject } from "../src/search.js";
+import { createProjectSession, queryProject } from "../src/search.js";
 
-async function createProject(root) {
+async function createProject(root, { decoy = false } = {}) {
   await writeFile(path.join(root, "package.json"), '{"name":"accelerator-recovery"}\n');
   await mkdir(path.join(root, "src"));
   await writeFile(
     path.join(root, "src", "rotate.ts"),
     `/* llmnav/1 symbol\nid=auth.session.rotate\nrole=Rotate one refresh-token family and reject replayed tokens.\nsearch=refresh token|token rotation|replay detection\nstability=contract\n*/\nexport function rotateSession(): void {}\n`,
   );
+  if (decoy) {
+    await writeFile(
+      path.join(root, "src", "cache.ts"),
+      "/* llmnav/1 symbol\nid=cache.entry.refresh\nrole=Refresh cached entries.\nstability=contract\n*/\nexport function refreshCache(): void {}\n",
+    );
+  }
   const initialized = await initializeProject(root, { agents: ["none"] });
   assert.equal(initialized.ok, true);
 }
@@ -29,6 +35,58 @@ test("query rebuilds a malformed search accelerator from the compatible primary 
   const [result] = await queryProject(root, "replayed refresh token");
   assert.equal(result.id, "auth.session.rotate");
   assert.equal(await readFile(searchPath, "utf8"), "{malformed\n");
+});
+
+async function corruptSearchWeights(root) {
+  const searchPath = path.join(root, ".llmnav", "cache", "search-index.json");
+  const searchIndex = JSON.parse(await readFile(searchPath, "utf8"));
+  const decoyPosition = searchIndex.cardIds.indexOf("cache.entry.refresh");
+  assert.ok(decoyPosition >= 0);
+  for (const entries of searchIndex.postings) {
+    for (const [position, vector] of entries) {
+      if (position !== decoyPosition) continue;
+      for (let offset = 1; offset < vector.length; offset += 2) vector[offset] *= 10000;
+    }
+  }
+  const corrupted = `${JSON.stringify(searchIndex, null, 2)}\n`;
+  await writeFile(searchPath, corrupted);
+  return { searchPath, corrupted };
+}
+
+test("query and session rebuild structurally valid search weights that fail manifest integrity", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-weight-recovery-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await createProject(root, { decoy: true });
+  const expected = await queryProject(root, "refresh token");
+  assert.equal(expected[0].id, "auth.session.rotate");
+  const { searchPath, corrupted } = await corruptSearchWeights(root);
+
+  assert.deepEqual(await queryProject(root, "refresh token"), expected);
+  const session = await createProjectSession(root);
+  assert.deepEqual(session.query("refresh token"), expected);
+  assert.equal(await readFile(searchPath, "utf8"), corrupted);
+  await rm(path.join(root, ".llmnav", "cache", "manifest.json"));
+  assert.deepEqual(await queryProject(root, "refresh token"), expected);
+});
+
+test("generation discards corrupt search weights before reusing unchanged documents", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-weight-generation-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await createProject(root, { decoy: true });
+  const expected = await queryProject(root, "refresh token");
+  const searchPath = path.join(root, ".llmnav", "cache", "search-index.json");
+  const original = await readFile(searchPath, "utf8");
+  await corruptSearchWeights(root);
+
+  const repaired = await generateProject(root);
+  assert.equal(repaired.ok, true);
+  assert.equal(repaired.incremental.cards.indexedCards, 2);
+  assert.equal(repaired.incremental.cards.reusedCards, 0);
+  assert.equal(await readFile(searchPath, "utf8"), original);
+  assert.deepEqual(await queryProject(root, "refresh token"), expected);
+  const warm = await generateProject(root);
+  assert.equal(warm.incremental.cards.indexedCards, 0);
+  assert.equal(warm.incremental.cards.reusedCards, 2);
 });
 
 test("query rejects a mismatched primary index and preserves manifestless compatibility", async (context) => {

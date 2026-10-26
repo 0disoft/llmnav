@@ -4450,7 +4450,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "1775cb578f2508c54b859e6f2626d8520805b5b22e71d3750777525a75286a53",
+      "contentHash": "fe114e255cec4beaafbff57de087528562f8f2c13da47bcbff907e88d3c419dc",
       "declarations": [
         null
       ],
@@ -4481,7 +4481,7 @@
       ],
       "path": "src/generator.js",
       "semanticBytes": 476,
-      "sourceBytes": 23539
+      "sourceBytes": 24081
     },
     {
       "blocks": [
@@ -6680,7 +6680,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "3f5d08a4257898857511c92bad453ec9fa47a5313d2c4d0aced64e34d687074d",
+      "contentHash": "76a262a55b01b79c3256a7d5873e40aa4d43bb50402ce17dfafbb1f6316a540c",
       "declarations": [
         null
       ],
@@ -6700,7 +6700,7 @@
       ],
       "path": "src/search.js",
       "semanticBytes": 464,
-      "sourceBytes": 36719
+      "sourceBytes": 36737
     },
     {
       "blocks": [],
@@ -6817,7 +6817,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "f5001be0849b9b1131ed0dbe70199012841050b9aff77fa8f7f73f0a53058cc5",
+      "contentHash": "d9395104d24d38c345268ace37de1e6a01b2393800ff60ebd41b47aca5c492d7",
       "declarations": [
         null
       ],
@@ -7177,7 +7177,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "cd7957841964569bc45d2af205efb237685fc35244931b3989e87a4a761bc2bb",
+      "contentHash": "432a827b2035d71b943ce7a1bab301855ef119a06b46fb8f053333413be72457",
       "declarations": [],
       "imports": [
         "../src/doctor.js",
@@ -7192,7 +7192,7 @@
       ],
       "path": "tests/accelerator-recovery.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 5866
+      "sourceBytes": 8768
     },
     {
       "blocks": [],

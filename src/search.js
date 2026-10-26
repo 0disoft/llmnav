@@ -22,7 +22,6 @@ import {
   isCompatibleSearchIndex,
   SEARCH_FIELD_ORDER,
   SEARCH_FIELD_WEIGHTS,
-  verifySearchIndex,
 } from "./inverted-index.js";
 import { normalizeSearchText, tokenize } from "./tokenizer.js";
 import { loadPromptPrefixBundleLocked } from "./prompt-bundle.js";
@@ -84,7 +83,8 @@ async function loadSearchDataLocked(root, lock, options = {}) {
       searchIndex?.documentCount === index.cards.length &&
       manifest.files?.[searchRelative] === sha256(searchText),
   );
-  if (!isCompatibleSearchIndex(searchIndex, index.repositoryId) || (!manifestMatches && !verifySearchIndex(index, searchIndex))) {
+  // Structural/document checks cannot establish the integrity of posting weights.
+  if (!isCompatibleSearchIndex(searchIndex, index.repositoryId) || !manifestMatches) {
     searchIndex = buildInvertedIndex(index).searchIndex;
   }
   return { index, lexicon, searchIndex, graph };
