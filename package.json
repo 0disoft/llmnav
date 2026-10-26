@@ -1,6 +1,6 @@
 {
   "name": "llmnav",
-  "version": "0.16.23",
+  "version": "0.16.24",
   "description": "A deterministic semantic navigation layer for LLM coding agents.",
   "type": "module",
   "bin": {

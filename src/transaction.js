@@ -464,14 +464,14 @@ export async function recoverGenerationTransaction(root, options = {}) {
   await assertNoSymlinkTraversal(root, stagePath, journal.stageDirectory);
   await assertNoSymlinkTraversal(root, backupPath, journal.backupDirectory);
   const paths = { cachePath, stagePath, backupPath };
-  const action = journal.phase === "committed"
-    ? await recoverCommittedCache(paths, options.renameOptions)
+  const { action, keepGenerated } = journal.phase === "committed"
+    ? { action: await recoverCommittedCache(paths, options.renameOptions), keepGenerated: true }
     : await recoverUncommittedCache(paths, journal, options.renameOptions);
-  if (journal.phase === "committed") {
-    await finalizeCommittedControlArtifacts(root, journal.controlArtifacts ?? [], options.renameOptions);
-  }
-
-  if (journal.phase !== "committed") {
+  // Cache and control artifacts must follow the same recovery decision.
+  // A first generation can complete before its journal reaches "committed".
+  if (keepGenerated) {
+    await finalizeGeneratedControlArtifacts(root, journal.controlArtifacts ?? [], options.renameOptions);
+  } else {
     await restoreControlArtifacts(root, journal.controlArtifacts ?? [], options.renameOptions);
   }
 
@@ -498,19 +498,21 @@ async function recoverUncommittedCache({ cachePath, stagePath, backupPath }, jou
   if (await pathExists(backupPath)) {
     if (await pathExists(cachePath)) await removeWithRetry(cachePath, renameOptions);
     await renameWithRetry(backupPath, cachePath, renameOptions);
-    return "restored-previous-cache";
+    return { action: "restored-previous-cache", keepGenerated: false };
   }
-  if (journal.hadExistingCache && await pathExists(cachePath)) return "kept-existing-cache";
+  if (journal.hadExistingCache && await pathExists(cachePath)) {
+    return { action: "kept-existing-cache", keepGenerated: false };
+  }
   if (!journal.hadExistingCache && await pathExists(cachePath)) {
     await verifyCommittedCache(cachePath, journal.cacheDirectory);
-    return "kept-first-generated-cache";
+    return { action: "kept-first-generated-cache", keepGenerated: true };
   }
   if (!journal.hadExistingCache && await pathExists(stagePath)) {
     await verifyCommittedCache(stagePath, journal.cacheDirectory);
     await renameWithRetry(stagePath, cachePath, renameOptions);
-    return "completed-first-generation";
+    return { action: "completed-first-generation", keepGenerated: true };
   }
-  return "removed-incomplete-transaction";
+  return { action: "removed-incomplete-transaction", keepGenerated: false };
 }
 
 export async function renameWithRetry(source, destination, options = {}) {
@@ -708,12 +710,16 @@ async function restoreControlArtifacts(root, records, renameOptions) {
   }
 }
 
-async function finalizeCommittedControlArtifacts(root, records, renameOptions) {
+async function finalizeGeneratedControlArtifacts(root, records, renameOptions) {
   for (const record of records) {
     const targetPath = path.join(root, record.path);
     const stagePath = path.join(root, record.stagePath);
     const backupPath = path.join(root, record.backupPath);
-    if (!await pathExists(targetPath) && await pathExists(stagePath)) {
+    if (await pathExists(stagePath)) {
+      // Prepared first generations can still have old control files in place.
+      // Verify staged bytes before replacing them; retries resume from either path.
+      const content = await readFile(stagePath, "utf8");
+      if (sha256(content) !== record.hash) throw new Error(`Staged control artifact ${record.path} fails transaction verification.`);
       await renameWithRetry(stagePath, targetPath, renameOptions);
     } else if (!await pathExists(targetPath) && await pathExists(backupPath)) {
       await renameWithRetry(backupPath, targetPath, renameOptions);

@@ -221,6 +221,8 @@ The journal is `.llmnav/generation-transaction.json`. It records the writer owne
 
 When generation discovers new semantic IDs, the staged transaction also owns `.llmnav/ids.jsonl` and `.llmnav/order.lock`. Their previous bytes are backed up beside the cache, their replacements are verified by content hash, and recovery restores or finalizes all three surfaces together.
 
+Uncommitted first-generation recovery can keep or install the generated cache. That same decision finalizes its staged registry and order files, verifying their hashes before replacement even when older controls already exist; a failed replacement leaves the journal available for retry.
+
 If generation throws before commit, rollback restores the backup. If the process is killed, the next `query`, `generate`, or `doctor` recovers from the journal before reading cache data.
 
 An installed cache is considered authoritative only after the journal reaches `committed`. A crash after installing a new cache but before commit restores the previous cache. A crash after recording `committed` keeps the new verified cache and completes cleanup.

@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.16.24] — 2026-10-27
+
+### Fixed
+
+* Keep first-generation cache recovery and its ID registry and stable order in the same generation even when the journal has not reached committed. Use the cache recovery decision to finalize staged controls or restore previous controls; verify staged control hashes before replacing existing files and retain the journal when installation fails. Regressions cover three interruption phases with and without previous controls, plus resuming after a control rename failure or corrupted stage. Recovery adds one pre-install hash read per remaining staged control; normal generation is unchanged.
+
 ## [0.16.23] — 2026-10-27
 
 ### Fixed

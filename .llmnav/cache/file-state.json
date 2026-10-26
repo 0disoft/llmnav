@@ -6817,7 +6817,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "340451656a40dfaafa2fa0cbc08a15503756d615f0bbb0d731c1f8515b0e99e7",
+      "contentHash": "e63c02c61a44aa272375633bb54d604f49032ab31554adbde87b520f90de2b0f",
       "declarations": [
         null
       ],
@@ -7013,7 +7013,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "bbd4fabaf034517e5b9f590898603b6523c5462bec79c9663b48d3e7cfec0275",
+      "contentHash": "cc525bb13ab78bc4a34224bf3c7d3aa41944c6f69c64c8532839ae2c5617cd9a",
       "declarations": [
         null
       ],
@@ -7027,7 +7027,7 @@
       ],
       "path": "src/transaction.js",
       "semanticBytes": 393,
-      "sourceBytes": 38180
+      "sourceBytes": 38833
     },
     {
       "blocks": [],
@@ -8131,7 +8131,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "404ad645210d367e0c1008eb68dbe0098666b395a8820b5f6b05cc36201ca707",
+      "contentHash": "441b4bb0396afe72e7229f0f94e30b03c95f2ceed7c43dc79ecf27809fb865b1",
       "declarations": [],
       "imports": [
         "../src/transaction.js",
@@ -8145,7 +8145,7 @@
       ],
       "path": "tests/transaction-io.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 3957
+      "sourceBytes": 7956
     },
     {
       "blocks": [],
