@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.16.25] — 2026-10-27
+
+### Fixed
+
+* Snapshot repository-contained package manifests read by the TypeScript compiler through the existing byte-hash configuration reader. Package imports, exports and module-type changes can no longer silently reuse a newly produced graph with stale module resolution. Regressions redirect a package import between two implementations, reject changed or deleted metadata and stale output replacement, and detect a metadata change between compiler use and parent validation. Re-run TypeScript analysis once to add these hashes to existing graph inputs.
+
 ## [0.16.24] — 2026-10-27
 
 ### Fixed

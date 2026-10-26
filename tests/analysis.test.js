@@ -120,6 +120,53 @@ test("TypeScript invalidates compiler graphs when an extended configuration chan
   assert.match((await loadGraphInputs(root, config)).diagnostics[0].message, /Stale compiler analysis for config\/shared\.json/u);
 });
 
+test("TypeScript invalidates compiler graphs when package import mappings change", async context => {
+  const manifest = target => JSON.stringify({ name: "compiler-fixture", type: "module", imports: { "#implementation": target } });
+  const root = await fixture(context, {
+    "package.json": manifest("./first.mjs"),
+    "first.mts": `${card}export function rotate(token: string) { return token; }\n`,
+    "second.mts": "export function rotate(token: string) { return token + '!'; }\n",
+    "main.mts": "import { rotate } from '#implementation';\nexport function invoke() { return rotate('ok'); }\n",
+  });
+  const options = { language: "typescript" };
+  const result = await analyzeProject(root, options);
+  const caller = result.graph.definitions.find(item => item.symbol === "invoke");
+  assert.ok(result.graph.references.some(edge => edge.from === caller.id && edge.to === "auth.session.rotate" && edge.kind === "calls"));
+  await writeAnalysis(root, ".llmnav/imports/code.json", result);
+  const saved = await readFile(path.join(root, ".llmnav/imports/code.json"), "utf8");
+  const { config } = await loadConfig(root);
+  assert.equal((await loadGraphInputs(root, config)).diagnostics.length, 0);
+
+  await writeFile(path.join(root, "package.json"), manifest("./second.mjs"));
+  const loaded = await loadGraphInputs(root, config);
+  context.diagnostic(JSON.stringify({ acceptedStaleIndexes: loaded.indexes.length, diagnostics: loaded.diagnostics.length }));
+  assert.equal(loaded.indexes.length, 0);
+  assert.match(loaded.diagnostics[0].message, /Stale compiler analysis for package\.json/u);
+  await assert.rejects(writeAnalysis(root, ".llmnav/imports/code.json", result), /Stale compiler analysis/u);
+  assert.equal(await readFile(path.join(root, ".llmnav/imports/code.json"), "utf8"), saved);
+
+  const refreshed = await analyzeProject(root, options);
+  const target = refreshed.graph.definitions.find(item => item.symbol === "rotate" && item.path === "second.mts");
+  assert.ok(refreshed.graph.references.some(edge => edge.from === caller.id && edge.to === target.id && edge.kind === "calls"));
+  assert.equal(refreshed.graph.references.some(edge => edge.from === caller.id && edge.to === "auth.session.rotate" && edge.kind === "calls"), false);
+  assert.ok(refreshed.graph.sourceHashes["package.json"]);
+  await writeAnalysis(root, ".llmnav/imports/code.json", refreshed);
+  await rm(path.join(root, "package.json"));
+  assert.match((await loadGraphInputs(root, config)).diagnostics[0].message, /Stale compiler analysis for package\.json/u);
+  await writeFile(path.join(root, "package.json"), manifest("./second.mjs"));
+
+  let changedDuringAnalysis = false;
+  const io = { readBytes: async file => {
+    if (file === path.join(root, "package.json") && !changedDuringAnalysis) {
+      changedDuringAnalysis = true;
+      await writeFile(file, manifest("./first.mjs"));
+    }
+    return readFile(file);
+  } };
+  await assert.rejects(analyzeProject(root, { ...options, io }), /Source changed during analysis: package\.json/u);
+  assert.equal(changedDuringAnalysis, true);
+});
+
 test("TypeScript tracks package-based config chains with UTF-8 and UTF-16 BOMs", async context => {
   const shared = Buffer.concat([Buffer.from([0xfe, 0xff]), Buffer.from(JSON.stringify({ compilerOptions: { target: "ES2022", types: [] } }), "utf16le").swap16()]);
   const encoded = condition => Buffer.concat([Buffer.from([0xff, 0xfe]), Buffer.from(JSON.stringify({ extends: "@fixture/config", files: ["main.mts"], compilerOptions: { customConditions: [condition] } }), "utf16le")]);

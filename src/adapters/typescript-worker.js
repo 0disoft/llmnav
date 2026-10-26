@@ -55,6 +55,9 @@ function analyze(request) {
       catch (error) { if (error.code === "ENOENT" || error.code === "ENOTDIR") return originalRead(file); throw error; }
       if (!inside(root, canonical)) throw new Error("Compiler input traverses a symlink outside the repository.");
       inputs.add(absolute);
+      // Package imports/exports and module type affect resolution without a source edit.
+      // Hash the same metadata bytes decoded for the compiler, as for tsconfig files.
+      if (path.basename(absolute) === "package.json") return readConfig(absolute);
     }
     return originalRead(file);
   };
