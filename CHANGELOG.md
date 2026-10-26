@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.16.18] — 2026-10-26
+
+### Fixed
+
+* Prevent repeated unterminated LLMNav block and HTML comment openings from causing quadratic full-suffix regexp searches. Scan headers and their nearest terminators with a forward-only cursor, stop a style's completed-block scan when no terminator remains, and retain existing literal masking, syntax diagnostics, offsets, comment casing and card limits. Cover 50,000 unterminated openings per style with an interruptible synchronous timeout and preserve nearest-terminator behavior for nested markers.
+
 ## [0.16.17] — 2026-10-26
 
 ### Changed

@@ -27,13 +27,11 @@ import { SOURCE_LIMITS } from "./policy.js";
 const BLOCK_PATTERNS = [
   {
     style: "block",
-    pattern: /\/\*\s*llmnav\/1\s+(file|module|symbol)\b([\s\S]*?)\*\//giu,
     opening: /\/\*\s*llmnav\/1\s+(file|module|symbol)\b/giu,
     terminator: "*/",
   },
   {
     style: "html",
-    pattern: /<!--\s*llmnav\/1\s+(file|module|symbol)\b([\s\S]*?)-->/giu,
     opening: /<!--\s*llmnav\/1\s+(file|module|symbol)\b/giu,
     terminator: "-->",
   },
@@ -55,15 +53,13 @@ export function parseLlmnavBlocks(source, filePath = "<memory>") {
   const blockBudget = { count: 0 };
   const blocks = [];
   for (const definition of BLOCK_PATTERNS) {
-    definition.pattern.lastIndex = 0;
-    for (const match of source.matchAll(definition.pattern)) {
-      const matchedRaw = match[0];
+    for (const match of terminatedBlockComments(source, definition)) {
       const matchStart = match.index ?? 0;
       if (literalMask[matchStart] === 1) continue;
       const lineStart = source.lastIndexOf("\n", matchStart - 1) + 1;
       const leading = source.slice(lineStart, matchStart);
       const start = /^\s*$/u.test(leading) ? lineStart : matchStart;
-      const end = matchStart + matchedRaw.length;
+      const end = match.end;
       const indent = start === lineStart ? leading : "";
       const raw = source.slice(start, end);
       reserveBlock(blockBudget, filePath);
@@ -72,8 +68,8 @@ export function parseLlmnavBlocks(source, filePath = "<memory>") {
           lineStarts,
           filePath,
           raw,
-          body: match[2],
-          scope: match[1].toLowerCase(),
+          body: match.body,
+          scope: match.scope.toLowerCase(),
           style: definition.style,
           start,
           end,
@@ -104,6 +100,19 @@ export function parseLlmnavBlocks(source, filePath = "<memory>") {
   }
 
   return blocks;
+}
+
+function* terminatedBlockComments(source, definition) {
+  const opening = new RegExp(definition.opening);
+  for (let match; (match = opening.exec(source)) !== null;) {
+    const bodyStart = opening.lastIndex;
+    const bodyEnd = source.indexOf(definition.terminator, bodyStart);
+    // No later opening can close either: leave this suffix to syntax diagnostics.
+    if (bodyEnd === -1) return;
+    const end = bodyEnd + definition.terminator.length;
+    opening.lastIndex = end;
+    yield { index: match.index, end, scope: match[1], body: source.slice(bodyStart, bodyEnd) };
+  }
 }
 
 function parseLineBlocks(source, filePath, literalMask, lineStarts, blockBudget) {

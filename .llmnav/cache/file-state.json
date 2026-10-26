@@ -5682,7 +5682,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "613461806960c84a585bdd5de382cbe4b5294bd0f1a379aaa16c81993558fc78",
+      "contentHash": "693467f63b43b23a63fc14e3c0f5163c26a0ed97bd5aa0fdc12ddc7c6900ee87",
       "declarations": [
         null
       ],
@@ -5693,7 +5693,7 @@
       ],
       "path": "src/parser.js",
       "semanticBytes": 336,
-      "sourceBytes": 20652
+      "sourceBytes": 21004
     },
     {
       "blocks": [
@@ -6817,7 +6817,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "560f483f303d743bf366053185e059604855cc5bb2e5520320bb50f4a7065e4e",
+      "contentHash": "1c3e538233a8943da67aed39fd50647c2ab0979cc1abbc7d55956761e8e5f8c5",
       "declarations": [
         null
       ],
@@ -7835,7 +7835,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "d18b901e100a12c3947c8435b4e1d70ccc2dcea3635bb073b194bf50b8f07eba",
+      "contentHash": "cf2dfb53bd0018fa71d0de09ff6916a45a3b816bb2027e0deca71128bb529fff",
       "declarations": [],
       "imports": [
         "../src/declaration.js",
@@ -7846,7 +7846,7 @@
       ],
       "path": "tests/parser.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 14333
+      "sourceBytes": 16163
     },
     {
       "blocks": [],

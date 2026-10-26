@@ -167,6 +167,37 @@ test("reports an unterminated block-comment card", () => {
   assert.equal(block.syntaxErrors[0].message, "Block-comment LLMNav blocks must end with */.");
 });
 
+test("repeated unterminated card openings cannot monopolize the parser", (context) => {
+  for (const [header, filePath, message] of [
+    ["/* llmnav/1 module\n", "broken.ts", "Block-comment LLMNav blocks must end with */."],
+    ["<!-- llmnav/1 module\n", "broken.html", "HTML-comment LLMNav blocks must end with -->."],
+  ]) {
+    const source = header.repeat(50_000);
+    const started = process.hrtime.bigint();
+    // VM timeout interrupts a synchronous regexp too; a test timer cannot do that.
+    const blocks = new Script("parseLlmnavBlocks(source, filePath)").runInNewContext(
+      { parseLlmnavBlocks, source, filePath }, { timeout: 3000 });
+    const elapsedMs = Number(process.hrtime.bigint() - started) / 1_000_000;
+    assert.equal(blocks.length, 1);
+    assert.equal(blocks[0].raw, source);
+    assert.ok(blocks[0].syntaxErrors.some(error => error.message === message));
+    context.diagnostic(JSON.stringify({ filePath, openings: 50_000, sourceBytes: Buffer.byteLength(source), elapsedMs }));
+  }
+});
+
+test("terminated cards keep the nearest closing marker and skip consumed openings", () => {
+  for (const [open, close, filePath] of [["/*", "*/", "nested.ts"], ["<!--", "-->", "nested.html"]]) {
+    const first = `${open} LLMNAV/1 MODULE\r\nid=fixture.first\r\n${open} llmnav/1 symbol\r\n${close}`;
+    const second = `${open} llmnav/1 module\nid=fixture.second\n${close}`;
+    const source = `${first}\n${second}`;
+    const blocks = parseLlmnavBlocks(source, filePath);
+    assert.deepEqual(blocks.map(block => block.card.id), ["fixture.first", "fixture.second"]);
+    assert.deepEqual(blocks.map(block => block.raw), [first, second]);
+    assert.deepEqual(blocks.map(block => block.start), [0, first.length + 1]);
+    assert.deepEqual(blocks.map(block => block.end), [first.length, source.length]);
+  }
+});
+
 test("does not skip a later card after an unterminated line card", () => {
   const source = `// llmnav/1 file\n// id=broken.file.card\nconst boundary = true;\n\n/* llmnav/1 symbol\nid=auth.session.rotate\nrole=Rotate one session.\nstability=contract\n*/\nexport function rotateSession() {}\n`;
   const blocks = parseLlmnavBlocks(source, "session.ts");
