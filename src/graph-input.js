@@ -17,6 +17,17 @@ import { diagnostic } from "./validator.js";
 
 export const GRAPH_INPUT_SCHEMA_VERSION = 2;
 
+export function compilerInputPaths(value) {
+  assertObject(value.sourceHashes, "sourceHashes");
+  const paths = Object.keys(value.sourceHashes);
+  if (paths.length === 0) throw new Error("sourceHashes must not be empty");
+  for (const file of paths) {
+    normalizeSourcePath(file, "sourceHashes path");
+    if (!/^[a-f0-9]{64}$/u.test(value.sourceHashes[file])) throw new Error("sourceHashes values must be SHA-256 hashes");
+  }
+  return paths;
+}
+
 export async function loadGraphInputs(root, config, options = {}) {
   const indexes = [];
   const diagnostics = [];
@@ -54,12 +65,7 @@ export function normalizeGraphInput(value, file = "<graph-index>", contentHash =
   assertKeys(value, new Set(["schemaVersion", "repositoryId", "generator", "definitions", "references", "sourceHashes"]), "graph index");
   if (![1, GRAPH_INPUT_SCHEMA_VERSION].includes(value.schemaVersion)) throw new Error("schemaVersion must be 1 or 2");
   if (value.schemaVersion === 2) {
-    assertObject(value.sourceHashes, "sourceHashes");
-    if (Object.keys(value.sourceHashes).length === 0) throw new Error("sourceHashes must not be empty");
-    for (const [file, hash] of Object.entries(value.sourceHashes)) {
-      normalizeSourcePath(file, "sourceHashes path");
-      if (!/^[a-f0-9]{64}$/u.test(hash)) throw new Error("sourceHashes values must be SHA-256 hashes");
-    }
+    compilerInputPaths(value);
   } else if (value.sourceHashes !== undefined) throw new Error("sourceHashes requires schemaVersion 2");
   if (!/^[a-z][a-z0-9-]{0,63}$/u.test(value.repositoryId ?? "")) {
     throw new Error("repositoryId must match ^[a-z][a-z0-9-]{0,63}$");

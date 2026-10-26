@@ -15,8 +15,9 @@ import { abortable, throwIfAborted } from "./abort.js";
 import { loadConfig } from "./config.js";
 import { collectSourceFiles } from "./files.js";
 import { generateProject } from "./generator.js";
+import { compilerInputPaths } from "./graph-input.js";
 import { DEFAULT_IO_CONCURRENCY, mapWithConcurrency } from "./concurrency.js";
-import { assertNoSymlinkTraversal, compareText, relativePosix, sha256 } from "./util.js";
+import { assertNoSymlinkTraversal, compareText, readText, relativePosix, sha256 } from "./util.js";
 
 // Each cache owns one preparer. The session cache supplies single-flight and a
 // shared deadline; individual subscribers never own this generation's signal.
@@ -26,10 +27,10 @@ export function createSourcePreparation(root, dependencies = {}) {
   let preparedStamp = null;
   return async (options = {}) => {
     throwIfAborted(options.signal);
-    const nextStamp = await readStamp(root, options);
-    throwIfAborted(options.signal);
-    if (nextStamp === preparedStamp) return;
     try {
+      const nextStamp = await readStamp(root, options);
+      throwIfAborted(options.signal);
+      if (nextStamp === preparedStamp) return;
       const result = await generate(root, { signal: options.signal });
       throwIfAborted(options.signal);
       if (!result.ok) {
@@ -54,6 +55,21 @@ export async function sourceStamp(root, options = {}) {
   const { config } = await loadConfig(root, options);
   const files = await collectSourceFiles(root, config, [], options);
   const inputs = new Set([".llmnav/config.json", ...config.graph.indexFiles]);
+  const graphSources = await mapWithConcurrency([...config.graph.indexFiles].sort(compareText),
+    options.ioConcurrency ?? DEFAULT_IO_CONCURRENCY, async relative => {
+      const absolute = path.join(root, relative);
+      await assertNoSymlinkTraversal(root, absolute, relative);
+      const text = await readText(absolute, null, options);
+      if (text === null) return [];
+      try {
+        const value = JSON.parse(text);
+        return value?.schemaVersion === 2 ? compilerInputPaths(value) : [];
+      } catch {
+        // Keep the graph itself stamped; generation reports invalid indexes via LNV014.
+        return [];
+      }
+    }, { signal: options.signal });
+  for (const sources of graphSources) for (const source of sources) inputs.add(source);
   inputs.add("go.mod");
   for (const file of files) {
     const relative = relativePosix(root, file);

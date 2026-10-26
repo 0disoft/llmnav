@@ -359,6 +359,20 @@
         {
           "confidence": 0.85,
           "from": "llmnav/llmnav.agent.freshness",
+          "id": "d074fe86b8d638ba3a0eb40d047d837a6dad0f7e4c4080d5439703ad80e0bcd6",
+          "kind": "imports",
+          "provenance": {
+            "generator": "llmnav",
+            "line": null,
+            "path": "src/mcp-refresh.js",
+            "source": "src/mcp-refresh.js",
+            "type": "local-import"
+          },
+          "to": "llmnav/llmnav.graph.import"
+        },
+        {
+          "confidence": 0.85,
+          "from": "llmnav/llmnav.agent.freshness",
           "id": "6c4dcff093f197907247a77461fe41e73209f97f4d38eb8d9a21c13d14d117b5",
           "kind": "imports",
           "provenance": {
@@ -427,7 +441,7 @@
           "to": "llmnav/llmnav.support.concurrency"
         }
       ],
-      "inputHash": "5467ea588dc9d919adf738fbfc0473ac49b6d3509aaa4a61e880712ad2c06759",
+      "inputHash": "afe2617a016cd3a35bc1c2bd3cc88826c90f601b13589a551025394d08a428ae",
       "key": "card:llmnav/llmnav.agent.freshness",
       "nodes": [
         {
@@ -459,6 +473,15 @@
           "repositoryId": "llmnav",
           "role": null,
           "semanticId": "llmnav.config.load"
+        },
+        {
+          "definitions": [],
+          "external": false,
+          "key": "llmnav/llmnav.graph.import",
+          "location": null,
+          "repositoryId": "llmnav",
+          "role": null,
+          "semanticId": "llmnav.graph.import"
         },
         {
           "definitions": [],
@@ -497,7 +520,7 @@
           "semanticId": "llmnav.support.concurrency"
         }
       ],
-      "outputHash": "3d1fb35de0887ba0f1d89fc309c62099219a143f809c63a4f14e5e454570d679"
+      "outputHash": "167f4366cfdaf1bdeb649e161071087844d689dd9b5ae402f10a1708f5e7f2a8"
     },
     {
       "edges": [

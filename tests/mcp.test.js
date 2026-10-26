@@ -13,6 +13,7 @@ import { generateProject } from "../src/generator.js";
 import { initializeProject } from "../src/initializer.js";
 import { queryProject } from "../src/search.js";
 import { PACKAGE_VERSION } from "../src/spec.js";
+import { sha256 } from "../src/util.js";
 
 const CLI = fileURLToPath(new URL("../bin/llmnav.js", import.meta.url));
 
@@ -514,4 +515,50 @@ test("opt-in MCP generation follows source edits, renames, deletion and recovery
   assert.equal(server.status().phase, "ready");
   await rm(renamed);
   assert.deepEqual((await callTool(server, 8, "llmnav_query", { task: "refresh token" })).data, []);
+});
+
+test("MCP auto-generation rejects stale compiler configuration dependencies and recovers", async context => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-mcp-compiler-inputs-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await createProject(root);
+  const configPath = path.join(root, ".llmnav/config.json");
+  const config = JSON.parse(await readFile(configPath, "utf8"));
+  config.sourceRoots = ["src"];
+  config.graph = { indexFiles: [".llmnav/imports/compiler.json"] };
+  await writeFile(configPath, JSON.stringify(config));
+  const metadataPath = path.join(root, "tsconfig.base.json");
+  const initial = '{"compilerOptions":{"target":"ES2022"}}\n';
+  const changed = initial.replace("ES2022", "ES2023");
+  await writeFile(metadataPath, initial);
+  await mkdir(path.join(root, ".llmnav/imports"), { recursive: true });
+  const graphPath = path.join(root, ".llmnav/imports/compiler.json");
+  const graph = { schemaVersion: 2, repositoryId: config.repositoryId, generator: "llmnav-typescript@1;typescript@6.0.3",
+    sourceHashes: { "src/rotate.ts": sha256(await readFile(path.join(root, "src/rotate.ts"))), "tsconfig.base.json": sha256(initial) },
+    definitions: [{ id: "auth.session.rotate", symbol: "rotateSession", path: "src/rotate.ts", line: 7, kind: "FunctionDeclaration" }], references: [] };
+  await writeFile(graphPath, JSON.stringify(graph));
+  const server = createMcpServer({ root, autoGenerate: true });
+  await callTool(server, 1, "llmnav_query", { task: "refresh token" });
+  const manifestPath = path.join(root, ".llmnav/cache/manifest.json");
+  const saved = await readFile(manifestPath, "utf8");
+  await writeFile(metadataPath, changed);
+  const request = id => server.handleMessage({ jsonrpc: "2.0", id, method: "tools/call", params: { name: "llmnav_query", arguments: { task: "refresh token" } } });
+  const stale = await request(2);
+  context.diagnostic(JSON.stringify({ acceptedStaleResponse: stale.result !== undefined, error: stale.error?.data?.code ?? null }));
+  assert.equal(stale.error?.data?.code, "LLMNAV_REFRESH_FAILED");
+  assert.equal(server.status().phase, "error");
+  assert.equal(await readFile(manifestPath, "utf8"), saved);
+  graph.sourceHashes["tsconfig.base.json"] = sha256(changed);
+  await writeFile(graphPath, JSON.stringify(graph));
+  await callTool(server, 3, "llmnav_query", { task: "refresh token" });
+  await rm(metadataPath);
+  assert.equal((await request(4)).error?.data?.code, "LLMNAV_REFRESH_FAILED");
+  await writeFile(metadataPath, changed);
+  await callTool(server, 5, "llmnav_query", { task: "refresh token" });
+  assert.equal(server.status().phase, "ready");
+  for (const invalid of ["{", JSON.stringify({ ...graph, sourceHashes: { "../outside.json": sha256(changed) } })]) {
+    await writeFile(graphPath, invalid);
+    assert.equal((await request(6)).error?.data?.code, "LLMNAV_REFRESH_FAILED");
+  }
+  await writeFile(graphPath, JSON.stringify(graph));
+  await callTool(server, 7, "llmnav_query", { task: "refresh token" });
 });

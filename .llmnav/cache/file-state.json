@@ -4572,7 +4572,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "2d4c2290cb48cfbc96e7314e4475f51bc24b0d1c93c6c6bb4833e4ec9d010b6a",
+      "contentHash": "2a1858035973835798408a4300eefd690e2ccfbb711094302eac3fc0975783f0",
       "declarations": [
         null
       ],
@@ -4586,7 +4586,7 @@
       ],
       "path": "src/graph-input.js",
       "semanticBytes": 397,
-      "sourceBytes": 8854
+      "sourceBytes": 8942
     },
     {
       "blocks": [
@@ -5197,7 +5197,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "53b3649dbece82c1200657d10fe3ac2bb27a21b4e079158156941e5d94e84eb1",
+      "contentHash": "a3a2ab3012ae14b56623f4ff07e1bcba2fecd893df30a07899bb3aefbfa21b3e",
       "declarations": [
         null
       ],
@@ -5207,13 +5207,14 @@
         "./config.js",
         "./files.js",
         "./generator.js",
+        "./graph-input.js",
         "./util.js",
         "node:fs/promises",
         "node:path"
       ],
       "path": "src/mcp-refresh.js",
       "semanticBytes": 507,
-      "sourceBytes": 4014
+      "sourceBytes": 4848
     },
     {
       "blocks": [
@@ -6815,7 +6816,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "7894dd1af318bcd8645261cdd37ead80b32dd0f57049a900d8fa5e9b35d97391",
+      "contentHash": "9e4b0e360051cf552ea935a43cc84a38490f3dcc2d75b8a075e1d00a6c4fbc86",
       "declarations": [
         null
       ],
@@ -7745,7 +7746,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "992f8696b5b52ceb95e851a65daec43d95549546af038270a2cbff813b945929",
+      "contentHash": "712b8311d3c3fb7711bd7b98a47f05345422a7dd5a9f75c3e75a887cd7bce0e1",
       "declarations": [],
       "imports": [
         "../src/agent-protocol.js",
@@ -7754,6 +7755,7 @@
         "../src/mcp.js",
         "../src/search.js",
         "../src/spec.js",
+        "../src/util.js",
         "node:assert/strict",
         "node:child_process",
         "node:events",
@@ -7766,7 +7768,7 @@
       ],
       "path": "tests/mcp.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 24501
+      "sourceBytes": 27579
     },
     {
       "blocks": [],
@@ -8037,11 +8039,12 @@
     },
     {
       "blocks": [],
-      "contentHash": "c123c74b5e585690f6e0bf54cf6c7a27b91a1597f7157cbda90dd577f2e67595",
+      "contentHash": "9f84af9cc4c297ed8c25004e0c188246c6556d9353629a01343ce2c1f015f1bd",
       "declarations": [],
       "imports": [
         "../src/mcp-refresh.js",
         "../src/mcp.js",
+        "../src/util.js",
         "node:assert/strict",
         "node:events",
         "node:fs/promises",
@@ -8051,7 +8054,7 @@
       ],
       "path": "tests/session-cache.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 8056
+      "sourceBytes": 11068
     },
     {
       "blocks": [],

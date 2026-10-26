@@ -1218,7 +1218,7 @@
         "source mutation"
       ],
       "hashes": {
-        "body": "2d4c2290cb48cfbc96e7314e4475f51bc24b0d1c93c6c6bb4833e4ec9d010b6a",
+        "body": "2a1858035973835798408a4300eefd690e2ccfbb711094302eac3fc0975783f0",
         "semantic": "c4122aabf96e2489fbb8561b5614b963a8dabc6762a85e8fb378b472dd3fc9dd",
         "structure": "f0b28529b2d7749fc41965cc6056e0ecb652042968d1464c53532740835b66e9"
       },
@@ -1897,7 +1897,7 @@
         "source parsing"
       ],
       "hashes": {
-        "body": "7894dd1af318bcd8645261cdd37ead80b32dd0f57049a900d8fa5e9b35d97391",
+        "body": "9e4b0e360051cf552ea935a43cc84a38490f3dcc2d75b8a075e1d00a6c4fbc86",
         "semantic": "59aa3e9e793d505ecdf110fec023c201aaee0154d2f6c9cf71afe1bbf71a7be5",
         "structure": "e213e073414c75bc75df1c8669a7045096142b6c0845694191893d90bf23e3c2"
       },
@@ -2566,9 +2566,9 @@
         "request cancellation ownership"
       ],
       "hashes": {
-        "body": "53b3649dbece82c1200657d10fe3ac2bb27a21b4e079158156941e5d94e84eb1",
+        "body": "a3a2ab3012ae14b56623f4ff07e1bcba2fecd893df30a07899bb3aefbfa21b3e",
         "semantic": "273f312a13397e49d44806ba090489f8b4f0b901e54593397ba22b84a00ab671",
-        "structure": "f22dd5cafaec2f4c787d8e092423c28f9196630c35618378b4f8d33dce1b2f47"
+        "structure": "1e0e45992d4016d4732d0b31ece9ba48cc408cb8a9011d2a439a9ab046930fdb"
       },
       "id": "llmnav.agent.freshness",
       "imports": [
@@ -2577,6 +2577,7 @@
         "./config.js",
         "./files.js",
         "./generator.js",
+        "./graph-input.js",
         "./util.js",
         "node:fs/promises",
         "node:path"
@@ -3186,9 +3187,9 @@
     },
     "schemaVersion": 1
   },
-  "generatedBy": "llmnav@0.16.15",
+  "generatedBy": "llmnav@0.16.16",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "ba69b40e46196c841a0e4a5d81b603a262274cb86094435a6810db6b9ce3f24f",
+  "sourceHash": "111b0f978859b7c90e477ef5c0bc622e984a1f44aa7d39d1ae48d578821d16c1",
   "specVersion": "1"
 }

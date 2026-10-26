@@ -1,11 +1,12 @@
 import assert from "node:assert/strict";
 import { getEventListeners } from "node:events";
 import test from "node:test";
-import { mkdir, mkdtemp, rm, symlink, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { sourceStamp, createSourcePreparation } from "../src/mcp-refresh.js";
 import { createSessionCache } from "../src/mcp.js";
+import { sha256 } from "../src/util.js";
 
 function deadline() {
   let fire;
@@ -182,4 +183,49 @@ test("source stamps include Go and configured graph metadata and reject metadata
   await rm(path.join(root, "metadata"), { recursive: true });
   await symlink(outside, path.join(root, "metadata"), process.platform === "win32" ? "junction" : "dir");
   await assert.rejects(sourceStamp(root), /symbolic link/u);
+});
+
+test("compiler dependency stamping limits graph reads and rejects dependency junctions", { timeout: 5000 }, async context => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-compiler-stamp-"));
+  const outside = await mkdtemp(path.join(os.tmpdir(), "llmnav-compiler-stamp-external-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  context.after(() => rm(outside, { recursive: true, force: true }));
+  for (const directory of [".llmnav", "src", "inputs", "settings"]) await mkdir(path.join(root, directory));
+  await writeFile(path.join(root, ".llmnav/config.json"), JSON.stringify({ repositoryId: "fixture", sourceRoots: ["src"], graph: { indexFiles: ["inputs/z.json", "inputs/a.json"] } }));
+  await writeFile(path.join(root, "src/main.ts"), "export const value = true;\n");
+  await writeFile(path.join(root, "settings/base.json"), '{"target":"ES2022"}');
+  const graph = JSON.stringify({ schemaVersion: 2, repositoryId: "fixture", sourceHashes: { "settings/base.json": sha256('{"target":"ES2022"}') }, definitions: [], references: [] });
+  for (const name of ["a", "z"]) await writeFile(path.join(root, `inputs/${name}.json`), graph);
+  const both = Promise.withResolvers();
+  let active = 0, peak = 0, graphReads = 0;
+  const readPaths = [];
+  const initial = await sourceStamp(root, { ioConcurrency: 2, io: { readFile: async (file, encoding) => {
+    readPaths.push(file);
+    if (path.dirname(file) !== path.join(root, "inputs")) return readFile(file, encoding);
+    graphReads++; active++; peak = Math.max(peak, active);
+    if (active === 2) both.resolve();
+    await both.promise;
+    try { return await readFile(file, encoding); } finally { active--; }
+  } } });
+  assert.equal(graphReads, 2); assert.equal(peak, 2); assert.equal(active, 0);
+  assert.equal(readPaths.includes(path.join(root, "settings/base.json")), false);
+  assert.equal(readPaths.includes(path.join(root, "src/main.ts")), false);
+  assert.equal(await sourceStamp(root), initial);
+  await writeFile(path.join(root, "settings/base.json"), '{"target":"ES2023"}');
+  assert.notEqual(await sourceStamp(root), initial);
+  await rm(path.join(root, "settings"), { recursive: true });
+  await writeFile(path.join(outside, "base.json"), "{}\n");
+  await symlink(outside, path.join(root, "settings"), process.platform === "win32" ? "junction" : "dir");
+  await assert.rejects(sourceStamp(root), /symbolic link/u);
+});
+
+test("preparation reports dependency-probe failures with their original cause", async () => {
+  const cause = Object.assign(new Error("compiler graph is unreadable"), { code: "EACCES" });
+  let generations = 0;
+  const prepare = createSourcePreparation("unused", {
+    sourceStamp: async () => { throw cause; },
+    generateProject: async () => { generations++; return { ok: true }; },
+  });
+  await assert.rejects(prepare(), error => error.code === "LLMNAV_REFRESH_FAILED" && error.cause === cause);
+  assert.equal(generations, 0);
 });

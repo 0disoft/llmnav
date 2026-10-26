@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.16.16] — 2026-10-26
+
+### Fixed
+
+* Include schema 2 compiler-graph `sourceHashes` dependencies in MCP automatic refresh stamps, including configuration and lockfiles outside selected source roots. Configuration edits and deletion now trigger freshness validation instead of returning a previously prepared stale graph. Read graph metadata with bounded concurrency, share existing safe-path/hash validation, and preserve LNV014 reporting for malformed indexes. Input-probe failures retain their cause under `LLMNAV_REFRESH_FAILED`; reanalysis and restored inputs recover on later requests. Cover same-size configuration edits, stale-response rejection, deletion, recovery, malformed/unsafe indexes and dependency junctions.
+
 ## [0.16.15] — 2026-10-26
 
 ### Changed
