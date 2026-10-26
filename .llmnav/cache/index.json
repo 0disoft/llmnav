@@ -838,7 +838,7 @@
         "cache directory commit"
       ],
       "hashes": {
-        "body": "6aa1e9f6021f80be03e6612a03eb8da1e2ead8eaf7097257be66b914d838a7b7",
+        "body": "408466e80e235814721fcbbda635dfa6b2a6f1b2c026eb28368fe57c152dac9f",
         "semantic": "26e0abf92c39ff07a7eb622d795d5ecbc83c7704b7c1ed09cd3ad339e3c04865",
         "structure": "4533f320f5c701808b979357ece450b56bdbc35f1117a5d53a2556e684a33657"
       },
@@ -1579,7 +1579,7 @@
         "type-system resolution"
       ],
       "hashes": {
-        "body": "11f1b0229ea6bba8463b2cf1d1ae5c686dba345dca2083ed9dc389ff32d314e1",
+        "body": "8b39f3e53829096c10f931b2815e67e94c0ac9d1514a93db7328d3222cb866ae",
         "semantic": "7030b7ad2203425883d7d7fb0110b74e4994d2f821b457eaabb59bdc49c6a4ea",
         "structure": "2aebd4bc4c948f540c790d4ab8b02cbb87ce123eaab8fdf344ae0ac1cad9e32d"
       },
@@ -1898,7 +1898,7 @@
         "source parsing"
       ],
       "hashes": {
-        "body": "0ea781d56891931ca8eae78cfc53434ac16745fe20d3ad1557576930983cb289",
+        "body": "340451656a40dfaafa2fa0cbc08a15503756d615f0bbb0d731c1f8515b0e99e7",
         "semantic": "59aa3e9e793d505ecdf110fec023c201aaee0154d2f6c9cf71afe1bbf71a7be5",
         "structure": "e213e073414c75bc75df1c8669a7045096142b6c0845694191893d90bf23e3c2"
       },
@@ -3188,9 +3188,9 @@
     },
     "schemaVersion": 1
   },
-  "generatedBy": "llmnav@0.16.22",
+  "generatedBy": "llmnav@0.16.23",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "e30ec7d66147b889a2b50ab929152cd6f9ea65ed7c0ee6d54a0b1364f6fbab19",
+  "sourceHash": "157feee84385caf0838341d569611b367ddc83d309f8235ca99411f6d1679fd1",
   "specVersion": "1"
 }

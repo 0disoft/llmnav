@@ -485,16 +485,11 @@ export function extractImports(source, filePath) {
   const results = new Set();
   const normalized = normalizeNewlines(source);
   if ([".ts", ".tsx", ".mts", ".cts", ".js", ".jsx", ".mjs", ".cjs", ".svelte", ".astro", ".vue"].includes(extension)) {
-    const patterns = [
-      /^[ \t]*import\s+(?:[^;"']*?\s+from\s+)?["']([^"']+)["']/gmu,
-      /^[ \t]*export\s+[^;"']*?\s+from\s+["']([^"']+)["']/gmu,
-      /\b(?:require|import)\s*\(\s*["']([^"']+)["']\s*\)/gu,
-    ];
-    for (const pattern of patterns) {
-      const isCodeAt = createJavaScriptCodeCursor(normalized);
-      for (const match of normalized.matchAll(pattern)) {
-        if (match[1] && isCodeAt(match.index ?? 0)) results.add(match[1]);
-      }
+    for (const specifier of staticModuleSpecifiers(normalized)) results.add(specifier);
+    const isCodeAt = createJavaScriptCodeCursor(normalized);
+    const dynamic = /\b(?:require|import)\s*\(\s*["']([^"']+)["']\s*\)/gu;
+    for (const match of normalized.matchAll(dynamic)) {
+      if (match[1] && isCodeAt(match.index ?? 0)) results.add(match[1]);
     }
   } else if (extension === ".go") {
     for (const match of normalized.matchAll(/^[ \t]*(?:import\s+)?(?:[A-Za-z_][\w]*\s+)?"([^"]+)"/gmu)) {
@@ -508,6 +503,42 @@ export function extractImports(source, filePath) {
     }
   }
   return [...results].sort();
+}
+
+// Share each quote/semicolon boundary across all preceding declaration heads.
+// Failed re-exports must not restart a full-suffix search for every export.
+function* staticModuleSpecifiers(source) {
+  const heads = /^[ \t]*(import|export)(?=\s)/gmu;
+  const boundaries = /[;"']/gu;
+  const quotes = /["']/gu;
+  const isCodeAt = createJavaScriptCodeCursor(source);
+  const matchedEnd = { import: 0, export: 0 };
+  let boundary = null;
+  let closing = null;
+  let whitespaceStart = 0;
+  let fromStart = -1;
+  for (const head of source.matchAll(heads)) {
+    const kind = head[1];
+    if (head.index < matchedEnd[kind] || !isCodeAt(head.index)) continue;
+    const keywordEnd = head.index + head[0].length;
+    while (boundary === null || boundary.index < keywordEnd) {
+      boundary = boundaries.exec(source);
+      if (boundary === null) return;
+      if (boundary[0] === ";") continue;
+      quotes.lastIndex = boundary.index + 1;
+      closing = quotes.exec(source);
+      whitespaceStart = boundary.index;
+      while (whitespaceStart > 0 && /\s/u.test(source[whitespaceStart - 1])) whitespaceStart--;
+      fromStart = whitespaceStart - 4;
+    }
+    if (boundary[0] === ";" || closing === null || closing.index === boundary.index + 1) continue;
+    const sideEffect = kind === "import" && whitespaceStart <= keywordEnd;
+    const fromClause = fromStart >= keywordEnd + 2 && source.slice(fromStart, whitespaceStart) === "from" &&
+      /\s/u.test(source[fromStart - 1]);
+    if (!sideEffect && !fromClause) continue;
+    matchedEnd[kind] = closing.index + 1;
+    yield source.slice(boundary.index + 1, closing.index);
+  }
 }
 
 // Each matchAll iterator yields ascending offsets. Keep lexical state local to

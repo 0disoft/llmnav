@@ -3,11 +3,48 @@ import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
+import { runInNewContext } from "node:vm";
 import { detectBoundaries } from "../src/boundaries.js";
 import { createDeclarationScanContext, extractImports, findAttachedDeclaration } from "../src/declaration.js";
 import { generateProject } from "../src/generator.js";
 import { initializeProject } from "../src/initializer.js";
 import { parseLlmnavBlocks } from "../src/parser.js";
+
+test("import extraction bounds scans across semicolon-free export declarations", context => {
+  const count = 50000;
+  const declarations = Array.from({ length: count }, (_, index) => `export const value${index} = ${index}\n`).join("");
+  for (const [label, source, expected] of [
+    ["no-quotes", declarations, []],
+    ["shared-boundary", `${declarations}const label = "value"\nimport "./actual.js"\n`, ["./actual.js"]],
+    ["comment-heads", `/*\n${"export value\nimport value\n".repeat(count)}*/\nimport "./actual.js"\n`, ["./actual.js"]],
+  ]) {
+    const started = performance.now();
+    const imports = runInNewContext('extractImports(source, "constants.ts")',
+      { extractImports, source }, { timeout: 3000 });
+    assert.deepEqual(imports, expected, label);
+    context.diagnostic(JSON.stringify({ label, declarations: count, sourceBytes: Buffer.byteLength(source),
+      elapsedMs: Number((performance.now() - started).toFixed(3)) }));
+  }
+});
+
+test("static module scans preserve multiline bindings, local export boundaries and real imports after comments", () => {
+  const source = [
+    "/*", "export ignored", "import ignored", "*/",
+    'import "./side.js"',
+    "import Default, {", "  from as source,", "  export as exported,",
+    '} from "./named.js"',
+    "export type {", "  A, B,", '} from "./types.js"',
+    'export * as ns from "./star.js"',
+    "export { A };",
+    'const label = "./ignored.js";',
+    'import("./dynamic.js"); require("./common.cjs");',
+    'import "./named.js";',
+  ].join("\n");
+  assert.deepEqual(extractImports(source, "fixture.ts"),
+    ["./common.cjs", "./dynamic.js", "./named.js", "./side.js", "./star.js", "./types.js"]);
+  assert.deepEqual(extractImports('import ""; export * from ""; require("");', "empty.js"), []);
+  assert.deepEqual(extractImports('import from "./invalid.js"; export from "./invalid.js";', "invalid.js"), []);
+});
 
 test("enriches TypeScript and Go declarations with stable visibility and body hashes", () => {
   const typescript = `${card("api.user.load")}export async function loadUser(id: string): Promise<string> {\n  return id;\n}\n`;

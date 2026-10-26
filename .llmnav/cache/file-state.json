@@ -3556,7 +3556,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "11f1b0229ea6bba8463b2cf1d1ae5c686dba345dca2083ed9dc389ff32d314e1",
+      "contentHash": "8b39f3e53829096c10f931b2815e67e94c0ac9d1514a93db7328d3222cb866ae",
       "declarations": [
         null
       ],
@@ -3568,7 +3568,7 @@
       ],
       "path": "src/declaration.js",
       "semanticBytes": 507,
-      "sourceBytes": 21650
+      "sourceBytes": 23167
     },
     {
       "blocks": [
@@ -4792,7 +4792,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "6aa1e9f6021f80be03e6612a03eb8da1e2ead8eaf7097257be66b914d838a7b7",
+      "contentHash": "408466e80e235814721fcbbda635dfa6b2a6f1b2c026eb28368fe57c152dac9f",
       "declarations": [
         null
       ],
@@ -6817,7 +6817,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "0ea781d56891931ca8eae78cfc53434ac16745fe20d3ad1557576930983cb289",
+      "contentHash": "340451656a40dfaafa2fa0cbc08a15503756d615f0bbb0d731c1f8515b0e99e7",
       "declarations": [
         null
       ],
@@ -7421,7 +7421,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "4ddf7145b5693c1877f1a01dee3d9bfdf0f03640f033cc2749d39667e8d56546",
+      "contentHash": "2633af0592856098b2c942a8d5fa0554971f6aa626de4192f3f7a178ae419bf6",
       "declarations": [],
       "imports": [
         "../src/boundaries.js",
@@ -7433,11 +7433,12 @@
         "node:fs/promises",
         "node:os",
         "node:path",
-        "node:test"
+        "node:test",
+        "node:vm"
       ],
       "path": "tests/declaration-structure.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 15616
+      "sourceBytes": 17551
     },
     {
       "blocks": [],
@@ -8202,6 +8203,6 @@
       "sourceBytes": 13542
     }
   ],
-  "indexerVersion": 10,
+  "indexerVersion": 11,
   "schemaVersion": 1
 }

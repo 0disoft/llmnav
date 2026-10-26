@@ -31,7 +31,7 @@ import {
 } from "./util.js";
 
 export const FILE_STATE_SCHEMA_VERSION = 1;
-export const SOURCE_INDEXER_VERSION = 10;
+export const SOURCE_INDEXER_VERSION = 11;
 const STAT_HINTS_SCHEMA_VERSION = 2;
 
 export async function scanProjectIncremental(root, options = {}) {

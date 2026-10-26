@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.16.23] — 2026-10-27
+
+### Fixed
+
+* Replace static JavaScript/TypeScript import and re-export suffix regex searches with forward-only declaration and delimiter cursors. Semicolon-free exports no longer rescan the remaining file for every declaration; comment and string headers are rejected before matching. Preserve multiline bindings, dynamic imports, CommonJS requires, sorted deduplication and pattern-local match boundaries. Interruptible regressions cover 50,000 exports with no quotes or a shared quote boundary, plus 100,000 comment headers. Advance the source indexer version so cached import lists are reparsed once.
+
 ## [0.16.22] — 2026-10-26
 
 ### Fixed
