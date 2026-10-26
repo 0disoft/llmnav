@@ -2655,7 +2655,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "db1b5bdab4a8498a4d3ac5e956e81118df4e900f912697177681dde08c757048",
+      "contentHash": "60d4607cbf6931e917f2d4596cdd4234d4dbf6d8e83a008ad9385eede5564258",
       "declarations": [
         null
       ],
@@ -2672,7 +2672,7 @@
       ],
       "path": "src/analysis.js",
       "semanticBytes": 632,
-      "sourceBytes": 7329
+      "sourceBytes": 8413
     },
     {
       "blocks": [
@@ -6817,7 +6817,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "9a1baab46e55b2454451bdeffa32fcdcc5c331c20156bcc34ec2bfbd7ee5eda4",
+      "contentHash": "f5001be0849b9b1131ed0dbe70199012841050b9aff77fa8f7f73f0a53058cc5",
       "declarations": [
         null
       ],
@@ -7229,6 +7229,19 @@
       "path": "tests/agent-protocol.test.js",
       "semanticBytes": 0,
       "sourceBytes": 12670
+    },
+    {
+      "blocks": [],
+      "contentHash": "792c9a130033a01e0028d502f8578105ed8dafe00c2270ec525dd7f21a15a9c7",
+      "declarations": [],
+      "imports": [
+        "../src/analysis.js",
+        "node:assert/strict",
+        "node:test"
+      ],
+      "path": "tests/analysis-bindings.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 4136
     },
     {
       "blocks": [],

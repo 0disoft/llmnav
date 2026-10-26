@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.16.20] — 2026-10-26
+
+### Changed
+
+* Index compiler-to-card bindings by file, symbol, offset and line instead of filtering same-name candidates for each declaration. Count offset/line intersections to preserve OR matching, duplicate ambiguity, primary-location priority, overload-signature fallback and module ownership without materializing candidate unions. Build the indexes per analysis, with no persistent cache. A 1,000-card, 1,000-declaration regression reduces candidate location reads from 1,999,000 to 2,000 while preserving definition IDs and reference targets; TypeScript and Go fixtures cover ambiguous, duplicate, missing and fallback matches.
+
 ## [0.16.19] — 2026-10-26
 
 ### Changed

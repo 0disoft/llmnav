@@ -56,30 +56,62 @@ export async function analyzeProject(root, options = {}) {
     counts: { definitions: graph.definitions.length, references: graph.references.length, cardBindings: graph.definitions.filter(item => cardIds.has(item.id)).length }, graph };
 }
 
-function connectDefinitions(project, raw, language, sourceHashes) {
+function createCardBindingLookup(records) {
   const symbols = new Map(), modules = new Map();
-  for (const record of project.records) {
+  for (const record of records) {
     if (record.declaration) {
-      const key = `${record.relativePath}:${record.declaration.symbol}`;
-      const items = symbols.get(key) ?? []; items.push(record); symbols.set(key, items);
+      const { symbol, offset, line } = record.declaration;
+      const key = `${record.relativePath}:${symbol}`;
+      const positions = symbols.get(key) ?? { offsets: new Map(), lines: new Map() };
+      symbols.set(key, positions);
+      countBinding(positions.offsets, offset, record);
+      const lineMatch = countBinding(positions.lines, line, record);
+      lineMatch.offsets ??= new Map();
+      lineMatch.offsets.set(offset, (lineMatch.offsets.get(offset) ?? 0) + 1);
     } else if (record.card.scope === "module") {
-      const items = modules.get(record.relativePath) ?? []; items.push(record); modules.set(record.relativePath, items);
+      countBinding(modules, record.relativePath, record);
     }
   }
+  return item => {
+    const positions = symbols.get(`${item.path}:${item.symbol}`);
+    let match = item.kind === "module" ? modules.get(item.path) ?? { count: 0 } : matchBindingPosition(positions, item.offset, item.line);
+    if (match.count === 0 && item.signatureOffset !== undefined) {
+      match = matchBindingPosition(positions, item.signatureOffset, item.signatureLine);
+    }
+    return match.count === 1 ? match.record : null;
+  };
+}
+
+function countBinding(index, key, record) {
+  let match = index.get(key);
+  if (match === undefined) {
+    match = { count: 0, record };
+    index.set(key, match);
+  }
+  match.count++;
+  return match;
+}
+
+function matchBindingPosition(positions, offset, line) {
+  // Preserve strict-equality matching; Map alone would also match NaN positions.
+  const offsetMatch = Number.isNaN(offset) ? undefined : positions?.offsets.get(offset);
+  const lineMatch = Number.isNaN(line) ? undefined : positions?.lines.get(line);
+  const overlap = offsetMatch === undefined ? 0 : lineMatch?.offsets.get(offset) ?? 0;
+  return { count: (offsetMatch?.count ?? 0) + (lineMatch?.count ?? 0) - overlap,
+    record: offsetMatch?.record ?? lineMatch?.record };
+}
+
+export function connectDefinitions(project, raw, language, sourceHashes) {
+  const bindCard = createCardBindingLookup(project.records);
   const ids = new Map(), occurrences = new Map();
   const definitions = [];
   const definitionIds = new Set();
   const declarations = [...raw.declarations].sort((left, right) => compareText(left.path, right.path) || left.offset - right.offset || compareText(left.key, right.key));
   for (const item of declarations) {
-    const candidates = symbols.get(`${item.path}:${item.symbol}`) ?? [];
-    let matches = item.kind === "module" ? modules.get(item.path) ?? [] :
-      candidates.filter(record => record.declaration.offset === item.offset || record.declaration.line === item.line);
-    if (matches.length === 0 && item.signatureOffset !== undefined) {
-      matches = candidates.filter(record => record.declaration.offset === item.signatureOffset || record.declaration.line === item.signatureLine);
-    }
+    const matchedCard = bindCard(item);
     const identity = `${language}:${item.path}:${item.qualified}`;
     const occurrence = occurrences.get(identity) ?? 0; occurrences.set(identity, occurrence + 1);
-    const id = matches.length === 1 ? matches[0].card.id : `code.${language === "go" ? "go" : "ts"}.s${sha256(`${identity}:${occurrence}`).slice(0, 32)}`;
+    const id = matchedCard ? matchedCard.card.id : `code.${language === "go" ? "go" : "ts"}.s${sha256(`${identity}:${occurrence}`).slice(0, 32)}`;
     ids.set(item.key, id);
     if (!definitionIds.has(id)) {
       definitionIds.add(id);
