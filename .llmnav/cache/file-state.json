@@ -2098,14 +2098,14 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "fcfff44c3f598fe36fce7fc4ac3005965b58f78c5b08adf5a5a8fdca3e1a8b44",
+      "contentHash": "9ab551c5b1eeb8dac90d65a37e3822711b12770d5d68b9bc8925a5371eee2fea",
       "declarations": [
         null
       ],
       "imports": [],
       "path": "src/adapters/typescript-metadata.js",
       "semanticBytes": 522,
-      "sourceBytes": 2914
+      "sourceBytes": 2923
     },
     {
       "blocks": [
@@ -2435,7 +2435,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "3460274c499e117fc5849b920c2f6651bb9f7c7fb2ccd64774cc59660b15c832",
+      "contentHash": "49508be5dd087c0f4a1a14a32c1ca29c7a734a4d49e7d09a16a1d27c715cb339",
       "declarations": [
         null
       ],
@@ -2443,6 +2443,7 @@
         "./abort.js",
         "./agent-tools.js",
         "./audit.js",
+        "./code-metadata.js",
         "./discovery.js",
         "./errors.js",
         "./graph-input.js",
@@ -2453,7 +2454,7 @@
       ],
       "path": "src/agent-protocol.js",
       "semanticBytes": 528,
-      "sourceBytes": 10028
+      "sourceBytes": 10441
     },
     {
       "blocks": [
@@ -2546,7 +2547,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "81b84614b17c41821ee51c2a41b15c2783cb5afeeedf562cd1579962e173fd66",
+      "contentHash": "7a3ce644eb7121370054a405a1119ed940e345e92a6bdeb32cba7ea55aee4c7e",
       "declarations": [
         null
       ],
@@ -2555,7 +2556,7 @@
       ],
       "path": "src/agent-tools.js",
       "semanticBytes": 411,
-      "sourceBytes": 4504
+      "sourceBytes": 5191
     },
     {
       "blocks": [
@@ -2763,7 +2764,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "765a3906e6d0a300a43609a14892c346b22d1f650bbb8027b85adacab9fccbd1",
+      "contentHash": "598f1fc48f293e06797d64f1bcd600900dd9173c93bc47b19f7d99a97f89eeda",
       "declarations": [
         null
       ],
@@ -2780,7 +2781,7 @@
       ],
       "path": "src/analysis.js",
       "semanticBytes": 632,
-      "sourceBytes": 8995
+      "sourceBytes": 9032
     },
     {
       "blocks": [
@@ -3219,7 +3220,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "c81c81e1d593d0dfcb06e621a2801e7037ebcc5f03b70efc5140087127580da4",
+      "contentHash": "100acee17a9679d1ec0ed0eb743134591e300f3dd2524afaecec67133af7ec14",
       "declarations": [
         null
       ],
@@ -3251,7 +3252,7 @@
       ],
       "path": "src/cli.js",
       "semanticBytes": 508,
-      "sourceBytes": 26377
+      "sourceBytes": 27061
     },
     {
       "blocks": [
@@ -3265,11 +3266,12 @@
             ],
             "id": "llmnav.structure.metadata",
             "invariant": [
-              "Metadata preserves unknown types and compiler origins without modifying semantic cards."
+              "Metadata preserves compiler origins and bounds detail output without modifying semantic cards or default navigation responses."
             ],
             "owns": [
               "common metadata contract",
-              "type origin validation"
+              "type origin validation",
+              "bounded member pages"
             ],
             "rel": [
               "workflow>llmnav.graph.import"
@@ -3284,7 +3286,7 @@
             "stability": "contract",
             "unknown": []
           },
-          "end": 459,
+          "end": 519,
           "endLine": 10,
           "entries": [
             {
@@ -3303,7 +3305,7 @@
               "key": "owns",
               "line": 4,
               "order": 2,
-              "value": "common metadata contract|type origin validation"
+              "value": "common metadata contract|type origin validation|bounded member pages"
             },
             {
               "key": "excludes",
@@ -3321,7 +3323,7 @@
               "key": "invariant",
               "line": 7,
               "order": 5,
-              "value": "Metadata preserves unknown types and compiler origins without modifying semantic cards."
+              "value": "Metadata preserves compiler origins and bounds detail output without modifying semantic cards or default navigation responses."
             },
             {
               "key": "rel",
@@ -3340,7 +3342,7 @@
           "indent": "",
           "newline": "\n",
           "prefix": null,
-          "raw": "/* llmnav/1 module\nid=llmnav.structure.metadata\nrole=Validate generated compiler metadata independently of reviewed semantic cards.\nowns=common metadata contract|type origin validation\nexcludes=compiler execution|semantic inference|source mutation\nsearch=generated type metadata|compiler signature contract\ninvariant=Metadata preserves unknown types and compiler origins without modifying semantic cards.\nrel=workflow>llmnav.graph.import\nstability=contract\n*/",
+          "raw": "/* llmnav/1 module\nid=llmnav.structure.metadata\nrole=Validate generated compiler metadata independently of reviewed semantic cards.\nowns=common metadata contract|type origin validation|bounded member pages\nexcludes=compiler execution|semantic inference|source mutation\nsearch=generated type metadata|compiler signature contract\ninvariant=Metadata preserves compiler origins and bounds detail output without modifying semantic cards or default navigation responses.\nrel=workflow>llmnav.graph.import\nstability=contract\n*/",
           "scope": "module",
           "specVersion": "1",
           "start": 0,
@@ -3349,14 +3351,17 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "c4f6ac74b8ffad05c50c8c3ffc43d9cd407b1feb5712a2b8b1c963b670c87506",
+      "contentHash": "d131d9193d1844f690034f192aee6c20a795f6416200af162ec6363bd7a2201e",
       "declarations": [
         null
       ],
-      "imports": [],
+      "imports": [
+        "./policy.js",
+        "./util.js"
+      ],
       "path": "src/code-metadata.js",
-      "semanticBytes": 459,
-      "sourceBytes": 2800
+      "semanticBytes": 519,
+      "sourceBytes": 6699
     },
     {
       "blocks": [
@@ -4904,7 +4909,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "c160917c838d1eb64c1cf0af5a03c7daa757cfebc2583d3deea031cd42e3dc7c",
+      "contentHash": "fb31f1554857ff734e71a761d733c326e4f2e29f10e195ba0dbf92a133363b97",
       "declarations": [
         null
       ],
@@ -4915,7 +4920,7 @@
       ],
       "path": "src/graph.js",
       "semanticBytes": 548,
-      "sourceBytes": 17012
+      "sourceBytes": 17087
     },
     {
       "blocks": [
@@ -5029,14 +5034,14 @@
     },
     {
       "blocks": [],
-      "contentHash": "5fc21a6b62397f5d3c49eb48a84239388f3a959d3407650dcca807d86bbd757f",
+      "contentHash": "2b151e8f9634d485f3432892e68c15a49a209da4afb44f5535fe5fb18b77a371",
       "declarations": [],
       "imports": [
         "./spec.js"
       ],
       "path": "src/index.d.ts",
       "semanticBytes": 0,
-      "sourceBytes": 37465
+      "sourceBytes": 38128
     },
     {
       "blocks": [],
@@ -6018,14 +6023,14 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "48ee33d835a2df5e8c204a2434c04bc7aaa790f975b92c5038426df936e59319",
+      "contentHash": "61fddf5fb5910e5491424d7661afad6864fd00009431225a7908af1f9d2e54f2",
       "declarations": [
         null
       ],
       "imports": [],
       "path": "src/policy.js",
       "semanticBytes": 590,
-      "sourceBytes": 2732
+      "sourceBytes": 3018
     },
     {
       "blocks": [
@@ -6894,12 +6899,13 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "76a262a55b01b79c3256a7d5873e40aa4d43bb50402ce17dfafbb1f6316a540c",
+      "contentHash": "0b3bb53f0c4b0a9e9f11819f526ca41b4938273612a303b618ac3f2fc14f0ab4",
       "declarations": [
         null
       ],
       "imports": [
         "./abort.js",
+        "./code-metadata.js",
         "./config.js",
         "./generator.js",
         "./graph.js",
@@ -6914,7 +6920,7 @@
       ],
       "path": "src/search.js",
       "semanticBytes": 464,
-      "sourceBytes": 36737
+      "sourceBytes": 37538
     },
     {
       "blocks": [],
@@ -7427,7 +7433,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "0b833f90bf7f1bda64a7501265d83c055a43b837ed96db0e9d4b84bcbc70681e",
+      "contentHash": "3e1c4dba337130b5454d508b3dff43dd3b9a381c98ce5732172bce31d25f43df",
       "declarations": [],
       "imports": [
         "../src/agent-protocol.js",
@@ -7521,7 +7527,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "ec2c511bd9caafadbc19f7f7ce503763d0373325df14c3a5d4acb1e40bde4b4c",
+      "contentHash": "10688d0f532326fd3d763ae088f5eb682b32bb6830c113922f87bc6e4b8ae14c",
       "declarations": [],
       "imports": [
         "../src/cli.js",
@@ -7536,16 +7542,21 @@
       ],
       "path": "tests/cli.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 4801
+      "sourceBytes": 5303
     },
     {
       "blocks": [],
-      "contentHash": "7c62d5240940a9d88baa74d51aa0b5b303e316f845a1f47b9cb1ec4c82c3713d",
+      "contentHash": "5cb538c747cd4fca34354e37a76aa035c76943bb55586e9e4a68ff599faa8413",
       "declarations": [],
       "imports": [
+        "../src/agent-protocol.js",
         "../src/analysis.js",
+        "../src/code-metadata.js",
         "../src/config.js",
+        "../src/discovery.js",
+        "../src/generator.js",
         "../src/graph-input.js",
+        "../src/search.js",
         "node:assert/strict",
         "node:child_process",
         "node:fs/promises",
@@ -7555,7 +7566,7 @@
       ],
       "path": "tests/code-metadata.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 6033
+      "sourceBytes": 10808
     },
     {
       "blocks": [],

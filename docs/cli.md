@@ -180,7 +180,7 @@ Before reading the cache, `query` waits for an active generation lock and then r
 ## `llmnav show`
 
 ```sh
-llmnav show <semantic-id> [--json]
+llmnav show <semantic-id> [--metadata] [--members] [--top 10] [--offset 0] [--metadata-budget 4000] [--json]
 ```
 
 Prints one compact card. Redirected registry IDs resolve to their active target. Qualified and unique external workspace IDs resolve to generated graph definitions when no local card exists. Ambiguous unqualified workspace IDs fail and report the qualified candidates.
@@ -257,7 +257,7 @@ Prints the active source specification version, canonical key order, stability v
 llmnav tools [--json]
 ```
 
-Prints the fixed provider-neutral tool definitions for `query`, `show`, `context`, `check`, `explain`, `audit`, and `discover`. Each definition carries schemaVersion 5; JSON output wraps the ordered definitions in a schemaVersion 1 command envelope. Tool inputs reject unknown fields and never accept a repository root; a trusted host binds repository scope when it calls the library dispatcher.
+Prints the fixed provider-neutral tool definitions for `query`, `show`, `context`, `check`, `explain`, `audit`, and `discover`. Each definition carries schemaVersion 6; JSON output wraps the ordered definitions in a schemaVersion 1 command envelope. Tool inputs reject unknown fields and never accept a repository root; a trusted host binds repository scope when it calls the library dispatcher.
 
 ## `llmnav mcp`
 

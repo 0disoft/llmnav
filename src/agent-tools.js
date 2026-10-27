@@ -8,9 +8,9 @@ rel=workflow>llmnav.agent.protocol
 stability=contract
 */
 
-import { AUDIT_LIMITS, DISCOVERY_SOURCE_LIMITS, SEARCH_LIMITS } from "./policy.js";
+import { AUDIT_LIMITS, DISCOVERY_SOURCE_LIMITS, METADATA_LIMITS, SEARCH_LIMITS } from "./policy.js";
 
-export const AGENT_TOOL_SCHEMA_VERSION = 5;
+export const AGENT_TOOL_SCHEMA_VERSION = 6;
 
 // Duplicated from AUDIT_PRIORITIES on purpose: importing the audit module would load
 // repository execution code into the definition-only surface. A contract test keeps them equal.
@@ -23,6 +23,11 @@ const DEFINITIONS = [
   }, ["task"]),
   tool("llmnav_show", "Resolve one local or qualified workspace semantic ID.", {
     id: stringProperty("Semantic ID or repository-qualified semantic ID."),
+    metadata: { type: "boolean", description: "Include a bounded compiler metadata page.", default: false },
+    members: { type: "boolean", description: "Page direct members instead of the declaration; requires metadata.", default: false },
+    top: integerProperty("Metadata page size.", METADATA_LIMITS.top.minimum, METADATA_LIMITS.top.maximum, METADATA_LIMITS.top.default),
+    offset: integerProperty("Metadata page offset.", 0, Number.MAX_SAFE_INTEGER, 0),
+    metadataBudget: integerProperty("UTF-8 JSON bytes in the metadata page; excludes the existing show result.", METADATA_LIMITS.bytes.minimum, METADATA_LIMITS.bytes.maximum, METADATA_LIMITS.bytes.default),
   }, ["id"]),
   tool("llmnav_context", "Build bounded semantic and graph context around one ID.", {
     id: stringProperty("Semantic ID or repository-qualified semantic ID."),

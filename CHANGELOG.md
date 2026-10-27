@@ -8,6 +8,8 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 
 ### Added
 
+* Bounded `show --metadata` and `--members` pages with UTF-8 output budgets, explicit oversized-record omissions and follow-up offsets. Session and MCP show share the same behavior; default navigation responses exclude metadata. Tool definitions advance to schema 6.
+
 * Opt-in TypeScript and Go declaration metadata through `analyze --metadata`, including compiler types and origins, signatures, parameters and ownership. Graph input schema 3 carries the optional metadata while existing schema 1/2 inputs and default schema 2 analysis remain supported. Source cards and runtime dependency count remain unchanged.
 
 ## [0.16.26] — 2026-10-27

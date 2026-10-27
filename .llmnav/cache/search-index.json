@@ -65,7 +65,7 @@
     "llmnav.support.runtime",
     "llmnav.syntax.parse"
   ],
-  "cardSetHash": "952fb49e2a9e02d0129c582e6f0c718e516bb97fac7717490ac0c9b744363d79",
+  "cardSetHash": "b5c22d616873988f78b63723c15407bccbec27b5ff0bfc339e04cd3a191a3518",
   "documentCount": 64,
   "documents": [
     [
@@ -733,14 +733,15 @@
       ]
     ],
     [
-      "13f041a624b8d447de13e83741db67a83f2dc16a41a9d2d9ec3e0f7053654681",
+      "b0065b9ed606efbc2861187b07cb6cc90e080ac7d7b8978882dcddc489306011",
       [
         "validate generated compiler metadata independently of reviewed semantic cards.",
         "generated type metadata",
         "compiler signature contract",
-        "metadata preserves unknown types and compiler origins without modifying semantic cards.",
+        "metadata preserves compiler origins and bounds detail output without modifying semantic cards or default navigation responses.",
         "common metadata contract",
-        "type origin validation"
+        "type origin validation",
+        "bounded member pages"
       ]
     ],
     [
@@ -2988,6 +2989,13 @@
         ]
       ],
       [
+        52,
+        [
+          3,
+          1
+        ]
+      ],
+      [
         57,
         [
           1,
@@ -3009,6 +3017,15 @@
         59,
         [
           1,
+          1
+        ]
+      ]
+    ],
+    [
+      [
+        52,
+        [
+          5,
           1
         ]
       ]
@@ -5253,6 +5270,13 @@
           3,
           1
         ]
+      ],
+      [
+        52,
+        [
+          5,
+          1
+        ]
       ]
     ],
     [
@@ -5424,6 +5448,15 @@
         59,
         [
           1,
+          1
+        ]
+      ]
+    ],
+    [
+      [
+        52,
+        [
+          5,
           1
         ]
       ]
@@ -10917,6 +10950,15 @@
     ],
     [
       [
+        52,
+        [
+          3,
+          1
+        ]
+      ]
+    ],
+    [
+      [
         17,
         [
           1,
@@ -11557,6 +11599,13 @@
         42,
         [
           2,
+          1
+        ]
+      ],
+      [
+        52,
+        [
+          5,
           1
         ]
       ]
@@ -12244,6 +12293,13 @@
         ]
       ],
       [
+        52,
+        [
+          5,
+          1
+        ]
+      ],
+      [
         53,
         [
           1,
@@ -12449,6 +12505,13 @@
           3,
           1
         ]
+      ],
+      [
+        52,
+        [
+          5,
+          1
+        ]
       ]
     ],
     [
@@ -12587,6 +12650,15 @@
         [
           2,
           1,
+          3,
+          1
+        ]
+      ]
+    ],
+    [
+      [
+        52,
+        [
           3,
           1
         ]
@@ -15003,6 +15075,15 @@
     ],
     [
       [
+        52,
+        [
+          5,
+          1
+        ]
+      ]
+    ],
+    [
+      [
         12,
         [
           1,
@@ -18906,13 +18987,6 @@
         ]
       ],
       [
-        52,
-        [
-          5,
-          1
-        ]
-      ],
-      [
         55,
         [
           1,
@@ -19047,13 +19121,6 @@
     [
       [
         17,
-        [
-          5,
-          1
-        ]
-      ],
-      [
-        52,
         [
           5,
           1
@@ -19988,6 +20055,7 @@
     "boundaries",
     "boundary",
     "bounded",
+    "bounds",
     "breakpoint",
     "build",
     "bundle",
@@ -20103,6 +20171,7 @@
     "derive",
     "derived",
     "describe",
+    "detail",
     "detect",
     "detection",
     "determine",
@@ -20350,6 +20419,7 @@
     "meaning",
     "measure",
     "measurements",
+    "member",
     "merge",
     "merging",
     "metadata",
@@ -20425,6 +20495,7 @@
     "ownership",
     "pack",
     "package",
+    "pages",
     "panel",
     "parallel",
     "parameter",
@@ -20554,6 +20625,7 @@
     "resolution",
     "resolve",
     "resolved",
+    "responses",
     "result",
     "results",
     "retain",

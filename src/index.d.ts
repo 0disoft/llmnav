@@ -254,7 +254,7 @@ export interface SearchResult {
 export interface ProjectSession {
   root: string;
   query(query: string, options?: { top?: number; metrics?: SearchMetrics; signal?: AbortSignalLike }): SearchResult[];
-  show(id: string, options?: ReadOptions): { card: IndexedCard | null; node: GraphNode | null; resolvedFrom: unknown };
+  show(id: string, options?: ShowOptions): ShowResult;
   registrySnapshot(): Registry;
   context(id: string, options?: GenerationLockOptions & { depth?: number; budget?: number; maxEdges?: number }): { id: string; depth: number; budget: number; maxEdges: number; included: string[]; includedEdges: string[]; text: string };
   refresh(options?: GenerationLockOptions): Promise<ProjectSession>;
@@ -330,7 +330,7 @@ export interface LlmnavConfig {
 }
 
 export interface AgentToolDefinition {
-  schemaVersion: 5;
+  schemaVersion: 6;
   name: "llmnav_query" | "llmnav_show" | "llmnav_context" | "llmnav_check" | "llmnav_explain" | "llmnav_audit" | "llmnav_discover";
   description: string;
   inputSchema: {
@@ -502,6 +502,7 @@ export interface GraphNode {
     path: string;
     line: number | null;
     kind: string | null;
+    metadata?: CodeMetadata;
     provenance: Omit<GraphProvenance, "path" | "line">;
   }>;
 }
@@ -936,7 +937,31 @@ export function queryIndex(index: LlmnavIndex, query: string, options?: { signal
 export function queryPreparedIndex(index: LlmnavIndex, searchIndex: LlmnavSearchIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> }; metrics?: SearchMetrics; graph?: RepositoryGraph | null; signal?: AbortSignalLike }): SearchResult[];
 export function queryIndexLegacy(index: LlmnavIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> } }): SearchResult[];
 export function queryProject(root: string, query: string, options?: GenerationLockOptions & { top?: number }): Promise<SearchResult[]>;
-export function showProjectCard(root: string, id: string, options?: GenerationLockOptions): Promise<{ card: IndexedCard | null; node: GraphNode | null; resolvedFrom: unknown }>;
+export interface ShowOptions extends GenerationLockOptions {
+  metadata?: boolean;
+  members?: boolean;
+  top?: number;
+  offset?: number;
+  metadataBudget?: number;
+}
+export interface CodeMetadataPage {
+  status: "available" | "unavailable";
+  scope: "definition" | "members";
+  byteBudget: number;
+  total: number;
+  offset: number;
+  items: Array<{ id: string; symbol: string; path: string; line: number | null; kind: string | null; metadata: CodeMetadata; provenance: Omit<GraphProvenance, "path" | "line"> } | { id: string; detailOmitted: true }>;
+  nextOffset: number | null;
+  truncated: boolean;
+  requiredBytes?: number;
+}
+export interface ShowResult {
+  card: IndexedCard | null;
+  node: GraphNode | null;
+  resolvedFrom: unknown;
+  metadata?: CodeMetadataPage;
+}
+export function showProjectCard(root: string, id: string, options?: ShowOptions): Promise<ShowResult>;
 export function tokenize(value: string): string[];
 export function normalizeSearchText(value: string): string;
 export function commitGeneratedCache(root: string, cacheDirectory: string, artifacts: Map<string, string>, options?: Record<string, unknown>): Promise<TransactionResult>;

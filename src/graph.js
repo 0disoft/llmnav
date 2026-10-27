@@ -299,6 +299,7 @@ function buildImportedPartition(partitionKey, inputHash, imported, repositoryId)
         path: definition.path,
         line: definition.line,
         kind: definition.kind,
+        ...(definition.metadata ? { metadata: definition.metadata } : {}),
         provenance: {
           type: "generated-index",
           source: imported.file,

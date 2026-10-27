@@ -20,6 +20,7 @@ import { auditProject, explainProjectFile, selectAuditCandidates } from "./audit
 import { AUDIT_LIMITS, SEARCH_LIMITS } from "./policy.js";
 import { toErrorPayload } from "./errors.js";
 import { throwIfAborted } from "./abort.js";
+import { validateMetadataOptions } from "./code-metadata.js";
 
 export { AGENT_TOOL_SCHEMA_VERSION, getAgentToolDefinitions } from "./agent-tools.js";
 export const AGENT_OPERATION_SCHEMA_VERSION = 1;
@@ -89,6 +90,10 @@ function resolveRequest(name, input) {
   if (validationError) {
     return { failure: failure(operation, AGENT_OPERATION_ERROR_CODES.invalidInput, validationError) };
   }
+  if (operation === "show") {
+    try { validateMetadataOptions(input); }
+    catch (error) { return { failure: failure(operation, AGENT_OPERATION_ERROR_CODES.invalidInput, error.message) }; }
+  }
   return { operation };
 }
 
@@ -107,6 +112,7 @@ async function handleQuery(input, root, options) {
 }
 
 async function handleShow(input, root, options) {
+  options = { ...options, metadata: input.metadata, members: input.members, top: input.top, offset: input.offset, metadataBudget: input.metadataBudget };
   const result = options.session
     ? await options.session.show(input.id.trim(), options)
     : await showProjectCard(root, input.id.trim(), options);

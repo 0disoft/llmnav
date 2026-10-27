@@ -11,6 +11,7 @@ stability=architecture
 */
 
 import path from "node:path";
+import { codeMetadataPage, validateMetadataOptions, withoutCodeMetadata } from "./code-metadata.js";
 import { throwIfAborted } from "./abort.js";
 import { loadConfig } from "./config.js";
 import { ID_MATCH_POLICY, SEARCH_LIMITS, SEARCH_RANK } from "./policy.js";
@@ -167,7 +168,7 @@ export async function createProjectSession(root, options = {}) {
     },
     show(id, options = {}) {
       throwIfAborted(options.signal);
-      return structuredClone(showSnapshotCard(snapshot, id));
+      return structuredClone(showSnapshotCard(snapshot, id, options));
     },
     registrySnapshot() {
       // Clone so a read-only consumer cannot mutate the session's snapshot.
@@ -578,10 +579,24 @@ function detachSearchResults(results) {
 }
 
 export async function showProjectCard(root, id, options = {}) {
-  return showSnapshotCard(await loadProjectSnapshot(root, options), id);
+  validateMetadataOptions(options);
+  return showSnapshotCard(await loadProjectSnapshot(root, options), id, options);
 }
 
-function showSnapshotCard(snapshot, id) {
+function showSnapshotCard(snapshot, id, options = {}) {
+  validateMetadataOptions(options);
+  const result = resolveSnapshotCard(snapshot, id);
+  const resolvedNode = result.resolvedFrom?.node;
+  const compact = { ...result, node: withoutCodeMetadata(result.node),
+    resolvedFrom: resolvedNode ? { ...result.resolvedFrom, node: withoutCodeMetadata(resolvedNode) } : result.resolvedFrom };
+  if (options.metadata === true && (result.card || result.node)) {
+    const key = resolvedNode?.key ?? `${snapshot.index.repositoryId}/${result.card.id}`;
+    compact.metadata = codeMetadataPage(snapshot.graph, key, options);
+  }
+  return compact;
+}
+
+function resolveSnapshotCard(snapshot, id) {
   const { index, graph, registry } = snapshot;
   const cards = indexCardLookup(index);
   const direct = cards.get(id) ?? null;

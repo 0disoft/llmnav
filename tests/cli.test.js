@@ -98,4 +98,11 @@ test("analyze --json publishes a compiler graph and precise discovery returns us
   const target = run(["discover", "target", "--precise"]).results[0];
   assert.equal(target.source, "compiler");
   assert.equal(run(["show", target.id]).node.definitions[0].symbol, "target");
+  const detailed = run(["analyze", "--language", "typescript", "--metadata", "--output", ".llmnav/imports/code.json"]);
+  assert.equal(detailed.graph.schemaVersion, 3);
+  assert.equal(run(["generate"]).ok, true);
+  const show = run(["show", target.id, "--metadata", "--metadata-budget", "2000"]);
+  assert.equal(show.metadata.items[0].metadata.typeOrigin, "inferred");
+  assert.ok(Buffer.byteLength(JSON.stringify(show.metadata)) <= 2000);
+  assert.equal(run(["show", target.id]).metadata, undefined);
 });

@@ -58,9 +58,9 @@ rel workflow>llmnav.structure.analyze
 
 @llmnav.structure.metadata
 role Validate generated compiler metadata independently of reviewed semantic cards.
-owns common metadata contract, type origin validation
+owns common metadata contract, type origin validation, bounded member pages
 excludes compiler execution, semantic inference, source mutation
-invariant Metadata preserves unknown types and compiler origins without modifying semantic cards.
+invariant Metadata preserves compiler origins and bounds detail output without modifying semantic cards or default navigation responses.
 rel workflow>llmnav.graph.import
 
 @llmnav.structure.typescript-metadata

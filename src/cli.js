@@ -45,7 +45,7 @@ import { AUDIT_PRIORITIES, auditHasFindings, auditProject, explainProjectFile } 
 import { migrateProject } from "./migration.js";
 import { SEARCH_LIMITS } from "./policy.js";
 
-const VALUE_OPTIONS = new Set(["--root", "--format", "--top", "--depth", "--budget", "--max-edges", "--agents", "--file", "--fail-on", "--output", "--language", "--project", "--typescript", "--source-budget"]);
+const VALUE_OPTIONS = new Set(["--root", "--format", "--top", "--depth", "--budget", "--max-edges", "--agents", "--file", "--fail-on", "--output", "--language", "--project", "--typescript", "--source-budget", "--offset", "--metadata-budget"]);
 
 const COMMAND_OPTIONS = Object.freeze({
   init: new Set(["--agents", "--package-scripts", "--force", "--root", "--json"]),
@@ -56,7 +56,7 @@ const COMMAND_OPTIONS = Object.freeze({
   analyze: new Set(["--language", "--project", "--typescript", "--allow-errors", "--metadata", "--output", "--root", "--json"]),
   discover: new Set(["--precise", "--top", "--root", "--json", "--include-source", "--source-budget"]),
   query: new Set(["--top", "--root", "--json"]),
-  show: new Set(["--root", "--json"]),
+  show: new Set(["--root", "--json", "--metadata", "--members", "--top", "--offset", "--metadata-budget"]),
   context: new Set(["--depth", "--budget", "--max-edges", "--root", "--json"]),
   eval: new Set(["--file", "--top", "--root", "--json"]),
   doctor: new Set(["--root", "--json"]),
@@ -291,7 +291,12 @@ async function runShow(root, args, json) {
     console.error("show requires a semantic ID.");
     return 2;
   }
-  const result = await showProjectCard(root, id);
+  const result = await showProjectCard(root, id, {
+    metadata: hasFlag(args, "--metadata"), members: hasFlag(args, "--members"),
+    ...(getOption(args, "--top") === undefined ? {} : { top: parseCliIntegerOption(args, "--top") }),
+    ...(getOption(args, "--offset") === undefined ? {} : { offset: parseCliIntegerOption(args, "--offset") }),
+    ...(getOption(args, "--metadata-budget") === undefined ? {} : { metadataBudget: parseCliIntegerOption(args, "--metadata-budget") }),
+  });
   if (!result.card && !result.node) {
     if (json) console.log(JSON.stringify(result, null, 2));
     else console.error(`Unknown or inactive semantic ID ${id}.`);
@@ -302,6 +307,7 @@ async function runShow(root, args, json) {
     const resolvedId = result.card?.id ?? result.node?.key;
     if (result.resolvedFrom) console.log(`resolved ${id} -> ${resolvedId}\n`);
     console.log(result.card ? renderCompactCard(result.card) : renderGraphNode(result.node));
+    if (result.metadata) console.log(JSON.stringify(result.metadata));
   }
   return 0;
 }
@@ -614,7 +620,7 @@ Usage
   llmnav analyze --language <typescript|go> [--project tsconfig.json] [--metadata] [--output .llmnav/imports/code.json]
   llmnav discover "<text>" [--top <n>] [--include-source] [--source-budget <bytes>] [--root <path>] [--json]
   llmnav query "<task>" [--top ${SEARCH_LIMITS.top.default}]
-  llmnav show <semantic-id>
+  llmnav show <semantic-id> [--metadata] [--members] [--top 10] [--offset 0] [--metadata-budget 4000]
   llmnav context <semantic-id> [--depth ${SEARCH_LIMITS.depth.default}] [--budget ${SEARCH_LIMITS.budget.default}] [--max-edges ${SEARCH_LIMITS.maxEdges.default}]
   llmnav eval [--file path] [--top ${SEARCH_LIMITS.top.default}]
   llmnav doctor

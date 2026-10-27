@@ -46,11 +46,27 @@ Add `--metadata` to either analysis command (API: `metadata: true`) to produce g
 
 TypeScript includes named declarations, class/interface members, overload signatures and named parameters. Go includes types, struct fields, methods with receiver ownership, parameters, generics and variadic parameters. The selected compiler's source set and existing freshness checks still apply. Constructors, computed TypeScript names and destructured bindings are not separate definitions; unnamed Go parameters appear in callable metadata only. This feature does not add JavaScript, Rust or Python compiler analysis, Git history, or validation receipts. Metadata never becomes a semantic source card.
 
+After saving a metadata analysis and regenerating, use existing discovery IDs:
+
+```sh
+llmnav analyze --language typescript --metadata --output .llmnav/imports/typescript.json
+llmnav generate
+llmnav discover "Store" --precise --top 1 --json
+llmnav show <id> --metadata --json
+llmnav show <id> --metadata --members --top 5 --offset 0 --metadata-budget 4000 --json
+```
+
+`show --metadata` adds one `metadata` page. `--members` selects direct children, including Go receiver methods and callable parameters; show a file's generated module ID to list its top-level declarations. Member pages use deterministic ID/path/line ordering. Follow `nextOffset` using the same generated snapshot; regeneration can change page membership. `total` counts matching definition records, and an empty type has zero members. Older analyses return `status: "unavailable"`.
+
+The budget covers UTF-8 bytes of compact `JSON.stringify(result.metadata)`, excluding the existing show result and pretty-print whitespace. It defaults to 4,000 bytes (256–64,000); page size defaults to 10 (1–100). An oversized record returns `{ id, detailOmitted: true }`; increase the budget or inspect its direct members. If even that ID cannot fit, the page is empty, `nextOffset` stays unchanged, and `requiredBytes` states the minimum budget for the omission record. Types and signatures are never silently cut into misleading fragments.
+
+API: `showProjectCard(root, id, { metadata: true, members: true, top: 5, offset: 0, metadataBudget: 4000, signal })`. Session `show` and MCP `llmnav_show` accept the same metadata options. Paging options require `metadata: true`; default `show`, `query`, `discover` and `context` responses exclude the new metadata. Graph metadata remains generated, optional data; it increases stored graph size and loading work when enabled. Session member indexes are built lazily once per graph snapshot and replaced on refresh. Optional details describe that generated snapshot, not live source freshness; use precise discovery or regenerate after analysis to reject stale inputs.
+
 ## Results, freshness and contracts
 
 Results include compiler identity/version, diagnostics, counts, and a graph input. Graph input schema 2 adds required SHA-256 `sourceHashes`; schema 1 remains accepted unchanged. Generation and precise discovery verify source hashes and the selected source set, rejecting edited, added or deleted inputs with `LNV014`. Rerun analysis after source/configuration changes, then generation. Ordinary `show` and `context` read the last generated snapshot; `mcp --auto-generate` reports stale compiler inputs until they are reanalyzed.
 
-`discover --precise` and `llmnav_discover` with `precise: true` return `source: "compiler"`, a qualified structural `id`, and `compiler` provenance. Feed the ID to existing `show` and `context` operations to inspect resolved definitions and edges, including related semantic cards. Tool definition schema is now 4; the operation result envelope, source card protocol and generated repository graph schema stay unchanged.
+`discover --precise` and `llmnav_discover` with `precise: true` return `source: "compiler"`, a qualified structural `id`, and `compiler` provenance. Feed the ID to existing `show` and `context` operations to inspect resolved definitions and edges, including related semantic cards. Tool definition schema is now 6; the operation result envelope, source card protocol and generated repository graph schema stay unchanged. Repository graph definitions may additionally carry schema 3 compiler metadata.
 
 An exactly attached reviewed card retains its existing ID. Other definitions receive `code.ts.s<hash>` or `code.go.s<hash>` IDs derived from source identity. They are generated navigation identifiers; moving or renaming unannotated code can change them. Business invariants and effects are never inferred or written into source comments.
 

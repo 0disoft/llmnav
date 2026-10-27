@@ -34,6 +34,12 @@ export const SEARCH_LIMITS = Object.freeze({
 // UTF-8 source text across all discovery results, excluding JSON metadata.
 export const DISCOVERY_SOURCE_LIMITS = Object.freeze({ default: 4000, minimum: 256, maximum: 16000 });
 
+// Serialized JSON bytes in an optional show metadata page, excluding the existing show result.
+export const METADATA_LIMITS = Object.freeze({
+  bytes: Object.freeze({ default: 4000, minimum: 256, maximum: 64000 }),
+  top: Object.freeze({ default: 10, minimum: 1, maximum: 100 }),
+});
+
 export const AUDIT_LIMITS = Object.freeze({
   top: Object.freeze({ default: 10, minimum: 1, maximum: 50 }),
 });

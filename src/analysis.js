@@ -123,7 +123,7 @@ export function connectDefinitions(project, raw, language, sourceHashes, options
     for (const item of declarations) {
       const definition = byId.get(ids.get(item.key));
       if (definition.metadata) continue;
-      const metadata = item.metadata ?? { language, category: "module", status: "available", type: null, typeOrigin: "unknown", signatures: [], parameters: [] };
+      const metadata = item.metadata ?? { language, category: "module", status: raw.diagnostics.length ? "partial" : "available", type: null, typeOrigin: "unknown", signatures: [], parameters: [] };
       definition.metadata = { ...metadata, owner: ids.get(metadata.owner ?? item.parent) ?? null };
     }
   }

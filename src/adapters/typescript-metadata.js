@@ -13,8 +13,8 @@ export function typeScriptMetadata(ts, checker, node, partial) {
   const type = ts.isTypeAliasDeclaration(node) ? checker.getTypeFromTypeNode(node.type) : checker.getTypeAtLocation(node.name);
   const flags = ts.TypeFormatFlags.NoTruncation | ts.TypeFormatFlags.UseAliasDefinedOutsideCurrentScope;
   const callable = ts.isFunctionLike(node) ? node : node.initializer && ts.isFunctionLike(node.initializer) ? node.initializer : null;
-  const signature = callable ? checker.getSignatureFromDeclaration(callable) : null;
   const signatures = checker.getSignaturesOfType(type, ts.SignatureKind.Call);
+  const signature = callable ? checker.getSignatureFromDeclaration(callable) : signatures[0];
   const unknown = type.intrinsicName === "error";
   const declared = Boolean(node.type || ts.isClassDeclaration(node) || ts.isInterfaceDeclaration(node) || ts.isEnumDeclaration(node));
   return {

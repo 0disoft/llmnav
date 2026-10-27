@@ -393,7 +393,7 @@
         "index persistence format"
       ],
       "hashes": {
-        "body": "c81c81e1d593d0dfcb06e621a2801e7037ebcc5f03b70efc5140087127580da4",
+        "body": "100acee17a9679d1ec0ed0eb743134591e300f3dd2524afaecec67133af7ec14",
         "semantic": "f4671d61fc8164fc24498faa91ba84f777e28a7f325750991908542867a69b6e",
         "structure": "2007e5915f59c7ddc671056f4582d748915de384b4e62d3fe18d7bc112f8df96"
       },
@@ -687,13 +687,14 @@
         "source mutation"
       ],
       "hashes": {
-        "body": "76a262a55b01b79c3256a7d5873e40aa4d43bb50402ce17dfafbb1f6316a540c",
+        "body": "0b3bb53f0c4b0a9e9f11819f526ca41b4938273612a303b618ac3f2fc14f0ab4",
         "semantic": "945f325a2ad2abfa71212b02dd952c071d47ed6d3848a16d247afd48dbe5ced6",
-        "structure": "a53c3b192c4f1a53461232c4516ebbfd79337f70a6fb27f2e6325213050a6cb6"
+        "structure": "361135a8b4c90d48c738b19b5810cb27a1e17e3dcb933405e527675afac4c3ae"
       },
       "id": "llmnav.search.query",
       "imports": [
         "./abort.js",
+        "./code-metadata.js",
         "./config.js",
         "./generator.js",
         "./graph.js",
@@ -1270,7 +1271,7 @@
         "workspace file discovery"
       ],
       "hashes": {
-        "body": "c160917c838d1eb64c1cf0af5a03c7daa757cfebc2583d3deea031cd42e3dc7c",
+        "body": "fb31f1554857ff734e71a761d733c326e4f2e29f10e195ba0dbf92a133363b97",
         "semantic": "bb6801e1103867969a01e5e720cb08620729878eb217d100aa9241187c7b64f3",
         "structure": "e0239b242c94a7dcd9b023d0115600dae25a5b35028dec461a1dcb5ce6f1f23a"
       },
@@ -1324,15 +1325,16 @@
         "source mutation"
       ],
       "hashes": {
-        "body": "3460274c499e117fc5849b920c2f6651bb9f7c7fb2ccd64774cc59660b15c832",
+        "body": "49508be5dd087c0f4a1a14a32c1ca29c7a734a4d49e7d09a16a1d27c715cb339",
         "semantic": "ce30fe54e5dab8eb3cda8e1e6afdcee3489c3f62267d99ff85257f4c819d21a4",
-        "structure": "95d824e01b3df78a9bd187082735ef147cd288047ecd667c0b1cdde861f83df5"
+        "structure": "da629f16933c0842f71c9911d4cca2d9a35d29c62bd24d27ae4ebbf5db578f4f"
       },
       "id": "llmnav.agent.protocol",
       "imports": [
         "./abort.js",
         "./agent-tools.js",
         "./audit.js",
+        "./code-metadata.js",
         "./discovery.js",
         "./errors.js",
         "./graph-input.js",
@@ -1436,7 +1438,7 @@
         "repository scope"
       ],
       "hashes": {
-        "body": "81b84614b17c41821ee51c2a41b15c2783cb5afeeedf562cd1579962e173fd66",
+        "body": "7a3ce644eb7121370054a405a1119ed940e345e92a6bdeb32cba7ea55aee4c7e",
         "semantic": "d1de5aa0a4d4ade41371bd255707d45ec8ba04edd4d99f9d49242cd766df1f4a",
         "structure": "f7288c1ea4e3c498c7ca4e1d62c455c8e07d1cc102615842d2b06c21bc8cc503"
       },
@@ -2373,7 +2375,7 @@
         "agent transport"
       ],
       "hashes": {
-        "body": "48ee33d835a2df5e8c204a2434c04bc7aaa790f975b92c5038426df936e59319",
+        "body": "61fddf5fb5910e5491424d7661afad6864fd00009431225a7908af1f9d2e54f2",
         "semantic": "b244749b801867c5f8b291b42300ef51fa4bee7fb85c3630a0dcc3c346e54c95",
         "structure": "79d75218e26f6313afbe080aa88e5ab3e9fb12e97d17ac3c2168c1c1ccf0c935"
       },
@@ -2681,7 +2683,7 @@
         "runtime dispatch inference"
       ],
       "hashes": {
-        "body": "765a3906e6d0a300a43609a14892c346b22d1f650bbb8027b85adacab9fccbd1",
+        "body": "598f1fc48f293e06797d64f1bcd600900dd9173c93bc47b19f7d99a97f89eeda",
         "semantic": "98ef2c3c355aa7e08323d2912e94cda316620f1dd30eb971c33bb0ee26fd5653",
         "structure": "1433328f8d59f2065bf7bbf39ef19d8e32c8fc1092fb7724f4003d2bfe68bd17"
       },
@@ -3187,14 +3189,17 @@
         "source mutation"
       ],
       "hashes": {
-        "body": "c4f6ac74b8ffad05c50c8c3ffc43d9cd407b1feb5712a2b8b1c963b670c87506",
-        "semantic": "9fe479bcc441a232169e71426870d45b51b610da9d5e3f990869d60b17d45b76",
-        "structure": "3652663f9ca016e04eb5ee592bb7e3425dff8c37aa432f328ae792514f07f415"
+        "body": "d131d9193d1844f690034f192aee6c20a795f6416200af162ec6363bd7a2201e",
+        "semantic": "dd9884624f01bbf9e81d8f5203747d6c50f9bb3e382b58539af2c050bcbc6864",
+        "structure": "0796d6e2c37a8cbe72ae6d35603b611fa8afe03f4744b32636156c75c5608f47"
       },
       "id": "llmnav.structure.metadata",
-      "imports": [],
+      "imports": [
+        "./policy.js",
+        "./util.js"
+      ],
       "invariant": [
-        "Metadata preserves unknown types and compiler origins without modifying semantic cards."
+        "Metadata preserves compiler origins and bounds detail output without modifying semantic cards or default navigation responses."
       ],
       "location": {
         "declarationLine": null,
@@ -3211,7 +3216,8 @@
       },
       "owns": [
         "common metadata contract",
-        "type origin validation"
+        "type origin validation",
+        "bounded member pages"
       ],
       "rel": [
         "workflow>llmnav.graph.import"
@@ -3232,7 +3238,7 @@
         "business meaning inference"
       ],
       "hashes": {
-        "body": "fcfff44c3f598fe36fce7fc4ac3005965b58f78c5b08adf5a5a8fdca3e1a8b44",
+        "body": "9ab551c5b1eeb8dac90d65a37e3822711b12770d5d68b9bc8925a5371eee2fea",
         "semantic": "fcf5a514cc5ed54d49ea268fde84ebd8dca89c48c7728aae84fc3db9640450b7",
         "structure": "8cdc8fad689510d453bebc6fc4084742154a537c065b4ca446edd2537c2f985c"
       },
@@ -3285,6 +3291,6 @@
   "generatedBy": "llmnav@0.17.0",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "b6f4dddd88b5971680e49a8316e5a2d68ae25d2c70006345b1c968807701612e",
+  "sourceHash": "db256cf28208af2a16cbd4b45aeebf791150028440fb746bbab471675586ce20",
   "specVersion": "1"
 }
