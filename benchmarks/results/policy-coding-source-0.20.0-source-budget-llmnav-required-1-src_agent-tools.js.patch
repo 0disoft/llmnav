@@ -1,0 +1,13 @@
+diff --git a/src/agent-tools.js b/src/agent-tools.js
+index 9115fc3..d2553ba 100644
+--- a/src/agent-tools.js
++++ b/src/agent-tools.js
+@@ -65,7 +65,7 @@ const DEFINITIONS = [
+     task: stringProperty("Source identifiers or task language to search for."),
+     precise: { type: "boolean", description: "Use fresh saved analysis; distinguish compiler and partial syntax definitions.", default: false },
+     includeSource: { type: "boolean", description: "Include bounded live source excerpts; use these before another file read.", default: false },
+-    sourceBudget: integerProperty("Total UTF-8 source bytes across results; excludes JSON metadata.", 1, DISCOVERY_SOURCE_LIMITS.maximum, DISCOVERY_SOURCE_LIMITS.default),
++    sourceBudget: integerProperty("Total UTF-8 source bytes across results; excludes JSON metadata.", DISCOVERY_SOURCE_LIMITS.minimum, DISCOVERY_SOURCE_LIMITS.maximum, DISCOVERY_SOURCE_LIMITS.default),
+     top: integerProperty("Maximum results.", SEARCH_LIMITS.top.minimum, SEARCH_LIMITS.top.maximum, SEARCH_LIMITS.top.default),
+   }, ["task"]),
+ ];

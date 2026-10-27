@@ -1,0 +1,13 @@
+diff --git a/src/cli.js b/src/cli.js
+index 718dcb7..dff573c 100644
+--- a/src/cli.js
++++ b/src/cli.js
+@@ -355,7 +355,7 @@ async function runContext(root, args, json) {
+   const result = await buildContext(root, id, {
+     depth: parseCliIntegerOption(args, "--depth", SEARCH_LIMITS.depth.default),
+     budget: parseCliIntegerOption(args, "--budget", SEARCH_LIMITS.budget.default),
+-    maxEdges: SEARCH_LIMITS.maxEdges.default,
++    maxEdges: parseCliIntegerOption(args, "--max-edges", SEARCH_LIMITS.maxEdges.default),
+   });
+   if (json) console.log(JSON.stringify(result, null, 2));
+   else console.log(result.text);

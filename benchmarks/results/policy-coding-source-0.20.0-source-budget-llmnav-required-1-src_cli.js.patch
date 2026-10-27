@@ -1,0 +1,15 @@
+diff --git a/src/cli.js b/src/cli.js
+index 0c812ac..8e5df7a 100644
+--- a/src/cli.js
++++ b/src/cli.js
+@@ -299,8 +299,9 @@ async function runDiscover(root, args, json) {
+   const query = getPositionals(args).join(" ").trim();
+   if (!query) { console.error("discover requires search text."); return 2; }
+   const top = parseCliIntegerOption(args, "--top", SEARCH_LIMITS.top.default);
++  const sourceBudget = getOption(args, "--source-budget") === undefined ? undefined : parseCliIntegerOption(args, "--source-budget", NaN);
+   const result = await discoverProject(root, query, { top, precise: hasFlag(args, "--precise"),
+-    includeSource: hasFlag(args, "--include-source"), sourceBudget: undefined });
++    includeSource: hasFlag(args, "--include-source"), sourceBudget });
+   if (json) console.log(JSON.stringify(result, null, 2));
+   else if (result.results.length === 0) console.log("No matching source paths or declarations found. Try identifiers in the repository language.");
+   else {

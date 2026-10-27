@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import path from "node:path";
 import test from "node:test";
 import { policyCases, applyPolicyMutation } from "../benchmarks/policy-cases.js";
-import { normalizeRepairPatch, policyModelArguments, snapshotChanges, summarizePolicy } from "../benchmarks/policy-coding.js";
+import { normalizeRepairPatch, policyConditionAdhered, policyModelArguments, snapshotChanges, summarizePolicy } from "../benchmarks/policy-coding.js";
 
 function fixture() {
   return { complete: true, originalsUnchanged: true, conditions: ["baseline", "llmnav"], repetitions: 1,
@@ -66,4 +66,16 @@ test("repair patches remove quoted Windows and POSIX header paths without changi
     assert.ok(normalized.startsWith("diff --git a/src/source.js b/src/source.js\n"));
     assert.ok(normalized.endsWith(hunk));
   }
+});
+
+test("required navigation checks successful query order and the measured source mode", () => {
+  const query = { tool: "llmnav_query", status: "completed", toolError: false };
+  const read = { commandHash: "read" };
+  const trace = { tools: [query, read], queries: [{ mode: "source" }],
+    commandMetadata: [{ commandHash: "read", category: "search", referencedFiles: [] }] };
+  assert.equal(policyConditionAdhered(trace, "llmnav-source"), true);
+  assert.equal(policyConditionAdhered(trace, "llmnav-required"), false);
+  trace.tools.reverse();
+  assert.equal(policyConditionAdhered(trace, "llmnav-source"), false);
+  assert.equal(policyConditionAdhered(trace, "baseline"), true);
 });

@@ -1,0 +1,13 @@
+diff --git a/src/discovery.js b/src/discovery.js
+index 444f980..23b5cc5 100644
+--- a/src/discovery.js
++++ b/src/discovery.js
+@@ -28,7 +28,7 @@ export async function discoverProject(root, query, options = {}) {
+   }
+   if (options.includeSource !== undefined && typeof options.includeSource !== "boolean") throw new TypeError("discover includeSource must be a boolean.");
+   const sourceBudget = options.sourceBudget ?? DISCOVERY_SOURCE_LIMITS.default;
+-  if (!Number.isInteger(sourceBudget) || sourceBudget < 1 || sourceBudget > DISCOVERY_SOURCE_LIMITS.maximum) {
++  if (!Number.isInteger(sourceBudget) || sourceBudget < DISCOVERY_SOURCE_LIMITS.minimum || sourceBudget > DISCOVERY_SOURCE_LIMITS.maximum) {
+     throw new RangeError(`discover sourceBudget must be an integer from ${DISCOVERY_SOURCE_LIMITS.minimum} to ${DISCOVERY_SOURCE_LIMITS.maximum} UTF-8 bytes.`);
+   }
+   const project = await scanProject(root, options);

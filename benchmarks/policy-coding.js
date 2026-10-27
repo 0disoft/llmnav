@@ -29,6 +29,7 @@ export function policyModelArguments(root, condition, task, options) {
     args[args.findIndex(value => value.startsWith(`${prefix}enabled_tools=`))] = `${prefix}enabled_tools=${JSON.stringify(supportedTools)}`;
     args[args.length - 1] += "\nFor unclear responsibilities, LLMNav query can locate reviewed boundaries; show/context are optional for missing contracts or policy/workflow relationships. Use bounded source reads after locating a boundary. Ordinary navigation remains allowed; do not invoke semantic CLIs.";
     if (condition === "llmnav-required") args[args.length - 1] += "\nThis required-use follow-up measures semantic retrieval itself: call llmnav_query for the task with top:3 before source reads or text search. Use show/context only for missing information; do not repeat sufficient retrieval.";
+    if (condition === "llmnav-source") args[args.length - 1] += "\nUse llmnav_query once before source reads or text search, with includeSource:true, top:2, and sourceTerms containing a few relevant identifiers or CLI option names from the task. The default source budget covers several files. Reuse sufficient returned windows to make the fix directly; use ordinary bounded reads/search only for necessary missing context. Terms are case-sensitive literals, not regexes.";
   }
   return args;
 }
@@ -46,6 +47,15 @@ async function copyFiles(source, destination, files) {
     await mkdir(path.dirname(path.join(destination, file)), { recursive: true });
     await copyFile(path.join(source, file), path.join(destination, file));
   }
+}
+
+async function engineFiles(source, files) {
+  const available = [];
+  for (const file of files.filter(file => /^(?:src|bin|schema|templates)\//u.test(file) || file === "package.json")) {
+    try { await lstat(path.join(source, file)); available.push(file); }
+    catch (error) { if (error.code !== "ENOENT") throw error; }
+  }
+  return available;
 }
 
 export function snapshotChanges(before, after) {
@@ -76,7 +86,28 @@ function policyTrace(stdout, files) {
     category: /\b(?:rg|Select-String)\b/iu.test(command) ? "search" : /Get-Content|\b(?:cat|sed|head)\b/iu.test(command) ? "read" : "other",
     referencedFiles: files.filter(file => /^(?:src|docs)\//u.test(file) && command.replaceAll("\\", "/").includes(file)),
   }));
-  return { ...trace, commandMetadata };
+  const queries = stdout.split(/\r?\n/u).flatMap(line => {
+    try {
+      const event = JSON.parse(line), item = event.item;
+      if (event.type !== "item.completed" || item?.tool !== "llmnav_query") return [];
+      const envelope = JSON.parse(item.result.content.find(block => block.type === "text").text);
+      const data = envelope.data;
+      return [{ mode: Array.isArray(data) ? "cards" : Array.isArray(data?.excerpts) ? "source" : "unknown",
+        sourceBytes: data?.excerpts?.reduce((sum, excerpt) => sum + Buffer.byteLength(excerpt.text), 0) ?? 0,
+        windows: data?.excerpts?.length ?? 0, paths: data?.excerpts?.map(excerpt => excerpt.path) ?? [] }];
+    } catch { return []; }
+  });
+  return { ...trace, commandMetadata, queries };
+}
+
+export function policyConditionAdhered(trace, condition) {
+  if (trace.tools.some(tool => tool.semanticCliMentioned)) return false;
+  if (!["llmnav-required", "llmnav-source"].includes(condition)) return true;
+  const firstQuery = trace.tools.findIndex(tool => tool.tool === "llmnav_query" && tool.status === "completed" && !tool.toolError);
+  const firstSource = trace.tools.findIndex(tool => tool.commandHash && trace.commandMetadata.some(command =>
+    command.commandHash === tool.commandHash && (command.category === "search" || command.referencedFiles.some(file => file.startsWith("src/")))));
+  return firstQuery >= 0 && (firstSource < 0 || firstQuery < firstSource) &&
+    trace.queries?.[0]?.mode === (condition === "llmnav-source" ? "source" : "cards");
 }
 
 export function summarizePolicy(report) {
@@ -84,6 +115,7 @@ export function summarizePolicy(report) {
   assert.equal(report.originalsUnchanged, true, "Original source changed");
   assert.ok(report.controls.length === policyCases.length && report.controls.every(item => item.pristine.passed === true && item.mutant.passed === false && !item.mutant.setupFailure && !item.mutant.timedOut), "Invalid policy controls");
   assert.ok(report.preflight?.writePassed && report.preflight?.llmnavPassed, "Failed model preflight");
+  if (report.beforeEngines) assert.ok(report.beforePreflight?.writePassed && report.beforePreflight?.llmnavPassed, "Failed before model preflight");
   const expected = new Set(policyCases.flatMap(task => report.conditions.flatMap(condition => Array.from({ length: report.repetitions }, (_, repetition) => `${task.id}/${condition}/${repetition}`))));
   for (const row of report.rows) assert.ok(expected.delete(`${row.task}/${row.condition}/${row.repetition}`), "Duplicate or unknown observation");
   assert.equal(expected.size, 0, "Missing policy observations");
@@ -111,7 +143,7 @@ export async function runPolicyCoding(options) {
   assert.ok(Number.isInteger(repetitions) && repetitions >= 1 && repetitions <= 3, "Repetitions must be 1..3");
   const conditions = options.conditions ?? ["baseline", "llmnav"];
   assert.ok(conditions.length && new Set(conditions).size === conditions.length &&
-    conditions.every(condition => ["baseline", "llmnav", "llmnav-required"].includes(condition)), "Invalid policy conditions");
+    conditions.every(condition => ["baseline", "llmnav", "llmnav-required", "llmnav-source"].includes(condition)), "Invalid policy conditions");
   const files = execFileSync("git", ["ls-files", "-z"], { cwd: source, encoding: "utf8" }).split("\0").filter(file =>
     file && !file.startsWith("benchmarks/") && !/^\.env(?:\.|$)/u.test(file) && !/\.(?:tgz|zip|log)$/u.test(file));
   const sourceBefore = await Promise.all(files.map(async file => ({ path: file, hash: sha256(await readFile(path.join(source, file))) })));
@@ -121,13 +153,15 @@ export async function runPolicyCoding(options) {
   const template = path.join(parent, "corpus"), engine = path.join(parent, "engine");
   await copyFiles(source, template, files);
   const engineSource = path.resolve(options.engine ?? source);
-  await copyFiles(engineSource, engine, files.filter(file => /^(?:src|bin|schema|templates)\//u.test(file) || file === "package.json"));
+  await copyFiles(engineSource, engine, await engineFiles(engineSource, files));
+  const beforeEngine = path.join(parent, "engine-before");
+  if (options.beforeEngine) await copyFiles(path.resolve(options.beforeEngine), beforeEngine, await engineFiles(path.resolve(options.beforeEngine), files));
   const report = { schemaVersion: 1, kind: "multi-file-policy-coding", measuredAt: new Date().toISOString(),
     sourceCommit: execFileSync("git", ["rev-parse", "HEAD"], { cwd: source, encoding: "utf8" }).trim(),
     sourceHash: sha256(stableStringify(sourceBefore)), sourceFiles: files.length, conditions, repetitions,
     model: { requested: options.model ?? "gpt-6.1-sol", reasoningEffort: "high", resolvedProviderModel: null },
     environment: { node: process.version, platform: process.platform, codex: (await execute("codex", ["--version"])).stdout.trim() },
-    methodology: { concurrency: 1, timeoutMs: options.timeoutMs ?? 240000, order: "alternate conditions by task and repetition",
+    methodology: { concurrency: 1, timeoutMs: options.timeoutMs ?? 240000, order: "rotate conditions by task and repetition",
       existingCards: true, annotationCostMeasured: false, cacheControlled: false, grading: "separate production-only copy; fixed hidden boundary checks",
       isolation: "workspace-write and prompt-enforced path/tool restrictions; not adversarial isolation" },
     engines: {}, harnessHashes: {}, controls: [], rows: [], complete: false, originalsUnchanged: null,
@@ -138,6 +172,10 @@ export async function runPolicyCoding(options) {
   try {
     for (const file of ["policy-coding.js", "policy-cases.js", "policy-oracle.js", "model-coding.js"]) report.harnessHashes[file] = sha256(await readFile(path.join(here, file)));
     for (const file of files.filter(file => file.startsWith("src/"))) report.engines[file] = sha256(await readFile(path.join(engine, file)));
+    if (options.beforeEngine) {
+      report.beforeEngines = {};
+      for (const file of await engineFiles(path.resolve(options.beforeEngine), files)) report.beforeEngines[file] = sha256(await readFile(path.join(beforeEngine, file)));
+    }
     for (const task of policyCases) {
       const pristine = await grade(template, task, parent, files);
       assert.ok(pristine.passed && !pristine.setupFailure, `Pristine oracle failed: ${task.id} ${JSON.stringify(pristine)}`);
@@ -154,8 +192,14 @@ export async function runPolicyCoding(options) {
     report.preflight = await preflightModel({ conditions: ["llmnav-before"], beforeMode: true, beforeCli: path.join(engine, "bin/llmnav.js"), model: report.model.requested, timeoutMs: report.methodology.timeoutMs }, parent);
     await save();
     assert.ok(report.preflight.writePassed && report.preflight.llmnavPassed, "Model preflight failed; stop before scoring");
+    if (options.beforeEngine) {
+      report.beforePreflight = await preflightModel({ conditions: ["llmnav-before"], beforeMode: true, beforeCli: path.join(beforeEngine, "bin/llmnav.js"), model: report.model.requested, timeoutMs: report.methodology.timeoutMs }, parent);
+      await save();
+      assert.ok(report.beforePreflight.writePassed && report.beforePreflight.llmnavPassed, "Before model preflight failed");
+    }
     for (let repetition = 0; repetition < repetitions; repetition += 1) for (const [index, task] of policyCases.entries()) {
-      const order = (index + repetition) % 2 ? [...conditions].reverse() : conditions;
+      const offset = (index + repetition * policyCases.length) % conditions.length;
+      const order = [...conditions.slice(offset), ...conditions.slice(0, offset)];
       for (const condition of order) {
         const root = await mkdtemp(path.join(parent, "attempt-"));
         try {
@@ -163,14 +207,14 @@ export async function runPolicyCoding(options) {
           for (const [file, before, after] of task.mutations) await writeFile(path.join(root, file), applyPolicyMutation(await readFile(path.join(root, file), "utf8"), before, after));
           const before = await sourceSnapshot(root);
           const repairBefore = new Map(await Promise.all(task.mutations.map(async ([file]) => [file, await readFile(path.join(root, file), "utf8")])));
-          const result = await execute("codex", policyModelArguments(root, condition, task, { model: report.model.requested, engine }), { cwd: root, timeoutMs: report.methodology.timeoutMs });
+          const activeEngine = options.beforeEngine && condition === "llmnav-required" ? beforeEngine : engine;
+          const result = await execute("codex", policyModelArguments(root, condition, task, { model: report.model.requested, engine: activeEngine }), { cwd: root, timeoutMs: report.methodology.timeoutMs });
           const trace = policyTrace(result.stdout, files);
           const changedFiles = snapshotChanges(before, await sourceSnapshot(root));
           const acceptance = await grade(root, task, parent, files);
           const scopePassed = changedFiles.length >= 2 && changedFiles.every(file => /^src\/.*\.js$/u.test(file));
           const navigationUsed = trace.tools.some(tool => tool.type === "mcp_tool_call" && supportedTools.includes(tool.tool) && tool.status === "completed" && !tool.toolError);
-          const conditionAdhered = !trace.tools.some(tool => tool.semanticCliMentioned) &&
-            (condition !== "llmnav-required" || navigationUsed);
+          const conditionAdhered = policyConditionAdhered(trace, condition);
           const row = { task: task.id, language: task.language, repetition, condition, elapsedMs: result.elapsedMs,
             exitCode: result.code, timedOut: result.timedOut, changedFiles, scopePassed, conditionAdhered, navigationUsed, trace, acceptance,
             success: acceptance.passed && scopePassed && conditionAdhered && trace.completed && result.code === 0 && !result.timedOut,
@@ -208,5 +252,6 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   await runPolicyCoding({ output: path.resolve(value("--output")), controlsOnly: args.includes("--controls-only"),
     repetitions: args.includes("--repetitions") ? Number(value("--repetitions")) : 1,
     conditions: args.includes("--conditions") ? value("--conditions").split(",") : undefined,
+    beforeEngine: args.includes("--before-engine") ? value("--before-engine") : undefined,
     engine: args.includes("--engine") ? value("--engine") : undefined });
 }
