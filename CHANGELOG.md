@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.19.15] — 2026-10-27
+
+### Fixed
+
+* Reuse the validated, normalized compiler graph when loading schema 2/3 imports instead of normalizing every definition, reference, and metadata record twice. A deterministic 11,551,400-byte fixture with 20,000 definitions and 40,000 references reduced full-graph sorts from four to two and sorted rows from 120,000 to 60,000. On native Windows, median loader time over five measured runs after warmup changed from 1,242.6 ms to 752.7 ms; serialized output SHA-256 stayed identical and each load still read one graph file and one source file. These are local fixture timings. Regression tests bound full-sort work while preserving schema 1/2/3 output, duplicate references, metadata, content hashes, validation-before-source-I/O, stale-input diagnostics, and cancellation reasons.
+
 ## [0.19.14] — 2026-10-27
 
 ### Fixed

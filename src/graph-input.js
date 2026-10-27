@@ -53,11 +53,11 @@ async function readGraphInputs(root, config, options, sourceSnapshot) {
       const text = await readText(absolutePath, null, options);
       if (text === null) throw new Error("file does not exist");
       const parsed = JSON.parse(text);
+      const normalized = normalizeGraphInput(parsed, file, sha256(text));
       if (parsed.schemaVersion >= 2) {
-        normalizeGraphInput(parsed, file);
         await assertCompilerInputFreshSnapshot(root, parsed, config, options, sourceSnapshot);
       }
-      indexes.push(normalizeGraphInput(parsed, file, sha256(text)));
+      indexes.push(normalized);
     } catch (error) {
       throwIfAborted(options.signal);
       diagnostics.push(

@@ -98,6 +98,69 @@ test("normalizes generated definition and reference indexes deterministically", 
   });
 });
 
+test("graph loading preserves schema output within one full-sort budget", async context => {
+  const { root, bytes, graph } = await compilerFixture(context, 1);
+  const config = { ...DEFAULT_CONFIG, graph: { ...DEFAULT_CONFIG.graph, indexFiles: ["graph.json"] } };
+  const file = path.join(root, "graph.json");
+  const definitions = Array.from({ length: 1000 }, (_, index) => ({
+    id: `node.n${999 - index}`, symbol: `function${index}`, path: "input-0.ts", line: index + 1,
+  }));
+  const references = Array.from({ length: 2000 }, (_, index) => ({
+    from: `node.n${index % 1000}`, to: "node.n0", kind: "calls", path: "input-0.ts",
+  }));
+  for (const schemaVersion of [1, 2, 3]) {
+    const input = { ...graph, schemaVersion, definitions, references };
+    if (schemaVersion === 1) delete input.sourceHashes;
+    if (schemaVersion === 3) input.definitions = [{ ...definitions[0], metadata: {
+      language: "typescript", category: "function", owner: null, status: "available",
+      type: "number", typeOrigin: "declared", signatures: ["(value: number):\r\nnumber"],
+      parameters: [{ name: "value", type: "number", typeOrigin: "declared", optional: false, variadic: false }],
+    } }, ...definitions.slice(1)];
+    const text = JSON.stringify(input);
+    await writeFile(file, text);
+    const expected = normalizeGraphInput(input, "graph.json", sha256(text));
+    const sort = Array.prototype.sort;
+    let sortedRows = 0, sourceReads = 0, result;
+    try {
+      Array.prototype.sort = function (...args) {
+        if (this[0]?.path === "input-0.ts") sortedRows += this.length;
+        return Reflect.apply(sort, this, args);
+      };
+      result = await loadGraphInputs(root, config, { io: {
+        readBytes: async () => { sourceReads++; return bytes; },
+      } });
+    } finally { Array.prototype.sort = sort; }
+    assert.deepEqual(result, { indexes: [expected], diagnostics: [] }, `schema ${schemaVersion}`);
+    assert.ok(sortedRows <= definitions.length + references.length, `schema ${schemaVersion}: sorted ${sortedRows} rows`);
+    assert.equal(sourceReads, schemaVersion >= 2 ? 1 : 0);
+    context.diagnostic(JSON.stringify({ schemaVersion, sortedRows, sourceReads }));
+  }
+});
+
+test("graph loading validates before source I/O and propagates freshness cancellation", async context => {
+  const { root, bytes, graph } = await compilerFixture(context, 1);
+  const config = { ...DEFAULT_CONFIG, graph: { ...DEFAULT_CONFIG.graph, indexFiles: ["graph.json"] } };
+  const file = path.join(root, "graph.json");
+  const definition = { id: "same.id", symbol: "value", path: "input-0.ts" };
+  await writeFile(file, JSON.stringify({ ...graph, definitions: [definition, definition] }));
+  let sourceReads = 0;
+  const io = { readBytes: async () => { sourceReads++; return Buffer.from("changed"); } };
+  const invalid = await loadGraphInputs(root, config, { io });
+  assert.equal(sourceReads, 0);
+  assert.equal(invalid.diagnostics[0].code, "LNV014");
+  assert.match(invalid.diagnostics[0].message, /duplicate ID/u);
+  await writeFile(file, JSON.stringify(graph));
+  const stale = await loadGraphInputs(root, config, { io });
+  assert.equal(sourceReads, 1);
+  assert.deepEqual(stale.indexes, []);
+  assert.equal(stale.diagnostics[0].code, "LNV014");
+  assert.match(stale.diagnostics[0].message, /Stale compiler analysis/u);
+  const controller = new AbortController(), reason = new Error("cancel imported graph");
+  await assert.rejects(loadGraphInputs(root, config, { signal: controller.signal, io: {
+    readBytes: async () => { controller.abort(reason); return bytes; },
+  } }), error => error === reason);
+});
+
 test("rejects malformed or escaping graph indexes with LNV014", async (context) => {
   const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-graph-input-"));
   context.after(() => rm(root, { recursive: true, force: true }));

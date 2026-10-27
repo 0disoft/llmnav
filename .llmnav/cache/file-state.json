@@ -5770,7 +5770,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "ef228e87bd990b5ddf40749adc07a2f54d67a9e07aae5c851540378cc2a223b5",
+      "contentHash": "6238c4146d0ed862da45538355d30608f34d058a338a42f7b65a43d5895a9cec",
       "declarations": [
         null
       ],
@@ -5787,7 +5787,7 @@
       ],
       "path": "src/graph-input.js",
       "semanticBytes": 525,
-      "sourceBytes": 10857
+      "sourceBytes": 10851
     },
     {
       "blocks": [
@@ -8021,7 +8021,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "395cd3ac8e0d4333122c11281a32180d37ced918ac1416522a5535b458c38bf8",
+      "contentHash": "49a08384b210a92c177575c5db3b36ea6751cc59cd004e4796846b23394c52c8",
       "declarations": [
         null
       ],
@@ -9005,7 +9005,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "b4c9ec7ec399d8b7015abdf36d6393376bc6bbc43350d72dde909ba12dfe800b",
+      "contentHash": "be8e565c0f4daf1ac1cdc634a713529d288d9c2b7295a6be7d15df4bd2de28d6",
       "declarations": [],
       "imports": [
         "../src/graph-input.js",
@@ -9019,7 +9019,7 @@
       ],
       "path": "tests/graph-input.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 5815
+      "sourceBytes": 9440
     },
     {
       "blocks": [],
