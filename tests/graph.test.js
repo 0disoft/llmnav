@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { buildRepositoryGraph, resolveGraphNode } from "../src/graph.js";
+import { buildRepositoryGraph, createGraphResolver, resolveGraphNode } from "../src/graph.js";
 
 test("builds deterministic graph edges with provenance and confidence", () => {
   const cards = [
@@ -139,6 +139,38 @@ function graphNode(key) {
     definitions: [{ symbol: "fixture", path: "src/fixture.ts", line: 1, kind: "function", provenance: { type: "generated-index", source: "fixture", generator: "fixture" } }],
   };
 }
+
+test("snapshot resolvers validate edges once and retain public mutable-input checks", context => {
+  const nodes = ["local/core.target", "local/other.target", "other/shared.target", "third/shared.target"].map(graphNode);
+  let edgeReads = 0;
+  const edges = Array.from({ length: 5000 }, (_, i) => ({
+    get id() { edgeReads++; return String(i); }, from: nodes[0].key, to: nodes[1].key,
+    kind: "calls", confidence: 1, provenance: { type: "generated-index" },
+  }));
+  const graph = { schemaVersion: 1, repositoryId: "local", sourceHash: "fixture", nodes, edges };
+  for (let i = 0; i < 200; i++) assert.equal(resolveGraphNode(graph, "core.target").node, nodes[0]);
+  const directReads = edgeReads;
+  assert.equal(directReads, 1000000);
+  edgeReads = 0;
+  const resolver = createGraphResolver(graph, "local");
+  assert.equal(resolver.compatible, true);
+  for (let i = 0; i < 200; i++) assert.equal(resolver.resolve("core.target").node, nodes[0]);
+  assert.equal(edgeReads, 5000);
+  assert.equal(resolver.resolve("local/other.target").node, nodes[1]);
+  assert.equal(resolver.resolve("missing.target").state, "missing");
+  const ambiguous = resolver.resolve("shared.target");
+  assert.equal(ambiguous.state, "ambiguous");
+  ambiguous.candidates.push("caller.modified");
+  assert.deepEqual(resolver.resolve("shared.target").candidates, ["other/shared.target", "third/shared.target"]);
+  context.diagnostic(JSON.stringify({ edges: edges.length, lookups: 200, directEdgeReads: directReads, preparedEdgeReads: edgeReads }));
+  for (const invalid of [null, { ...graph, repositoryId: "other" }, { ...graph, edges: [{ ...edges[0], confidence: 2 }] }]) {
+    const rejected = createGraphResolver(invalid, "local");
+    assert.equal(rejected.compatible, false);
+    assert.equal(rejected.resolve("core.target").state, "missing");
+  }
+  edges[0].confidence = 2;
+  assert.equal(resolveGraphNode(graph, "core.target").state, "missing");
+});
 
 test("resolves extensionless, directory and emitted TypeScript module imports", () => {
   for (const [specifier, target] of [["./target", "target.mts"], ["./target", "target.cts"], ["./target", "target/index.mts"], ["./target", "target/index.cts"], ["./target.mjs", "target.mts"], ["./target.cjs", "target.cts"]]) {

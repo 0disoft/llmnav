@@ -27,7 +27,7 @@ import {
 import { normalizeSearchText, tokenize } from "./tokenizer.js";
 import { loadPromptPrefixBundleLocked } from "./prompt-bundle.js";
 import { recoverGenerationTransaction, withGenerationLock } from "./transaction.js";
-import { findGraphNode, isCompatibleRepositoryGraph, renderGraphNode, resolveGraphNode } from "./graph.js";
+import { createGraphResolver, findGraphNode, isCompatibleRepositoryGraph, renderGraphNode } from "./graph.js";
 
 const preparedSearchIndexCache = new WeakMap();
 const sessionGraphAdjacencyCache = new WeakMap();
@@ -43,7 +43,11 @@ export class SemanticIdLookupError extends Error {
 }
 
 export async function loadSearchData(root, options = {}) {
-  return withGenerationLock(root, (lock) => loadSearchDataLocked(root, lock, options), options);
+  return withGenerationLock(root, async lock => {
+    // Prepared resolvers belong to private snapshots, never caller-owned graphs.
+    const { graphResolver, ...data } = await loadSearchDataLocked(root, lock, options);
+    return data;
+  }, options);
 }
 
 async function loadSearchDataLocked(root, lock, options = {}) {
@@ -70,10 +74,10 @@ async function loadSearchDataLocked(root, lock, options = {}) {
   let graph = parseOptionalArtifact(graphText);
   const graphMatches = Boolean(
     graphText !== null &&
-      manifest?.files?.[graphRelative] === sha256(graphText) &&
-      isCompatibleRepositoryGraph(graph, index.repositoryId),
+      manifest?.files?.[graphRelative] === sha256(graphText),
   );
-  if (!graphMatches) graph = null;
+  const graphResolver = createGraphResolver(graphMatches ? graph : null, index.repositoryId);
+  if (!graphResolver.compatible) graph = null;
   const searchRelative = `${cacheRelative}/search-index.json`;
   const searchText = await readText(searchPath, null, options);
   let searchIndex = parseOptionalArtifact(searchText);
@@ -88,7 +92,7 @@ async function loadSearchDataLocked(root, lock, options = {}) {
   if (!isCompatibleSearchIndex(searchIndex, index.repositoryId) || !manifestMatches) {
     searchIndex = buildInvertedIndex(index).searchIndex;
   }
-  return { index, lexicon, searchIndex, graph };
+  return { index, lexicon, searchIndex, graph, graphResolver };
 }
 
 function parsePrimaryIndex(indexText, repositoryId) {
@@ -198,7 +202,7 @@ async function loadSessionSnapshot(root, options = {}) {
   const snapshot = await loadProjectSnapshot(root, options);
   // Only session-owned graphs are cached: public query inputs may be mutable.
   if (snapshot.graph) sessionGraphAdjacencyCache.set(snapshot.graph, buildGraphAdjacency(snapshot.graph));
-  sessionSearchMetadataCache.set(snapshot.index, prepareSearchMetadata(snapshot.index, snapshot.lexicon, snapshot.graph, true));
+  sessionSearchMetadataCache.set(snapshot.index, prepareSearchMetadata(snapshot.index, snapshot.lexicon, snapshot.graph, true, snapshot.graphResolver.compatible));
   preparedSearchIndexCache.set(snapshot.searchIndex, prepareCompactSearchIndex(snapshot.searchIndex));
   return snapshot;
 }
@@ -212,7 +216,7 @@ function indexCardLookup(index) {
   return lookup;
 }
 
-function prepareSearchMetadata(index, lexicon, graph, forSession = false) {
+function prepareSearchMetadata(index, lexicon, graph, forSession = false, graphCompatible = isCompatibleRepositoryGraph(graph, index.repositoryId)) {
   const normalizedIds = index.cards.map((card) => normalizeSearchText(card.id));
   return {
     byId: new Map(index.cards.map((card) => [card.id, card])),
@@ -220,7 +224,7 @@ function prepareSearchMetadata(index, lexicon, graph, forSession = false) {
     normalizedIds,
     idCandidates: forSession ? buildIdCandidates(normalizedIds) : null,
     aliases: Object.entries(lexicon.aliases ?? {}).map(([alias, targets]) => [alias, targets, normalizeSearchText(alias)]),
-    graphCompatible: isCompatibleRepositoryGraph(graph, index.repositoryId),
+    graphCompatible,
   };
 }
 
@@ -256,10 +260,11 @@ function idCandidatePositions(prepared, normalizedQuery) {
 
 async function loadProjectSnapshot(root, options = {}) {
   return withGenerationLock(root, async (lock) => {
-    const { index, lexicon, searchIndex, graph } = await loadSearchDataLocked(root, lock, options);
+    const { index, lexicon, searchIndex, graph, graphResolver } = await loadSearchDataLocked(root, lock, options);
     const registry = await loadRegistry(root, options);
     const prompt = options.withPromptBundle ? await loadPromptPrefixBundleLocked(root, lock) : null;
-    return { index, lexicon, searchIndex, graph, registry, promptBundle: prompt?.bundle, generationHash: prompt?.generationHash };
+    return { index, lexicon, searchIndex, graph, graphResolver,
+      registry, promptBundle: prompt?.bundle, generationHash: prompt?.generationHash };
   }, options);
 }
 
@@ -597,7 +602,7 @@ function showSnapshotCard(snapshot, id, options = {}) {
 }
 
 function resolveSnapshotCard(snapshot, id) {
-  const { index, graph, registry } = snapshot;
+  const { index, graphResolver, registry } = snapshot;
   const cards = indexCardLookup(index);
   const direct = cards.get(id) ?? null;
   if (direct) return { card: direct, node: null, resolvedFrom: null };
@@ -611,7 +616,7 @@ function resolveSnapshotCard(snapshot, id) {
       return { card: null, node: null, resolvedFrom: resolved };
     }
   }
-  const graphResolution = resolveGraphNode(graph, id, index.repositoryId);
+  const graphResolution = graphResolver.resolve(id);
   if (graphResolution.state !== "resolved") return { card: null, node: null, resolvedFrom: graphResolution };
   const localId = localSemanticId(graphResolution.node.key, index.repositoryId);
   const card = localId ? cards.get(localId) ?? null : null;
@@ -624,7 +629,7 @@ export async function buildContext(root, id, options = {}) {
 
 function buildSnapshotContext(snapshot, id, options = {}) {
   throwIfAborted(options.signal);
-  const { index, graph, registry } = snapshot;
+  const { index, graph, graphResolver, registry } = snapshot;
   const depth = boundedInteger(options.depth, SEARCH_LIMITS.depth.default, SEARCH_LIMITS.depth.minimum, SEARCH_LIMITS.depth.maximum);
   const budget = boundedInteger(options.budget, SEARCH_LIMITS.budget.default, SEARCH_LIMITS.budget.minimum, SEARCH_LIMITS.budget.maximum);
   const maxEdges = boundedInteger(options.maxEdges, SEARCH_LIMITS.maxEdges.default, SEARCH_LIMITS.maxEdges.minimum, SEARCH_LIMITS.maxEdges.maximum);
@@ -639,10 +644,10 @@ function buildSnapshotContext(snapshot, id, options = {}) {
     }
     if (resolved.state === "cycle") throw new SemanticIdLookupError("registry_cycle", `Registry cycle prevents resolving semantic ID ${id}.`);
   }
-  if (isCompatibleRepositoryGraph(graph, index.repositoryId)) {
+  if (graphResolver.compatible) {
     const resolution = rootId
-      ? resolveGraphNode(graph, `${index.repositoryId}/${rootId}`, index.repositoryId)
-      : resolveGraphNode(graph, id, index.repositoryId);
+      ? graphResolver.resolve(`${index.repositoryId}/${rootId}`)
+      : graphResolver.resolve(id);
     if (resolution.state === "ambiguous") {
       throw new SemanticIdLookupError("ambiguous", `Ambiguous semantic ID ${id}; qualify one of ${resolution.candidates.join(", ")}.`);
     }

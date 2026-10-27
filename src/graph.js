@@ -182,6 +182,20 @@ export function isCompatibleRepositoryGraph(graph, repositoryId = undefined) {
 
 export function resolveGraphNode(graph, id, localRepositoryId = graph?.repositoryId) {
   if (!isCompatibleRepositoryGraph(graph)) return { state: "missing", id, candidates: [], node: null };
+  return resolveCompatibleGraphNode(graph, id, localRepositoryId);
+}
+
+// Internal snapshot boundary: the owner must replace, rather than mutate, its graph.
+export function createGraphResolver(graph, localRepositoryId = graph?.repositoryId) {
+  const compatible = isCompatibleRepositoryGraph(graph, localRepositoryId);
+  return {
+    compatible,
+    resolve: id => compatible ? resolveCompatibleGraphNode(graph, id, localRepositoryId)
+      : { state: "missing", id, candidates: [], node: null },
+  };
+}
+
+function resolveCompatibleGraphNode(graph, id, localRepositoryId) {
   const value = String(id).trim();
   const { byKey, bySemanticId } = graphNodeLookup(graph);
   if (value.includes("/")) {

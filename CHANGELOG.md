@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.19.6] — 2026-10-27
+
+### Fixed
+
+* Reuse graph validation in private navigation snapshots for `show` and `context`, sharing an internal prepared ID resolver and rebuilding it on refresh. Previously every graph ID lookup scanned all edges, and context validated them twice. An instrumented 5,000-edge graph with 200 ID resolutions reduces resolver edge checks from 1,000,000 to 5,000 including preparation; subsequent resolutions perform no edge validation. Keep public `resolveGraphNode` and direct query validation sensitive to caller-owned edge changes. Preserve local-first resolution, ambiguity, detached candidate lists, malformed-graph fallback and snapshot replacement behavior.
+
 ## [0.19.5] — 2026-10-27
 
 ### Fixed

@@ -8,7 +8,7 @@ import { generateProject } from "../src/generator.js";
 import { initializeProject } from "../src/initializer.js";
 import { findGraphNode, GRAPH_SCHEMA_VERSION, resolveGraphNode } from "../src/graph.js";
 import { buildInvertedIndex } from "../src/inverted-index.js";
-import { buildContext, createProjectSession, queryPreparedIndex, queryProject, showProjectCard } from "../src/search.js";
+import { buildContext, createProjectSession, loadSearchData, queryPreparedIndex, queryProject, showProjectCard } from "../src/search.js";
 
 test("evaluation ranks the same graph neighbors as project queries and sessions", async (context) => {
   const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-eval-graph-"));
@@ -147,18 +147,27 @@ test("sessions sort graph edges once per snapshot and refresh neighbor results",
   assert.equal((await initializeProject(root, { agents: ["none"] })).ok, true);
   await writeFile(path.join(root, ".llmnav", "lexicon.json"),
     '{"version":1,"aliases":{"retire credentials":"auth.session.rotate"}}\n');
+  const { repositoryId } = JSON.parse(await readFile(path.join(root, ".llmnav/config.json"), "utf8"));
+  assert.deepEqual(Object.keys(await loadSearchData(root)).sort(), ["graph", "index", "lexicon", "searchIndex"]);
   const originalSort = Array.prototype.sort;
-  let graphSorts = 0;
+  const originalEvery = Array.prototype.every;
+  let graphSorts = 0, graphValidations = 0;
   // Node's mock.method rejects array targets, including Array.prototype.
   // This file runs tests serially; restore instrumentation before the next test.
   Array.prototype.sort = function (compare) {
     if (this.length && typeof this[0]?.from === "string" && typeof this[0]?.to === "string") graphSorts += 1;
     return originalSort.call(this, compare);
   };
+  Array.prototype.every = function (predicate, thisArg) {
+    if (this.length && typeof this[0]?.from === "string" && typeof this[0]?.to === "string") graphValidations++;
+    return originalEvery.call(this, predicate, thisArg);
+  };
   let session;
   try {
     session = await createProjectSession(root);
     assert.equal(graphSorts, 1);
+    const initialValidations = graphValidations;
+    assert.equal(initialValidations, 1, "prepare graph validation only once while loading the snapshot");
     const first = session.query("auth.session.rotate");
     assert.deepEqual(session.query("auth.session.rotate"), first);
     first[0].card.id = "caller.modified";
@@ -166,11 +175,14 @@ test("sessions sort graph edges once per snapshot and refresh neighbor results",
     session.show("auth.session.rotate").card.id = "caller.modified.again";
     assert.equal(session.query("auth.session.rotate")[0].id, "auth.session.rotate");
     assert.equal(session.show("auth.session.rotate").card.id, "auth.session.rotate");
+    assert.equal(session.show(`${repositoryId}/auth.session.rotate`).card.id, "auth.session.rotate");
     assert.deepEqual(session.context("auth.session.rotate", { maxEdges: 1 }).included, ["auth.session.rotate", "auth.session.revoke"]);
     session.context("auth.session.rotate", { maxEdges: 1 });
     assert.equal(graphSorts, 1);
+    assert.equal(graphValidations, initialValidations, "show and context must reuse snapshot validation");
   } finally {
     Array.prototype.sort = originalSort;
+    Array.prototype.every = originalEvery;
   }
   for (const query of ["auth.session.rotate", "session.rot", "retire credentials"]) {
     const metrics = {};

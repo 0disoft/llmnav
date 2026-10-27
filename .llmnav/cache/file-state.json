@@ -5871,7 +5871,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "fb31f1554857ff734e71a761d733c326e4f2e29f10e195ba0dbf92a133363b97",
+      "contentHash": "0d6c92d93809d055aad4e3fc4d1854566a3e0b9f9151a8ae4856ef82a52796ac",
       "declarations": [
         null
       ],
@@ -5882,7 +5882,7 @@
       ],
       "path": "src/graph.js",
       "semanticBytes": 548,
-      "sourceBytes": 17087
+      "sourceBytes": 17659
     },
     {
       "blocks": [
@@ -7863,7 +7863,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "0b3bb53f0c4b0a9e9f11819f526ca41b4938273612a303b618ac3f2fc14f0ab4",
+      "contentHash": "470463539d66ce6b4db40a78a9369c57e1c2db2b391d7a73200b0bf198623647",
       "declarations": [
         null
       ],
@@ -7884,7 +7884,7 @@
       ],
       "path": "src/search.js",
       "semanticBytes": 464,
-      "sourceBytes": 37538
+      "sourceBytes": 37769
     },
     {
       "blocks": [],
@@ -8001,7 +8001,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "b4a32553e6976c5d9dee2ae2fa0740e050aeabc393ed19b05e7e7a2be09609c2",
+      "contentHash": "09734463540ccfcbff310c63eab7bc0677ba5792e9f9260e44ed22521b8ee0bd",
       "declarations": [
         null
       ],
@@ -8990,7 +8990,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "805437f79daec41b19d2d62b92ca9ed768357dc1a84aefc0a89ef391fda7db62",
+      "contentHash": "ebf11363afef5b8a6b175ae16d60a4f581e918e7c9d4d4a6d58ea5e2a4aedf58",
       "declarations": [],
       "imports": [
         "../src/evaluation.js",
@@ -9007,11 +9007,11 @@
       ],
       "path": "tests/graph-search.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 16111
+      "sourceBytes": 17053
     },
     {
       "blocks": [],
-      "contentHash": "e6c96a4e12942541b17ecf4005f92d775be97acb4429a5d9aab6ba234140e6bc",
+      "contentHash": "2704e2e371243a0619071e4973b9ab5322733b4cc2b82f6be8b7966d2223921e",
       "declarations": [],
       "imports": [
         "../src/graph.js",
@@ -9020,7 +9020,7 @@
       ],
       "path": "tests/graph.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 5791
+      "sourceBytes": 7743
     },
     {
       "blocks": [],
