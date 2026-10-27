@@ -40,6 +40,12 @@ Run at a Go module root and configure `graph.indexFiles` for the output first. T
 
 The active platform and build constraints select production package files; test variants and cgo are excluded. Dependency exports may be compiled, but application binaries, tests, `go generate`, and module installation are not run. `GOPROXY=off`, `GOTOOLCHAIN=local`, `GOWORK=off`, `CGO_ENABLED=0` and read-only module mode prevent automatic module/toolchain downloads and manifest updates. Missing dependencies fail explicitly. Temporary helper executables are removed after exit.
 
+## Opt-in declaration metadata
+
+Add `--metadata` to either analysis command (API: `metadata: true`) to produce graph input schema 3. Schema 1 and 2 inputs remain accepted; analysis without the flag continues to emit schema 2 with identical definition IDs and reference edges. Schema 3 adds generated declaration metadata: language, category, owner ID, compiler type, callable signatures, parameters and explicit `declared`, `inferred`, or `unknown` type origins. Unknown types are null, not guesses. Error-tolerant analysis marks metadata `partial`.
+
+TypeScript includes named declarations, class/interface members, overload signatures and named parameters. Go includes types, struct fields, methods with receiver ownership, parameters, generics and variadic parameters. The selected compiler's source set and existing freshness checks still apply. Constructors, computed TypeScript names and destructured bindings are not separate definitions; unnamed Go parameters appear in callable metadata only. This feature does not add JavaScript, Rust or Python compiler analysis, Git history, or validation receipts. Metadata never becomes a semantic source card.
+
 ## Results, freshness and contracts
 
 Results include compiler identity/version, diagnostics, counts, and a graph input. Graph input schema 2 adds required SHA-256 `sourceHashes`; schema 1 remains accepted unchanged. Generation and precise discovery verify source hashes and the selected source set, rejecting edited, added or deleted inputs with `LNV014`. Rerun analysis after source/configuration changes, then generation. Ordinary `show` and `context` read the last generated snapshot; `mcp --auto-generate` reports stale compiler inputs until they are reanalyzed.

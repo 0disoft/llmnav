@@ -263,3 +263,10 @@ role Compare semantic lookup on copied real source using Serena and the frozen d
 owns Serena retrieval measurements, symbol input mapping, external tool provenance
 excludes model coding outcomes, timing superiority claims
 invariant Tool failures remain failed observations and never become substitute text searches.
+
+@llmnav.structure.typescript-metadata
+role Project compiler types and callable signatures into generated declaration metadata.
+owns TypeScript type origins, callable parameters, metadata categories
+excludes compiler installation, source mutation, business meaning inference
+invariant Only compiler-resolved types and declarations supply metadata and type origins.
+rel workflow>llmnav.structure.typescript-worker

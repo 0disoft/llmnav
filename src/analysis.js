@@ -49,7 +49,7 @@ export async function analyzeProject(root, options = {}) {
     const bytes = await readBytes(path.join(root, file), undefined, options);
     if (sha256(bytes) !== hash && sha256(bytes.toString("utf8")) !== hash) throw new Error(`Source changed during analysis: ${file}. Run analysis again.`);
   }
-  const graph = connectDefinitions(project, raw, options.language, sourceHashes);
+  const graph = connectDefinitions(project, raw, options.language, sourceHashes, options);
   normalizeGraphInput(graph);
   const cardIds = new Set(project.records.map(record => record.card.id));
   return { schemaVersion: 1, language: options.language, compiler: raw.compiler, diagnostics: raw.diagnostics,
@@ -101,7 +101,7 @@ function matchBindingPosition(positions, offset, line) {
     record: offsetMatch?.record ?? lineMatch?.record };
 }
 
-export function connectDefinitions(project, raw, language, sourceHashes) {
+export function connectDefinitions(project, raw, language, sourceHashes, options = {}) {
   const bindCard = createCardBindingLookup(project.records);
   const ids = new Map(), occurrences = new Map();
   const definitions = [];
@@ -118,6 +118,15 @@ export function connectDefinitions(project, raw, language, sourceHashes) {
       definitions.push({ id, symbol: item.display ?? item.symbol, path: item.path, line: item.line, kind: item.kind });
     }
   }
+  if (options.metadata === true) {
+    const byId = new Map(definitions.map(definition => [definition.id, definition]));
+    for (const item of declarations) {
+      const definition = byId.get(ids.get(item.key));
+      if (definition.metadata) continue;
+      const metadata = item.metadata ?? { language, category: "module", status: "available", type: null, typeOrigin: "unknown", signatures: [], parameters: [] };
+      definition.metadata = { ...metadata, owner: ids.get(metadata.owner ?? item.parent) ?? null };
+    }
+  }
   const unique = new Map();
   const confidence = raw.diagnostics.length ? 0.8 : 1;
   const add = item => {
@@ -130,7 +139,7 @@ export function connectDefinitions(project, raw, language, sourceHashes) {
   for (const item of raw.references) add(item);
   definitions.sort((left, right) => compareText(left.id, right.id));
   const references = [...unique.values()].sort((left, right) => compareText(left.from, right.from) || compareText(left.to, right.to) || compareText(left.kind, right.kind) || compareText(left.path, right.path) || left.line - right.line);
-  return { schemaVersion: 2, repositoryId: project.config.repositoryId, generator: `llmnav-${language}@1;${raw.compiler.name}@${raw.compiler.version}`,
+  return { schemaVersion: options.metadata === true ? 3 : 2, repositoryId: project.config.repositoryId, generator: `llmnav-${language}@1;${raw.compiler.name}@${raw.compiler.version}`,
     sourceHashes, definitions, references };
 }
 

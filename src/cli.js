@@ -53,7 +53,7 @@ const COMMAND_OPTIONS = Object.freeze({
   format: new Set(["--check", "--root", "--json"]),
   generate: new Set(["--check", "--verify", "--full", "--root", "--json"]),
   index: new Set(["--check", "--verify", "--full", "--root", "--json"]),
-  analyze: new Set(["--language", "--project", "--typescript", "--allow-errors", "--output", "--root", "--json"]),
+  analyze: new Set(["--language", "--project", "--typescript", "--allow-errors", "--metadata", "--output", "--root", "--json"]),
   discover: new Set(["--precise", "--top", "--root", "--json", "--include-source", "--source-budget"]),
   query: new Set(["--top", "--root", "--json"]),
   show: new Set(["--root", "--json"]),
@@ -252,7 +252,7 @@ async function runQuery(root, args, json) {
 async function runAnalyze(root, args, json) {
   const result = await analyzeProject(root, {
     language: getOption(args, "--language"), project: getOption(args, "--project"),
-    typescriptPath: getOption(args, "--typescript"), allowErrors: hasFlag(args, "--allow-errors"),
+    typescriptPath: getOption(args, "--typescript"), allowErrors: hasFlag(args, "--allow-errors"), metadata: hasFlag(args, "--metadata"),
   });
   const output = getOption(args, "--output");
   if (output) await writeAnalysis(root, output, result);
@@ -611,7 +611,7 @@ Usage
   llmnav check [paths...] [--format text|json|github|sarif|editor]
   llmnav format [paths...] [--check]
   llmnav generate [--check] [--full]
-  llmnav analyze --language <typescript|go> [--project tsconfig.json] [--output .llmnav/imports/code.json]
+  llmnav analyze --language <typescript|go> [--project tsconfig.json] [--metadata] [--output .llmnav/imports/code.json]
   llmnav discover "<text>" [--top <n>] [--include-source] [--source-budget <bytes>] [--root <path>] [--json]
   llmnav query "<task>" [--top ${SEARCH_LIMITS.top.default}]
   llmnav show <semantic-id>

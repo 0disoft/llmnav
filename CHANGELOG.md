@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.17.0] — 2026-10-27
+
+### Added
+
+* Opt-in TypeScript and Go declaration metadata through `analyze --metadata`, including compiler types and origins, signatures, parameters and ownership. Graph input schema 3 carries the optional metadata while existing schema 1/2 inputs and default schema 2 analysis remain supported. Source cards and runtime dependency count remain unchanged.
+
 ## [0.16.26] — 2026-10-27
 
 ### Fixed

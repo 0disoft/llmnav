@@ -60,3 +60,5 @@
 {"id":"llmnav.eval.real-navigation","state":"active"}
 {"id":"llmnav.eval.model-coding","state":"active"}
 {"id":"llmnav.eval.serena-navigation","state":"active"}
+{"id":"llmnav.structure.typescript-metadata","state":"active"}
+{"id":"llmnav.structure.metadata","state":"active"}

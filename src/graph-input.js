@@ -15,8 +15,9 @@ import { DEFAULT_IO_CONCURRENCY, mapWithConcurrency } from "./concurrency.js";
 import { ID_PATTERN, CROSS_REPO_ID_PATTERN } from "./spec.js";
 import { assertNoSymlinkTraversal, compareText, readBytes, readText, sha256, toPosix } from "./util.js";
 import { diagnostic } from "./validator.js";
+import { normalizeCodeMetadata } from "./code-metadata.js";
 
-export const GRAPH_INPUT_SCHEMA_VERSION = 2;
+export const GRAPH_INPUT_SCHEMA_VERSION = 3;
 
 export function compilerInputPaths(value) {
   assertObject(value.sourceHashes, "sourceHashes");
@@ -40,7 +41,7 @@ export async function loadGraphInputs(root, config, options = {}) {
       const text = await readText(absolutePath, null, options);
       if (text === null) throw new Error("file does not exist");
       const parsed = JSON.parse(text);
-      if (parsed.schemaVersion === 2) {
+      if (parsed.schemaVersion >= 2) {
         normalizeGraphInput(parsed, file);
         await assertCompilerInputFresh(root, parsed, config, options);
       }
@@ -64,8 +65,8 @@ export async function loadGraphInputs(root, config, options = {}) {
 export function normalizeGraphInput(value, file = "<graph-index>", contentHash = null) {
   assertObject(value, "graph index");
   assertKeys(value, new Set(["schemaVersion", "repositoryId", "generator", "definitions", "references", "sourceHashes"]), "graph index");
-  if (![1, GRAPH_INPUT_SCHEMA_VERSION].includes(value.schemaVersion)) throw new Error("schemaVersion must be 1 or 2");
-  if (value.schemaVersion === 2) {
+  if (![1, 2, GRAPH_INPUT_SCHEMA_VERSION].includes(value.schemaVersion)) throw new Error("schemaVersion must be 1, 2 or 3");
+  if (value.schemaVersion >= 2) {
     compilerInputPaths(value);
   } else if (value.sourceHashes !== undefined) throw new Error("sourceHashes requires schemaVersion 2");
   if (!/^[a-z][a-z0-9-]{0,63}$/u.test(value.repositoryId ?? "")) {
@@ -77,7 +78,7 @@ export function normalizeGraphInput(value, file = "<graph-index>", contentHash =
   if (!Array.isArray(value.definitions)) throw new Error("definitions must be an array");
   if (!Array.isArray(value.references)) throw new Error("references must be an array");
 
-  const definitions = value.definitions.map((item, index) => normalizeDefinition(item, index, value.repositoryId));
+  const definitions = value.definitions.map((item, index) => normalizeDefinition(item, index, value.repositoryId, value.schemaVersion));
   const definitionIds = new Set();
   for (const definition of definitions) {
     if (definitionIds.has(definition.id)) throw new Error(`definitions contains duplicate ID ${definition.id}`);
@@ -98,10 +99,10 @@ export function normalizeGraphInput(value, file = "<graph-index>", contentHash =
   };
 }
 
-function normalizeDefinition(value, index, repositoryId) {
+function normalizeDefinition(value, index, repositoryId, schemaVersion) {
   const name = `definitions[${index}]`;
   assertObject(value, name);
-  assertKeys(value, new Set(["id", "symbol", "path", "line", "kind"]), name);
+  assertKeys(value, new Set(["id", "symbol", "path", "line", "kind", ...(schemaVersion === 3 ? ["metadata"] : [])]), name);
   const id = normalizeSemanticKey(value.id, repositoryId, `${name}.id`);
   if (typeof value.symbol !== "string" || !value.symbol.trim()) throw new Error(`${name}.symbol must be a non-empty string`);
   const normalizedPath = normalizeSourcePath(value.path, `${name}.path`);
@@ -117,6 +118,7 @@ function normalizeDefinition(value, index, repositoryId) {
     path: normalizedPath,
     line: value.line ?? null,
     kind: value.kind?.trim() ?? null,
+    ...(value.metadata === undefined ? {} : { metadata: normalizeCodeMetadata(value.metadata, owner => normalizeSemanticKey(owner, repositoryId, `${name}.metadata.owner`)) }),
   };
 }
 

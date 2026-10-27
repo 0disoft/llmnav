@@ -55,3 +55,17 @@ owns Go declaration identity, cross-package reference resolution, receiver ident
 excludes project execution, module installation, runtime dispatch inference
 invariant Compiler-selected production sources determine references and line directives never replace physical locations.
 rel workflow>llmnav.structure.analyze
+
+@llmnav.structure.metadata
+role Validate generated compiler metadata independently of reviewed semantic cards.
+owns common metadata contract, type origin validation
+excludes compiler execution, semantic inference, source mutation
+invariant Metadata preserves unknown types and compiler origins without modifying semantic cards.
+rel workflow>llmnav.graph.import
+
+@llmnav.structure.typescript-metadata
+role Project compiler types and callable signatures into generated declaration metadata.
+owns TypeScript type origins, callable parameters, metadata categories
+excludes compiler installation, source mutation, business meaning inference
+invariant Only compiler-resolved types and declarations supply metadata and type origins.
+rel workflow>llmnav.structure.typescript-worker

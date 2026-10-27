@@ -434,12 +434,32 @@ export interface ScannedProject {
   graphInputs?: GraphInputIndex[];
 }
 
+export interface CodeParameter {
+  name: string;
+  type: string | null;
+  typeOrigin: "declared" | "inferred" | "unknown";
+  optional: boolean;
+  variadic: boolean;
+}
+
+export interface CodeMetadata {
+  language: "typescript" | "go";
+  category: "module" | "type" | "function" | "method" | "field" | "parameter" | "variable" | "constant" | "binding";
+  owner: string | null;
+  status: "available" | "partial";
+  type: string | null;
+  typeOrigin: "declared" | "inferred" | "unknown";
+  signatures: string[];
+  parameters: CodeParameter[];
+}
+
 export interface GraphDefinition {
   id: string;
   symbol: string;
   path: string;
   line: number | null;
   kind: string | null;
+  metadata?: CodeMetadata;
 }
 
 export interface GraphReference {
@@ -454,7 +474,7 @@ export interface GraphReference {
 export interface GraphInputIndex {
   file: string;
   contentHash: string | null;
-  schemaVersion: 1 | 2;
+  schemaVersion: 1 | 2 | 3;
   repositoryId: string;
   generator: string | null;
   definitions: GraphDefinition[];
@@ -958,11 +978,11 @@ export function discoverProject(root: string, query: string, options?: ReadOptio
 }>;
 
 export interface CompilerGraphInput {
-  schemaVersion: 2;
+  schemaVersion: 2 | 3;
   repositoryId: string;
   generator: string;
   sourceHashes: Record<string, string>;
-  definitions: Array<{ id: string; symbol: string; path: string; line: number; kind: string }>;
+  definitions: Array<{ id: string; symbol: string; path: string; line: number; kind: string; metadata?: CodeMetadata }>;
   references: Array<{ from: string; to: string; kind: string; path: string; line: number; confidence: number }>;
 }
 export interface AnalysisResult {
@@ -973,5 +993,5 @@ export interface AnalysisResult {
   counts: { definitions: number; references: number; cardBindings: number };
   graph: CompilerGraphInput;
 }
-export function analyzeProject(root: string, options: ReadOptions & { language: "typescript" | "go"; project?: string; typescriptPath?: string; allowErrors?: boolean; timeoutMs?: number; goCommand?: string }): Promise<AnalysisResult>;
+export function analyzeProject(root: string, options: ReadOptions & { language: "typescript" | "go"; project?: string; typescriptPath?: string; allowErrors?: boolean; metadata?: boolean; timeoutMs?: number; goCommand?: string }): Promise<AnalysisResult>;
 export function writeAnalysis(root: string, relativeOutput: string, result: AnalysisResult, options?: ReadOptions): Promise<string>;

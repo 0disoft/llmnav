@@ -27,7 +27,7 @@ export async function analyzeGo(root, files, options = {}) {
     const executable = path.join(temporary, process.platform === "win32" ? "analyzer.exe" : "analyzer");
     await runCompiler(command, ["build", "-p=2", "-o", executable, fileURLToPath(new URL("./go-analyzer.go", import.meta.url))], context);
     const output = await runCompiler(executable, [], {
-      ...context, input: JSON.stringify({ root, files, listing, allowErrors: options.allowErrors === true }),
+      ...context, input: JSON.stringify({ root, files, listing, allowErrors: options.allowErrors === true, metadata: options.metadata === true }),
     });
     return JSON.parse(output);
   } finally {

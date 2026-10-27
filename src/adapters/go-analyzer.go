@@ -33,21 +33,41 @@ type request struct {
 	Files       []string
 	Listing     string
 	AllowErrors bool
+	Metadata    bool
 }
 type listedPackage struct {
 	ImportPath, Dir, Export string
 	GoFiles                 []string
 }
 type declaration struct {
-	Display   string `json:"display,omitempty"`
-	Key       string `json:"key"`
-	Symbol    string `json:"symbol"`
-	Path      string `json:"path"`
-	Line      int    `json:"line"`
-	Offset    int    `json:"offset"`
-	Kind      string `json:"kind"`
-	Qualified string `json:"qualified"`
-	Parent    string `json:"parent,omitempty"`
+	Display   string    `json:"display,omitempty"`
+	Key       string    `json:"key"`
+	Symbol    string    `json:"symbol"`
+	Path      string    `json:"path"`
+	Line      int       `json:"line"`
+	Offset    int       `json:"offset"`
+	Kind      string    `json:"kind"`
+	Qualified string    `json:"qualified"`
+	Parent    string    `json:"parent,omitempty"`
+	Metadata  *metadata `json:"metadata,omitempty"`
+}
+
+type parameterMetadata struct {
+	Name       string  `json:"name"`
+	Type       *string `json:"type"`
+	TypeOrigin string  `json:"typeOrigin"`
+	Optional   bool    `json:"optional"`
+	Variadic   bool    `json:"variadic"`
+}
+type metadata struct {
+	Language   string              `json:"language"`
+	Category   string              `json:"category"`
+	Owner      *string             `json:"owner"`
+	Status     string              `json:"status"`
+	Type       *string             `json:"type"`
+	TypeOrigin string              `json:"typeOrigin"`
+	Signatures []string            `json:"signatures"`
+	Parameters []parameterMetadata `json:"parameters"`
 }
 type reference struct {
 	From string `json:"from"`
@@ -151,6 +171,13 @@ func run() error {
 	}
 	for _, name := range names {
 		a.collect(name)
+	}
+	if input.Metadata {
+		for i := range a.report.Declarations {
+			if m := a.report.Declarations[i].Metadata; m != nil && len(a.report.Diagnostics) > 0 {
+				m.Status = "partial"
+			}
+		}
 	}
 	for _, name := range names {
 		a.references(name)
@@ -261,7 +288,11 @@ func (a *analyzer) collect(name string) {
 					}
 					a.objects[object] = key
 					qualifiedNames[key] = qualified
-					a.report.Declarations = append(a.report.Declarations, declaration{Key: key, Symbol: id.Name, Display: display, Path: relative, Line: pos.Line, Offset: pos.Offset, Kind: kind, Qualified: qualified, Parent: parent})
+					record := declaration{Key: key, Symbol: id.Name, Display: display, Path: relative, Line: pos.Line, Offset: pos.Offset, Kind: kind, Qualified: qualified, Parent: parent}
+					if a.request.Metadata {
+						record.Metadata = a.objectMetadata(object, stack)
+					}
+					a.report.Declarations = append(a.report.Declarations, record)
 					// Function/type/value nodes own subsequent body uses, not their name identifier.
 					if len(stack) > 0 {
 						owner := stack[len(stack)-1]
@@ -284,6 +315,57 @@ func (a *analyzer) collect(name string) {
 			return true
 		})
 	}
+}
+
+func (a *analyzer) objectMetadata(object types.Object, stack []ast.Node) *metadata {
+	qualifier := func(p *types.Package) string { return p.Path() }
+	text := types.TypeString(object.Type(), qualifier)
+	m := &metadata{Language: "go", Category: objectKind(object), Status: "available", Type: &text, TypeOrigin: "declared", Signatures: []string{}, Parameters: []parameterMetadata{}}
+	if variable, ok := object.(*types.Var); ok && variable.IsField() {
+		m.Category = "field"
+	}
+	if len(stack) > 0 {
+		switch node := stack[len(stack)-1].(type) {
+		case *ast.Field:
+			if m.Category != "field" {
+				m.Category = "parameter"
+			}
+		case *ast.ValueSpec:
+			if node.Type == nil {
+				m.TypeOrigin = "inferred"
+			}
+		case *ast.AssignStmt:
+			m.TypeOrigin = "inferred"
+		}
+	}
+	if object.Type() == types.Typ[types.Invalid] {
+		m.Type = nil
+		m.TypeOrigin = "unknown"
+		m.Status = "partial"
+	}
+	if signature, ok := object.Type().(*types.Signature); ok {
+		m.Signatures = append(m.Signatures, text)
+		if signature.Recv() != nil {
+			m.Category = "method"
+			base := types.Unalias(signature.Recv().Type())
+			if pointer, ok := base.(*types.Pointer); ok {
+				base = types.Unalias(pointer.Elem())
+			}
+			if named, ok := base.(*types.Named); ok {
+				// Resolve against the complete declaration map in the parent process.
+				owner := named.Obj()
+				pos := a.fset.PositionFor(owner.Pos(), false)
+				m.Owner = new(string)
+				*m.Owner = fmt.Sprintf("%s:%d", a.relative(pos.Filename), pos.Offset)
+			}
+		}
+		for i := 0; i < signature.Params().Len(); i++ {
+			parameter := signature.Params().At(i)
+			typeText := types.TypeString(parameter.Type(), qualifier)
+			m.Parameters = append(m.Parameters, parameterMetadata{Name: parameter.Name(), Type: &typeText, TypeOrigin: "declared", Variadic: signature.Variadic() && i == signature.Params().Len()-1})
+		}
+	}
+	return m
 }
 func objectKind(object types.Object) string {
 	switch object.(type) {

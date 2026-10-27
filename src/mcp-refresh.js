@@ -63,7 +63,7 @@ export async function sourceStamp(root, options = {}) {
       if (text === null) return [];
       try {
         const value = JSON.parse(text);
-        return value?.schemaVersion === 2 ? compilerInputPaths(value) : [];
+        return value?.schemaVersion === 2 || value?.schemaVersion === 3 ? compilerInputPaths(value) : [];
       } catch {
         // Keep the graph itself stamped; generation reports invalid indexes via LNV014.
         return [];

@@ -1751,7 +1751,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "d5450dfd1a25d3043968b1deb143a2e7f51c42affc13e90fbb76f25d3f9e5424",
+      "contentHash": "9dcf70306fad527a3decfa58153e45f5d5c98ab2f0924fe09fb652871055c493",
       "declarations": [
         null
       ],
@@ -1777,7 +1777,7 @@
       ],
       "path": "src/adapters/go-analyzer.go",
       "semanticBytes": 581,
-      "sourceBytes": 11553
+      "sourceBytes": 14445
     },
     {
       "blocks": [
@@ -1875,7 +1875,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "4f23593d80f64e9d142cddc792d72343f8a67f1150725f2fe318d335a18eae93",
+      "contentHash": "ad5ab413e492e865ef832ec2aefa0a0f705ec9d7e951d82b92aefd213a145fde",
       "declarations": [
         null
       ],
@@ -1888,7 +1888,7 @@
       ],
       "path": "src/adapters/go.js",
       "semanticBytes": 486,
-      "sourceBytes": 1932
+      "sourceBytes": 1969
     },
     {
       "blocks": [
@@ -2006,6 +2006,113 @@
           "card": {
             "effect": [],
             "excludes": [
+              "compiler installation",
+              "source mutation",
+              "business meaning inference"
+            ],
+            "id": "llmnav.structure.typescript-metadata",
+            "invariant": [
+              "Only compiler-resolved types and declarations supply metadata and type origins."
+            ],
+            "owns": [
+              "TypeScript type origins",
+              "callable parameters",
+              "metadata categories"
+            ],
+            "rel": [
+              "workflow>llmnav.structure.typescript-worker"
+            ],
+            "risk": [],
+            "role": "Project compiler types and callable signatures into generated declaration metadata.",
+            "scope": "module",
+            "search": [
+              "TypeScript signature metadata",
+              "parameter types",
+              "inferred types"
+            ],
+            "stability": "architecture",
+            "unknown": []
+          },
+          "end": 522,
+          "endLine": 10,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.structure.typescript-metadata"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Project compiler types and callable signatures into generated declaration metadata."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "TypeScript type origins|callable parameters|metadata categories"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "compiler installation|source mutation|business meaning inference"
+            },
+            {
+              "key": "search",
+              "line": 6,
+              "order": 4,
+              "value": "TypeScript signature metadata|parameter types|inferred types"
+            },
+            {
+              "key": "invariant",
+              "line": 7,
+              "order": 5,
+              "value": "Only compiler-resolved types and declarations supply metadata and type origins."
+            },
+            {
+              "key": "rel",
+              "line": 8,
+              "order": 6,
+              "value": "workflow>llmnav.structure.typescript-worker"
+            },
+            {
+              "key": "stability",
+              "line": 9,
+              "order": 7,
+              "value": "architecture"
+            }
+          ],
+          "filePath": "src/adapters/typescript-metadata.js",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.structure.typescript-metadata\nrole=Project compiler types and callable signatures into generated declaration metadata.\nowns=TypeScript type origins|callable parameters|metadata categories\nexcludes=compiler installation|source mutation|business meaning inference\nsearch=TypeScript signature metadata|parameter types|inferred types\ninvariant=Only compiler-resolved types and declarations supply metadata and type origins.\nrel=workflow>llmnav.structure.typescript-worker\nstability=architecture\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "fcfff44c3f598fe36fce7fc4ac3005965b58f78c5b08adf5a5a8fdca3e1a8b44",
+      "declarations": [
+        null
+      ],
+      "imports": [],
+      "path": "src/adapters/typescript-metadata.js",
+      "semanticBytes": 522,
+      "sourceBytes": 2914
+    },
+    {
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
               "dependency installation",
               "project execution"
             ],
@@ -2098,11 +2205,12 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "559479439574b9571dc3f6c1b2877b4a8e9bb8c308f4baffcd9de1a16bda8611",
+      "contentHash": "bf2f0d9c114c4ba9f07437021f80b5348b29faad25a2e6cae92cd894b0f0615f",
       "declarations": [
         null
       ],
       "imports": [
+        "./typescript-metadata.js",
         "node:crypto",
         "node:fs",
         "node:module",
@@ -2110,7 +2218,7 @@
       ],
       "path": "src/adapters/typescript-worker.js",
       "semanticBytes": 546,
-      "sourceBytes": 10926
+      "sourceBytes": 11165
     },
     {
       "blocks": [
@@ -2207,7 +2315,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "b9347740b2205ac66a335c8d050954538a049179ab4275da2c4b7033e02e9044",
+      "contentHash": "e5e364619baba00e4fd36045ce4d91da45e22e98bb5d13beca616cde9e4edbe4",
       "declarations": [
         null
       ],
@@ -2219,7 +2327,7 @@
       ],
       "path": "src/adapters/typescript.js",
       "semanticBytes": 486,
-      "sourceBytes": 1529
+      "sourceBytes": 1566
     },
     {
       "blocks": [
@@ -2655,7 +2763,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "60d4607cbf6931e917f2d4596cdd4234d4dbf6d8e83a008ad9385eede5564258",
+      "contentHash": "765a3906e6d0a300a43609a14892c346b22d1f650bbb8027b85adacab9fccbd1",
       "declarations": [
         null
       ],
@@ -2672,7 +2780,7 @@
       ],
       "path": "src/analysis.js",
       "semanticBytes": 632,
-      "sourceBytes": 8413
+      "sourceBytes": 8995
     },
     {
       "blocks": [
@@ -3111,7 +3219,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "758e28e8aa0a636ab50cffc0657e674471e7138967038e145567b11bd91172de",
+      "contentHash": "c81c81e1d593d0dfcb06e621a2801e7037ebcc5f03b70efc5140087127580da4",
       "declarations": [
         null
       ],
@@ -3143,7 +3251,112 @@
       ],
       "path": "src/cli.js",
       "semanticBytes": 508,
-      "sourceBytes": 26311
+      "sourceBytes": 26377
+    },
+    {
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
+              "compiler execution",
+              "semantic inference",
+              "source mutation"
+            ],
+            "id": "llmnav.structure.metadata",
+            "invariant": [
+              "Metadata preserves unknown types and compiler origins without modifying semantic cards."
+            ],
+            "owns": [
+              "common metadata contract",
+              "type origin validation"
+            ],
+            "rel": [
+              "workflow>llmnav.graph.import"
+            ],
+            "risk": [],
+            "role": "Validate generated compiler metadata independently of reviewed semantic cards.",
+            "scope": "module",
+            "search": [
+              "generated type metadata",
+              "compiler signature contract"
+            ],
+            "stability": "contract",
+            "unknown": []
+          },
+          "end": 459,
+          "endLine": 10,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.structure.metadata"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Validate generated compiler metadata independently of reviewed semantic cards."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "common metadata contract|type origin validation"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "compiler execution|semantic inference|source mutation"
+            },
+            {
+              "key": "search",
+              "line": 6,
+              "order": 4,
+              "value": "generated type metadata|compiler signature contract"
+            },
+            {
+              "key": "invariant",
+              "line": 7,
+              "order": 5,
+              "value": "Metadata preserves unknown types and compiler origins without modifying semantic cards."
+            },
+            {
+              "key": "rel",
+              "line": 8,
+              "order": 6,
+              "value": "workflow>llmnav.graph.import"
+            },
+            {
+              "key": "stability",
+              "line": 9,
+              "order": 7,
+              "value": "contract"
+            }
+          ],
+          "filePath": "src/code-metadata.js",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.structure.metadata\nrole=Validate generated compiler metadata independently of reviewed semantic cards.\nowns=common metadata contract|type origin validation\nexcludes=compiler execution|semantic inference|source mutation\nsearch=generated type metadata|compiler signature contract\ninvariant=Metadata preserves unknown types and compiler origins without modifying semantic cards.\nrel=workflow>llmnav.graph.import\nstability=contract\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "c4f6ac74b8ffad05c50c8c3ffc43d9cd407b1feb5712a2b8b1c963b670c87506",
+      "declarations": [
+        null
+      ],
+      "imports": [],
+      "path": "src/code-metadata.js",
+      "semanticBytes": 459,
+      "sourceBytes": 2800
     },
     {
       "blocks": [
@@ -4572,12 +4785,13 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "e138c74e514159103f962ef4633eaefa5155113affd43c9909d16118b668a08a",
+      "contentHash": "3b8e5e48230e88c04f749512c89420a2032dc574fe8cefd786873cb45eb919d2",
       "declarations": [
         null
       ],
       "imports": [
         "./abort.js",
+        "./code-metadata.js",
         "./concurrency.js",
         "./files.js",
         "./spec.js",
@@ -4587,7 +4801,7 @@
       ],
       "path": "src/graph-input.js",
       "semanticBytes": 397,
-      "sourceBytes": 9122
+      "sourceBytes": 9444
     },
     {
       "blocks": [
@@ -4815,14 +5029,14 @@
     },
     {
       "blocks": [],
-      "contentHash": "560fac6e92780cc970bd4bed99ac5ce4686f30d5e56f448e7ef60df92d8e5733",
+      "contentHash": "5fc21a6b62397f5d3c49eb48a84239388f3a959d3407650dcca807d86bbd757f",
       "declarations": [],
       "imports": [
         "./spec.js"
       ],
       "path": "src/index.d.ts",
       "semanticBytes": 0,
-      "sourceBytes": 36844
+      "sourceBytes": 37465
     },
     {
       "blocks": [],
@@ -5198,7 +5412,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "a3a2ab3012ae14b56623f4ff07e1bcba2fecd893df30a07899bb3aefbfa21b3e",
+      "contentHash": "862fe55c3c8e72934f22730332b91792448298caacce1fd8402cb500eda7b399",
       "declarations": [
         null
       ],
@@ -5215,7 +5429,7 @@
       ],
       "path": "src/mcp-refresh.js",
       "semanticBytes": 507,
-      "sourceBytes": 4848
+      "sourceBytes": 4878
     },
     {
       "blocks": [
@@ -6817,14 +7031,14 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "bde15bbb1d0abf3abbebb198ef6b8d096ce6259f885d9e8637072091fd4a944f",
+      "contentHash": "fd0a431634a51cb9e840121d5f16841b1e4017b033e00d00742e4fe3997c5ac6",
       "declarations": [
         null
       ],
       "imports": [],
       "path": "src/spec.js",
       "semanticBytes": 507,
-      "sourceBytes": 5308
+      "sourceBytes": 5307
     },
     {
       "blocks": [
@@ -7323,6 +7537,25 @@
       "path": "tests/cli.test.js",
       "semanticBytes": 0,
       "sourceBytes": 4801
+    },
+    {
+      "blocks": [],
+      "contentHash": "7c62d5240940a9d88baa74d51aa0b5b303e316f845a1f47b9cb1ec4c82c3713d",
+      "declarations": [],
+      "imports": [
+        "../src/analysis.js",
+        "../src/config.js",
+        "../src/graph-input.js",
+        "node:assert/strict",
+        "node:child_process",
+        "node:fs/promises",
+        "node:os",
+        "node:path",
+        "node:test"
+      ],
+      "path": "tests/code-metadata.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 6033
     },
     {
       "blocks": [],

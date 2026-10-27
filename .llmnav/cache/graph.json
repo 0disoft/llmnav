@@ -1683,6 +1683,20 @@
     {
       "confidence": 0.85,
       "from": "llmnav/llmnav.graph.import",
+      "id": "d11b4f9faed4de51ab01f50bc6118a9bdf5205cd9a415d92f26970613c905948",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/graph-input.js",
+        "source": "src/graph-input.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.structure.metadata"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.graph.import",
       "id": "84b0f7ba0d1d0e9c822487b356981a4644181298d042998d6a00aefb426c327b",
       "kind": "imports",
       "provenance": {
@@ -3432,6 +3446,20 @@
     },
     {
       "confidence": 1,
+      "from": "llmnav/llmnav.structure.metadata",
+      "id": "a800b365a49d0ebf118627a451011c650424656b875916ed6221ea6d70b7e7fd",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/code-metadata.js",
+        "source": "src/code-metadata.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.graph.import"
+    },
+    {
+      "confidence": 1,
       "from": "llmnav/llmnav.structure.modules",
       "id": "6166df8fbd970d83f504a7a0d4d871fe66a1c6fa0ad4def71fd26ec4ef6b0f5e",
       "kind": "workflow",
@@ -3516,6 +3544,20 @@
     },
     {
       "confidence": 1,
+      "from": "llmnav/llmnav.structure.typescript-metadata",
+      "id": "b780a2c7bdc6bb267640174e3ca5c1d535a687a3947411d77c96d987a4bbea0c",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/adapters/typescript-metadata.js",
+        "source": "src/adapters/typescript-metadata.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.structure.typescript-worker"
+    },
+    {
+      "confidence": 1,
       "from": "llmnav/llmnav.structure.typescript-worker",
       "id": "d7c121e8f0dc9045c98eed2aac2075de0c19c490ffc5833952b961ccb366fd1a",
       "kind": "workflow",
@@ -3527,6 +3569,20 @@
         "type": "source-card"
       },
       "to": "llmnav/llmnav.structure.analyze"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.structure.typescript-worker",
+      "id": "80679f70e408f04ab0efecd25097321430559a58c3ab3845dfadb4b53ea4ccdd",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/adapters/typescript-worker.js",
+        "source": "src/adapters/typescript-worker.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.structure.typescript-metadata"
     },
     {
       "confidence": 0.85,
@@ -4891,6 +4947,28 @@
     {
       "definitions": [],
       "external": false,
+      "key": "llmnav/llmnav.structure.metadata",
+      "location": {
+        "declarationLine": null,
+        "endLine": 10,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/code-metadata.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Validate generated compiler metadata independently of reviewed semantic cards.",
+      "semanticId": "llmnav.structure.metadata",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
       "key": "llmnav/llmnav.structure.modules",
       "location": {
         "declarationLine": null,
@@ -4930,6 +5008,28 @@
       "repositoryId": "llmnav",
       "role": "Resolve an installed TypeScript Compiler API and run source analysis in an isolated process.",
       "semanticId": "llmnav.structure.typescript",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
+      "key": "llmnav/llmnav.structure.typescript-metadata",
+      "location": {
+        "declarationLine": null,
+        "endLine": 10,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/adapters/typescript-metadata.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Project compiler types and callable signatures into generated declaration metadata.",
+      "semanticId": "llmnav.structure.typescript-metadata",
       "unresolved": false
     },
     {
@@ -5111,11 +5211,11 @@
   ],
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "00e53f45623c9fba648ebec90faf215b378c2d80ca329f8e9c60c6e3edbf1a77",
+  "sourceHash": "d4959263159afafd74cec14fb0bd1612fd7785952389431a3a952debeb72d930",
   "stats": {
-    "edgeCount": 263,
+    "edgeCount": 267,
     "importedIndexCount": 0,
-    "nodeCount": 62,
+    "nodeCount": 64,
     "unresolvedNodeCount": 0
   }
 }

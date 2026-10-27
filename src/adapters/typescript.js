@@ -26,7 +26,7 @@ export async function analyzeTypeScript(root, files, options = {}) {
     }
   }
   const output = await runCompiler(process.execPath, [fileURLToPath(new URL("./typescript-worker.js", import.meta.url))], {
-    ...options, cwd: root, input: JSON.stringify({ root, files, compiler, project: options.project, allowErrors: options.allowErrors === true }),
+    ...options, cwd: root, input: JSON.stringify({ root, files, compiler, project: options.project, allowErrors: options.allowErrors === true, metadata: options.metadata === true }),
   });
   return JSON.parse(output);
 }

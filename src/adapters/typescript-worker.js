@@ -14,6 +14,7 @@ import path from "node:path";
 import { createRequire } from "node:module";
 import { readFileSync, realpathSync } from "node:fs";
 import { createHash } from "node:crypto";
+import { typeScriptMetadata } from "./typescript-metadata.js";
 
 let input = "";
 for await (const chunk of process.stdin) input += chunk;
@@ -72,6 +73,7 @@ function analyze(request) {
   if (!request.allowErrors && diagnostics.some(error => error.category === "Error")) throw new Error(JSON.stringify(diagnostics));
   const declarations = [], references = [], bySymbol = new Map(), byDeclaration = new Map(), owners = new Map();
   const sources = program.getSourceFiles().filter(source => selected.has(fileKey(source.fileName)));
+  const partial = diagnostics.some(item => item.category === "Error");
   for (const source of sources) {
     const module = { key: `${relative(source.fileName)}:module`, symbol: path.basename(relative(source.fileName)), path: relative(source.fileName), line: 1, offset: -1, kind: "module", qualified: "module" };
     declarations.push(module); owners.set(source, module.key);
@@ -88,6 +90,7 @@ function analyze(request) {
           const qualified = `${scope}/${kind}:${node.name.text}`;
           const display = (ts.isMethodDeclaration(node) || ts.isMethodSignature(node)) && node.parent.name ? `${node.parent.name.text}.${node.name.text}` : node.name.text;
           const record = { key, symbol: node.name.text, display, path: relative(source.fileName), line: source.getLineAndCharacterOfPosition(declaration.name.getStart(source)).line + 1, offset: declaration.getStart(source), kind, qualified, parent: nearestOwner(node.parent) };
+          if (request.metadata) record.metadata = typeScriptMetadata(ts, checker, declaration, partial);
           // Retain card attachment to the first signature when the implementation has no card.
           if (declaration !== node) {
             record.signatureOffset = node.getStart(source);
