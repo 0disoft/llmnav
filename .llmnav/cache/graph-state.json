@@ -7776,7 +7776,7 @@
           "to": "llmnav/llmnav.structure.analyze"
         }
       ],
-      "inputHash": "badc7fdafc0d519563a7c500bec176d0816bf6a1c890d133a7c0bb3b9ddc0273",
+      "inputHash": "d4e58eeb3db7fb226abfb2a6dc38d633e644e087cc6bb528f76c0987a8a57cf1",
       "key": "card:llmnav/llmnav.structure.go-worker",
       "nodes": [
         {

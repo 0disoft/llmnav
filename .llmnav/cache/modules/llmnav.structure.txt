@@ -51,7 +51,7 @@ rel workflow>llmnav.structure.analyze
 
 @llmnav.structure.go-worker
 role Resolve Go object identity and lexical references from standard-library type information.
-owns Go declaration identity, cross-package reference resolution, receiver identity, physical source positions
+owns Go declaration identity, cross-package reference resolution, receiver identity, physical source positions, Go UTF16 offsets
 excludes project execution, module installation, runtime dispatch inference
 invariant Compiler-selected production sources determine references and line directives never replace physical locations.
 rel workflow>llmnav.structure.analyze

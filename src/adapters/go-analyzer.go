@@ -1,7 +1,7 @@
 /* llmnav/1 module
 id=llmnav.structure.go-worker
 role=Resolve Go object identity and lexical references from standard-library type information.
-owns=Go declaration identity|cross-package reference resolution|receiver identity|physical source positions
+owns=Go declaration identity|cross-package reference resolution|receiver identity|physical source positions|Go UTF16 offsets
 excludes=project execution|module installation|runtime dispatch inference
 search=Go precise references|go types definitions|Go receiver methods
 invariant=Compiler-selected production sources determine references and line directives never replace physical locations.
@@ -26,6 +26,7 @@ import (
 	"runtime"
 	"sort"
 	"strings"
+	"unicode/utf8"
 )
 
 type request struct {
@@ -95,7 +96,42 @@ type analyzer struct {
 	selected map[string]bool
 	objects  map[types.Object]string
 	owners   map[ast.Node]string
+	offsets  map[string]utf16Offsets
 	report   report
+}
+
+type offsetCorrection struct{ end, delta int }
+type utf16Offsets []offsetCorrection
+
+// Keep byte keys for compiler object identity, but expose JavaScript coordinates.
+func indexUTF16Offsets(source []byte) utf16Offsets {
+	var offsets utf16Offsets
+	delta := 0
+	for i := 0; i < len(source); {
+		if source[i] < utf8.RuneSelf {
+			i++
+			continue
+		}
+		value, width := utf8.DecodeRune(source[i:])
+		units := 1
+		if value > 0xffff {
+			units = 2
+		}
+		i += width
+		delta += width - units
+		if width != units {
+			offsets = append(offsets, offsetCorrection{i, delta})
+		}
+	}
+	return offsets
+}
+
+func (offsets utf16Offsets) position(byteOffset int) int {
+	count := sort.Search(len(offsets), func(i int) bool { return offsets[i].end > byteOffset })
+	if count == 0 {
+		return byteOffset
+	}
+	return byteOffset - offsets[count-1].delta
 }
 
 func main() {
@@ -116,7 +152,7 @@ func run() error {
 		return err
 	}
 	input.Root = root
-	a := &analyzer{request: input, fset: token.NewFileSet(), listed: map[string]listedPackage{}, packages: map[string]*types.Package{}, infos: map[string]*types.Info{}, syntax: map[string][]*ast.File{}, checking: map[string]bool{}, selected: map[string]bool{}, objects: map[types.Object]string{}, owners: map[ast.Node]string{}}
+	a := &analyzer{request: input, fset: token.NewFileSet(), listed: map[string]listedPackage{}, packages: map[string]*types.Package{}, infos: map[string]*types.Info{}, syntax: map[string][]*ast.File{}, checking: map[string]bool{}, selected: map[string]bool{}, objects: map[types.Object]string{}, owners: map[ast.Node]string{}, offsets: map[string]utf16Offsets{}}
 	a.report = report{Compiler: map[string]string{"name": "go/types", "version": runtime.Version()}, Declarations: []declaration{}, References: []reference{}, Diagnostics: []string{}, Inputs: []string{}}
 	for _, file := range input.Files {
 		canonical, err := filepath.EvalSymlinks(file)
@@ -217,9 +253,16 @@ func (a *analyzer) Import(name string) (*types.Package, error) {
 		if !a.inside(canonical) {
 			return nil, fmt.Errorf("source symlink escapes repository: %s", file)
 		}
-		syntax, err := parser.ParseFile(a.fset, file, nil, 0)
+		source, err := os.ReadFile(file)
 		if err != nil {
 			return nil, err
+		}
+		syntax, err := parser.ParseFile(a.fset, file, source, 0)
+		if err != nil {
+			return nil, err
+		}
+		if a.selected[filepath.Clean(file)] {
+			a.offsets[file] = indexUTF16Offsets(source)
 		}
 		files = append(files, syntax)
 		a.report.Inputs = append(a.report.Inputs, a.relative(file))
@@ -288,7 +331,7 @@ func (a *analyzer) collect(name string) {
 					}
 					a.objects[object] = key
 					qualifiedNames[key] = qualified
-					record := declaration{Key: key, Symbol: id.Name, Display: display, Path: relative, Line: pos.Line, Offset: pos.Offset, Kind: kind, Qualified: qualified, Parent: parent}
+					record := declaration{Key: key, Symbol: id.Name, Display: display, Path: relative, Line: pos.Line, Offset: a.offsets[position.Filename].position(pos.Offset), Kind: kind, Qualified: qualified, Parent: parent}
 					if a.request.Metadata {
 						record.Metadata = a.objectMetadata(object, stack)
 					}

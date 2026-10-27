@@ -1933,7 +1933,8 @@
               "Go declaration identity",
               "cross-package reference resolution",
               "receiver identity",
-              "physical source positions"
+              "physical source positions",
+              "Go UTF16 offsets"
             ],
             "rel": [
               "workflow>llmnav.structure.analyze"
@@ -1949,7 +1950,7 @@
             "stability": "architecture",
             "unknown": []
           },
-          "end": 581,
+          "end": 598,
           "endLine": 10,
           "entries": [
             {
@@ -1968,7 +1969,7 @@
               "key": "owns",
               "line": 4,
               "order": 2,
-              "value": "Go declaration identity|cross-package reference resolution|receiver identity|physical source positions"
+              "value": "Go declaration identity|cross-package reference resolution|receiver identity|physical source positions|Go UTF16 offsets"
             },
             {
               "key": "excludes",
@@ -2005,7 +2006,7 @@
           "indent": "",
           "newline": "\n",
           "prefix": null,
-          "raw": "/* llmnav/1 module\nid=llmnav.structure.go-worker\nrole=Resolve Go object identity and lexical references from standard-library type information.\nowns=Go declaration identity|cross-package reference resolution|receiver identity|physical source positions\nexcludes=project execution|module installation|runtime dispatch inference\nsearch=Go precise references|go types definitions|Go receiver methods\ninvariant=Compiler-selected production sources determine references and line directives never replace physical locations.\nrel=workflow>llmnav.structure.analyze\nstability=architecture\n*/",
+          "raw": "/* llmnav/1 module\nid=llmnav.structure.go-worker\nrole=Resolve Go object identity and lexical references from standard-library type information.\nowns=Go declaration identity|cross-package reference resolution|receiver identity|physical source positions|Go UTF16 offsets\nexcludes=project execution|module installation|runtime dispatch inference\nsearch=Go precise references|go types definitions|Go receiver methods\ninvariant=Compiler-selected production sources determine references and line directives never replace physical locations.\nrel=workflow>llmnav.structure.analyze\nstability=architecture\n*/",
           "scope": "module",
           "specVersion": "1",
           "start": 0,
@@ -2014,7 +2015,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "9dcf70306fad527a3decfa58153e45f5d5c98ab2f0924fe09fb652871055c493",
+      "contentHash": "c22d557d3269f75e4c245150df7a4ee40a081cc8c8e628f064a3a595f9d76cb8",
       "declarations": [
         null
       ],
@@ -2036,11 +2037,12 @@
         "sort",
         "strings",
         "type",
+        "unicode/utf8",
         "variable"
       ],
       "path": "src/adapters/go-analyzer.go",
-      "semanticBytes": 581,
-      "sourceBytes": 14445
+      "semanticBytes": 598,
+      "sourceBytes": 15584
     },
     {
       "blocks": [
@@ -7997,7 +7999,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "5a89c0f027936e30578eefd9d2b28fa9bbbfd76b316203a8d601b597c7bcf9b4",
+      "contentHash": "196ea82949a9cc2413e56bb62ccdc357c85bbfc24972653d127f6323a2677c7c",
       "declarations": [
         null
       ],
@@ -8914,6 +8916,26 @@
       "path": "tests/git-history.test.js",
       "semanticBytes": 0,
       "sourceBytes": 3265
+    },
+    {
+      "blocks": [],
+      "contentHash": "8d252f1a4c7639afa6a99ff1c27ccb996c54cbcde22a2539bb01f4d50d7ad08c",
+      "declarations": [],
+      "imports": [
+        "../src/adapters/go.js",
+        "../src/analysis.js",
+        "../src/config.js",
+        "../src/graph-input.js",
+        "node:assert/strict",
+        "node:child_process",
+        "node:fs/promises",
+        "node:os",
+        "node:path",
+        "node:test"
+      ],
+      "path": "tests/go-positions.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 4585
     },
     {
       "blocks": [],

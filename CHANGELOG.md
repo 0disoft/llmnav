@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.19.4] — 2026-10-27
+
+### Fixed
+
+* Convert Go declaration byte offsets to JavaScript UTF-16 coordinates using a sparse correction index built from the same source buffer passed to the parser. Keep byte-based compiler keys, ownership, reference targets and physical line numbers unchanged. A regression with 78 Korean characters previously placed the first method at byte offset 445, colliding with a second card's UTF-16 offset and retaining only one of two reviewed IDs; the corrected offset is 289 and both card bindings and the first method's call edge are retained. Index construction costs O(S), conversion costs O(log U) per declaration and storage costs O(U), where S is source bytes and U is multibyte characters; ASCII inputs allocate no correction entries. Source-content read count is unchanged. Rerun Go analysis to repair affected saved bindings.
+
 ## [0.19.3] — 2026-10-27
 
 ### Fixed
