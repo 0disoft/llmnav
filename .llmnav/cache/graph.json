@@ -3613,6 +3613,20 @@
       "to": "llmnav/llmnav.support.policy"
     },
     {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.search.source-pack",
+      "id": "7f9f95bbaf31adc5d7def88a4ee3eb8310a38d1e0c58d339305167409f579917",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/query-source.js",
+        "source": "src/query-source.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.syntax.parse"
+    },
+    {
       "confidence": 1,
       "from": "llmnav/llmnav.search.tokenize",
       "id": "8ace185e173fcaa492a544e8ea5f68e3f781457a06cc2f82cbe18b8f850460ec",
@@ -6167,9 +6181,9 @@
   ],
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "aeb13f65be8bc237fd3a968d964fefe568d2188673a40b61adceb616bf173e46",
+  "sourceHash": "e8dd21293e287a7091fef386b51524b63f0ab682802320198be5c44968fadbfc",
   "stats": {
-    "edgeCount": 318,
+    "edgeCount": 319,
     "importedIndexCount": 0,
     "nodeCount": 75,
     "unresolvedNodeCount": 0

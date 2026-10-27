@@ -7463,7 +7463,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "ca660ff60c8a0d61a2c848fb8f9fbee8420eae2e6bb9dddfde7f2afba3297430",
+      "contentHash": "9aea6e7c3a1d6013310eb4627ba0ee78338e1854ed33d4dce4adcca0d68e1d3b",
       "declarations": [
         null
       ],
@@ -7473,12 +7473,13 @@
         "./concurrency.js",
         "./config.js",
         "./files.js",
+        "./parser.js",
         "./policy.js",
         "./util.js"
       ],
       "path": "src/query-source.js",
       "semanticBytes": 458,
-      "sourceBytes": 7563
+      "sourceBytes": 9431
     },
     {
       "blocks": [
@@ -9665,7 +9666,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "96efde2407118744516d34f46ef623b8164489a5c155e2d9c3cbfc68d8513be9",
+      "contentHash": "bb85b9ff1381058b777cefda777414acc1e8c3c1f69849cdb1a6f4df96951166",
       "declarations": [],
       "imports": [
         "../src/agent-protocol.js",
@@ -9681,7 +9682,7 @@
       ],
       "path": "tests/query-source.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 5970
+      "sourceBytes": 8656
     },
     {
       "blocks": [],

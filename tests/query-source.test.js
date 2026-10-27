@@ -107,9 +107,31 @@ test("query source merges touching windows, ranks late multi-term matches and bo
   for (let i = 0; i < 14; i++) await writeFile(path.join(root, `src/extra${String(i).padStart(2, "0")}.js`), "use(needleA);\n");
   const many = (await executeAgentOperation(root, "llmnav_query", input)).data;
   assert.equal(many.matchedFiles, 15);
-  assert.equal(many.omittedFiles, 3);
+  assert.equal(many.omittedFiles, 14, "broad-only matches yield to the selective identifier");
   assert.ok(many.excerpts.some(item => item.path === "src/windows.js"), "a late two-term file must outrank one-term files");
   assert.ok(new Set(many.excerpts.map(item => item.path)).size <= 12);
   const literal = (await executeAgentOperation(root, "llmnav_query", { ...input, sourceTerms: ["needle.*"] })).data;
   assert.deepEqual(literal.excerpts, []);
+});
+
+test("query source prioritizes code over help strings and excludes broad-only file matches", async context => {
+  const root = await fixture(context);
+  const help = 'export const help = `--limit context ${limitValue}`;\n';
+  await writeFile(path.join(root, "src/cli.js"), help + "// padding\n".repeat(30) +
+    "export function forward(value) { return { limitValue: value }; }\n");
+  for (let index = 0; index < 30; index++) {
+    await writeFile(path.join(root, `src/noise${index}.js`), "export const context = {};\n");
+  }
+  const result = (await executeAgentOperation(root, "llmnav_query", {
+    task: "budget", includeSource: true, sourceTerms: ["limitValue", "--limit", "context"],
+  })).data;
+  assert.ok(result.excerpts.find(item => item.path === "src/cli.js").text.includes("function forward"));
+  assert.ok(result.excerpts.every(item => !item.path.includes("noise")));
+  assert.equal(result.matchedFiles, 33);
+  assert.equal(result.omittedFiles, 30);
+  assert.equal(result.truncated, true);
+  const literal = (await executeAgentOperation(root, "llmnav_query", {
+    task: "budget", includeSource: true, sourceTerms: ["--limit"],
+  })).data;
+  assert.ok(literal.excerpts[0].text.includes("--limit"), "literal-only evidence remains available");
 });

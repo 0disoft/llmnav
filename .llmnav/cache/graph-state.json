@@ -7063,9 +7063,23 @@
             "type": "local-import"
           },
           "to": "llmnav/llmnav.support.policy"
+        },
+        {
+          "confidence": 0.85,
+          "from": "llmnav/llmnav.search.source-pack",
+          "id": "7f9f95bbaf31adc5d7def88a4ee3eb8310a38d1e0c58d339305167409f579917",
+          "kind": "imports",
+          "provenance": {
+            "generator": "llmnav",
+            "line": null,
+            "path": "src/query-source.js",
+            "source": "src/query-source.js",
+            "type": "local-import"
+          },
+          "to": "llmnav/llmnav.syntax.parse"
         }
       ],
-      "inputHash": "c49626336ab2f4e4bad29cd672da43d5d6519e5caea77a2f066c78df151b6c91",
+      "inputHash": "17c1cf512d208bc917c8be155847f639078b6529f1d1f57a64b81468fe016bec",
       "key": "card:llmnav/llmnav.search.source-pack",
       "nodes": [
         {
@@ -7133,9 +7147,18 @@
           "repositoryId": "llmnav",
           "role": null,
           "semanticId": "llmnav.support.policy"
+        },
+        {
+          "definitions": [],
+          "external": false,
+          "key": "llmnav/llmnav.syntax.parse",
+          "location": null,
+          "repositoryId": "llmnav",
+          "role": null,
+          "semanticId": "llmnav.syntax.parse"
         }
       ],
-      "outputHash": "e801d171f6d972000379823fc4dc121866354e07353a1f4f6e8f967634d24a72"
+      "outputHash": "f5a70e35947fa17a99aa123f75176af07e618d82c07df69100f6ce7fae4126e4"
     },
     {
       "edges": [

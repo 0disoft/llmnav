@@ -3846,9 +3846,9 @@
         "semantic contract inference"
       ],
       "hashes": {
-        "body": "ca660ff60c8a0d61a2c848fb8f9fbee8420eae2e6bb9dddfde7f2afba3297430",
+        "body": "9aea6e7c3a1d6013310eb4627ba0ee78338e1854ed33d4dce4adcca0d68e1d3b",
         "semantic": "8917e58eb39a2c558697a98ddfe7201dc5d5b557649ceae741cb7b1a60608907",
-        "structure": "4936482dee5ce011ba7a6d3c03adb0a509eb714bbb180b455c2c64224c97d05b"
+        "structure": "715bfb70efe40773f5eef38d85c9ed70c8dc9a7d1a01ad0e8a89baaf8b2ef532"
       },
       "id": "llmnav.search.source-pack",
       "imports": [
@@ -3857,6 +3857,7 @@
         "./concurrency.js",
         "./config.js",
         "./files.js",
+        "./parser.js",
         "./policy.js",
         "./util.js"
       ],
@@ -3899,6 +3900,6 @@
   "generatedBy": "llmnav@0.20.0",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "f7d0aac35ca025ace5c807c20ba0fff1127ed64e13efc4c7a69d2a00b7bd6dcc",
+  "sourceHash": "644a3bc070ccd179e1ee8b95775ee8546dfea4d8ffca966159c0e98c0502738a",
   "specVersion": "1"
 }
