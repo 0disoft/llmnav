@@ -1913,7 +1913,7 @@
         "source parsing"
       ],
       "hashes": {
-        "body": "84b72e8133d3a31e29b601ca73a4cb8dd3163e502d880d65c31c878ac6505cf2",
+        "body": "b3f0f0b818aab1b9a6fa5edfbdf5795e6e90c26e3fc1de6e724a8c3f19a79609",
         "semantic": "59aa3e9e793d505ecdf110fec023c201aaee0154d2f6c9cf71afe1bbf71a7be5",
         "structure": "e213e073414c75bc75df1c8669a7045096142b6c0845694191893d90bf23e3c2"
       },
@@ -2237,9 +2237,9 @@
         "index preparation"
       ],
       "hashes": {
-        "body": "9cd1f9b286ddbf9ced783ccba2ac8d67a7680f0ab765b37ee819ebfa77f9ca21",
+        "body": "c9fcae6f2d6d617e1452025b16bd3d2009103d5cc5af9b5813488fd9a76ad50d",
         "semantic": "27353c21e442ab2e82f1729de2ce8d5050e2b297ca7e9f232f148945e717e6f7",
-        "structure": "a0d8880b7f51b2c27eaddd723978ca343a74453304ba725cc7ae530b2b301b0d"
+        "structure": "605e615bfd8f1ced92a0f7543090b6c9c0ffc3f1c0dcee413c6f474a5bc4fa4f"
       },
       "id": "llmnav.agent.mcp",
       "imports": [
@@ -2252,6 +2252,7 @@
         "./runtime.js",
         "./search.js",
         "./spec.js",
+        "node:events",
         "node:fs/promises",
         "node:path",
         "node:readline",
@@ -2387,7 +2388,7 @@
         "agent transport"
       ],
       "hashes": {
-        "body": "61fddf5fb5910e5491424d7661afad6864fd00009431225a7908af1f9d2e54f2",
+        "body": "a20e7afe6831e758cbcec7565f4f4175f65c83a83d3593d7097577d63daa4fa6",
         "semantic": "b244749b801867c5f8b291b42300ef51fa4bee7fb85c3630a0dcc3c346e54c95",
         "structure": "79d75218e26f6313afbe080aa88e5ab3e9fb12e97d17ac3c2168c1c1ccf0c935"
       },
@@ -3797,9 +3798,9 @@
     },
     "schemaVersion": 1
   },
-  "generatedBy": "llmnav@0.19.8",
+  "generatedBy": "llmnav@0.19.9",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "9b7ed4c2070f185b2407dec3699be3e278e7a495fd60a558693187600e03d251",
+  "sourceHash": "bb948a98b47f59e9c6210d43eeebf51ddbfb44cac5da8c3fee9b0da0fd484a4e",
   "specVersion": "1"
 }

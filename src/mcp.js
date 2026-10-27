@@ -11,6 +11,7 @@ stability=contract
 */
 
 import { stat } from "node:fs/promises";
+import { on } from "node:events";
 import path from "node:path";
 import readline from "node:readline";
 import { Transform } from "node:stream";
@@ -331,8 +332,15 @@ export async function serveMcpStdio(options = {}) {
     if (output.destroyed || output.closed || output.writableEnded) onClose();
     if (input.errored) onError(input.errored);
     throwIfAborted(controller.signal);
+    // readline's default iterator queues 1024 lines. Pause earlier while a
+    // request or output drain is pending; the current chunk may still emit lines.
+    const lines = on(reader, "line", {
+      close: ["close"],
+      highWaterMark: MCP_TRANSPORT_LIMITS.lineHighWaterMark,
+      lowWaterMark: MCP_TRANSPORT_LIMITS.lineHighWaterMark,
+    });
     input.pipe(framedInput);
-    for await (const line of reader) {
+    for await (const [line] of lines) {
       throwIfAborted(controller.signal);
       if (line.trim().length === 0) continue;
       const response = await server.handleLine(line);

@@ -242,6 +242,39 @@ test("stdio output applies backpressure before reading the next request", async 
   assert.equal(writes.length, 2);
 });
 
+test("stdio bounds input read-ahead during output backpressure and resumes in order", { timeout: 15000 }, async (context) => {
+  const total = 2000, padding = "x".repeat(16 * 1024);
+  let produced = 0;
+  const input = Readable.from((function* () {
+    for (let id = 0; id < total; id += 1) {
+      produced += 1;
+      yield `${JSON.stringify({ jsonrpc: "2.0", id, method: "ping", params: { padding } })}\n`;
+    }
+  })(), { highWaterMark: 1 });
+  const output = new EventEmitter(), written = Promise.withResolvers();
+  const controller = new AbortController(), responses = [];
+  output.write = (text) => {
+    responses.push(JSON.parse(text).id);
+    written.resolve();
+    return responses.length > 1;
+  };
+  const serving = serveMcpStdio({ root: os.tmpdir(), input, output, signal: controller.signal });
+  const observed = serving.catch(() => {});
+  context.after(async () => { controller.abort(); input.destroy(); await observed; });
+  await written.promise;
+  await new Promise(resolve => setImmediate(resolve));
+  context.diagnostic(JSON.stringify({ producedWhileBlocked: produced, paddingBytes: produced * padding.length }));
+  assert.ok(produced <= 32, `Read ahead ${produced} frames while output was blocked`);
+  assert.deepEqual(responses, [0]);
+  output.emit("drain");
+  assert.equal(await serving, 0);
+  assert.equal(produced, total);
+  assert.deepEqual(responses, Array.from({ length: total }, (_, id) => id));
+  for (const event of ["drain", "close", "error"]) assert.equal(output.listenerCount(event), 0, event);
+  assert.equal(input.listenerCount("data"), 0);
+  assert.equal(getEventListeners(controller.signal, "abort").length, 0);
+});
+
 test("output waits release every listener after drain, close, error, or cancellation", { timeout: 15000 }, async () => {
   for (const ending of ["drain", "close", "error", "abort"]) {
     const input = new PassThrough();

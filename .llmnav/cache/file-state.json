@@ -6519,7 +6519,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "9cd1f9b286ddbf9ced783ccba2ac8d67a7680f0ab765b37ee819ebfa77f9ca21",
+      "contentHash": "c9fcae6f2d6d617e1452025b16bd3d2009103d5cc5af9b5813488fd9a76ad50d",
       "declarations": [
         null
       ],
@@ -6533,6 +6533,7 @@
         "./runtime.js",
         "./search.js",
         "./spec.js",
+        "node:events",
         "node:fs/promises",
         "node:path",
         "node:readline",
@@ -6540,7 +6541,7 @@
       ],
       "path": "src/mcp.js",
       "semanticBytes": 667,
-      "sourceBytes": 16524
+      "sourceBytes": 16910
     },
     {
       "blocks": [
@@ -6996,14 +6997,14 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "61fddf5fb5910e5491424d7661afad6864fd00009431225a7908af1f9d2e54f2",
+      "contentHash": "a20e7afe6831e758cbcec7565f4f4175f65c83a83d3593d7097577d63daa4fa6",
       "declarations": [
         null
       ],
       "imports": [],
       "path": "src/policy.js",
       "semanticBytes": 590,
-      "sourceBytes": 3018
+      "sourceBytes": 3042
     },
     {
       "blocks": [
@@ -8010,7 +8011,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "84b72e8133d3a31e29b601ca73a4cb8dd3163e502d880d65c31c878ac6505cf2",
+      "contentHash": "b3f0f0b818aab1b9a6fa5edfbdf5795e6e90c26e3fc1de6e724a8c3f19a79609",
       "declarations": [
         null
       ],
@@ -9192,7 +9193,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "86cd50d3f68681fed0d65cd46c69212434952689aaded46c3fb5b8681e98d9d0",
+      "contentHash": "391cad99a6bea7caab6c9ab5c00811c5da90fb4dddca4fd72fe7c99388b3f13f",
       "declarations": [],
       "imports": [
         "../src/agent-protocol.js",
@@ -9215,7 +9216,7 @@
       ],
       "path": "tests/mcp.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 30190
+      "sourceBytes": 31844
     },
     {
       "blocks": [],

@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.19.9] — 2026-10-27
+
+### Fixed
+
+* Apply input backpressure to the MCP line-event queue while a tool or output drain is pending. Replace readline's default 1,024-line iterator threshold with an explicit high-water mark of one, preserving UTF-8/CRLF framing, request order, cancellation and listener cleanup. In a local reproduction with 2,000 requests carrying 16 KiB of padding per chunk, the first blocked response previously allowed 1,028 requests to be pulled; the new path pulls five (padding payload: 16,842,752 to 81,920 bytes). These counts include stream read-ahead, not measured heap usage; remaining lines in the current chunk and stream buffers still apply. The regression resumes output and checks all 2,000 response IDs in order.
+
 ## [0.19.8] — 2026-10-27
 
 ### Fixed

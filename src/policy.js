@@ -83,6 +83,7 @@ export const SOURCE_LIMITS = Object.freeze({
 
 export const MCP_TRANSPORT_LIMITS = Object.freeze({
   maxFrameBytes: 1024 * 1024,
+  lineHighWaterMark: 1,
 });
 
 export const TOKEN_ESTIMATION = Object.freeze({

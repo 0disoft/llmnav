@@ -732,7 +732,7 @@
           "to": "llmnav/llmnav.support.runtime"
         }
       ],
-      "inputHash": "a17b1e8f52613a10c51bd423c7c11e59a55c7c6caf3714d9119c0bb0815f7fdc",
+      "inputHash": "0009e41c2b08279d9b749d5ccfffff215ba88db7b19658a6c730e86c49947299",
       "key": "card:llmnav/llmnav.agent.mcp",
       "nodes": [
         {
