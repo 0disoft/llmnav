@@ -1766,6 +1766,20 @@
     },
     {
       "confidence": 0.85,
+      "from": "llmnav/llmnav.eval.policy-coding",
+      "id": "17e3c439c635799224aee374e479bfda101b4a2a1965eac7cd8eeeafc02294cf",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "benchmarks/policy-coding.js",
+        "source": "benchmarks/policy-coding.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.eval.model-coding"
+    },
+    {
+      "confidence": 0.85,
       "from": "llmnav/llmnav.eval.real-navigation",
       "id": "ca2fdbf7c4df7555fb50eca68326a704c3158ad0dec80803803ff91c61af5982",
       "kind": "imports",
@@ -5035,6 +5049,28 @@
     {
       "definitions": [],
       "external": false,
+      "key": "llmnav/llmnav.eval.policy-coding",
+      "location": {
+        "declarationLine": null,
+        "endLine": 8,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "benchmarks/policy-coding.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Compare actual agent repairs across CLI, tool schemas and policy boundaries in frozen production-source copies.",
+      "semanticId": "llmnav.eval.policy-coding",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
       "key": "llmnav/llmnav.eval.real-navigation",
       "location": {
         "declarationLine": null,
@@ -6025,11 +6061,11 @@
   ],
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "8f093b3dcfd3fbb1c60f84a62f48f70833af10a136575548768694a233e48a2b",
+  "sourceHash": "9f1a0d8cbee592fa431bfe7214f3aeb5d4e622a28d68a9f6d398494953c8410e",
   "stats": {
-    "edgeCount": 311,
+    "edgeCount": 312,
     "importedIndexCount": 0,
-    "nodeCount": 73,
+    "nodeCount": 74,
     "unresolvedNodeCount": 0
   }
 }

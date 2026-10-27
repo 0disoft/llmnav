@@ -46,3 +46,9 @@ owns additional language fixtures, history lookup observations, verification rec
 excludes model token accounting, application execution, dependency installation
 invariant Measurements use disposable inputs and never equate output bytes with actual model tokens.
 rel workflow>llmnav.structure.analyze, workflow>llmnav.evidence.history, workflow>llmnav.evidence.verification
+
+@llmnav.eval.policy-coding
+role Compare actual agent repairs across CLI, tool schemas and policy boundaries in frozen production-source copies.
+owns multi-file policy repair controls, frozen engine comparison, sanitized repair artifacts
+excludes blind holdout claims, automatic production patch adoption, self-reported grading
+invariant Pristine controls pass and each injected policy regression fails behaviorally before model runs begin.

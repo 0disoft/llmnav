@@ -41,3 +41,4 @@
 {"query":"Rust syntax metadata impl fields and function parameters","expected":["llmnav.structure.rust"]}
 {"query":"Python Rust JavaScript metadata history verification benchmark","expected":["llmnav.eval.local-analysis"]}
 {"query":"Rust analysis deadline cancellation and worker failure isolation","expected":["llmnav.structure.rust-process"]}
+{"query":"compare multi-file policy repair controls in frozen production source","expected":["llmnav.eval.policy-coding"]}

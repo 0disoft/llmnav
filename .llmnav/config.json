@@ -16,7 +16,7 @@
       "scope": "module"
     },
     {
-      "match": ["benchmarks/real-navigation.js", "benchmarks/serena-navigation.js", "benchmarks/model-coding.js", "benchmarks/code-metadata.js", "benchmarks/local-analysis.js"],
+      "match": ["benchmarks/real-navigation.js", "benchmarks/serena-navigation.js", "benchmarks/model-coding.js", "benchmarks/code-metadata.js", "benchmarks/local-analysis.js", "benchmarks/policy-coding.js"],
       "name": "real-source retrieval evaluation",
       "requiredFields": ["owns", "invariant"],
       "scope": "module"

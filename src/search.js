@@ -202,7 +202,8 @@ export async function createProjectSession(root, options = {}) {
 async function loadSessionSnapshot(root, options = {}) {
   const snapshot = await loadProjectSnapshot(root, options);
   // Only session-owned graphs are cached: public query inputs may be mutable.
-  if (snapshot.graph) sessionGraphAdjacencyCache.set(snapshot.graph, buildGraphAdjacency(snapshot.graph));
+  // Register ownership now; build adjacency only when a query or context traverses it.
+  if (snapshot.graph) sessionGraphAdjacencyCache.set(snapshot.graph, null);
   sessionSearchMetadataCache.set(snapshot.index, prepareSearchMetadata(snapshot.index, snapshot.lexicon, snapshot.graph, true, snapshot.graphResolver.compatible));
   preparedSearchIndexCache.set(snapshot.searchIndex, prepareCompactSearchIndex(snapshot.searchIndex));
   return snapshot;
@@ -666,7 +667,7 @@ function buildSnapshotContext(snapshot, id, options = {}) {
 function buildGraphContext(index, graph, rootNode, options) {
   const { depth, budget, maxEdges } = options;
   const byId = indexCardLookup(index);
-  const graphAdjacency = buildGraphAdjacency(graph);
+  const graphAdjacency = depth > 0 && maxEdges > 0 ? buildGraphAdjacency(graph) : null;
   const queue = [{ key: rootNode.key, depth: 0 }];
   const visited = new Set();
   const selected = [];
@@ -680,7 +681,7 @@ function buildGraphContext(index, graph, rootNode, options) {
     if (!node) continue;
     const localId = localSemanticId(node.key, index.repositoryId);
     selected.push({ node, card: localId ? byId.get(localId) ?? null : null });
-    if (current.depth >= depth) continue;
+    if (current.depth >= depth || selectedEdges.length >= maxEdges) continue;
     for (const entry of graphAdjacency.get(current.key) ?? []) {
       if (selectedEdges.length >= maxEdges) break;
       if (!seenEdges.has(entry.edge.id)) {
@@ -730,7 +731,7 @@ function buildLegacyContext(index, rootId, options) {
   const start = byId.get(rootId);
   if (!start) throw new Error(`No indexed source card exists for semantic ID ${rootId}.`);
   const reverse = new Map();
-  for (const card of index.cards) {
+  for (const card of depth > 0 && maxEdges > 0 ? index.cards : []) {
     for (const relation of card.rel ?? []) {
       const target = relation.slice(relation.indexOf(">") + 1);
       const list = reverse.get(target) ?? [];
@@ -750,7 +751,7 @@ function buildLegacyContext(index, rootId, options) {
     const card = byId.get(current.id);
     if (!card) continue;
     selected.push(card);
-    if (current.depth >= depth) continue;
+    if (current.depth >= depth || traversedEdges >= maxEdges) continue;
     for (const relation of card.rel ?? []) {
       if (traversedEdges >= maxEdges) break;
       const target = relation.slice(relation.indexOf(">") + 1);
@@ -848,6 +849,7 @@ function buildGraphAdjacency(graph) {
       compareText(left.edge.id, right.edge.id),
     );
   }
+  if (sessionGraphAdjacencyCache.has(graph)) sessionGraphAdjacencyCache.set(graph, adjacency);
   return adjacency;
 }
 

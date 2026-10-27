@@ -692,7 +692,7 @@
         "source mutation"
       ],
       "hashes": {
-        "body": "a2d61a80cd3af1221602a29a256c67e3c55a0a1c7a61af63aca931758808df05",
+        "body": "36dbcf611ef52b831944974e81cae0492601ef489bbd8e632804bc823b24befc",
         "semantic": "945f325a2ad2abfa71212b02dd952c071d47ed6d3848a16d247afd48dbe5ced6",
         "structure": "87b476ce795698e809b291f0ea6b6131a38609868458cf6c3dc73a3538b5435a"
       },
@@ -1914,7 +1914,7 @@
         "source parsing"
       ],
       "hashes": {
-        "body": "1906c69a0c422baede62a4964fb01b21a33ac40b4f284facc4ba11227599e911",
+        "body": "50e2e3049693df90844a62965c107be9ba90149c69db8d0d9d78bf6c6248bc75",
         "semantic": "59aa3e9e793d505ecdf110fec023c201aaee0154d2f6c9cf71afe1bbf71a7be5",
         "structure": "e213e073414c75bc75df1c8669a7045096142b6c0845694191893d90bf23e3c2"
       },
@@ -3101,7 +3101,7 @@
         "self-reported success grading"
       ],
       "hashes": {
-        "body": "e5f5f8bba846e69b9e057171c041be44d4e80cdc89e9d9063313956b5dbd7781",
+        "body": "a45a204257e2016b5ef0be1838d97eec78f7e709a53188555ece3b4307548555",
         "semantic": "e2dd4b3590091b64555ca578c16c854505ebd7cbdc9019ad5572958855a87c85",
         "structure": "b8cebc3556a8d558fad6e758d11acb3b001f4db6dc2faa395dba438c3b7ca734"
       },
@@ -3788,11 +3788,59 @@
         "Rust syntax extraction process"
       ],
       "stability": "architecture"
+    },
+    {
+      "boundaries": [],
+      "excludes": [
+        "blind holdout claims",
+        "automatic production patch adoption",
+        "self-reported grading"
+      ],
+      "hashes": {
+        "body": "3a1cc39a4ceb4f54c1798c9a90e1e42717b0f89612cce43454b84e71cb93058f",
+        "semantic": "aa346b7d1751f2be94d2cc51992eebc2e06d07c13bcb9d8af4ea6b86fc5c567e",
+        "structure": "928829689d088f60f847c1d95f707d924232a56446515faa7cf0078005b82d53"
+      },
+      "id": "llmnav.eval.policy-coding",
+      "imports": [
+        "../src/util.js",
+        "./model-coding.js",
+        "./policy-cases.js",
+        "node:assert/strict",
+        "node:child_process",
+        "node:fs/promises",
+        "node:path",
+        "node:url"
+      ],
+      "invariant": [
+        "Pristine controls pass and each injected policy regression fails behaviorally before model runs begin."
+      ],
+      "location": {
+        "declarationLine": null,
+        "endLine": 8,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "benchmarks/policy-coding.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "owns": [
+        "multi-file policy repair controls",
+        "frozen engine comparison",
+        "sanitized repair artifacts"
+      ],
+      "role": "Compare actual agent repairs across CLI, tool schemas and policy boundaries in frozen production-source copies.",
+      "scope": "module",
+      "stability": "architecture"
     }
   ],
   "contractFingerprints": {
     "configuration": {
-      "sha256": "0583bd2af2936e76e9f8842c3187fb2be7faf12830ca1c02ac2215ad7ebe6afe"
+      "sha256": "5b586e1d4fc0e5402bcd2e326f56a86509baac39e589d961340274f43933f737"
     },
     "exportedApi": {
       "count": 5,
@@ -3800,9 +3848,9 @@
     },
     "schemaVersion": 1
   },
-  "generatedBy": "llmnav@0.19.19",
+  "generatedBy": "llmnav@0.19.20",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "b0ba9bcc4d4908611950c74f88e139afd183fd447af535900ad11078d4d6d045",
+  "sourceHash": "414c963a1a15be16abd9ad670f7aaacbeb6cb61a421efd04690804b860f888fa",
   "specVersion": "1"
 }

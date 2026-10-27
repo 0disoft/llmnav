@@ -565,7 +565,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "e5f5f8bba846e69b9e057171c041be44d4e80cdc89e9d9063313956b5dbd7781",
+      "contentHash": "a45a204257e2016b5ef0be1838d97eec78f7e709a53188555ece3b4307548555",
       "declarations": [
         null
       ],
@@ -586,7 +586,7 @@
       ],
       "path": "benchmarks/model-coding.js",
       "semanticBytes": 554,
-      "sourceBytes": 23325
+      "sourceBytes": 23346
     },
     {
       "blocks": [],
@@ -626,6 +626,129 @@
       "path": "benchmarks/navigation.js",
       "semanticBytes": 0,
       "sourceBytes": 7139
+    },
+    {
+      "blocks": [],
+      "contentHash": "ed26e9b74439377b415cde5ac8f918cfb483b12bdaf52b233cc9eb762b599b8d",
+      "declarations": [],
+      "imports": [],
+      "path": "benchmarks/policy-cases.js",
+      "semanticBytes": 0,
+      "sourceBytes": 2440
+    },
+    {
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
+              "blind holdout claims",
+              "automatic production patch adoption",
+              "self-reported grading"
+            ],
+            "id": "llmnav.eval.policy-coding",
+            "invariant": [
+              "Pristine controls pass and each injected policy regression fails behaviorally before model runs begin."
+            ],
+            "owns": [
+              "multi-file policy repair controls",
+              "frozen engine comparison",
+              "sanitized repair artifacts"
+            ],
+            "rel": [],
+            "risk": [],
+            "role": "Compare actual agent repairs across CLI, tool schemas and policy boundaries in frozen production-source copies.",
+            "scope": "module",
+            "search": [],
+            "stability": "architecture",
+            "unknown": []
+          },
+          "end": 482,
+          "endLine": 8,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.eval.policy-coding"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Compare actual agent repairs across CLI, tool schemas and policy boundaries in frozen production-source copies."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "multi-file policy repair controls|frozen engine comparison|sanitized repair artifacts"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "blind holdout claims|automatic production patch adoption|self-reported grading"
+            },
+            {
+              "key": "invariant",
+              "line": 6,
+              "order": 4,
+              "value": "Pristine controls pass and each injected policy regression fails behaviorally before model runs begin."
+            },
+            {
+              "key": "stability",
+              "line": 7,
+              "order": 5,
+              "value": "architecture"
+            }
+          ],
+          "filePath": "benchmarks/policy-coding.js",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.eval.policy-coding\nrole=Compare actual agent repairs across CLI, tool schemas and policy boundaries in frozen production-source copies.\nowns=multi-file policy repair controls|frozen engine comparison|sanitized repair artifacts\nexcludes=blind holdout claims|automatic production patch adoption|self-reported grading\ninvariant=Pristine controls pass and each injected policy regression fails behaviorally before model runs begin.\nstability=architecture\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "3a1cc39a4ceb4f54c1798c9a90e1e42717b0f89612cce43454b84e71cb93058f",
+      "declarations": [
+        null
+      ],
+      "imports": [
+        "../src/util.js",
+        "./model-coding.js",
+        "./policy-cases.js",
+        "node:assert/strict",
+        "node:child_process",
+        "node:fs/promises",
+        "node:path",
+        "node:url"
+      ],
+      "path": "benchmarks/policy-coding.js",
+      "semanticBytes": 482,
+      "sourceBytes": 16712
+    },
+    {
+      "blocks": [],
+      "contentHash": "df38e76ce39c1100c12a6812f680d4b782005c242dc8f28c476caa22b28b0843",
+      "declarations": [],
+      "imports": [
+        "node:assert/strict",
+        "node:child_process",
+        "node:fs/promises",
+        "node:os",
+        "node:path",
+        "node:url"
+      ],
+      "path": "benchmarks/policy-oracle.js",
+      "semanticBytes": 0,
+      "sourceBytes": 6956
     },
     {
       "blocks": [
@@ -7883,7 +8006,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "a2d61a80cd3af1221602a29a256c67e3c55a0a1c7a61af63aca931758808df05",
+      "contentHash": "36dbcf611ef52b831944974e81cae0492601ef489bbd8e632804bc823b24befc",
       "declarations": [
         null
       ],
@@ -7905,7 +8028,7 @@
       ],
       "path": "src/search.js",
       "semanticBytes": 464,
-      "sourceBytes": 37960
+      "sourceBytes": 38246
     },
     {
       "blocks": [],
@@ -8022,7 +8145,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "1906c69a0c422baede62a4964fb01b21a33ac40b4f284facc4ba11227599e911",
+      "contentHash": "50e2e3049693df90844a62965c107be9ba90149c69db8d0d9d78bf6c6248bc75",
       "declarations": [
         null
       ],
@@ -8770,6 +8893,23 @@
     },
     {
       "blocks": [],
+      "contentHash": "1402a1b292dd7ca6ae1a2132e5a34b39f9018ddeff71ef55e5c4137aa68e1412",
+      "declarations": [],
+      "imports": [
+        "../src/initializer.js",
+        "../src/search.js",
+        "node:assert/strict",
+        "node:fs/promises",
+        "node:os",
+        "node:path",
+        "node:test"
+      ],
+      "path": "tests/context-limits.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 2848
+    },
+    {
+      "blocks": [],
       "contentHash": "0aa04e598209ffc5d84edf06356ddfe75d11c045afecc0dbd6e42c507c26624b",
       "declarations": [],
       "imports": [
@@ -9025,7 +9165,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "9f84b5f08df9448763076b63c350c4dc460db28108c505c4ff7f0205e23e3d75",
+      "contentHash": "46c9a3fdbb6552359ec0fcc064380b902ffe988a2bcf1878bc935f1cbc54e53f",
       "declarations": [],
       "imports": [
         "../src/evaluation.js",
@@ -9043,7 +9183,7 @@
       ],
       "path": "tests/graph-search.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 19378
+      "sourceBytes": 19499
     },
     {
       "blocks": [],
@@ -9333,6 +9473,21 @@
       "path": "tests/performance.test.js",
       "semanticBytes": 0,
       "sourceBytes": 1312
+    },
+    {
+      "blocks": [],
+      "contentHash": "7d65b93481d1f51c5910c85c8148acec5d9b33d37972d07b0a9029fbd201ac31",
+      "declarations": [],
+      "imports": [
+        "../benchmarks/policy-cases.js",
+        "../benchmarks/policy-coding.js",
+        "node:assert/strict",
+        "node:path",
+        "node:test"
+      ],
+      "path": "tests/policy-coding.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 4201
     },
     {
       "blocks": [],

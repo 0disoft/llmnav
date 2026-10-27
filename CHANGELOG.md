@@ -4,6 +4,13 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.19.20] — 2026-10-28
+
+### Changed
+
+* Defer session-owned graph adjacency until a query or context actually traverses relationships. Root-only context (`depth:0` or `maxEdges:0`) skips adjacency sorting and legacy reverse-relation construction. The first real traversal still caches adjacency per snapshot, while public mutable graph inputs remain uncached. Outputs, ranking and limits are preserved. A 100-edge regression reduces sorted edges for session setup plus two root-only project contexts from 300 to zero; the first expansion sorts 100 and repeated expansion sorts zero. Graph/index loading and validation costs remain.
+* Add a controlled multi-file policy repair evaluation with six accepted agent edits. Required semantic search used 17.0% more total input and 15.8% more elapsed time than the earlier ordinary cohort; uncached input was lower alongside a higher uncontrolled cache share. Document the separate cohorts, preserved repair patches, setup costs and limits of attribution.
+
 ## [0.19.19] — 2026-10-28
 
 ### Fixed

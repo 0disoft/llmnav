@@ -44,3 +44,13 @@ node benchmarks/policy-coding.js --conditions llmnav-required --output <required
 Use a new output path for every measured cohort; keep unsuccessful attempts. `--engine <copied-installation>` selects a separate engine. Direct API callers can also supply `source` to freeze the corpus separately. The controls-only report intentionally has `complete:false`: no coding cohort ran. Patch headers from the first cohort were normalized after capture; repair hunks and usage counters were preserved.
 
 The sample is two related tasks in one annotated repository. Repetition, task-family familiarity, sequential follow-up, provider caches and model resolution limit inference. No statistical speedup, universal token savings or cross-language advantage is claimed.
+
+## Implemented follow-up
+
+Candidate repairs highlighted unnecessary preparation for a root-only context. Version 0.19.20 defers session-owned graph adjacency until expansion is needed. `show`, `depth:0` and `maxEdges:0` avoid that preparation; legacy card-only context also skips its reverse-relation index. The first real expansion prepares and caches adjacency, and refresh starts a new snapshot. Public caller-owned mutable graphs retain their existing uncached behavior.
+
+The executable regression in `tests/context-limits.test.js` instruments edge-array sorts in a generated 100-edge fixture. Before the change, session preparation plus two root-only project contexts sorted 300 edge entries; afterwards they sorted **zero**. The first session expansion sorted 100 entries and repeated expansion/query sorted zero more. Related tests retain output parity, ranking, graph fallback, validation reuse and refresh behavior; both policy acceptance oracles also passed after the change.
+
+This removes adjacency construction/sorting (up to O(E log E)) and its O(E) temporary neighbor storage from the root-only path, plus O(C + R) reverse-relation preparation in legacy context. Graph/index I/O, validation and root rendering remain. It does not make the whole command O(1). No post-change model cohort was run: this is a measured internal-work reduction, not evidence of improved model token usage.
+
+Skills applied: `agent-eval-integrity-review`, `performance-measurement-integrity-review`, `test-design-guard`, `delivery-verification-budget` and `docs-update`. Use the child repository's direct verification commands. Changes are local; no push or publication is part of this evaluation.

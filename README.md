@@ -171,6 +171,7 @@ The subsequent [token cost review](docs/token-cost-review.md) documents source e
 
 | Explore the evidence | Report |
 | --- | --- |
+| Multi-file policy repairs with optional and required semantic search | [Policy repair evaluation](docs/multi-file-policy-evaluation.md) |
 | Identifier retrieval on real TypeScript and Go code | [Navigation pilot](docs/real-navigation-pilot.md) |
 | Symbol lookup against Serena | [Serena comparison](docs/serena-comparison.md) |
 | Compiler metadata accuracy, size, and lookup costs | [Metadata evaluation](docs/code-metadata-evaluation.md) |

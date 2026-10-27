@@ -166,10 +166,11 @@ test("sessions sort graph edges once per snapshot and refresh neighbor results",
   let session;
   try {
     session = await createProjectSession(root);
-    assert.equal(graphSorts, 1);
+    assert.equal(graphSorts, 0, "a snapshot alone does not need adjacency");
     const initialValidations = graphValidations;
     assert.equal(initialValidations, 1, "prepare graph validation only once while loading the snapshot");
     const first = session.query("auth.session.rotate");
+    assert.equal(graphSorts, 1, "the first graph query prepares adjacency");
     assert.deepEqual(session.query("auth.session.rotate"), first);
     first[0].card.id = "caller.modified";
     first[0].card.rel.length = 0;
