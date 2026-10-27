@@ -293,7 +293,7 @@ rel workflow>llmnav.structure.analyze, workflow>llmnav.evidence.history, workflo
 
 @llmnav.structure.python
 role Extract Python declaration metadata with an isolated standard AST parser without importing application code.
-owns Python syntax metadata, annotation origins, lexical ownership, syntax diagnostics
+owns Python syntax metadata, annotation origins, lexical ownership, syntax diagnostics, Python source coordinates
 excludes type checking, import resolution, call inference, application execution
 invariant Only explicit annotations provide types and parsing never imports target modules.
 rel workflow>llmnav.structure.analyze

@@ -1909,7 +1909,7 @@
         "source parsing"
       ],
       "hashes": {
-        "body": "734a7ace0387dd722c907d4e3d451e449ad91447678b2c53665f167de5ccaf27",
+        "body": "6aa814d03c0b33a1bf97f91e1c497a41114e1487d301c2784ccbd290109a67f1",
         "semantic": "59aa3e9e793d505ecdf110fec023c201aaee0154d2f6c9cf71afe1bbf71a7be5",
         "structure": "e213e073414c75bc75df1c8669a7045096142b6c0845694191893d90bf23e3c2"
       },
@@ -3581,8 +3581,8 @@
         "application execution"
       ],
       "hashes": {
-        "body": "0ecbcb0caf482e2cc2448986dcb9b0d68fad95ac9b572a5b07aa4eeb041cc757",
-        "semantic": "f6a86ee90541b113f5623a55cfd1023a54a0ac61b0a15e803cdb7fa3a09f0b63",
+        "body": "ea8c604d050499322ae1104ba03cfe7c11f5c6c2b5ea3f80add1135d098a627e",
+        "semantic": "3bb28c26adc34ed8483a1d114dd92f4c67f009c6ef787f7bb5958971112aefb4",
         "structure": "a6be5595a1965d7bbc7b7bc7c61ed44e7253b91237c25331b1e2d91edb3dcbdb"
       },
       "id": "llmnav.structure.python",
@@ -3609,7 +3609,8 @@
         "Python syntax metadata",
         "annotation origins",
         "lexical ownership",
-        "syntax diagnostics"
+        "syntax diagnostics",
+        "Python source coordinates"
       ],
       "rel": [
         "workflow>llmnav.structure.analyze"
@@ -3619,7 +3620,8 @@
       "search": [
         "Python AST analysis",
         "Python parameter annotations",
-        "Python fields"
+        "Python fields",
+        "Python UTF16 offsets"
       ],
       "stability": "architecture"
     },
@@ -3786,9 +3788,9 @@
     },
     "schemaVersion": 1
   },
-  "generatedBy": "llmnav@0.19.1",
+  "generatedBy": "llmnav@0.19.2",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "94105e0ee0f8585380c960996c743ac1600ddfa84a5ea0ea696d93371774927e",
+  "sourceHash": "6ca56be73e190d90ee2004a475eed0eea9d08b6aa74d9c8c6214cb793bb3a0a8",
   "specVersion": "1"
 }

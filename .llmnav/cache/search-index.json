@@ -74,7 +74,7 @@
     "llmnav.support.runtime",
     "llmnav.syntax.parse"
   ],
-  "cardSetHash": "7ba1fb72295c21f5a65750623888272ac41699e77143663320e99e1254a45c59",
+  "cardSetHash": "dcab7f0f40c320c7701251777845d04f5fb6689fd979def2902d078b85610581",
   "documentCount": 73,
   "documents": [
     [
@@ -835,17 +835,19 @@
       ]
     ],
     [
-      "d31ccff402e4c799e8ba909837382a4a2035c363d32b57eb471838898e47d660",
+      "cb21d4c9c68b112e7781bd391d285791ff0e99fe0ef21d3eb1001762434face5",
       [
         "extract python declaration metadata with an isolated standard ast parser without importing application code.",
         "python ast analysis",
         "python parameter annotations",
         "python fields",
+        "python utf16 offsets",
         "only explicit annotations provide types and parsing never imports target modules.",
         "python syntax metadata",
         "annotation origins",
         "lexical ownership",
-        "syntax diagnostics"
+        "syntax diagnostics",
+        "python source coordinates"
       ]
     ],
     [
@@ -5682,6 +5684,15 @@
     ],
     [
       [
+        59,
+        [
+          3,
+          1
+        ]
+      ]
+    ],
+    [
+      [
         28,
         [
           1,
@@ -14156,6 +14167,15 @@
           2,
           1,
           3,
+          1
+        ]
+      ]
+    ],
+    [
+      [
+        59,
+        [
+          2,
           1
         ]
       ]
@@ -16279,9 +16299,9 @@
           1,
           1,
           2,
+          4,
           3,
-          3,
-          1,
+          2,
           9,
           1
         ]
@@ -19873,6 +19893,13 @@
         57,
         [
           4,
+          1
+        ]
+      ],
+      [
+        59,
+        [
+          3,
           1
         ]
       ],
@@ -22493,6 +22520,15 @@
     ],
     [
       [
+        59,
+        [
+          2,
+          1
+        ]
+      ]
+    ],
+    [
+      [
         17,
         [
           1,
@@ -23576,6 +23612,7 @@
     "control",
     "controlled",
     "cooperative",
+    "coordinates",
     "copied",
     "corpus",
     "costs",
@@ -23932,6 +23969,7 @@
     "observe",
     "of",
     "offline",
+    "offsets",
     "on",
     "one",
     "only",
@@ -24311,6 +24349,7 @@
     "user",
     "uses",
     "using",
+    "utf16",
     "validate",
     "validated",
     "validation",

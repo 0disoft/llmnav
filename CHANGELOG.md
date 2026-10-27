@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.19.2] — 2026-10-27
+
+### Fixed
+
+* Preserve Python physical CR/LF/CRLF lines, Unicode string separators and UTF-8 BOM source offsets when converting AST byte columns to JavaScript UTF-16 positions. Lazily index non-ASCII line corrections instead of re-encoding a line and its prefix for every declaration; dense-line conversion changes from O(D × L) to O(L + D log F), where D is declaration count, L is line length and F is the number of multibyte characters. Profiling a 149,799-byte line with 8,000 declarations reduced UTF-8 re-encoding input from 1,789,914,794 to 149,792 characters. A separate single local end-to-end comparison took 5,331 ms before and 1,149 ms after, with identical output hashes; these timings include interpreter startup and are not latency percentiles.
+
 ## [0.19.1] — 2026-10-27
 
 ### Fixed

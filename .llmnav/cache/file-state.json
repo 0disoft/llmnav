@@ -2282,7 +2282,8 @@
               "Python syntax metadata",
               "annotation origins",
               "lexical ownership",
-              "syntax diagnostics"
+              "syntax diagnostics",
+              "Python source coordinates"
             ],
             "rel": [
               "workflow>llmnav.structure.analyze"
@@ -2293,12 +2294,13 @@
             "search": [
               "Python AST analysis",
               "Python parameter annotations",
-              "Python fields"
+              "Python fields",
+              "Python UTF16 offsets"
             ],
             "stability": "architecture",
             "unknown": []
           },
-          "end": 547,
+          "end": 594,
           "endLine": 10,
           "entries": [
             {
@@ -2317,7 +2319,7 @@
               "key": "owns",
               "line": 4,
               "order": 2,
-              "value": "Python syntax metadata|annotation origins|lexical ownership|syntax diagnostics"
+              "value": "Python syntax metadata|annotation origins|lexical ownership|syntax diagnostics|Python source coordinates"
             },
             {
               "key": "excludes",
@@ -2329,7 +2331,7 @@
               "key": "search",
               "line": 6,
               "order": 4,
-              "value": "Python AST analysis|Python parameter annotations|Python fields"
+              "value": "Python AST analysis|Python parameter annotations|Python fields|Python UTF16 offsets"
             },
             {
               "key": "invariant",
@@ -2354,7 +2356,7 @@
           "indent": "",
           "newline": "\n",
           "prefix": null,
-          "raw": "/* llmnav/1 module\nid=llmnav.structure.python\nrole=Extract Python declaration metadata with an isolated standard AST parser without importing application code.\nowns=Python syntax metadata|annotation origins|lexical ownership|syntax diagnostics\nexcludes=type checking|import resolution|call inference|application execution\nsearch=Python AST analysis|Python parameter annotations|Python fields\ninvariant=Only explicit annotations provide types and parsing never imports target modules.\nrel=workflow>llmnav.structure.analyze\nstability=architecture\n*/",
+          "raw": "/* llmnav/1 module\nid=llmnav.structure.python\nrole=Extract Python declaration metadata with an isolated standard AST parser without importing application code.\nowns=Python syntax metadata|annotation origins|lexical ownership|syntax diagnostics|Python source coordinates\nexcludes=type checking|import resolution|call inference|application execution\nsearch=Python AST analysis|Python parameter annotations|Python fields|Python UTF16 offsets\ninvariant=Only explicit annotations provide types and parsing never imports target modules.\nrel=workflow>llmnav.structure.analyze\nstability=architecture\n*/",
           "scope": "module",
           "specVersion": "1",
           "start": 0,
@@ -2363,7 +2365,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "0ecbcb0caf482e2cc2448986dcb9b0d68fad95ac9b572a5b07aa4eeb041cc757",
+      "contentHash": "ea8c604d050499322ae1104ba03cfe7c11f5c6c2b5ea3f80add1135d098a627e",
       "declarations": [
         null
       ],
@@ -2371,8 +2373,8 @@
         "./process.js"
       ],
       "path": "src/adapters/python.js",
-      "semanticBytes": 547,
-      "sourceBytes": 6530
+      "semanticBytes": 594,
+      "sourceBytes": 7578
     },
     {
       "blocks": [
@@ -7994,7 +7996,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "734a7ace0387dd722c907d4e3d451e449ad91447678b2c53665f167de5ccaf27",
+      "contentHash": "6aa814d03c0b33a1bf97f91e1c497a41114e1487d301c2784ccbd290109a67f1",
       "declarations": [
         null
       ],
@@ -9290,6 +9292,24 @@
       "path": "tests/provider-neutral-example.test.js",
       "semanticBytes": 0,
       "sourceBytes": 4787
+    },
+    {
+      "blocks": [],
+      "contentHash": "bdbab4dfdffdcea8909b6114fd17384a52f5ac1a3d7374c030bc1d90fc358eb1",
+      "declarations": [],
+      "imports": [
+        "../src/adapters/python.js",
+        "../src/analysis.js",
+        "node:assert/strict",
+        "node:child_process",
+        "node:fs/promises",
+        "node:os",
+        "node:path",
+        "node:test"
+      ],
+      "path": "tests/python-positions.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 3743
     },
     {
       "blocks": [],

@@ -1,9 +1,9 @@
 /* llmnav/1 module
 id=llmnav.structure.python
 role=Extract Python declaration metadata with an isolated standard AST parser without importing application code.
-owns=Python syntax metadata|annotation origins|lexical ownership|syntax diagnostics
+owns=Python syntax metadata|annotation origins|lexical ownership|syntax diagnostics|Python source coordinates
 excludes=type checking|import resolution|call inference|application execution
-search=Python AST analysis|Python parameter annotations|Python fields
+search=Python AST analysis|Python parameter annotations|Python fields|Python UTF16 offsets
 invariant=Only explicit annotations provide types and parsing never imports target modules.
 rel=workflow>llmnav.structure.analyze
 stability=architecture
@@ -20,6 +20,8 @@ export async function analyzePython(root, files, options = {}) {
 // Standard library only. Read source as data; do not import or execute it.
 const EXTRACTOR = String.raw`
 import ast, hashlib, io, json, pathlib, sys, tokenize
+from array import array
+from bisect import bisect_right
 if sys.version_info < (3, 9):
     raise RuntimeError("Python AST analysis requires Python 3.9 or newer")
 request = json.load(sys.stdin)
@@ -47,17 +49,38 @@ for filename in request["files"]:
     except (SyntaxError, UnicodeError) as error:
         diagnostics.append(dict(category="Error", code="PY_SYNTAX", path=relative, line=getattr(error, "lineno", 1) or 1, message=str(error)))
         continue
-    lines = source.splitlines(keepends=True)
-    starts, offset = [], 0
+    # Only CR/LF delimit physical Python lines; Unicode separators inside strings do not.
+    lines = io.StringIO(source, newline="").readlines()
+    starts, offset = [], 1 if data.startswith(b"\xef\xbb\xbf") else 0
     for line in lines:
         starts.append(offset)
         offset += len(line.encode("utf-16-le")) // 2
+    corrections = {}
+
+    def source_position(node):
+        index, column = node.lineno - 1, node.col_offset
+        line = lines[index]
+        if line.isascii(): return starts[index] + column
+        if index not in corrections:
+            ends, deltas = array("I"), array("I")
+            byte_column, unit_column = 0, 0
+            for character in line:
+                codepoint = ord(character)
+                byte_width = 1 if codepoint < 0x80 else 2 if codepoint < 0x800 else 3 if codepoint < 0x10000 else 4
+                unit_width = 1 if codepoint < 0x10000 else 2
+                byte_column += byte_width
+                unit_column += unit_width
+                if byte_width != unit_width:
+                    ends.append(byte_column)
+                    deltas.append(byte_column - unit_column)
+            corrections[index] = ends, deltas
+        ends, deltas = corrections[index]
+        correction = bisect_right(ends, column) - 1
+        return starts[index] + column - (deltas[correction] if correction >= 0 else 0)
 
     def add(name, node, category, parent, value=None, signatures=None, parameters=None):
         line = getattr(node, "lineno", 1)
-        # AST columns are UTF-8 bytes; convert to JavaScript's UTF-16 offsets.
-        prefix = lines[line-1].encode("utf-8")[:getattr(node, "col_offset", 0)].decode("utf-8") if lines else ""
-        position = starts[line-1] + len(prefix.encode("utf-16-le")) // 2 if starts else -1
+        position = source_position(node)
         key = relative + ":" + str(position) + ":" + category + ":" + name
         qualified = (parent["qualified"] if parent else "module") + "/" + category + ":" + name
         item = dict(key=key, symbol=name, path=relative, line=line, offset=position, kind=category, qualified=qualified)
