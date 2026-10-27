@@ -196,6 +196,28 @@ test("TypeScript tracks package-based config chains with UTF-8 and UTF-16 BOMs",
   assert.match((await loadGraphInputs(root, config)).diagnostics[0].message, /Stale compiler analysis/u);
 });
 
+test("TypeScript ignores ancestor package probes without accepting external configurations", async context => {
+  const outer = await fixture(context, {
+    "project/.llmnav/config.json": JSON.stringify({ repositoryId: "compiler-fixture" }),
+    "project/main.mts": "export const value = true;\n",
+    "project/tsconfig.json": JSON.stringify({ extends: "@fixture/config", files: ["main.mts"] }),
+    "project/node_modules/@fixture/config/package.json": JSON.stringify({ name: "@fixture/config", tsconfig: "base.json" }),
+    "project/node_modules/@fixture/config/base.json": JSON.stringify({ compilerOptions: { types: [], module: "NodeNext", moduleResolution: "NodeNext" } }),
+  });
+  const root = path.join(outer, "project");
+  const options = { language: "typescript", project: "tsconfig.json" };
+  const baseline = await analyzeProject(root, options);
+  for (const manifest of ['{"type":"module"}', 'external-private-marker={invalid-json}']) {
+    await writeFile(path.join(outer, "package.json"), manifest);
+    const actual = await analyzeProject(root, options);
+    assert.deepEqual(actual.graph, baseline.graph);
+    assert.deepEqual(actual.diagnostics, baseline.diagnostics);
+  }
+  await writeFile(path.join(outer, "base.json"), JSON.stringify({ compilerOptions: { types: [] } }));
+  await writeFile(path.join(root, "tsconfig.json"), JSON.stringify({ extends: "../base.json", files: ["main.mts"] }));
+  await assert.rejects(analyzeProject(root, options), /configuration must stay inside/u);
+});
+
 test("TypeScript rejects configuration chains that escape the repository", async context => {
   const outside = await fixture(context, { "base.json": JSON.stringify({ compilerOptions: { types: [] } }) });
   const root = await fixture(context, {

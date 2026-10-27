@@ -125,6 +125,9 @@ function analyze(request) {
   return { compiler: { name: "typescript", version: ts.version }, declarations, references, diagnostics, inputs: [...inputs].map(relative), configHashes };
   function readConfig(file) {
     const absolute = path.resolve(file);
+    // Package resolution probes ancestors beyond the project. Treat foreign
+    // manifests as absent without reading them; external configs still fail.
+    if (!inside(root, absolute) && path.basename(absolute).toLowerCase() === "package.json") return undefined;
     let bytes;
     try {
       const canonical = realpathSync(absolute);

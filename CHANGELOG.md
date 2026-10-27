@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.19.19] — 2026-10-28
+
+### Fixed
+
+* Ignore out-of-repository ancestor `package.json` probes during TypeScript configuration resolution without reading them. A parent manifest could previously abort valid package-based config chains, including on Windows CI. Explicit external configuration files and escaping configuration symlinks remain rejected. Regression coverage compares unchanged graphs and diagnostics with absent, valid, and malformed parent manifests and retains the external-config rejection check.
+
 ## [0.19.18] — 2026-10-28
 
 ### Documentation
