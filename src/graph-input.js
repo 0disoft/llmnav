@@ -215,7 +215,8 @@ async function assertCompilerInputFreshSnapshot(root, parsed, config, options, s
     let textHash;
     const matches = expected => byteHash === expected || (textHash ??= sha256(bytes.toString("utf8"))) === expected;
     if (!matches(hash)) throw new Error(`Stale compiler analysis for ${source}; run llmnav analyze again.`);
-    const scannedHash = sourceSnapshot?.get(source);
+    // Match path.join's lexical normalization so accepted path aliases cannot skip the snapshot check.
+    const scannedHash = sourceSnapshot?.get(path.posix.normalize(source));
     if (scannedHash !== undefined && !matches(scannedHash)) throw new Error(`Compiler input changed since source scan: ${source}; retry the operation.`);
   }, { signal: options.signal });
 }

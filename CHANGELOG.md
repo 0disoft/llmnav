@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.19.14] — 2026-10-27
+
+### Fixed
+
+* Normalize imported compiler source paths before comparing them with scanned-source hashes. External schema 2/3 indexes using safe relative aliases such as `./src/main.ts`, `src/./main.ts`, or `src//main.ts` could previously bypass snapshot consistency and combine old scanned text with newer compiler facts. Accepted path spellings remain supported. Regression coverage checks four spellings across discovery, full/incremental generation, and checks; each operation reuses its two source reads and preserves five published control paths byte-for-byte when snapshots disagree.
+
 ## [0.19.13] — 2026-10-27
 
 ### Fixed

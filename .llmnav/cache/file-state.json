@@ -5770,7 +5770,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "455cec5db0c6c84d6be6fba030e743fa2d098dd4a2d392f985d0053ef3fc2add",
+      "contentHash": "ef228e87bd990b5ddf40749adc07a2f54d67a9e07aae5c851540378cc2a223b5",
       "declarations": [
         null
       ],
@@ -5787,7 +5787,7 @@
       ],
       "path": "src/graph-input.js",
       "semanticBytes": 525,
-      "sourceBytes": 10731
+      "sourceBytes": 10857
     },
     {
       "blocks": [
@@ -8021,7 +8021,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "d7ef766d7e4c698da5354d8eefef00b37bdd8cc092116b42ce4c0fa352d27245",
+      "contentHash": "395cd3ac8e0d4333122c11281a32180d37ced918ac1416522a5535b458c38bf8",
       "declarations": [
         null
       ],
@@ -9044,7 +9044,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "685ef660846caa3478a424d0578c2a0771848cfc157bee46b7a13034085fafea",
+      "contentHash": "b47c564c6e8172c1e55d6085baaf088d88ecf4c427f80de8d235081cc5e6ad00",
       "declarations": [],
       "imports": [
         "../src/agent-protocol.js",
@@ -9059,7 +9059,7 @@
       ],
       "path": "tests/graph-snapshot.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 4613
+      "sourceBytes": 5066
     },
     {
       "blocks": [],
