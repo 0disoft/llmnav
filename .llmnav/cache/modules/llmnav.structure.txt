@@ -44,7 +44,7 @@ rel workflow>llmnav.structure.analyze
 
 @llmnav.structure.typescript-worker
 role Resolve TypeScript declarations and symbol uses through the compiler type checker without emitting code.
-owns compiler symbol identity, alias resolution, lexical owners, TypeScript diagnostics
+owns compiler symbol identity, alias resolution, lexical owners, TypeScript diagnostics, selected source consumption hashes
 excludes dependency installation, project execution
 invariant Analysis executes only explicitly selected compiler tooling and never project application code.
 rel workflow>llmnav.structure.analyze

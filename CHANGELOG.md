@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.19.3] — 2026-10-27
+
+### Fixed
+
+* Hash selected TypeScript source bytes in the same read that supplies compiler text, reusing the configuration snapshot reader and parent validation. Reject intermediate source versions even when an edit is undone before the parent checks the file (A → B → A). A deterministic reproduction previously published a `phantom` function absent from the restored source while claiming its original hash; the regression now rejects that analysis and preserves previously published output. Preserve scanner-owned path casing, UTF-8 BOM and Unicode source hashes. Source-content read count is unchanged; worker hashing adds O(S) work over S consumed source bytes.
+
 ## [0.19.2] — 2026-10-27
 
 ### Fixed

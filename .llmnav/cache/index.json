@@ -1909,7 +1909,7 @@
         "source parsing"
       ],
       "hashes": {
-        "body": "6aa814d03c0b33a1bf97f91e1c497a41114e1487d301c2784ccbd290109a67f1",
+        "body": "5a89c0f027936e30578eefd9d2b28fa9bbbfd76b316203a8d601b597c7bcf9b4",
         "semantic": "59aa3e9e793d505ecdf110fec023c201aaee0154d2f6c9cf71afe1bbf71a7be5",
         "structure": "e213e073414c75bc75df1c8669a7045096142b6c0845694191893d90bf23e3c2"
       },
@@ -2904,8 +2904,8 @@
         "project execution"
       ],
       "hashes": {
-        "body": "863e1cb2b09a219adc17ef27cccedf1e7e98bbd2238e85a4a55ce2cbd9eff74e",
-        "semantic": "9174bc8af1e474db714ce23725d74727f07be95cb060cb71e5acf0d4f23d4ba5",
+        "body": "75919d00d832c745c678bb2748072cd8075373a4ffebea73e4422f224a10e42c",
+        "semantic": "74f05f611c6a6a610432347f78c6a0525d1fbe76543245273ab5d1c71b948a7a",
         "structure": "4546f68073855603dd5141fb646c55960ce0186a1f42831c4fda85c43206f061"
       },
       "id": "llmnav.structure.typescript-worker",
@@ -2936,7 +2936,8 @@
         "compiler symbol identity",
         "alias resolution",
         "lexical owners",
-        "TypeScript diagnostics"
+        "TypeScript diagnostics",
+        "selected source consumption hashes"
       ],
       "rel": [
         "workflow>llmnav.structure.analyze"
@@ -3788,9 +3789,9 @@
     },
     "schemaVersion": 1
   },
-  "generatedBy": "llmnav@0.19.2",
+  "generatedBy": "llmnav@0.19.3",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "6ca56be73e190d90ee2004a475eed0eea9d08b6aa74d9c8c6214cb793bb3a0a8",
+  "sourceHash": "c045b2ae56dd6a8cd4727c143e71bf62dce1d950c5901fad7404ddb27ad1cb5c",
   "specVersion": "1"
 }

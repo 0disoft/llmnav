@@ -2845,7 +2845,8 @@
               "compiler symbol identity",
               "alias resolution",
               "lexical owners",
-              "TypeScript diagnostics"
+              "TypeScript diagnostics",
+              "selected source consumption hashes"
             ],
             "rel": [
               "workflow>llmnav.structure.analyze"
@@ -2861,7 +2862,7 @@
             "stability": "architecture",
             "unknown": []
           },
-          "end": 546,
+          "end": 581,
           "endLine": 10,
           "entries": [
             {
@@ -2880,7 +2881,7 @@
               "key": "owns",
               "line": 4,
               "order": 2,
-              "value": "compiler symbol identity|alias resolution|lexical owners|TypeScript diagnostics"
+              "value": "compiler symbol identity|alias resolution|lexical owners|TypeScript diagnostics|selected source consumption hashes"
             },
             {
               "key": "excludes",
@@ -2917,7 +2918,7 @@
           "indent": "",
           "newline": "\n",
           "prefix": null,
-          "raw": "/* llmnav/1 module\nid=llmnav.structure.typescript-worker\nrole=Resolve TypeScript declarations and symbol uses through the compiler type checker without emitting code.\nowns=compiler symbol identity|alias resolution|lexical owners|TypeScript diagnostics\nexcludes=dependency installation|project execution\nsearch=TypeScript precise references|renamed imports|type checker symbols\ninvariant=Analysis executes only explicitly selected compiler tooling and never project application code.\nrel=workflow>llmnav.structure.analyze\nstability=architecture\n*/",
+          "raw": "/* llmnav/1 module\nid=llmnav.structure.typescript-worker\nrole=Resolve TypeScript declarations and symbol uses through the compiler type checker without emitting code.\nowns=compiler symbol identity|alias resolution|lexical owners|TypeScript diagnostics|selected source consumption hashes\nexcludes=dependency installation|project execution\nsearch=TypeScript precise references|renamed imports|type checker symbols\ninvariant=Analysis executes only explicitly selected compiler tooling and never project application code.\nrel=workflow>llmnav.structure.analyze\nstability=architecture\n*/",
           "scope": "module",
           "specVersion": "1",
           "start": 0,
@@ -2926,7 +2927,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "863e1cb2b09a219adc17ef27cccedf1e7e98bbd2238e85a4a55ce2cbd9eff74e",
+      "contentHash": "75919d00d832c745c678bb2748072cd8075373a4ffebea73e4422f224a10e42c",
       "declarations": [
         null
       ],
@@ -2938,8 +2939,8 @@
         "node:path"
       ],
       "path": "src/adapters/typescript-worker.js",
-      "semanticBytes": 546,
-      "sourceBytes": 11453
+      "semanticBytes": 581,
+      "sourceBytes": 11555
     },
     {
       "blocks": [
@@ -7996,7 +7997,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "6aa814d03c0b33a1bf97f91e1c497a41114e1487d301c2784ccbd290109a67f1",
+      "contentHash": "5a89c0f027936e30578eefd9d2b28fa9bbbfd76b316203a8d601b597c7bcf9b4",
       "declarations": [
         null
       ],
@@ -9578,6 +9579,25 @@
       "path": "tests/type-surface.test.js",
       "semanticBytes": 0,
       "sourceBytes": 1487
+    },
+    {
+      "blocks": [],
+      "contentHash": "2c7ea6bdd3b2a1537f58ddbb3274ffbc99daf9a4193c412cb4efc09463696a7d",
+      "declarations": [],
+      "imports": [
+        "../src/adapters/typescript.js",
+        "../src/analysis.js",
+        "../src/util.js",
+        "node:assert/strict",
+        "node:fs/promises",
+        "node:module",
+        "node:os",
+        "node:path",
+        "node:test"
+      ],
+      "path": "tests/typescript-snapshot.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 3408
     },
     {
       "blocks": [],

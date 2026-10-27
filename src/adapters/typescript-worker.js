@@ -1,7 +1,7 @@
 /* llmnav/1 module
 id=llmnav.structure.typescript-worker
 role=Resolve TypeScript declarations and symbol uses through the compiler type checker without emitting code.
-owns=compiler symbol identity|alias resolution|lexical owners|TypeScript diagnostics
+owns=compiler symbol identity|alias resolution|lexical owners|TypeScript diagnostics|selected source consumption hashes
 excludes=dependency installation|project execution
 search=TypeScript precise references|renamed imports|type checker symbols
 invariant=Analysis executes only explicitly selected compiler tooling and never project application code.
@@ -59,9 +59,10 @@ function analyze(request) {
       catch (error) { if (error.code === "ENOENT" || error.code === "ENOTDIR") return originalRead(file); throw error; }
       if (!inside(root, canonical)) throw new Error("Compiler input traverses a symlink outside the repository.");
       inputs.add(absolute);
-      // Package imports/exports and module type affect resolution without a source edit.
-      // Hash the same metadata bytes decoded for the compiler, as for tsconfig files.
-      if (javascript || path.basename(absolute) === "package.json") return readConfig(absolute);
+      // Hash the bytes actually consumed, so an edit followed by undo cannot
+      // publish declarations from a different source version than the scan.
+      const source = selected.get(fileKey(absolute));
+      if (javascript || source !== undefined || path.basename(absolute) === "package.json") return readConfig(source ?? absolute);
     }
     return originalRead(file);
   };
@@ -132,7 +133,7 @@ function analyze(request) {
     } catch (error) { if (error.code === "ENOENT" || error.code === "ENOTDIR") return undefined; throw error; }
     const name = path.relative(root, absolute).split(path.sep).join("/");
     const hash = createHash("sha256").update(bytes).digest("hex");
-    if (configHashes[name] !== undefined && configHashes[name] !== hash) throw new Error(`Configuration changed during analysis: ${name}. Run analysis again.`);
+    if (configHashes[name] !== undefined && configHashes[name] !== hash) throw new Error(`Compiler input changed during analysis: ${name}. Run analysis again.`);
     configHashes[name] = hash;
     const encoding = bytes[0] === 0xff && bytes[1] === 0xfe ? "utf-16le" : bytes[0] === 0xfe && bytes[1] === 0xff ? "utf-16be" : "utf-8";
     return new TextDecoder(encoding).decode(bytes);
