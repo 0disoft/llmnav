@@ -389,7 +389,7 @@ Each query record requires a non-empty `query`. A positive case supplies at leas
 
 ## Agent operation protocol
 
-`getAgentToolDefinitions()` returns defensive copies of nine schemaVersion 7 tool definitions in fixed order. Their JSON Schema inputs reject unknown fields and deliberately omit the repository root.
+`getAgentToolDefinitions()` returns defensive copies of nine schemaVersion 8 tool definitions in fixed order. Their JSON Schema inputs reject unknown fields and deliberately omit the repository root.
 
 ```js
 import { executeAgentOperation, getAgentToolDefinitions } from "llmnav";
@@ -403,6 +403,21 @@ const result = await executeAgentOperation(
 ```
 
 The trusted wrapper binds `root`; the model supplies only the validated operation input. Results use one schemaVersion 1 envelope containing `operation`, `ok`, `data`, and `error`. Input errors use `LNVAP002`, missing IDs use `LNVAP404`, ambiguous IDs use `LNVAP409`, and unexpected operation failures use `LNVAP500`.
+
+For a repair that spans several files, `llmnav_query` can locate semantic boundaries and read matching source windows in the same operation:
+
+```js
+const result = await executeAgentOperation(process.cwd(), "llmnav_query", {
+  task: "source budget validation and CLI forwarding",
+  top: 2,
+  includeSource: true,
+  sourceTerms: ["sourceBudget", "--source-budget"],
+});
+```
+
+This opt-in mode returns `{ cards, excerpts, sourceBytes, sourceBudget, matchedFiles, omittedFiles, omittedNonProductionFiles, omittedWindows, truncated, coverage }` instead of the ordinary result array. Compact cards preserve IDs, roles, locations, invariants and semantic relations without repeating the full card. Each excerpt contains repository-relative `path`, one-based `startLine`/`endLine`, LF-normalized `text`, the original file's SHA-256 `sourceHash`, and `truncated`. A prepared index session still rereads live source; refresh semantic snapshots when contracts change.
+
+`sourceTerms` requires 1–8 case-sensitive, single-line literal identifiers or flags, each at most 128 characters; regexes are not evaluated. The shared UTF-8 **source text** budget defaults to 12,000 bytes and accepts 256–16,000. JSON/card metadata is additional. Runtime matches are preferred when present; otherwise test/example/script matches remain available. At most 12 files and three merged windows per file are retained, with bounded concurrent reads. These are lexical windows, not exhaustive dependency or change-impact analysis. Omitted and clipped context is explicit; use ordinary targeted reads for necessary missing information, and reuse sufficient excerpts. Existing query inputs and default array results are unchanged. The new parameters belong to the provider-neutral/MCP query operation; the CLI `query` command retains its existing options.
 
 Long-lived hosts can load one explicit snapshot for repeated navigation calls:
 

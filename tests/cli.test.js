@@ -59,7 +59,7 @@ test("prints provider-neutral tool schemas outside a repository", () => {
     "llmnav_audit",
     "llmnav_discover",
   ]);
-  assert.ok(output.tools.every(item => item.schemaVersion === 7));
+  assert.ok(output.tools.every(item => item.schemaVersion === 8));
 });
 
 test("generate --full bypasses incremental accelerators", async (context) => {

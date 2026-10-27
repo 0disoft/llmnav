@@ -535,6 +535,20 @@
     {
       "confidence": 0.85,
       "from": "llmnav/llmnav.agent.protocol",
+      "id": "461a804f25f0cea23aa127cccd8be2c58f99f99af302f395a2e40ef61468131e",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/agent-protocol.js",
+        "source": "src/agent-protocol.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.search.source-pack"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.agent.protocol",
       "id": "a982404ae06021df21c016e023aaa99380ab775f322bb3ad6fcdf6595a45fb40",
       "kind": "imports",
       "provenance": {
@@ -3529,6 +3543,76 @@
       "to": "llmnav/llmnav.support.policy"
     },
     {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.search.source-pack",
+      "id": "03376647157df39e6dda5c3ed54aa1506793cbfa0d229eedc2922e32ad17f25d",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/query-source.js",
+        "source": "src/query-source.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.config.load"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.search.source-pack",
+      "id": "2869de763b73a631794222868fac1480b94e8c01f56690088bce20290c289892",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/query-source.js",
+        "source": "src/query-source.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.source.discover"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.search.source-pack",
+      "id": "6811a341619a593baa19587af674dc1d23e07e45b3d5edf34f711ec413ea6051",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/query-source.js",
+        "source": "src/query-source.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.support.abort"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.search.source-pack",
+      "id": "d12b8ff941d7eedc0520d92f6ce28585dc5017feaaae72e811102e8a75f9559d",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/query-source.js",
+        "source": "src/query-source.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.support.concurrency"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.search.source-pack",
+      "id": "fbfbf47d5536a008ad060b24ae4127bb4ae8190d3bf0cc6471ba86246ce23090",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/query-source.js",
+        "source": "src/query-source.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.support.policy"
+    },
+    {
       "confidence": 1,
       "from": "llmnav/llmnav.search.tokenize",
       "id": "8ace185e173fcaa492a544e8ea5f68e3f781457a06cc2f82cbe18b8f850460ec",
@@ -5511,6 +5595,28 @@
     {
       "definitions": [],
       "external": false,
+      "key": "llmnav/llmnav.search.source-pack",
+      "location": {
+        "declarationLine": null,
+        "endLine": 8,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/query-source.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Pack live literal source matches beside compact semantic boundaries for a coding task.",
+      "semanticId": "llmnav.search.source-pack",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
       "key": "llmnav/llmnav.search.tokenize",
       "location": {
         "declarationLine": null,
@@ -6061,11 +6167,11 @@
   ],
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "9f1a0d8cbee592fa431bfe7214f3aeb5d4e622a28d68a9f6d398494953c8410e",
+  "sourceHash": "aeb13f65be8bc237fd3a968d964fefe568d2188673a40b61adceb616bf173e46",
   "stats": {
-    "edgeCount": 312,
+    "edgeCount": 318,
     "importedIndexCount": 0,
-    "nodeCount": 74,
+    "nodeCount": 75,
     "unresolvedNodeCount": 0
   }
 }

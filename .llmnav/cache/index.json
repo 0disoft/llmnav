@@ -1336,9 +1336,9 @@
         "source mutation"
       ],
       "hashes": {
-        "body": "0a486a0d559fc83604bf1dca4e8e184b6a7d03e5e128b03f517263214b40b5ce",
+        "body": "929f84421e2d5bac1bcdc1497cef2853f17283a6bd8377fb3a4c5585710864ee",
         "semantic": "ce30fe54e5dab8eb3cda8e1e6afdcee3489c3f62267d99ff85257f4c819d21a4",
-        "structure": "153d65cff2df19a61ea35a51ab63582e2ef7db826abd1a8014d50ee7719d7aae"
+        "structure": "adf117e971f60f7f802c894b687e2b4a222ca4a0d200519645a6ade6377bc004"
       },
       "id": "llmnav.agent.protocol",
       "imports": [
@@ -1352,6 +1352,7 @@
         "./graph-input.js",
         "./policy.js",
         "./project.js",
+        "./query-source.js",
         "./search.js",
         "./validator.js",
         "./verification.js"
@@ -1451,7 +1452,7 @@
         "repository scope"
       ],
       "hashes": {
-        "body": "73316e4293258e0490a2b5f06578b1ee48f2c59cacbaab115d24b88d7e0a94d1",
+        "body": "8a3d208ce9db5f8e6219ac3336604832b1ea79d22a98917d8c85ef688dad637f",
         "semantic": "d1de5aa0a4d4ade41371bd255707d45ec8ba04edd4d99f9d49242cd766df1f4a",
         "structure": "f7288c1ea4e3c498c7ca4e1d62c455c8e07d1cc102615842d2b06c21bc8cc503"
       },
@@ -1914,7 +1915,7 @@
         "source parsing"
       ],
       "hashes": {
-        "body": "50e2e3049693df90844a62965c107be9ba90149c69db8d0d9d78bf6c6248bc75",
+        "body": "a86659b82cc68eff9d8ff575b17a67e014fe664ef952c81bdcbe5b4ef8fb24c3",
         "semantic": "59aa3e9e793d505ecdf110fec023c201aaee0154d2f6c9cf71afe1bbf71a7be5",
         "structure": "e213e073414c75bc75df1c8669a7045096142b6c0845694191893d90bf23e3c2"
       },
@@ -2389,7 +2390,7 @@
         "agent transport"
       ],
       "hashes": {
-        "body": "a20e7afe6831e758cbcec7565f4f4175f65c83a83d3593d7097577d63daa4fa6",
+        "body": "f89737ba2a4cb2300a543f9f8c44dd2aae73b55185eeb7c6f08c39da2aa7fc2a",
         "semantic": "b244749b801867c5f8b291b42300ef51fa4bee7fb85c3630a0dcc3c346e54c95",
         "structure": "79d75218e26f6313afbe080aa88e5ab3e9fb12e97d17ac3c2168c1c1ccf0c935"
       },
@@ -3797,7 +3798,7 @@
         "self-reported grading"
       ],
       "hashes": {
-        "body": "3a1cc39a4ceb4f54c1798c9a90e1e42717b0f89612cce43454b84e71cb93058f",
+        "body": "bcfba35a176b90f66418fbce345914a8364f91549f44aa4577ba6fc8ac060383",
         "semantic": "aa346b7d1751f2be94d2cc51992eebc2e06d07c13bcb9d8af4ea6b86fc5c567e",
         "structure": "928829689d088f60f847c1d95f707d924232a56446515faa7cf0078005b82d53"
       },
@@ -3836,11 +3837,58 @@
       "role": "Compare actual agent repairs across CLI, tool schemas and policy boundaries in frozen production-source copies.",
       "scope": "module",
       "stability": "architecture"
+    },
+    {
+      "boundaries": [],
+      "excludes": [
+        "complete change impact inference",
+        "source mutation",
+        "semantic contract inference"
+      ],
+      "hashes": {
+        "body": "ca660ff60c8a0d61a2c848fb8f9fbee8420eae2e6bb9dddfde7f2afba3297430",
+        "semantic": "8917e58eb39a2c558697a98ddfe7201dc5d5b557649ceae741cb7b1a60608907",
+        "structure": "4936482dee5ce011ba7a6d3c03adb0a509eb714bbb180b455c2c64224c97d05b"
+      },
+      "id": "llmnav.search.source-pack",
+      "imports": [
+        "./abort.js",
+        "./bounded-selection.js",
+        "./concurrency.js",
+        "./config.js",
+        "./files.js",
+        "./policy.js",
+        "./util.js"
+      ],
+      "invariant": [
+        "Source evidence is live, repository-contained and explicitly bounded; omissions never imply absence of dependencies."
+      ],
+      "location": {
+        "declarationLine": null,
+        "endLine": 8,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/query-source.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "owns": [
+        "literal source windows",
+        "shared source byte budget",
+        "source coordinates and hashes"
+      ],
+      "role": "Pack live literal source matches beside compact semantic boundaries for a coding task.",
+      "scope": "module",
+      "stability": "contract"
     }
   ],
   "contractFingerprints": {
     "configuration": {
-      "sha256": "5b586e1d4fc0e5402bcd2e326f56a86509baac39e589d961340274f43933f737"
+      "sha256": "78eb9e35ab5fc614034282a4aa2462afaad778d46100dccfca67c0fbeb1d0c46"
     },
     "exportedApi": {
       "count": 5,
@@ -3848,9 +3896,9 @@
     },
     "schemaVersion": 1
   },
-  "generatedBy": "llmnav@0.19.20",
+  "generatedBy": "llmnav@0.20.0",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "414c963a1a15be16abd9ad670f7aaacbeb6cb61a421efd04690804b860f888fa",
+  "sourceHash": "f7d0aac35ca025ace5c807c20ba0fff1127ed64e13efc4c7a69d2a00b7bd6dcc",
   "specVersion": "1"
 }

@@ -19,3 +19,9 @@ owns unannotated source navigation, file and declaration ranking, candidate prov
 excludes business rule inference, source mutation, semantic ID assignment
 invariant Automatic candidates carry source provenance and never claim reviewed semantic contracts.
 rel workflow>llmnav.declaration.extract, workflow>llmnav.audit.coverage
+
+@llmnav.search.source-pack
+role Pack live literal source matches beside compact semantic boundaries for a coding task.
+owns literal source windows, shared source byte budget, source coordinates and hashes
+excludes complete change impact inference, source mutation, semantic contract inference
+invariant Source evidence is live, repository-contained and explicitly bounded; omissions never imply absence of dependencies.

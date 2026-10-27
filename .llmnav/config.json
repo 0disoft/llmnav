@@ -28,7 +28,7 @@
       "scope": "module"
     },
     {
-      "match": ["src/discovery.js"],
+      "match": ["src/discovery.js", "src/query-source.js"],
       "name": "source discovery without semantic cards",
       "requiredFields": ["owns", "invariant"],
       "scope": "module"

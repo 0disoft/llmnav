@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.20.0] — 2026-10-28
+
+### Added
+
+* Add opt-in live source windows to provider-neutral/MCP `llmnav_query`. `includeSource:true` plus literal `sourceTerms` returns compact semantic cards and bounded code evidence across files in one call. The default 12,000-byte UTF-8 source budget, explicit omissions, source hashes, window merging and bounded retained file/window counts aim to replace follow-up source reads. Default query results and CLI query options remain unchanged. Tool schema version advances to 8; runtime dependencies remain zero.
+
 ## [0.19.20] — 2026-10-28
 
 ### Changed

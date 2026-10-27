@@ -8,9 +8,9 @@ rel=workflow>llmnav.agent.protocol
 stability=contract
 */
 
-import { AUDIT_LIMITS, DISCOVERY_SOURCE_LIMITS, METADATA_LIMITS, SEARCH_LIMITS } from "./policy.js";
+import { AUDIT_LIMITS, DISCOVERY_SOURCE_LIMITS, METADATA_LIMITS, QUERY_SOURCE_LIMITS, SEARCH_LIMITS } from "./policy.js";
 
-export const AGENT_TOOL_SCHEMA_VERSION = 7;
+export const AGENT_TOOL_SCHEMA_VERSION = 8;
 
 // Duplicated from AUDIT_PRIORITIES on purpose: importing the audit module would load
 // repository execution code into the definition-only surface. A contract test keeps them equal.
@@ -28,6 +28,9 @@ const DEFINITIONS = [
   tool("llmnav_query", "Find the most relevant semantic cards for a coding task.", {
     task: stringProperty("Task language to search for."),
     top: integerProperty("Maximum results.", SEARCH_LIMITS.top.minimum, SEARCH_LIMITS.top.maximum, SEARCH_LIMITS.top.default),
+    includeSource: { type: "boolean", description: "Return compact cards plus live code windows in one call. Reuse sufficient windows before reading files again. Requires sourceTerms.", default: false },
+    sourceTerms: { type: "array", description: "1..8 case-sensitive literal identifiers or flags to find across source files; no regular expressions. Used with includeSource.", minItems: 1, maxItems: 8, items: { type: "string", minLength: 1, maxLength: 128 } },
+    sourceBudget: querySourceBudgetProperty(),
   }, ["task"]),
   tool("llmnav_show", "Resolve one local or qualified workspace semantic ID.", {
     id: stringProperty("Semantic ID or repository-qualified semantic ID."),
@@ -95,4 +98,9 @@ function enumProperty(description, values, defaultValue) {
 
 function integerProperty(description, minimum, maximum, defaultValue) {
   return { type: "integer", minimum, maximum, default: defaultValue, description };
+}
+
+function querySourceBudgetProperty() {
+  const limits = QUERY_SOURCE_LIMITS;
+  return integerProperty("UTF-8 source bytes across query windows; excludes compact-card metadata. Requires includeSource.", limits.minimum, limits.maximum, limits.default);
 }

@@ -72,3 +72,4 @@ llmnav.structure.rust
 llmnav.structure.rust-process
 llmnav.structure.rust-worker
 llmnav.eval.policy-coding
+llmnav.search.source-pack

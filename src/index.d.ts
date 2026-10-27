@@ -330,7 +330,7 @@ export interface LlmnavConfig {
 }
 
 export interface AgentToolDefinition {
-  schemaVersion: 7;
+  schemaVersion: 8;
   name: "llmnav_verification" | "llmnav_history" | "llmnav_query" | "llmnav_show" | "llmnav_context" | "llmnav_check" | "llmnav_explain" | "llmnav_audit" | "llmnav_discover";
   description: string;
   inputSchema: {
@@ -814,7 +814,7 @@ export const AUDIT_PRIORITIES: readonly AuditPriority[];
 export const AUDIT_SCHEMA_VERSION: 1;
 export const FILE_EXPLANATION_SCHEMA_VERSION: 1;
 export const AGENT_OPERATION_SCHEMA_VERSION: 1;
-export const AGENT_TOOL_SCHEMA_VERSION: 5;
+export const AGENT_TOOL_SCHEMA_VERSION: 8;
 export const BOUNDARY_KINDS: readonly DetectedBoundary["kind"][];
 export const GRAPH_INPUT_SCHEMA_VERSION: 2;
 export const MIGRATION_REPORT_SCHEMA_VERSION: 1;

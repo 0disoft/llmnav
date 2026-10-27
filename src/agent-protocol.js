@@ -23,6 +23,7 @@ import { throwIfAborted } from "./abort.js";
 import { getFileHistory } from "./git-history.js";
 import { getVerification } from "./verification.js";
 import { validateMetadataOptions } from "./code-metadata.js";
+import { packQuerySource, validateQuerySourceOptions } from "./query-source.js";
 
 export { AGENT_TOOL_SCHEMA_VERSION, getAgentToolDefinitions } from "./agent-tools.js";
 export const AGENT_OPERATION_SCHEMA_VERSION = 1;
@@ -106,6 +107,10 @@ function resolveRequest(name, input) {
     try { validateMetadataOptions(input); }
     catch (error) { return { failure: failure(operation, AGENT_OPERATION_ERROR_CODES.invalidInput, error.message) }; }
   }
+  if (operation === "query") {
+    try { validateQuerySourceOptions(input); }
+    catch (error) { return { failure: failure(operation, AGENT_OPERATION_ERROR_CODES.invalidInput, error.message) }; }
+  }
   return { operation };
 }
 
@@ -120,7 +125,7 @@ async function handleQuery(input, root, options) {
   const data = options.session
     ? await options.session.query(task, { top, ...(options.signal ? { signal: options.signal } : {}) })
     : await queryProject(root, task, { ...options, top });
-  return { data };
+  return { data: input.includeSource === true ? await packQuerySource(root, data, input, options) : data };
 }
 
 async function handleShow(input, root, options) {

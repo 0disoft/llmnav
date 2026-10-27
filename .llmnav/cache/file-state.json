@@ -716,7 +716,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "3a1cc39a4ceb4f54c1798c9a90e1e42717b0f89612cce43454b84e71cb93058f",
+      "contentHash": "bcfba35a176b90f66418fbce345914a8364f91549f44aa4577ba6fc8ac060383",
       "declarations": [
         null
       ],
@@ -732,7 +732,7 @@
       ],
       "path": "benchmarks/policy-coding.js",
       "semanticBytes": 482,
-      "sourceBytes": 16712
+      "sourceBytes": 20221
     },
     {
       "blocks": [],
@@ -3284,7 +3284,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "0a486a0d559fc83604bf1dca4e8e184b6a7d03e5e128b03f517263214b40b5ce",
+      "contentHash": "929f84421e2d5bac1bcdc1497cef2853f17283a6bd8377fb3a4c5585710864ee",
       "declarations": [
         null
       ],
@@ -3299,13 +3299,14 @@
         "./graph-input.js",
         "./policy.js",
         "./project.js",
+        "./query-source.js",
         "./search.js",
         "./validator.js",
         "./verification.js"
       ],
       "path": "src/agent-protocol.js",
       "semanticBytes": 528,
-      "sourceBytes": 11178
+      "sourceBytes": 11549
     },
     {
       "blocks": [
@@ -3398,7 +3399,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "73316e4293258e0490a2b5f06578b1ee48f2c59cacbaab115d24b88d7e0a94d1",
+      "contentHash": "8a3d208ce9db5f8e6219ac3336604832b1ea79d22a98917d8c85ef688dad637f",
       "declarations": [
         null
       ],
@@ -3407,7 +3408,7 @@
       ],
       "path": "src/agent-tools.js",
       "semanticBytes": 411,
-      "sourceBytes": 5927
+      "sourceBytes": 6715
     },
     {
       "blocks": [
@@ -6138,7 +6139,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "5b220df8b519c34cd124a599e7720610430fadf2e453f7c3240924d493ee70f3",
+      "contentHash": "85f68b1e2b4c9379567c8fc1dc347ccd9cc168d2ac0fb11f19448aad1befe7d0",
       "declarations": [],
       "imports": [
         "./spec.js"
@@ -7130,14 +7131,14 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "a20e7afe6831e758cbcec7565f4f4175f65c83a83d3593d7097577d63daa4fa6",
+      "contentHash": "f89737ba2a4cb2300a543f9f8c44dd2aae73b55185eeb7c6f08c39da2aa7fc2a",
       "declarations": [
         null
       ],
       "imports": [],
       "path": "src/policy.js",
       "semanticBytes": 590,
-      "sourceBytes": 3042
+      "sourceBytes": 3240
     },
     {
       "blocks": [
@@ -7381,6 +7382,103 @@
       "path": "src/prompt-bundle.js",
       "semanticBytes": 520,
       "sourceBytes": 5827
+    },
+    {
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
+              "complete change impact inference",
+              "source mutation",
+              "semantic contract inference"
+            ],
+            "id": "llmnav.search.source-pack",
+            "invariant": [
+              "Source evidence is live, repository-contained and explicitly bounded; omissions never imply absence of dependencies."
+            ],
+            "owns": [
+              "literal source windows",
+              "shared source byte budget",
+              "source coordinates and hashes"
+            ],
+            "rel": [],
+            "risk": [],
+            "role": "Pack live literal source matches beside compact semantic boundaries for a coding task.",
+            "scope": "module",
+            "search": [],
+            "stability": "contract",
+            "unknown": []
+          },
+          "end": 458,
+          "endLine": 8,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.search.source-pack"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Pack live literal source matches beside compact semantic boundaries for a coding task."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "literal source windows|shared source byte budget|source coordinates and hashes"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "complete change impact inference|source mutation|semantic contract inference"
+            },
+            {
+              "key": "invariant",
+              "line": 6,
+              "order": 4,
+              "value": "Source evidence is live, repository-contained and explicitly bounded; omissions never imply absence of dependencies."
+            },
+            {
+              "key": "stability",
+              "line": 7,
+              "order": 5,
+              "value": "contract"
+            }
+          ],
+          "filePath": "src/query-source.js",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.search.source-pack\nrole=Pack live literal source matches beside compact semantic boundaries for a coding task.\nowns=literal source windows|shared source byte budget|source coordinates and hashes\nexcludes=complete change impact inference|source mutation|semantic contract inference\ninvariant=Source evidence is live, repository-contained and explicitly bounded; omissions never imply absence of dependencies.\nstability=contract\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "ca660ff60c8a0d61a2c848fb8f9fbee8420eae2e6bb9dddfde7f2afba3297430",
+      "declarations": [
+        null
+      ],
+      "imports": [
+        "./abort.js",
+        "./bounded-selection.js",
+        "./concurrency.js",
+        "./config.js",
+        "./files.js",
+        "./policy.js",
+        "./util.js"
+      ],
+      "path": "src/query-source.js",
+      "semanticBytes": 458,
+      "sourceBytes": 7563
     },
     {
       "blocks": [
@@ -8145,14 +8243,14 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "50e2e3049693df90844a62965c107be9ba90149c69db8d0d9d78bf6c6248bc75",
+      "contentHash": "a86659b82cc68eff9d8ff575b17a67e014fe664ef952c81bdcbe5b4ef8fb24c3",
       "declarations": [
         null
       ],
       "imports": [],
       "path": "src/spec.js",
       "semanticBytes": 507,
-      "sourceBytes": 5308
+      "sourceBytes": 5307
     },
     {
       "blocks": [
@@ -8679,7 +8777,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "61afd1ee7f2fdcd3d5be73b732af3d81ac9f2f0158f5cd4b8fa9929d11a6c4f4",
+      "contentHash": "8d1d465c08352b70a8eec5058f640d42fc80d68af10a6b4c895448a930013aba",
       "declarations": [],
       "imports": [
         "../src/agent-protocol.js",
@@ -8787,7 +8885,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "def8202fc3342af5b1ecd0dcb02dacb43bbc3a6bc4295334b3c3d0191dba52ff",
+      "contentHash": "42486bc99b149fe65cc39877650747d02f2c74f5c0061567cf4b4238398c06cb",
       "declarations": [],
       "imports": [
         "../src/cli.js",
@@ -9476,7 +9574,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "7d65b93481d1f51c5910c85c8148acec5d9b33d37972d07b0a9029fbd201ac31",
+      "contentHash": "99e829adfa4112393cb406b20dce930e011460aaa0cbb3b9ef194691abae0c97",
       "declarations": [],
       "imports": [
         "../benchmarks/policy-cases.js",
@@ -9487,7 +9585,7 @@
       ],
       "path": "tests/policy-coding.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 4201
+      "sourceBytes": 4912
     },
     {
       "blocks": [],
@@ -9564,6 +9662,26 @@
       "path": "tests/python-positions.test.js",
       "semanticBytes": 0,
       "sourceBytes": 3743
+    },
+    {
+      "blocks": [],
+      "contentHash": "96efde2407118744516d34f46ef623b8164489a5c155e2d9c3cbfc68d8513be9",
+      "declarations": [],
+      "imports": [
+        "../src/agent-protocol.js",
+        "../src/initializer.js",
+        "../src/mcp.js",
+        "../src/search.js",
+        "../src/util.js",
+        "node:assert/strict",
+        "node:fs/promises",
+        "node:os",
+        "node:path",
+        "node:test"
+      ],
+      "path": "tests/query-source.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 5970
     },
     {
       "blocks": [],
