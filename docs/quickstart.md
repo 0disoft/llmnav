@@ -1,13 +1,41 @@
 # Quick start
 
+Start with live discovery, then add semantic cards where a durable responsibility helps navigation. You can use the CLI without an API key or hosted service. Node.js 22+ is required, including when installing with Bun.
+
+## Try live discovery first
+
+Install with either package manager:
+
+| npm | Bun |
+| --- | --- |
+| `npm install --save-dev llmnav` | `bun add --dev llmnav` |
+
+Replace `rotateSession` with a symbol or task from your own repository:
+
+```sh
+npx llmnav discover "rotateSession" --top 1 --include-source --source-budget 4000 --json
+```
+
+Use `bunx llmnav` in place of `npx llmnav` for Bun. Discovery reads live source and needs no initialization, cards, or generated index. Its excerpt budget covers source text; JSON metadata is additional. If the excerpt is sufficient, reuse it for the edit. If you already know the file and identifier, start with a direct bounded read or exact search.
+
+## Pick the next step
+
+| Need | Next step |
+| --- | --- |
+| Locate unannotated code | Continue with `discover` and inspect the candidate source |
+| Search by durable business responsibilities | Initialize, audit, and add one reviewed card below |
+| Resolve compiler types or symbol references | Follow [language analysis setup](precise-analysis.md) |
+| Connect an agent or MCP client | Follow [agent integration](agent-integration.md) |
+
 ## Install and initialize
 
 ```sh
-npm install --save-dev llmnav
 npx llmnav init --agents all --package-scripts
 ```
 
 This creates the `.llmnav` control directory, a JSON schema, the semantic ID registry, the stable order lock, deterministic generated indexes and catalogs, volatile state ignore rules, and managed instruction files for coding agents.
+
+Initialization is explicit and may update managed agent files and package scripts; use `--agents none` to skip agent instruction files.
 
 Review `.llmnav/config.json` before annotating code. The default scans the repository root while excluding build outputs, dependency directories, generated bundles, and common caches.
 
@@ -54,14 +82,12 @@ invariant=At most one live refresh token exists per family.
 invariant=Replay revokes the entire token family.
 effect=db.write(session_tokens)|event.emit(auth.session.revoked)
 risk=auth|concurrency
-rel=policy>auth.session.lifecycle
-rel=test>auth.session.rotate.contract
 stability=contract
 */
 export async function rotateSession() {}
 ```
 
-The referenced policy and test IDs must exist as source cards or registry records.
+Add semantic links such as `rel=policy>auth.session.lifecycle` and `rel=test>auth.session.rotate.contract` only after their target IDs exist as source cards or registry records. The minimal card above has no unresolved relation targets.
 
 ## Format and validate
 
@@ -104,7 +130,7 @@ npx llmnav generate --full --check
 
 That command fails when generated files, the registry, or the stable order lock differ from current source. It does not replace the live cache. Normal generation stages and verifies a complete replacement before committing it.
 
-## Search before opening source
+## Search when the responsibility is unclear
 
 ```sh
 npx llmnav query "where do replayed refresh tokens revoke their family" --top 5
@@ -114,13 +140,13 @@ npx llmnav context auth.session.rotate --depth 1 --budget 2500
 
 Queries use the persistent inverted index and do not retokenize every card. If a previous generation was interrupted, the query command restores the last committed cache before reading it.
 
-The expected agent workflow is:
+For a task whose location is unclear:
 
 1. Query from the task language.
-2. Inspect a few cards and generated signatures.
+2. Inspect the highest-ranked card and generated location; expand only for ambiguity.
 3. Open the selected declarations.
 4. Expand one semantic hop only when policy, test, fallback, or workflow context is needed.
-5. Use broad grep only after LLMNav fails to return a credible candidate.
+5. Use ordinary search when no credible candidate appears. Known files and exact identifiers can go directly to a bounded read or text search.
 
 ## Add task-language aliases
 

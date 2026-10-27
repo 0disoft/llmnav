@@ -2,6 +2,18 @@
 
 LLMNav can produce definition/reference graph inputs with installed compiler tooling. Analysis is explicit and runs outside the normal query process. The npm package keeps zero runtime dependencies. Its development dependencies include TypeScript 6 for adapter tests.
 
+## Choose an analyzer
+
+| Language | Required local tooling | Precision | Important limit |
+| --- | --- | --- | --- |
+| TypeScript | TypeScript Compiler API 5 or 6 | Compiler | Compiler API 7 is unsupported |
+| JavaScript | TypeScript Compiler API 5 or 6 | Compiler | Dynamic runtime behavior is not resolved |
+| Go | Go toolchain and available dependency exports | Compiler | Active build constraints; excludes tests and cgo |
+| Python | Python 3.9+ | Syntax / partial | Explicit annotations; no type checking or inferred call edges |
+| Rust | Node.js, already required by LLMNav | Syntax / partial | Conservative lexical extraction; no macro expansion or type checking |
+
+Configure a saved analysis in `graph.indexFiles`, run `analyze --output`, then `generate`. Use `discover --precise` to find a saved definition and `show --metadata` for optional details. The sections below cover setup, source freshness, and omissions; `--precise` does not turn syntax results into compiler results.
+
 ## TypeScript
 
 Use TypeScript Compiler API 5 or 6. TypeScript 7.0 moved to a native implementation without that JavaScript API; the adapter rejects unsupported versions and missing APIs rather than silently falling back. See the [official Compiler API compatibility note](https://github.com/microsoft/TypeScript/wiki/Using-the-Compiler-API) and [TypeScript 7 announcement](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/).

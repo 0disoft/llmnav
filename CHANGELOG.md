@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.19.18] — 2026-10-28
+
+### Documentation
+
+* Rework the README around live discovery, selective semantic adoption, and task-oriented navigation. Add accessible SVG workflow and real CLI-output illustrations, integration and language support tables, and links to measured evaluation limits. Align the quick start with optional navigation and npm/Bun installation, remove unresolved relation targets from its starter card, add an analyzer selection table, and refresh the FAQ's analysis execution and token-cost guidance. No navigation behavior or public schemas change.
+
 ## [0.19.17] — 2026-10-28
 
 ### Fixed

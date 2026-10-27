@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="440" viewBox="0 0 1200 440" role="img" aria-labelledby="title description">
+  <title id="title">LLMNav: from task to code</title>
+  <desc id="description">Follow a task through a ranked semantic boundary with a stable ID to a focused source read. Start with live discovery, add reviewed meaning, and request compiler facts when needed.</desc>
+  <defs>
+    <radialGradient id="glow" cx="0.85" cy="0.1" r="1">
+      <stop offset="0" stop-color="#133f49"/>
+      <stop offset="1" stop-color="#101723"/>
+    </radialGradient>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0 0 7 4 0 8" fill="none" stroke="#79d8c2" stroke-width="1.5"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="440" rx="20" fill="url(#glow)"/>
+  <g font-family="Segoe UI, Arial, sans-serif">
+    <path d="M43 46 66 35 61 58 53 51Z" fill="#79d8c2"/>
+    <text x="81" y="54" fill="#f2f6fb" font-size="22" font-weight="700" letter-spacing="2">LLMNAV</text>
+    <text x="1156" y="51" text-anchor="end" fill="#a8c4c7" font-size="12" font-weight="600" letter-spacing="1.7">LOCAL / DETERMINISTIC / ZERO RUNTIME DEPS</text>
+    <text x="44" y="115" fill="#f2f6fb" font-size="42" font-weight="700" letter-spacing="-1.1">From task to code.</text>
+    <text x="44" y="148" fill="#b7c5d5" font-size="18">Find the boundary. Read the relevant source. Expand when needed.</text>
+    <rect x="44" y="186" width="294" height="150" rx="12" fill="#192431" stroke="#3a5260"/>
+    <text x="64" y="215" fill="#79d8c2" font-size="12" font-weight="700" letter-spacing="1.6">01 / TASK</text>
+    <text x="64" y="254" fill="#f2f6fb" font-size="22" font-weight="600">Where do replayed</text>
+    <text x="64" y="284" fill="#f2f6fb" font-size="22" font-weight="600">tokens get revoked?</text>
+    <text x="64" y="315" fill="#acbacb" font-size="14">Start with the behavior you need.</text>
+    <path d="M351 261H395" stroke="#79d8c2" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="410" y="186" width="336" height="150" rx="12" fill="#17312f" stroke="#65c7af"/>
+    <text x="430" y="215" fill="#95ecd3" font-size="12" font-weight="700" letter-spacing="1.6">02 / SEMANTIC BOUNDARY</text>
+    <text x="430" y="257" fill="#f2f6fb" font-family="Consolas, monospace" font-size="20" font-weight="700">auth.session.rotate</text>
+    <text x="430" y="286" fill="#c1dcd6" font-size="16">Role + invariants + stable ID</text>
+    <text x="430" y="315" fill="#accec5" font-size="14">Reviewed meaning, attached to code.</text>
+    <path d="M759 261H803" stroke="#79d8c2" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="818" y="186" width="338" height="150" rx="12" fill="#192431" stroke="#3a5260"/>
+    <text x="838" y="215" fill="#79d8c2" font-size="12" font-weight="700" letter-spacing="1.6">03 / FOCUSED SOURCE</text>
+    <g stroke-linecap="round" stroke-width="5">
+      <path d="M841 246H878M892 246H1026" stroke="#edc790"/>
+      <path d="M854 266H950M966 266H1115" stroke="#718ca4"/>
+      <path d="M854 286H1003M1018 286H1081" stroke="#79d8c2"/>
+    </g>
+    <text x="838" y="315" fill="#acbacb" font-size="14">Current location. Bounded context.</text>
+    <path d="M44 366H1156" stroke="#324654"/>
+    <text x="44" y="404" fill="#c2d0dd" font-size="15">Start with live discovery</text>
+    <circle cx="324" cy="399" r="3" fill="#79d8c2"/>
+    <text x="360" y="404" fill="#c2d0dd" font-size="15">Add meaning at important boundaries</text>
+    <circle cx="742" cy="399" r="3" fill="#79d8c2"/>
+    <text x="778" y="404" fill="#c2d0dd" font-size="15">Request types and evidence on demand</text>
+  </g>
+</svg>

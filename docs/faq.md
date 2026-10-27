@@ -44,7 +44,15 @@ The files are deterministic agent context. Committing them makes drift reviewabl
 
 ## Does LLMNav execute project code?
 
-No. Version 0.6 reads text and configured repository-local JSON files, then writes generated artifacts or explicitly requested card formatting. The audit path is read-only. Its tool dispatcher remains local and has no plugin loader, install hook, or network request.
+Core discovery, audit, and indexing read source as text. Opt-in analysis invokes installed compiler tooling or an isolated syntax analyzer; Go may compile dependency exports and a temporary analyzer helper. Analysis does not run the target application's binaries or tests. See [analysis tooling and execution limits](precise-analysis.md). LLMNav does not install dependencies or fetch toolchains automatically.
+
+## Do I need cards before I can try it?
+
+No. Run `llmnav discover "<symbol or task>" --top 1 --include-source` against live source. Add cards after reviewing important architectural or behavioral boundaries. Use `query` for indexed semantic cards and `discover` for live structural candidates; the [quick start](quickstart.md) shows both routes.
+
+## Will it reduce my agent's token bill?
+
+Measure it on your own tasks. In the [controlled coding pilot](model-coding-evaluation.md), all three navigation conditions completed eight repairs, but LLMNav used more uncached input than ordinary tools. Source excerpts and conditional routing aim to avoid redundant reads; the [follow-up token review](token-cost-review.md) still found cohorts with higher token use. For known files or identifiers, a direct read or exact search can be cheaper.
 
 ## Can cards be written in Korean?
 

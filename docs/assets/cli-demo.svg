@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="346" viewBox="0 0 1200 346" role="img" aria-labelledby="title description">
+  <title id="title">A real LLMNav query result</title>
+  <desc id="description">Querying transactional generation in this repository ranks llmnav.index.transaction first with score 102.722, explains its responsibility, and locates src/transaction.js at line 1. Output is an excerpt with the role wrapped for display.</desc>
+  <rect x="1" y="1" width="1198" height="344" rx="16" fill="#101723" stroke="#324654"/>
+  <path d="M17 1H1183Q1199 1 1199 17V54H1V17Q1 1 17 1" fill="#1c2937"/>
+  <circle cx="28" cy="28" r="6" fill="#f18d83"/>
+  <circle cx="49" cy="28" r="6" fill="#edc790"/>
+  <circle cx="70" cy="28" r="6" fill="#79d8c2"/>
+  <text x="600" y="34" text-anchor="middle" fill="#b7c5d5" font-family="Segoe UI, Arial, sans-serif" font-size="14">One task. One boundary.</text>
+  <g font-family="Consolas, monospace" font-size="20">
+    <text x="30" y="99" fill="#79d8c2">$ npx llmnav query "transactional generation" --top 1</text>
+    <text x="30" y="144" fill="#f2f6fb">1. @llmnav.index.transaction <tspan fill="#edc790">score=102.722</tspan></text>
+    <text x="66" y="181" fill="#c7d4e2">Commit a complete generated cache with rollback and crash recovery</text>
+    <text x="66" y="211" fill="#c7d4e2">across POSIX and Windows rename behavior.</text>
+    <text x="66" y="249" fill="#95ecd3">src/transaction.js:1</text>
+    <text x="66" y="280" fill="#b7c5d5" font-size="17">why token=transactional, token=generation, exact phrase</text>
+  </g>
+  <text x="30" y="324" fill="#a2b5c8" font-family="Segoe UI, Arial, sans-serif" font-size="13">Real CLI output from this repository · excerpt · scores and locations depend on the source snapshot</text>
+</svg>

@@ -1,43 +1,26 @@
 # LLMNav
 
-LLMNav is a deterministic semantic navigation layer for LLM coding agents.
+**Give coding agents a map of your codebase.**
 
-It adds compact, stable metadata to a small number of architectural and behavioral boundaries, compiles that metadata into repository catalogs and a persistent inverted index, and gives agents a fast path from task language to the code that matters.
+Find code by what it does, keep important business rules attached to stable IDs, and expand into source, types, or related boundaries only when the task needs them.
 
-LLMNav is not a documentation generator, an embedding database, or a reason to annotate every function. It is a zero-runtime-dependency Node.js CLI and ESM library for reducing broad repository scans, irrelevant context, stale hand-written links, repeated card tokenization, and avoidable cache invalidation.
+![A task becomes a ranked boundary with a stable ID, then a focused source read. LLMNav combines live discovery, reviewed meaning, and optional compiler facts.](docs/assets/navigation.svg)
 
-## Current capabilities
+[Quick start](docs/quickstart.md) · [CLI reference](docs/cli.md) · [Agent integration](docs/agent-integration.md) · [Language analysis](docs/precise-analysis.md) · [Evaluation results](docs/token-cost-review.md)
 
-* The backward-compatible `llmnav/1` source comment specification
-* A parser and data-loss-resistant canonical formatter
-* Semantic lint rules with stable diagnostic codes
-* A schemaVersion 1 `index.json` compatible with v0.1 consumers
-* A deterministic persistent inverted index that reuses unchanged card tokenization
-* File and card-level incremental indexing
-* Repository-locked transactional cache generation with rollback and interrupted-run recovery
-* Machine-readable changed-card, affected-boundary, and affected-catalog output
-* Exported API and effective configuration contract fingerprints
-* TypeScript and Go declaration enrichment with declaration-level body hashes
-* Generated artifact, route, event, schema, migration, runtime, and command boundaries
-* SARIF 2.1.0 diagnostic output
-* Optional deterministic card-range search shards for very large repositories
-* Strict repository-local imports for generated definition and reference indexes
-* Deterministic qualified repository graphs with edge provenance and confidence
-* Confidence-aware graph ranking and context packing bounded by depth, tokens, and edges
-* Exact qualified and ambiguity-safe workspace semantic ID resolution
-* Content-addressed incremental graph partitions with safe invalidation
-* A runnable provider-neutral host adapter with a reusable project snapshot and typed package export
-* A Model Context Protocol stdio server that serves the same agent tool schema
-* Repository and module catalogs designed for prompt-prefix reuse
-* Multilingual alias routing and CJK n-gram retrieval
-* Search regression tests with Recall@1, Recall@5, and MRR
-* Managed instructions for AGENTS.md, Claude Code, GitHub Copilot, and Cursor
-* A deterministic, read-only annotation coverage audit with explicit CI thresholds
-* Linux and Windows CI gates plus npm pack installation smoke tests
+LLMNav is a local Node.js CLI and ESM library with **zero runtime dependencies**. Its core navigation needs no API key, hosted service, or embedding database. Node.js **22+** is required.
 
-The package supports Node.js 22 or newer, uses ESM, performs no network requests, and has no runtime dependencies.
+## See it work
 
-Public compatibility rules are documented in [Compatibility and deprecation policy](docs/compatibility.md). In short, `llmnav/1` source cards and the schemaVersion 1 primary index are stable contracts; disposable generated accelerators may be rebuilt, and documented CLI or library removals receive a replacement and a minimum one-minor/90-day deprecation window.
+Ask about a responsibility instead of guessing a filename. This example comes from LLMNav's own source checkout:
+
+```sh
+npx llmnav query "transactional generation" --top 1
+```
+
+![Actual query output from this repository: llmnav.index.transaction ranks first and points to src/transaction.js, with its role and matching reasons.](docs/assets/cli-demo.svg)
+
+The result gives an agent a stable boundary ID, a current location, and the reason it matched. Open that source; request `show` or `context` when more contract or relationship detail is needed.
 
 ## Install
 
@@ -45,23 +28,56 @@ With npm:
 
 ```sh
 npm install --save-dev llmnav
-npx llmnav init --agents all --package-scripts
 ```
 
 With Bun:
 
 ```sh
 bun add --dev llmnav
-bunx llmnav init --agents all --package-scripts
 ```
 
-For a global installation, use `npm install --global llmnav` or `bun add --global llmnav`, then run `llmnav` directly. Node.js 22 or newer is required for either installation method: the CLI uses a Node shebang, which `bunx` respects. Subsequent `npx llmnav ...` examples can also be run with `bunx llmnav ...`.
+Use `npx llmnav ...` or `bunx llmnav ...` for the commands below. Global installation is also supported with `npm install --global llmnav` or `bun add --global llmnav`.
 
-Initialization is explicit. LLMNav never edits a consumer repository from an npm `postinstall` script. Use `--agents none` when only the machine-readable control directory is desired.
+Both package runners require Node.js 22+: the CLI uses a Node shebang. Installation never edits your project through a `postinstall` hook.
 
-Before writing cards, run `npx llmnav audit`. It ranks likely architectural boundaries and explains each score. Use `npx llmnav explain <file>` when you need to know why one file is carded, covered by another module card, ranked as a candidate, suppressed by a reviewed disposition, or omitted from the candidate list. Neither command edits source. Review the evidence: a high score is a reason to inspect a file, not permission to generate semantic meaning automatically. For a reviewed false positive or implementation detail, add its exact path and a concrete reason to `audit.dispositions`; stale decisions remain visible instead of becoming permanent hidden ignores.
+## Start without annotating anything
 
-## Add the first card
+Replace `rotateSession` with a symbol or task from your repository:
+
+```sh
+npx llmnav discover "rotateSession" --top 1 --include-source --source-budget 4000 --json
+```
+
+Discovery works **before initialization or index generation**. It ranks live paths, declaration names, and signatures, and can return a source excerpt. The 4,000-byte budget covers excerpt text; JSON metadata is additional. Inspect more when the excerpt is incomplete.
+
+Already know the file and identifier? A direct read or exact text search is usually the right first step.
+
+## Choose the right route
+
+| What you know | Start with | What you get |
+| --- | --- | --- |
+| An exact file or identifier | Your editor, a bounded read, or `rg` | Direct access to known code |
+| A name or rough task, with no cards yet | `llmnav discover "<task>" --top 1 --include-source` | Live candidates and an optional excerpt |
+| A business responsibility captured in cards | `llmnav query "<task>" --top 3` | Ranked semantic boundaries |
+| A semantic ID | `llmnav show <id>` | Its role, rules, and generated location |
+| Missing policy or workflow context | `llmnav context <id> --depth 1 --budget 2500` | A bounded bundle of related boundaries |
+| Types, signatures, or members | Opt-in `analyze --metadata`, then `show --metadata` | Saved compiler or syntax metadata, with paging |
+| File provenance | `llmnav history <file> --json` | Last file commit and staged, unstaged, or untracked state |
+
+Semantic queries use generated cards and indexes. Compiler metadata requires the [analysis setup](docs/precise-analysis.md); file history requires Git.
+
+## Add meaning where it matters
+
+Use cards for architectural modules, public entry points, authentication, payments, privacy, and code with non-obvious invariants. Start with one useful boundary.
+
+```sh
+npx llmnav init --agents all --package-scripts
+npx llmnav audit
+```
+
+Initialization creates configuration, the ID registry, generated catalogs, and managed agent instructions. Audit ranks candidates for review and leaves source unchanged. Use `--agents none` to skip agent instruction files.
+
+After inspecting a candidate, attach a card to the matching declaration:
 
 ```ts
 /* llmnav/1 symbol
@@ -72,273 +88,117 @@ invariant=At most one live refresh token exists per family.
 invariant=Replay revokes the entire token family.
 effect=db.write(session_tokens)|event.emit(auth.session.revoked)
 risk=auth|concurrency
-rel=policy>auth.session.lifecycle
-rel=test>auth.session.rotate.contract
 stability=contract
 */
-
-export async function rotateSession(
-  input: RotateSessionInput,
-): Promise<RotateSessionResult> {
-  // implementation
+export async function rotateSession(input: RotateSessionInput): Promise<RotateSessionResult> {
+  // Your existing implementation.
 }
 ```
 
-The ID describes a durable capability, not a file path or current function name. It survives moves and renames.
-
-## Generate and search
+The ID describes a durable capability and survives moves and renames. Paths, signatures, callers, and hashes are generated from code. Annotate selected boundaries; leave obvious helpers and generated files alone.
 
 ```sh
 npx llmnav format
 npx llmnav check
 npx llmnav generate
-npx llmnav query "replayed refresh token should revoke the family" --top 5
-npx llmnav show auth.session.rotate
-npx llmnav context auth.session.rotate --depth 1 --budget 2500
+npx llmnav query "replayed refresh token should revoke the family" --top 3
 ```
 
-The generated inverted index stores a deterministic token dictionary, compact posting lists, and normalized phrase documents. A query tokenizes only the task text; it does not tokenize every card again. If `search-index.json` is missing or incompatible, the library rebuilds it in memory from the compatible schemaVersion 1 `index.json`.
+Add narrow coverage rules and real retrieval queries as you adopt more boundaries. The [quick start](docs/quickstart.md) walks through that workflow.
 
-## Incremental and transactional generation
+## Use it with your agent
 
-The first generation parses every source file and indexes every card. Later runs compare persisted file state and volatile stat hints.
-
-```text
-unchanged stat fingerprint  → reuse parsed file without reading it
-changed stat, same SHA-256  → reuse parsed file after one content read
-changed content             → parse that file and retokenize changed cards only
-deleted file                → remove its cards and postings
-```
-
-All generated cache artifacts are completed and verified in a staging directory before the live cache is replaced. Registry additions and stable-order updates participate in the same recoverable transaction, so rollback cannot leave control state ahead of the cache. If writing, verification, rename, or the process itself fails, the previous generation state remains available or is restored before the next query or generation.
-
-One repository-scoped generation lock serializes the complete source-to-cache operation. Readers wait for an active writer and recover only abandoned journals, so they cannot roll back a live generation. Windows transient rename failures such as `EPERM`, `EBUSY`, `EACCES`, `EEXIST`, and `ENOTEMPTY` are retried. CI executes the transaction and interruption suite on `windows-latest` as well as Linux.
-
-## Machine-readable change output
-
-```sh
-npx llmnav generate --json
-```
-
-The JSON response preserves the v0.1 fields and adds stable records for changed cards, affected boundaries, affected catalogs, file reuse, card retokenization, and transaction recovery.
-
-```json
-{
-  "changedCards": [
-    {
-      "id": "auth.session.rotate",
-      "change": "modified",
-      "dimensions": ["semantic"]
-    }
-  ],
-  "affectedBoundaries": [
-    {
-      "id": "auth.session.rotate",
-      "modules": ["auth.session"],
-      "boundaries": [{ "kind": "route", "confidence": "high", "evidence": ["path"] }]
-    }
-  ],
-  "affectedCatalogs": [
-    {
-      "file": ".llmnav/cache/modules/auth.session.txt",
-      "kind": "module",
-      "id": "auth.session"
-    }
-  ]
-}
-```
-
-Locations and hashes are included in the complete records. Array ordering and generated JSON key ordering are deterministic.
-
-## The core separation
-
-| Layer | Examples | Owner | Storage |
-| --- | --- | --- | --- |
-| Stable meaning | role, invariant, domain search phrases, effects, risks, semantic relations | human or coding agent | source comment |
-| Generated structure | path, declaration, language, visibility, boundaries, imports, fingerprints, hashes | LLMNav | generated cache |
-| Task state | branch, diff, test output, current request | agent harness | never stored in a card |
-
-Paths, line numbers, commit hashes, callers, imports, and signatures are forbidden in source cards. They change too often and are more accurately generated.
-
-## Comment styles
-
-C-style block comments work in TypeScript, JavaScript, Go, Rust, Java, C, C++, C#, Swift, Dart, PHP, Svelte, Astro, and Vue files.
-
-```go
-/* llmnav/1 module
-id=auth.session
-role=Own refresh-token issuance, rotation, replay detection, and revocation.
-owns=refresh-token family|session revocation
-excludes=access-token signing|user profile storage
-search=session lifecycle|token family|session revocation
-invariant=One token family has at most one live refresh token.
-stability=architecture
-*/
-```
-
-Line-comment cards require an explicit terminator and work with `//`, `#`, and `--`. HTML comments are supported for markup-oriented files.
-
-## Commands
-
-| Command | Purpose |
+| Integration | How it connects |
 | --- | --- |
-| `llmnav init` | Create configuration, registry, schemas, agent instructions, and the initial cache |
-| `llmnav audit` | Rank unannotated architectural boundary candidates, with compact or file-backed output |
-| `llmnav explain` | Explain one file's card coverage, audit score, disposition, and recommended next action |
-| `llmnav check` | Validate cards, relations, coverage rules, and registry state |
-| `llmnav format` | Rewrite safe cards into canonical order and spacing |
-| `llmnav generate` | Incrementally compile and transactionally commit generated artifacts |
-| `llmnav index` | Alias for `generate` |
-| `llmnav query` | Rank cards through the persistent inverted index |
-| `llmnav show` | Resolve one active or redirected semantic ID |
-| `llmnav context` | Build a bounded context bundle around one ID |
-| `llmnav eval` | Run repository-specific search regression queries |
-| `llmnav doctor` | Verify installation, cache integrity, transaction recovery, and drift |
-| `llmnav migrate` | Check or transactionally apply generated-format upgrades from canonical source |
-| `llmnav spec` | Print source-spec vocabularies and key order |
-| `llmnav tools` | Print stable provider-neutral agent tool schemas |
-| `llmnav mcp` | Serve those tool schemas over Model Context Protocol stdio |
-| `llmnav bundle` | Inspect the generated prompt-prefix cache partitions |
-| `llmnav editor` | Print a deterministic editor task integration |
+| Codex / other AGENTS.md readers | Managed instructions in `AGENTS.md` |
+| Claude Code | Managed instructions in `CLAUDE.md` |
+| GitHub Copilot | `.github/copilot-instructions.md` |
+| Cursor | `.cursor/rules/llmnav.mdc` |
+| MCP clients | `llmnav mcp`, using the shared agent tool schema |
+| Custom hosts | ESM API, typed exports, and a [runnable host example](docs/provider-neutral-integration.md) |
 
-See [docs/cli.md](docs/cli.md) for every option and exit code.
+For MCP editing sessions, `llmnav mcp --auto-generate` prepares indexes before semantic navigation requests. Reanalyze stale compiler inputs separately. The default MCP server reads existing indexes.
 
-## Generated layout
+See [agent integration](docs/agent-integration.md) for setup and [editor integration](docs/editor-integration.md) for diagnostics.
 
-```text
-.llmnav/
-  AGENT_INSTRUCTIONS.md
-  config.json
-  ids.jsonl
-  lexicon.json
-  order.lock
-  schema/
-    config.schema.json
-  eval/
-    queries.jsonl
-  state/                    # volatile, ignored
-    stat-hints.json
-  cache/                    # deterministic, commit this
-    index.json              # v0.1-compatible schemaVersion 1
-    cards.jsonl
-    search-index.json       # compact token dictionary, phrases, and postings
-    file-state.json         # deterministic parsed-file state
-    graph.json              # qualified nodes and provenance-aware edges
-    graph-state.json        # disposable content-addressed graph partitions
-    prompt-prefix.json      # explicit package, repository, and module cache partitions
-    repo-core.txt
-    agent-context.md
-    manifest.json
-    modules/
-      auth.session.txt
-      billing.credit.txt
-```
+## Language support
 
-`.llmnav/.transactions/`, `.llmnav/generation-transaction.json`, and `.llmnav/generation.lock` may exist only while a cache transaction is active or incomplete. They are ignored; abandoned state is recovered automatically after lock ownership is checked. Generated structure is never written back into source comments.
+Source cards support multiple [comment styles](docs/language-examples.md). Optional analysis has a separate support boundary:
 
-`order.lock` is append-only under normal development. New IDs are appended rather than inserted into a globally re-sorted catalog, preserving larger prompt prefixes as the repository grows.
+| Language | Analyzer | Useful details | Boundary |
+| --- | --- | --- | --- |
+| TypeScript | Installed TypeScript Compiler API 5 or 6 | Types, members, overloads, parameters, and resolved references | Supported Compiler API required |
+| JavaScript | Installed TypeScript Compiler API 5 or 6 | Inferred types, signatures, and resolved references | Dynamic runtime behavior remains unresolved |
+| Go | Installed Go toolchain | Types, fields, receiver methods, parameters, and resolved references | Active build constraints; excludes tests and cgo |
+| Python | Installed Python 3.9+ AST parser | Explicit annotations, lexical ownership, and parameters | Syntax only; no inferred call edges |
+| Rust | Built-in lexical extractor in an isolated Node process | Named types, fields, functions, and simple impl ownership | Partial syntax; no macro expansion or type checking |
 
-## Multilingual task language
+Details are opt-in and paged: `llmnav show <id> --metadata --members --top 5 --metadata-budget 4000 --json`. Unknown types stay unknown. See [analysis setup, support, and limits](docs/precise-analysis.md).
 
-Keep source cards in one repository language. Map product wording, local language, abbreviations, and retired names in `.llmnav/lexicon.json`.
+## Keep meaning, structure, and evidence separate
 
-```json
-{
-  "version": 1,
-  "aliases": {
-    "session renewal": "auth.session.rotate",
-    "token replay attack": "auth.session.rotate",
-    "credit reservation": "billing.credit.reserve"
-  }
-}
-```
+| Layer | Owned by | Examples |
+| --- | --- | --- |
+| Reviewed meaning | Human or coding agent | Role, invariant, effects, risks, semantic relations |
+| Generated structure | LLMNav and optional analyzers | Current location, signature, imports, types, references, hashes |
+| On-demand evidence | Git and caller-reported verification records | Last file change, source version, command, outcome, evidence hash |
 
-## Search regression gates
+A file change date is distinct from a function change date or a passing test. [Verification receipts](docs/local-evidence.md) track declared inputs and evidence; incomplete applicability stays `unknown`. Volatile evidence stays out of deterministic navigation artifacts.
 
-Add real task descriptions to `.llmnav/eval/queries.jsonl` and run `npx llmnav eval`. The default gates are Recall@1 at 0.75 and Recall@5 at 0.90. Large synthetic accuracy, speed, and memory regression tests are also part of this repository's test suite.
+## Built for repeated repository work
 
-The measured v0.2 benchmark report is in [docs/performance-v0.2.md](docs/performance-v0.2.md). It records the exact fixture, environment, fresh-process query timing, incremental and forced-full regeneration timing, memory, and byte-equivalence checks. The report does not present estimates as measurements.
+- **Incremental indexing:** reuse unchanged file parses and card tokenization.
+- **Recoverable generation:** stage and verify artifacts, serialize writers with a repository lock, and recover interrupted swaps.
+- **Bounded context:** limit result count, source bytes, metadata pages, graph depth, edges, and context budgets.
+- **Explainable retrieval:** deterministic lexical ranking, multilingual aliases, and regression queries.
+- **Reviewable artifacts:** commit `.llmnav/cache`, the ID registry, and the stable order lock; keep volatile state and transaction files ignored.
 
-## Recommended adoption boundary
+See [architecture](docs/architecture.md), [graph provenance](docs/graph.md), [configuration](docs/configuration.md), and [CI checks](docs/ci.md) for the details.
 
-Annotate architectural modules, public entry points, authentication and payment boundaries, privacy boundaries, migrations, orchestration code with multiple external effects, high fan-in symbols, and code with non-obvious invariants.
+## What the evaluations show
 
-Do not annotate trivial getters, generated files, obvious wrappers, every test function, or every private helper. LLMNav becomes worse when keyword-heavy comments cover the whole repository.
+The [controlled coding pilot](docs/model-coding-evaluation.md) tested eight small repairs in each condition:
 
-## Current implementation boundary
+| Condition | Accepted repairs | Uncached input tokens, total |
+| --- | ---: | ---: |
+| Ordinary navigation | 8/8 | 96,393 |
+| LLMNav 0.15.3 | 8/8 | 138,655 |
+| Serena | 8/8 | 177,084 |
 
-The deterministic coverage audit prioritizes root and nested-package entrypoints, structural boundaries, persistent artifact filename protocols, versioned schema literals, Rust/Tauri runtime signals, TypeScript Tauri invoke adapters, and high fan-in modules. It suppresses declaration files, dependency caches, test support code, simple barrels, and low-fan-in broad utilities. It suggests narrow coverage rules but never writes cards or invents semantic roles. Exact reviewed dispositions suppress known non-boundaries while stale dispositions expose obsolete decisions. Use `llmnav audit --summary --json` for a compact automation result or `llmnav audit --json --output .llmnav/audit.json` to keep the full candidate report out of captured stdout.
+These are historical observations from one pilot completed on **2026-10-25**, not a benchmark of the current release. They support successful task completion in that fixture, while LLMNav used more uncached input than ordinary navigation.
 
-LLMNav does not discover sibling repositories automatically and does not ship an embedding database, hosted service, SCIP generator, or complete language-aware call graph. External tools may export the documented compact graph-input schema. Generated structure never writes derived edges into source cards.
+The subsequent [token cost review](docs/token-cost-review.md) documents source excerpts and conditional routing, including cohorts that still showed higher token use. Use LLMNav when it helps locate an unclear responsibility or recover needed context, and measure its cost on your own tasks.
+
+| Explore the evidence | Report |
+| --- | --- |
+| Identifier retrieval on real TypeScript and Go code | [Navigation pilot](docs/real-navigation-pilot.md) |
+| Symbol lookup against Serena | [Serena comparison](docs/serena-comparison.md) |
+| Compiler metadata accuracy, size, and lookup costs | [Metadata evaluation](docs/code-metadata-evaluation.md) |
+| Python, Rust, and JavaScript support and costs | [Local analysis evaluation](docs/local-analysis-evaluation.md) |
 
 ## Documentation
 
-* [Quick start](docs/quickstart.md)
-* [Normative `llmnav/1` specification](docs/spec.md)
-* [CLI reference](docs/cli.md)
-* [Configuration reference](docs/configuration.md)
-* [Programmatic API](docs/api.md)
-* [Architecture and cache design](docs/architecture.md)
-* [Repository graph](docs/graph.md)
-* [Agent integration](docs/agent-integration.md)
-* [Editor integration](docs/editor-integration.md)
-* [Provider-neutral host integration](docs/provider-neutral-integration.md)
-* [CI and enforcement](docs/ci.md)
-* [Gradual migration](docs/migration.md)
-* [Language examples](docs/language-examples.md)
-* [Benchmarking methodology](docs/benchmarking.md)
-* [Real TypeScript and Go navigation pilot](docs/real-navigation-pilot.md)
-* [Serena symbol lookup comparison](docs/serena-comparison.md)
-* [Controlled model coding evaluation](docs/model-coding-evaluation.md)
-* [Measured v0.2 performance](docs/performance-v0.2.md)
-* [Research basis](docs/research.md)
-* [Publishing checklist](docs/publishing.md)
-* [FAQ](docs/faq.md)
+| Goal | Read |
+| --- | --- |
+| Adopt gradually | [Quick start](docs/quickstart.md) · [Migration](docs/migration.md) · [FAQ](docs/faq.md) |
+| Use the commands or library | [CLI](docs/cli.md) · [API](docs/api.md) · [Configuration](docs/configuration.md) |
+| Write meaningful cards | [Source specification](docs/spec.md) · [Language examples](docs/language-examples.md) |
+| Integrate agents and editors | [Agent setup](docs/agent-integration.md) · [Host example](docs/provider-neutral-integration.md) · [Editor setup](docs/editor-integration.md) |
+| Inspect structure and evidence | [Analysis](docs/precise-analysis.md) · [Graphs](docs/graph.md) · [History and verification](docs/local-evidence.md) |
+| Evaluate and maintain | [Benchmarking](docs/benchmarking.md) · [Research](docs/research.md) · [Publishing](docs/publishing.md) |
 
 ## Development
 
 ```sh
 npm ci
-npm test
-npm run test:coverage
-npm run lint
 npm run check
-npm run smoke:pack
-npm run benchmark:v0.2
+npm pack --dry-run
 ```
 
-The project uses the Node.js standard library and built-in test runner. There is no build step and no production dependency tree to audit.
+There is no build step. Checks use Node's built-in test runner; TypeScript is a development dependency for adapter tests.
 
-## Status
-
-LLMNav is a pre-1.0 CLI and ESM library. The source format remains `llmnav/1`, and the primary index uses schemaVersion 1. Package, source-protocol, and generated-format versions change independently; see the [compatibility policy](docs/compatibility.md) and [roadmap](ROADMAP.md) for their respective guarantees and remaining 1.0 criteria.
+LLMNav is pre-1.0. The `llmnav/1` source protocol and schemaVersion 1 primary index have separate [compatibility rules](docs/compatibility.md). See the [roadmap](ROADMAP.md) for remaining 1.0 criteria.
 
 ## License
 
-MIT
-
-### Search boundaries
-
-Latin aliases match complete words (case insensitive): `auth` matches `auth-token`, but not `author` or `authentication`. Punctuation inside aliases, such as `sign-in` or `node.js`, stays literal. CJK aliases retain substring matching.
-
-Normal queries score responsibilities and code metadata; `excludes` text contributes no positive score. Query `llmnav query "excludes: billing"` to inspect cards explicitly excluding that responsibility. These results carry an `excludes=` reason and do not expand through relations.
-
-Default source selection includes `.mts` and `.cts`. Existing configurations with explicit `includeExtensions` lists need those extensions added if desired; `.d.mts` and `.d.cts` follow the existing `.d.ts` inclusion policy.
-
-### Start without semantic cards
-
-Run `llmnav discover "rotate session" --top 5` before initialization or index generation. It reads selected live source files and ranks paths, declaration names and signatures, including camel-case identifiers. JSON output labels each candidate as `source: "file"` or `source: "declaration"` and lists any same-file `cardIds`. `llmnav_discover` exposes the same operation over MCP without loading or creating an index.
-
-For a focused edit, use `llmnav discover "rotateSession" --top 1 --include-source --source-budget 4000 --json`, or MCP `{ task: "rotateSession", top: 1, includeSource: true }`. A bounded live excerpt can replace the immediate follow-up file read; inspect more only if it is insufficient or truncated. The default is 4,000 UTF-8 source bytes shared across results. When you already know the file and symbol, a direct bounded read or exact text search may be cheaper than adding semantic navigation.
-
-See the [token cost review](docs/token-cost-review.md) for measured overhead, before/after results and the limits of the savings evidence.
-
-Discovery uses syntax heuristics and the repository language; it does not infer business meaning or translate a query automatically. Read the candidate source, then run `llmnav explain <path>` or `llmnav audit` to decide whether one durable boundary deserves a card. Add a narrow coverage rule and one retrieval query after review. Existing `query`, `show`, and `context` keep their semantic-card contracts.
-
-For editing sessions, run `llmnav mcp --auto-generate` to prepare current indexes before semantic navigation calls.
-
-### Compiler and syntax navigation
-
-Run `llmnav analyze --language typescript`, `javascript` or `go` with installed compiler tooling. Python uses the installed standard AST parser; Rust provides conservative built-in syntax extraction. Add `--metadata` for bounded type/signature details, publish with `--output`, configure `graph.indexFiles`, then generate. `discover --precise` finds saved declarations and passes IDs to `show` and `context`, distinguishing syntax from compiler precision. Source hashes reject stale inputs. See [analysis support and limits](docs/precise-analysis.md), [file history and verification receipts](docs/local-evidence.md), and [measured costs](docs/local-analysis-evaluation.md).
-
-Add `--metadata` during analysis to extract compiler types, signatures, parameters and ownership. Request details with `llmnav show <id> --metadata --json`, or page direct members with `--metadata --members --top 5 --offset 0 --metadata-budget 4000`. Default navigation responses stay compact. Metadata increases analysis/storage costs; see the [measured comparison](docs/code-metadata-evaluation.md).
+[MIT](LICENSE)
