@@ -12,7 +12,7 @@ stability=architecture
 
 import { throwIfAborted } from "./abort.js";
 import { extractSourceDeclarations } from "./declaration.js";
-import { loadGraphInputs } from "./graph-input.js";
+import { loadProjectGraphInputs } from "./graph-input.js";
 import { scanProject } from "./project.js";
 import { DISCOVERY_RANK, DISCOVERY_SOURCE_LIMITS, SEARCH_LIMITS } from "./policy.js";
 import { normalizeSearchText, tokenize } from "./tokenizer.js";
@@ -44,7 +44,7 @@ export async function discoverProject(root, query, options = {}) {
   const spans = new WeakMap();
   let compiled = null;
   if (options.precise === true) {
-    const loaded = await loadGraphInputs(root, project.config, options);
+    const loaded = await loadProjectGraphInputs(project, options);
     if (loaded.diagnostics.length) throw new Error(loaded.diagnostics.map(item => item.message).join("; "));
     compiled = new Map();
     for (const index of loaded.indexes) {

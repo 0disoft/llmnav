@@ -11,7 +11,7 @@ stability=contract
 */
 
 import { discoverProject } from "./discovery.js";
-import { loadGraphInputs } from "./graph-input.js";
+import { loadProjectGraphInputs } from "./graph-input.js";
 import { scanProject } from "./project.js";
 import { buildContext, queryProject, SemanticIdLookupError, showProjectCard } from "./search.js";
 import { countDiagnostics, validateProject } from "./validator.js";
@@ -193,7 +193,7 @@ async function handleCheck(input, root, options) {
     paths: input.paths ?? [],
     ...(registry === undefined ? {} : { registry }),
   });
-  const graphInputs = await loadGraphInputs(root, project.config, options);
+  const graphInputs = await loadProjectGraphInputs(project, options);
   const diagnostics = [...validateProject(project), ...graphInputs.diagnostics].sort(compareDiagnostics);
   const counts = countDiagnostics(diagnostics);
   return { data: { counts, diagnostics, cardCount: project.records.length }, ok: counts.error === 0 };

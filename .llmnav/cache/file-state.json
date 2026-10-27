@@ -3161,7 +3161,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "d835477b3e6dbfdb0cd6c3381ec8296db99150eb1f8482b2c733210934ca0d9d",
+      "contentHash": "9ac70b55e65a831e5f6672198af68c0295d6ef03c791689e91bce991d5494fb3",
       "declarations": [
         null
       ],
@@ -3182,7 +3182,7 @@
       ],
       "path": "src/agent-protocol.js",
       "semanticBytes": 528,
-      "sourceBytes": 10910
+      "sourceBytes": 10911
     },
     {
       "blocks": [
@@ -3962,7 +3962,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "d7c33f4841b70c357eba252e8d73d9533713e8f7c4c4bf3099617c16d55def97",
+      "contentHash": "fcb7ba60b90d9998c93fdc5d56de5a7694dcddc62d483756229da4be920db19a",
       "declarations": [
         null
       ],
@@ -3997,7 +3997,7 @@
       ],
       "path": "src/cli.js",
       "semanticBytes": 508,
-      "sourceBytes": 29475
+      "sourceBytes": 29476
     },
     {
       "blocks": [
@@ -4639,7 +4639,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "4ae038eaccd7bcc71e8e9870dc750ad73e3b86108e8d5e54c8cc2f103b20f049",
+      "contentHash": "dc91b6637b32e29b55c0d9f0b576f7b9c2bee72507261b8bbe9c6133d45fdaf3",
       "declarations": [
         null
       ],
@@ -4654,7 +4654,7 @@
       ],
       "path": "src/discovery.js",
       "semanticBytes": 597,
-      "sourceBytes": 7752
+      "sourceBytes": 7753
     },
     {
       "blocks": [
@@ -5517,7 +5517,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "fe114e255cec4beaafbff57de087528562f8f2c13da47bcbff907e88d3c419dc",
+      "contentHash": "4fb916facbcb4fb8aa2669546c1edfdf7e36d15a611dd70a31fdedd4a1fe8701",
       "declarations": [
         null
       ],
@@ -5548,7 +5548,7 @@
       ],
       "path": "src/generator.js",
       "semanticBytes": 476,
-      "sourceBytes": 24081
+      "sourceBytes": 24082
     },
     {
       "blocks": [
@@ -5672,11 +5672,14 @@
               "source mutation"
             ],
             "id": "llmnav.graph.import",
-            "invariant": [],
+            "invariant": [
+              "Compiler facts are combined with scanned source only when their validated contents agree."
+            ],
             "owns": [
               "graph import schema",
               "input normalization",
-              "graph input diagnostics"
+              "graph input diagnostics",
+              "source snapshot consistency"
             ],
             "rel": [
               "workflow>llmnav.index.generate"
@@ -5692,8 +5695,8 @@
             "stability": "architecture",
             "unknown": []
           },
-          "end": 397,
-          "endLine": 9,
+          "end": 525,
+          "endLine": 10,
           "entries": [
             {
               "key": "id",
@@ -5711,7 +5714,7 @@
               "key": "owns",
               "line": 4,
               "order": 2,
-              "value": "graph import schema|input normalization|graph input diagnostics"
+              "value": "graph import schema|input normalization|graph input diagnostics|source snapshot consistency"
             },
             {
               "key": "excludes",
@@ -5726,15 +5729,21 @@
               "value": "definition index import|reference index import|graph input validation"
             },
             {
-              "key": "rel",
+              "key": "invariant",
               "line": 7,
               "order": 5,
+              "value": "Compiler facts are combined with scanned source only when their validated contents agree."
+            },
+            {
+              "key": "rel",
+              "line": 8,
+              "order": 6,
               "value": "workflow>llmnav.index.generate"
             },
             {
               "key": "stability",
-              "line": 8,
-              "order": 6,
+              "line": 9,
+              "order": 7,
               "value": "architecture"
             }
           ],
@@ -5742,7 +5751,7 @@
           "indent": "",
           "newline": "\n",
           "prefix": null,
-          "raw": "/* llmnav/1 module\nid=llmnav.graph.import\nrole=Load and validate optional generated definition and reference indexes without executing repository code.\nowns=graph import schema|input normalization|graph input diagnostics\nexcludes=graph ranking|source mutation\nsearch=definition index import|reference index import|graph input validation\nrel=workflow>llmnav.index.generate\nstability=architecture\n*/",
+          "raw": "/* llmnav/1 module\nid=llmnav.graph.import\nrole=Load and validate optional generated definition and reference indexes without executing repository code.\nowns=graph import schema|input normalization|graph input diagnostics|source snapshot consistency\nexcludes=graph ranking|source mutation\nsearch=definition index import|reference index import|graph input validation\ninvariant=Compiler facts are combined with scanned source only when their validated contents agree.\nrel=workflow>llmnav.index.generate\nstability=architecture\n*/",
           "scope": "module",
           "specVersion": "1",
           "start": 0,
@@ -5751,7 +5760,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "bbc0bd27a091fc7bd660cc5bbebe7deb39671e4b2f07c0c8217ae2e2fe056c6e",
+      "contentHash": "455cec5db0c6c84d6be6fba030e743fa2d098dd4a2d392f985d0053ef3fc2add",
       "declarations": [
         null
       ],
@@ -5767,8 +5776,8 @@
         "node:path"
       ],
       "path": "src/graph-input.js",
-      "semanticBytes": 397,
-      "sourceBytes": 9519
+      "semanticBytes": 525,
+      "sourceBytes": 10731
     },
     {
       "blocks": [
@@ -8001,7 +8010,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "09734463540ccfcbff310c63eab7bc0677ba5792e9f9260e44ed22521b8ee0bd",
+      "contentHash": "da6dc76d0c5f76fb9777a411e2298cda85a770ffdb38e5b5fd45d608af22f9e2",
       "declarations": [
         null
       ],
@@ -9008,6 +9017,25 @@
       "path": "tests/graph-search.test.js",
       "semanticBytes": 0,
       "sourceBytes": 17053
+    },
+    {
+      "blocks": [],
+      "contentHash": "685ef660846caa3478a424d0578c2a0771848cfc157bee46b7a13034085fafea",
+      "declarations": [],
+      "imports": [
+        "../src/agent-protocol.js",
+        "../src/discovery.js",
+        "../src/generator.js",
+        "../src/util.js",
+        "node:assert/strict",
+        "node:fs/promises",
+        "node:os",
+        "node:path",
+        "node:test"
+      ],
+      "path": "tests/graph-snapshot.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 4613
     },
     {
       "blocks": [],

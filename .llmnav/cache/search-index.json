@@ -74,7 +74,7 @@
     "llmnav.support.runtime",
     "llmnav.syntax.parse"
   ],
-  "cardSetHash": "76a139e7339a4ba2409865c2827f460721039ce1eacefb749f87860aa7ce0b79",
+  "cardSetHash": "56b4192859b5b6f4f6a4709378e74a2ea95b8fa4e4a376efc173cc98808f9cf1",
   "documentCount": 73,
   "documents": [
     [
@@ -511,15 +511,17 @@
       ]
     ],
     [
-      "add8cc7e26264ef79f9d70e2c783262cb667aae91fec40bf74f427904ca8849a",
+      "57ee8bae28cd3472872a59e5278138506d77170fe2fedd122f010c4edc040409",
       [
         "load and validate optional generated definition and reference indexes without executing repository code.",
         "definition index import",
         "reference index import",
         "graph input validation",
+        "compiler facts are combined with scanned source only when their validated contents agree.",
         "graph import schema",
         "input normalization",
-        "graph input diagnostics"
+        "graph input diagnostics",
+        "source snapshot consistency"
       ]
     ],
     [
@@ -1712,6 +1714,15 @@
     ],
     [
       [
+        34,
+        [
+          5,
+          1
+        ]
+      ]
+    ],
+    [
+      [
         65,
         [
           3,
@@ -2611,6 +2622,13 @@
       ],
       [
         20,
+        [
+          5,
+          1
+        ]
+      ],
+      [
+        34,
         [
           5,
           1
@@ -4889,6 +4907,15 @@
     ],
     [
       [
+        34,
+        [
+          5,
+          1
+        ]
+      ]
+    ],
+    [
+      [
         16,
         [
           2,
@@ -5113,6 +5140,13 @@
         26,
         [
           1,
+          1
+        ]
+      ],
+      [
+        34,
+        [
+          5,
           1
         ]
       ],
@@ -5457,6 +5491,13 @@
     ],
     [
       [
+        34,
+        [
+          3,
+          1
+        ]
+      ],
+      [
         45,
         [
           3,
@@ -5558,6 +5599,13 @@
         30,
         [
           1,
+          1
+        ]
+      ],
+      [
+        34,
+        [
+          5,
           1
         ]
       ]
@@ -8265,6 +8313,13 @@
         26,
         [
           1,
+          1
+        ]
+      ],
+      [
+        34,
+        [
+          5,
           1
         ]
       ]
@@ -14368,6 +14423,13 @@
         ]
       ],
       [
+        34,
+        [
+          5,
+          1
+        ]
+      ],
+      [
         50,
         [
           1,
@@ -18512,6 +18574,15 @@
     ],
     [
       [
+        34,
+        [
+          5,
+          1
+        ]
+      ]
+    ],
+    [
+      [
         22,
         [
           2,
@@ -19600,6 +19671,13 @@
           3,
           1
         ]
+      ],
+      [
+        34,
+        [
+          3,
+          1
+        ]
       ]
     ],
     [
@@ -19765,7 +19843,11 @@
       [
         34,
         [
+          3,
+          1,
           4,
+          1,
+          5,
           1
         ]
       ],
@@ -21577,6 +21659,13 @@
         32,
         [
           1,
+          1
+        ]
+      ],
+      [
+        34,
+        [
+          5,
           1
         ]
       ]
@@ -22622,6 +22711,13 @@
     ],
     [
       [
+        34,
+        [
+          5,
+          1
+        ]
+      ],
+      [
         36,
         [
           1,
@@ -22985,6 +23081,13 @@
         ]
       ],
       [
+        34,
+        [
+          5,
+          1
+        ]
+      ],
+      [
         42,
         [
           5,
@@ -23070,6 +23173,13 @@
         33,
         [
           1,
+          1
+        ]
+      ],
+      [
+        34,
+        [
+          5,
           1
         ]
       ],
@@ -23501,6 +23611,7 @@
     "agent",
     "agents",
     "aggregate",
+    "agree",
     "alias",
     "aliases",
     "all",
@@ -23631,6 +23742,7 @@
     "codes",
     "coding",
     "collect",
+    "combined",
     "command",
     "comment",
     "comments",
@@ -24241,6 +24353,7 @@
     "sanitized",
     "sarif",
     "scan",
+    "scanned",
     "scanning",
     "scans",
     "scheduling",

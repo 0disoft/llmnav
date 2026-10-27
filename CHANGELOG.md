@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.19.7] — 2026-10-27
+
+### Fixed
+
+* Bind schema 2/3 compiler input validation to the source content already scanned by generation, checks and precise discovery. Reuse the freshness read to reject mixed source versions before combining cards, excerpts and compiler definitions. A deterministic reproduction previously returned a `Phantom` result with a `Stable` excerpt and successfully published that mixed index; the regression now rejects precise discovery, full/incremental generation and agent checks while preserving published outputs. Keep byte hashes, legacy decoded-text hashes, schema 1 indexes and public API signatures unchanged. The single-file reproduction still performs two source reads; the snapshot lookup adds O(F) bookkeeping for F scanned files and no additional source I/O.
+
 ## [0.19.6] — 2026-10-27
 
 ### Fixed

@@ -51,7 +51,7 @@ import { loadConfig } from "./config.js";
 import { buildContractFingerprints, compareContractFingerprints } from "./contracts.js";
 import { detectBoundaries } from "./boundaries.js";
 import { buildSearchShards, SEARCH_SHARD_SCHEMA_VERSION } from "./search-shards.js";
-import { loadGraphInputs } from "./graph-input.js";
+import { loadProjectGraphInputs } from "./graph-input.js";
 import {
   buildRepositoryGraphIncremental,
   GRAPH_SCHEMA_VERSION,
@@ -115,7 +115,7 @@ async function generateProjectLocked(root, options) {
   const project = scan.project;
 
   throwIfAborted(options.signal);
-  const graphInputs = await loadGraphInputs(root, project.config, options);
+  const graphInputs = await loadProjectGraphInputs(project, options);
   project.graphInputs = graphInputs.indexes;
   const diagnostics = [...validateProject(project), ...graphInputs.diagnostics].sort(compareGeneratedDiagnostics);
   const counts = countDiagnostics(diagnostics);

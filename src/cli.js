@@ -38,7 +38,7 @@ import {
 } from "./spec.js";
 import { assertNoSymlinkTraversal, atomicWrite, parseInteger, relativePosix } from "./util.js";
 import { diagnosticsToSarif } from "./sarif.js";
-import { loadGraphInputs } from "./graph-input.js";
+import { loadProjectGraphInputs } from "./graph-input.js";
 import { renderGraphNode } from "./graph.js";
 import { getAgentToolDefinitions } from "./agent-protocol.js";
 import { serveMcpStdio } from "./mcp.js";
@@ -191,7 +191,7 @@ async function runCheck(root, args, json) {
   if (!["text", "json", "github", "sarif", "editor"].includes(format)) throw usageError(`Unknown diagnostic format ${JSON.stringify(format)}.`);
   const paths = getPositionals(args);
   const project = await scanProject(root, { paths });
-  const graphInputs = await loadGraphInputs(root, project.config);
+  const graphInputs = await loadProjectGraphInputs(project);
   const diagnostics = [...validateProject(project), ...graphInputs.diagnostics].sort(compareCliDiagnostics);
   const counts = countDiagnostics(diagnostics);
   const ok = counts.error === 0;

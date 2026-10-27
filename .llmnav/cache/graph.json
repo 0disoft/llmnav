@@ -5170,7 +5170,7 @@
       "key": "llmnav/llmnav.graph.import",
       "location": {
         "declarationLine": null,
-        "endLine": 9,
+        "endLine": 10,
         "exported": null,
         "kind": null,
         "language": null,
@@ -6025,7 +6025,7 @@
   ],
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "3fef403d19cde3a064d6b2354c5e5fb2da9cd0f4cec1ca0da7249b7bd98b2b67",
+  "sourceHash": "8f093b3dcfd3fbb1c60f84a62f48f70833af10a136575548768694a233e48a2b",
   "stats": {
     "edgeCount": 311,
     "importedIndexCount": 0,

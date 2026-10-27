@@ -3,8 +3,9 @@ Read semantic cards before opening source. Resolve current paths and signatures 
 
 @llmnav.graph.import
 role Load and validate optional generated definition and reference indexes without executing repository code.
-owns graph import schema, input normalization, graph input diagnostics
+owns graph import schema, input normalization, graph input diagnostics, source snapshot consistency
 excludes graph ranking, source mutation
+invariant Compiler facts are combined with scanned source only when their validated contents agree.
 rel workflow>llmnav.index.generate
 
 @llmnav.graph.generate

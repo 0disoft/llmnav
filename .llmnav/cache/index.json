@@ -393,7 +393,7 @@
         "index persistence format"
       ],
       "hashes": {
-        "body": "d7c33f4841b70c357eba252e8d73d9533713e8f7c4c4bf3099617c16d55def97",
+        "body": "fcb7ba60b90d9998c93fdc5d56de5a7694dcddc62d483756229da4be920db19a",
         "semantic": "f4671d61fc8164fc24498faa91ba84f777e28a7f325750991908542867a69b6e",
         "structure": "c47d2424b523b517bca23b76cdfc86f6ded00661f3b033aabf4966df587f4a62"
       },
@@ -516,7 +516,7 @@
         "agent search decisions"
       ],
       "hashes": {
-        "body": "fe114e255cec4beaafbff57de087528562f8f2c13da47bcbff907e88d3c419dc",
+        "body": "4fb916facbcb4fb8aa2669546c1edfdf7e36d15a611dd70a31fdedd4a1fe8701",
         "semantic": "7052622c9732ab29e37c3ab87f848188e931f601684e811e7bb8adef31fbfe85",
         "structure": "aa3268053c71247ce97d79c75afc0dcdd2c67104a70f35b1691e7e003012be63"
       },
@@ -1224,8 +1224,8 @@
         "source mutation"
       ],
       "hashes": {
-        "body": "bbc0bd27a091fc7bd660cc5bbebe7deb39671e4b2f07c0c8217ae2e2fe056c6e",
-        "semantic": "c4122aabf96e2489fbb8561b5614b963a8dabc6762a85e8fb378b472dd3fc9dd",
+        "body": "455cec5db0c6c84d6be6fba030e743fa2d098dd4a2d392f985d0053ef3fc2add",
+        "semantic": "fbf73eefe742fc4c906eefd0cea01f7a698e500b2cba3472b5642647af792373",
         "structure": "3619722ba008f8a5f27b47f6595341b531a014900d9d4d5a672b5bc3742e9b6f"
       },
       "id": "llmnav.graph.import",
@@ -1240,9 +1240,12 @@
         "./validator.js",
         "node:path"
       ],
+      "invariant": [
+        "Compiler facts are combined with scanned source only when their validated contents agree."
+      ],
       "location": {
         "declarationLine": null,
-        "endLine": 9,
+        "endLine": 10,
         "exported": null,
         "kind": null,
         "language": null,
@@ -1256,7 +1259,8 @@
       "owns": [
         "graph import schema",
         "input normalization",
-        "graph input diagnostics"
+        "graph input diagnostics",
+        "source snapshot consistency"
       ],
       "rel": [
         "workflow>llmnav.index.generate"
@@ -1331,7 +1335,7 @@
         "source mutation"
       ],
       "hashes": {
-        "body": "d835477b3e6dbfdb0cd6c3381ec8296db99150eb1f8482b2c733210934ca0d9d",
+        "body": "9ac70b55e65a831e5f6672198af68c0295d6ef03c791689e91bce991d5494fb3",
         "semantic": "ce30fe54e5dab8eb3cda8e1e6afdcee3489c3f62267d99ff85257f4c819d21a4",
         "structure": "153d65cff2df19a61ea35a51ab63582e2ef7db826abd1a8014d50ee7719d7aae"
       },
@@ -1909,7 +1913,7 @@
         "source parsing"
       ],
       "hashes": {
-        "body": "09734463540ccfcbff310c63eab7bc0677ba5792e9f9260e44ed22521b8ee0bd",
+        "body": "da6dc76d0c5f76fb9777a411e2298cda85a770ffdb38e5b5fd45d608af22f9e2",
         "semantic": "59aa3e9e793d505ecdf110fec023c201aaee0154d2f6c9cf71afe1bbf71a7be5",
         "structure": "e213e073414c75bc75df1c8669a7045096142b6c0845694191893d90bf23e3c2"
       },
@@ -2635,7 +2639,7 @@
         "semantic ID assignment"
       ],
       "hashes": {
-        "body": "4ae038eaccd7bcc71e8e9870dc750ad73e3b86108e8d5e54c8cc2f103b20f049",
+        "body": "dc91b6637b32e29b55c0d9f0b576f7b9c2bee72507261b8bbe9c6133d45fdaf3",
         "semantic": "172ba02627952bedcf36390a976b34f698fd1f73db8c2f9398d21bcc26c5cae6",
         "structure": "6d3be839052ef2fbbbc4917adb42669807ea75e8b4cabab64ff53cc4b66da6be"
       },
@@ -3793,9 +3797,9 @@
     },
     "schemaVersion": 1
   },
-  "generatedBy": "llmnav@0.19.6",
+  "generatedBy": "llmnav@0.19.7",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "5419ab3a0c9bef2c00342cc70539f2feaef8f9e4df901ed330bcf68289402524",
+  "sourceHash": "00ae32d622a699267f5d46c457224d6b6db186aa098863915b01dfa5fc9edd74",
   "specVersion": "1"
 }

@@ -1,9 +1,10 @@
 /* llmnav/1 module
 id=llmnav.graph.import
 role=Load and validate optional generated definition and reference indexes without executing repository code.
-owns=graph import schema|input normalization|graph input diagnostics
+owns=graph import schema|input normalization|graph input diagnostics|source snapshot consistency
 excludes=graph ranking|source mutation
 search=definition index import|reference index import|graph input validation
+invariant=Compiler facts are combined with scanned source only when their validated contents agree.
 rel=workflow>llmnav.index.generate
 stability=architecture
 */
@@ -32,6 +33,16 @@ export function compilerInputPaths(value) {
 }
 
 export async function loadGraphInputs(root, config, options = {}) {
+  return readGraphInputs(root, config, options);
+}
+
+// Internal: consumers combining cards/source excerpts and compiler facts need one snapshot.
+export async function loadProjectGraphInputs(project, options = {}) {
+  const sourceSnapshot = new Map(project.fileRecords.map(file => [file.relativePath, file.contentHash]));
+  return readGraphInputs(project.root, project.config, options, sourceSnapshot);
+}
+
+async function readGraphInputs(root, config, options, sourceSnapshot) {
   const indexes = [];
   const diagnostics = [];
   for (const relativePath of [...config.graph.indexFiles].sort(compareText)) {
@@ -44,7 +55,7 @@ export async function loadGraphInputs(root, config, options = {}) {
       const parsed = JSON.parse(text);
       if (parsed.schemaVersion >= 2) {
         normalizeGraphInput(parsed, file);
-        await assertCompilerInputFresh(root, parsed, config, options);
+        await assertCompilerInputFreshSnapshot(root, parsed, config, options, sourceSnapshot);
       }
       indexes.push(normalizeGraphInput(parsed, file, sha256(text)));
     } catch (error) {
@@ -182,6 +193,10 @@ function compareReferences(left, right) {
 }
 
 export async function assertCompilerInputFresh(root, parsed, config, options = {}) {
+  return assertCompilerInputFreshSnapshot(root, parsed, config, options);
+}
+
+async function assertCompilerInputFreshSnapshot(root, parsed, config, options, sourceSnapshot) {
   const adapter = parsed.generator?.match(/^llmnav-(typescript|javascript|go|python|rust)(?:-syntax)?@1;/u)?.[1];
   if (adapter) {
     const extension = analysisFilePattern(adapter);
@@ -194,7 +209,13 @@ export async function assertCompilerInputFresh(root, parsed, config, options = {
     const sourcePath = path.join(root, source);
     await assertNoSymlinkTraversal(root, sourcePath, source);
     const bytes = await readBytes(sourcePath, null, options);
-    // Accept existing text hashes while new compiler configuration hashes preserve every byte.
-    if (bytes === null || sha256(bytes) !== hash && sha256(bytes.toString("utf8")) !== hash) throw new Error(`Stale compiler analysis for ${source}; run llmnav analyze again.`);
+    if (bytes === null) throw new Error(`Stale compiler analysis for ${source}; run llmnav analyze again.`);
+    // Reuse the same consumed bytes for graph freshness and scanned-text consistency.
+    const byteHash = sha256(bytes);
+    let textHash;
+    const matches = expected => byteHash === expected || (textHash ??= sha256(bytes.toString("utf8"))) === expected;
+    if (!matches(hash)) throw new Error(`Stale compiler analysis for ${source}; run llmnav analyze again.`);
+    const scannedHash = sourceSnapshot?.get(source);
+    if (scannedHash !== undefined && !matches(scannedHash)) throw new Error(`Compiler input changed since source scan: ${source}; retry the operation.`);
   }, { signal: options.signal });
 }
