@@ -2931,7 +2931,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "8cdb9354820def898ae3d8089843c6b9eb38707f275b66249d176d5504f09bdb",
+      "contentHash": "5f05f3aa3463665005541361cd5ad0a17c2514f8f1a7b8229fe048c7c1fd5af4",
       "declarations": [
         null
       ],
@@ -2944,7 +2944,7 @@
       ],
       "path": "src/adapters/typescript-worker.js",
       "semanticBytes": 581,
-      "sourceBytes": 12014
+      "sourceBytes": 12092
     },
     {
       "blocks": [

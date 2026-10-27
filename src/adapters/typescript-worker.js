@@ -133,7 +133,9 @@ function analyze(request) {
     let bytes;
     try {
       const canonical = realpathSync(absolute);
-      if (!inside(root, absolute) || !inside(root, canonical)) throw new Error("TypeScript configuration must stay inside the repository without escaping symlinks.");
+      if (!inside(root, absolute) || !inside(root, canonical)) {
+        throw new Error(`TypeScript configuration must stay inside the repository without escaping symlinks. ${JSON.stringify({ root, requested: absolute, canonical })}`);
+      }
       bytes = readFileSync(absolute);
     } catch (error) { if (error.code === "ENOENT" || error.code === "ENOTDIR") return undefined; throw error; }
     const name = path.relative(root, absolute).split(path.sep).join("/");
