@@ -331,7 +331,7 @@ export interface LlmnavConfig {
 
 export interface AgentToolDefinition {
   schemaVersion: 7;
-  name: "llmnav_history" | "llmnav_query" | "llmnav_show" | "llmnav_context" | "llmnav_check" | "llmnav_explain" | "llmnav_audit" | "llmnav_discover";
+  name: "llmnav_verification" | "llmnav_history" | "llmnav_query" | "llmnav_show" | "llmnav_context" | "llmnav_check" | "llmnav_explain" | "llmnav_audit" | "llmnav_discover";
   description: string;
   inputSchema: {
     type: "object";
@@ -343,7 +343,7 @@ export interface AgentToolDefinition {
 
 export interface AgentOperationResult<T = unknown> {
   schemaVersion: 1;
-  operation: "history" | "query" | "show" | "context" | "check" | "explain" | "audit" | "discover" | "unknown";
+  operation: "verification" | "history" | "query" | "show" | "context" | "check" | "explain" | "audit" | "discover" | "unknown";
   ok: boolean;
   data: T | null;
   error: { code: string; message: string } | null;
@@ -1038,3 +1038,46 @@ export interface FileHistory {
   worktreeHash?: string | null;
 }
 export function getFileHistory(root: string, file: string, options?: ReadOptions & { gitCommand?: string; timeoutMs?: number }): Promise<FileHistory>;
+
+export interface VerificationSnapshot {
+  schemaVersion: 1;
+  capturedAt: string;
+  scope: "explicit-files";
+  completeInputs: boolean;
+  sourceHashes: Record<string, string>;
+  environment: Record<string, string>;
+  context: Record<string, string>;
+}
+export interface VerificationReceipt {
+  schemaVersion: 1;
+  provenance: "caller-reported";
+  snapshot: VerificationSnapshot;
+  command: string[];
+  outcome: "passed" | "failed" | "unknown";
+  startedAt: string;
+  finishedAt: string;
+  evidence: Array<{ path: string; sha256: string }>;
+  recordingSourceMatch: "matches" | "stale";
+}
+export interface VerificationStatus {
+  schemaVersion: 1;
+  id: string;
+  status: "available" | "unknown";
+  applicability: "matches" | "stale" | "unknown";
+  outcome?: VerificationReceipt["outcome"];
+  provenance?: "caller-reported";
+  scope?: "explicit-files";
+  startedAt?: string;
+  finishedAt?: string;
+  sourceCount?: number;
+  sourceMatch?: "matches" | "stale";
+  environmentMatch?: "matches" | "stale" | "unknown";
+  evidenceMatch?: "matches" | "stale" | "unknown";
+  receipt?: VerificationReceipt;
+  detailsOmitted?: boolean;
+  requiredBytes?: number;
+  reason?: "receipt-not-found";
+}
+export function captureVerificationSnapshot(root: string, paths: string[], options?: ReadOptions & { now?: () => number; context?: Record<string, string>; completeInputs?: boolean }): Promise<VerificationSnapshot>;
+export function recordVerification(root: string, input: { snapshot: VerificationSnapshot; command: string[]; outcome: VerificationReceipt["outcome"]; evidence?: string[] }, options?: ReadOptions & { now?: () => number }): Promise<{ id: string; path: string; receipt: VerificationReceipt }>;
+export function getVerification(root: string, id: string, options?: ReadOptions & { context?: Record<string, string>; details?: boolean; metadataBudget?: number }): Promise<VerificationStatus>;

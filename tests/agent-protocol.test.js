@@ -29,6 +29,7 @@ test("operation cancellation prevents dispatch and reaches session handlers", as
 test("publishes stable provider-neutral tool definitions", () => {
   const definitions = getAgentToolDefinitions();
   assert.deepEqual(definitions.map((item) => item.name), [
+    "llmnav_verification",
     "llmnav_history",
     "llmnav_query",
     "llmnav_show",

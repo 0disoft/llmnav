@@ -8,6 +8,8 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 
 ### Added
 
+* Local verification snapshots and immutable caller-reported receipts, with command/environment/evidence links and separate source, evidence, environment and applicability checks. Bounded summaries are available through `verification` and `llmnav_verification`; incomplete declared coverage remains `unknown`.
+
 * On-demand file Git provenance through `history <file>` and `llmnav_history`: last file commit/date, current HEAD, staged/worktree/untracked state, byte hashes and shallow-history limits. Keep volatile evidence outside deterministic indexes and never present file dates as symbol change dates.
 
 ## [0.17.0] — 2026-10-27

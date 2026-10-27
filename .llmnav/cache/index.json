@@ -393,9 +393,9 @@
         "index persistence format"
       ],
       "hashes": {
-        "body": "c47af223330bb835b06cf2560d06845a717efed9b164c2e5a01182bd98b15d4b",
+        "body": "8db648c24181d40793c8054cee7475c03f74eb3a598bde31d3bc11bfba9dc7db",
         "semantic": "f4671d61fc8164fc24498faa91ba84f777e28a7f325750991908542867a69b6e",
-        "structure": "67bec9f4a96ea7b6cfc9753cc65dfe5589cb82cc6e03627a4fdd28d72ebee661"
+        "structure": "c47d2424b523b517bca23b76cdfc86f6ded00661f3b033aabf4966df587f4a62"
       },
       "id": "llmnav.cli.dispatch",
       "imports": [
@@ -406,6 +406,7 @@
         "./doctor.js",
         "./editor.js",
         "./evaluation.js",
+        "./evidence-files.js",
         "./files.js",
         "./formatter.js",
         "./generator.js",
@@ -423,6 +424,7 @@
         "./spec.js",
         "./util.js",
         "./validator.js",
+        "./verification.js",
         "node:path"
       ],
       "location": {
@@ -1328,9 +1330,9 @@
         "source mutation"
       ],
       "hashes": {
-        "body": "26fd601627396e1e39e1bf3baabef18b4f7c2727d3ac6bcbe2ca0f4448d7c921",
+        "body": "d835477b3e6dbfdb0cd6c3381ec8296db99150eb1f8482b2c733210934ca0d9d",
         "semantic": "ce30fe54e5dab8eb3cda8e1e6afdcee3489c3f62267d99ff85257f4c819d21a4",
-        "structure": "45fe55969712b51c5cbdd284dc10adfac1bfe9329652ea137d8b9a1293d4853f"
+        "structure": "153d65cff2df19a61ea35a51ab63582e2ef7db826abd1a8014d50ee7719d7aae"
       },
       "id": "llmnav.agent.protocol",
       "imports": [
@@ -1345,7 +1347,8 @@
         "./policy.js",
         "./project.js",
         "./search.js",
-        "./validator.js"
+        "./validator.js",
+        "./verification.js"
       ],
       "location": {
         "declarationLine": null,
@@ -1442,7 +1445,7 @@
         "repository scope"
       ],
       "hashes": {
-        "body": "a5a7b75cb442a49a4479d4e383c06b126b9c7b8ba09c1cb80ddf419d8459156d",
+        "body": "4cd3804beba0a9e894e5620bd6797eb94580eb512667ceb40d7e64d0b926352f",
         "semantic": "d1de5aa0a4d4ade41371bd255707d45ec8ba04edd4d99f9d49242cd766df1f4a",
         "structure": "f7288c1ea4e3c498c7ca4e1d62c455c8e07d1cc102615842d2b06c21bc8cc503"
       },
@@ -3445,11 +3448,66 @@
         "uncommitted source changes"
       ],
       "stability": "contract"
+    },
+    {
+      "boundaries": [],
+      "excludes": [
+        "test execution",
+        "function coverage claims",
+        "semantic card validation"
+      ],
+      "hashes": {
+        "body": "69cdf6c15f32fcd300249ecdecac1c5e5e6abfadf8112615a19c22cb53e2fecc",
+        "semantic": "5255b6e6382452bacdf57e95725b8fa39cb862a1ada3663339a1ca7ca845b172",
+        "structure": "c3c9e8a0fae3feb165f3dcffaa10806a063f9c2acc4410b0b1fec0de0098f9d4"
+      },
+      "id": "llmnav.evidence.verification",
+      "imports": [
+        "./abort.js",
+        "./concurrency.js",
+        "./evidence-files.js",
+        "./util.js",
+        "node:fs/promises",
+        "node:path"
+      ],
+      "invariant": [
+        "Execution outcomes and current applicability remain separate and incomplete input coverage yields unknown applicability."
+      ],
+      "location": {
+        "declarationLine": null,
+        "endLine": 10,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/verification.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "owns": [
+        "verification snapshots",
+        "content-addressed receipts",
+        "source applicability",
+        "evidence links"
+      ],
+      "rel": [
+        "workflow>llmnav.evidence.files"
+      ],
+      "role": "Store caller-reported validation receipts and compare their declared inputs with current files.",
+      "scope": "module",
+      "search": [
+        "verification receipts",
+        "test evidence source versions",
+        "stale validation records"
+      ],
+      "stability": "contract"
     }
   ],
   "contractFingerprints": {
     "configuration": {
-      "sha256": "cfb4f64a88d4211ed3aa5d19dce8146a57df5c88432dc6a044dcd85075d5c6bb"
+      "sha256": "a02e387b9e577a5f2a2a6556c2b14a87e92a16bb1b53d2fbaaa433f8f272253b"
     },
     "exportedApi": {
       "count": 5,
@@ -3460,6 +3518,6 @@
   "generatedBy": "llmnav@0.18.0",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "523f43df89c5399262ebadb7f9411d7a9e1060917c0728e91ed2862589dbba73",
+  "sourceHash": "285e61a250383efcab5166e5014301e0252ca1acc7827359230a3d42cd1ce20d",
   "specVersion": "1"
 }

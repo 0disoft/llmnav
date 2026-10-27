@@ -13,3 +13,10 @@ owns file change commits, staging state, bounded history cache
 excludes function change dates, semantic card validation, repository mutation
 invariant Git dates describe files and volatile provenance never enters deterministic navigation artifacts.
 rel workflow>llmnav.evidence.files
+
+@llmnav.evidence.verification
+role Store caller-reported validation receipts and compare their declared inputs with current files.
+owns verification snapshots, content-addressed receipts, source applicability, evidence links
+excludes test execution, function coverage claims, semantic card validation
+invariant Execution outcomes and current applicability remain separate and incomplete input coverage yields unknown applicability.
+rel workflow>llmnav.evidence.files

@@ -17,6 +17,11 @@ export const AGENT_TOOL_SCHEMA_VERSION = 7;
 const AUDIT_PRIORITY_VALUES = Object.freeze(["high", "medium", "low"]);
 
 const DEFINITIONS = [
+  tool("llmnav_verification", "Read a local validation receipt; reported outcomes and current source applicability are separate.", {
+    id: stringProperty("SHA-256 receipt ID."),
+    details: { type: "boolean", description: "Include source, command, environment and evidence details when the budget permits.", default: false },
+    metadataBudget: integerProperty("UTF-8 bytes for the compact result.", 512, 64000, 4000),
+  }, ["id"]),
   tool("llmnav_history", "Read file-level Git history and current staging/worktree state; dates never describe individual functions.", {
     file: stringProperty("Repository-relative file path from a navigation result."),
   }, ["file"]),

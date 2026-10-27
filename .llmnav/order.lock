@@ -65,3 +65,4 @@ llmnav.structure.typescript-metadata
 llmnav.eval.metadata
 llmnav.evidence.files
 llmnav.evidence.history
+llmnav.evidence.verification

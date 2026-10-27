@@ -21,6 +21,7 @@ import { AUDIT_LIMITS, SEARCH_LIMITS } from "./policy.js";
 import { toErrorPayload } from "./errors.js";
 import { throwIfAborted } from "./abort.js";
 import { getFileHistory } from "./git-history.js";
+import { getVerification } from "./verification.js";
 import { validateMetadataOptions } from "./code-metadata.js";
 
 export { AGENT_TOOL_SCHEMA_VERSION, getAgentToolDefinitions } from "./agent-tools.js";
@@ -38,6 +39,7 @@ export const AGENT_OPERATION_ERROR_CODES = Object.freeze({
 const DEFINITIONS = getAgentToolDefinitions();
 
 const OPERATIONS = new Map([
+  ["llmnav_verification", "verification"],
   ["llmnav_history", "history"],
   ["llmnav_query", "query"],
   ["llmnav_discover", "discover"],
@@ -50,6 +52,7 @@ const OPERATIONS = new Map([
 
 // Validation runs once in resolveRequest; handlers only execute work and report failure kinds.
 const OPERATION_HANDLERS = new Map([
+  ["verification", async (input, root, options) => ({ data: await getVerification(root, input.id, { ...options, details: input.details, metadataBudget: input.metadataBudget }) })],
   ["history", async (input, root, options) => ({ data: await getFileHistory(root, input.file, options) })],
   ["query", handleQuery],
   ["discover", handleDiscover],

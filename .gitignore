@@ -1,4 +1,5 @@
 node_modules/
+.llmnav/local/
 coverage/
 *.tgz
 .DS_Store

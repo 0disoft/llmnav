@@ -1,13 +1,13 @@
 {
-  "cardCount": 67,
+  "cardCount": 68,
   "fileStateSchemaVersion": 1,
   "files": {
-    ".llmnav/cache/agent-context.md": "e51ca42cc8d2e2c420fa9feac306bd7f00d002774183179869fb6dd2ed429d1b",
-    ".llmnav/cache/cards.jsonl": "14a76e529ef46039a8f1a3efa248f52f8c223ecd76a001586e9720055719be6d",
-    ".llmnav/cache/file-state.json": "63196a796204c1416cd7a8e15367d1bf276debf2cf950fa4a4e4a9c7ebad3ee0",
-    ".llmnav/cache/graph-state.json": "626cd11dd1680e52e0af1c79d8bf05f40d5fd49251371e5c16301b32e653060d",
-    ".llmnav/cache/graph.json": "a8fb682a79e8170aeff2f2dc51d17ea1221a787e2e44c292a2494ff0abc353ce",
-    ".llmnav/cache/index.json": "4d31ad5ebfb1bda467911a86654fd3d0c3efc700bfa505ee0e720468f8fa0dda",
+    ".llmnav/cache/agent-context.md": "3319d5a8f224c5e634c998370b14b3b1a0062d267217d4a6f91934c34efacadb",
+    ".llmnav/cache/cards.jsonl": "b931264fa1154821554724caea60eb15aa05449c65b838bf16c16d7ff4b2aa65",
+    ".llmnav/cache/file-state.json": "fbdf93d12d2373623edfbd3d902e8f1851dc411481afda36ca7581c108fc8ca8",
+    ".llmnav/cache/graph-state.json": "a2d496fdae97290baf85402c86626cd6fa42f8cdc93cf28fd49156f9b5bdad37",
+    ".llmnav/cache/graph.json": "3369054ebbe7751fdd716f57c76bc2bd855672559e8d5b0961f2f380b83a2789",
+    ".llmnav/cache/index.json": "0a2eda6f71a08db1c5417309f1c68b2533dd86538aae67a631e7ddd4182226f6",
     ".llmnav/cache/modules/example.auth.txt": "ae0aebf37a7f541ec0af5a36c1584452703b5b4fcafd6f397d0a7a402c3a76e1",
     ".llmnav/cache/modules/example.billing.txt": "957e2c984d5c121e598956c4f78525016505b1c97d6a94273866d92c4166fecd",
     ".llmnav/cache/modules/example.privacy.txt": "0948627bfa62f11088fbbf1aec835cab50c35d2d03f49eadefbddc221169e0b7",
@@ -19,7 +19,7 @@
     ".llmnav/cache/modules/llmnav.declaration.txt": "fa53f32e24d1663651cb9ce92e89c6b95c2d267360021b24305489ca3d05d293",
     ".llmnav/cache/modules/llmnav.diagnostics.txt": "ef77409a643d6758f97af4be34a82f1ae0c2216ba3f55b3ffbf40b64096e4757",
     ".llmnav/cache/modules/llmnav.eval.txt": "164fc9dd61fb88ac6e8d15cc4b2a40929056831cce1420b0c421d49000e33e9d",
-    ".llmnav/cache/modules/llmnav.evidence.txt": "f1f9e05eb42ef8147189ffa98b4fdb18952fbdb076f9ec7a016d6c6bf29e6f6f",
+    ".llmnav/cache/modules/llmnav.evidence.txt": "ea875ac40ec6e2abbdf579edcebc7174e9beef2c8d742e13642614eb63ad4776",
     ".llmnav/cache/modules/llmnav.graph.txt": "e03fbd752f6ec620f2a680a3f23bb94acb9ffd8ee28dab0149c57197a7201702",
     ".llmnav/cache/modules/llmnav.index.txt": "d102b0afb26a6be1ae81dc44fc8224ab685abeb4c035348c584d20259973d565",
     ".llmnav/cache/modules/llmnav.project.txt": "3e5f3d13aac9c156f036559db05d965e37fbf82bd1abc51c879a7cfd5ff6a0d3",
@@ -31,9 +31,9 @@
     ".llmnav/cache/modules/llmnav.structure.txt": "f32ff4ea42bd02466ccc0d156948165c5cf8505d59c1d38670c64154da4b936c",
     ".llmnav/cache/modules/llmnav.support.txt": "3bc9ee9ea8e6768701f109cbd28ff8dc9e7e99ff763f6600a97e842e0f820318",
     ".llmnav/cache/modules/llmnav.syntax.txt": "a1f177762cc5a6e8d26ea4ca8c1ba36c840dbba98b0ed046ed4a1d19ed774916",
-    ".llmnav/cache/prompt-prefix.json": "4d6e459776a5389ac4d2465f3cc47d74a163d1faba4ed5cfd47d585ff6a387bb",
+    ".llmnav/cache/prompt-prefix.json": "65e5933651f0739b7d2489d2c13a22284bbe91212a998e0f0ecba134c0c52ed5",
     ".llmnav/cache/repo-core.txt": "9bafa451b55e9455e7d4fcce9717f8e833e27c259d1a76403c831abf09c6b8fd",
-    ".llmnav/cache/search-index.json": "6a7e42ebf3eca922fba849fa645836bec0f51901d6695d025b82f82f8cdee166"
+    ".llmnav/cache/search-index.json": "84bd8934ed7222772469a158a73bab47e09623250d5f6ac9ec6f9585eef9a951"
   },
   "graphSchemaVersion": 1,
   "graphStateSchemaVersion": 1,
@@ -41,9 +41,9 @@
   "promptBundleSchemaVersion": 1,
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "searchCardSetHash": "b20f69e7cd4b6578003399bd93c192a41ef01acad15eabd97decfac0e18b06a4",
+  "searchCardSetHash": "e5fa4a5dc073f4d827b60a9c96884ca6e38e6b39764f1dad6bc70c616ccfed29",
   "searchIndexSchemaVersion": 2,
   "searchShardSchemaVersion": null,
-  "sourceHash": "523f43df89c5399262ebadb7f9411d7a9e1060917c0728e91ed2862589dbba73",
+  "sourceHash": "285e61a250383efcab5166e5014301e0252ca1acc7827359230a3d42cd1ce20d",
   "specVersion": "1"
 }

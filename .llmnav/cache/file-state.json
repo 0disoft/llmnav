@@ -2565,7 +2565,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "26fd601627396e1e39e1bf3baabef18b4f7c2727d3ac6bcbe2ca0f4448d7c921",
+      "contentHash": "d835477b3e6dbfdb0cd6c3381ec8296db99150eb1f8482b2c733210934ca0d9d",
       "declarations": [
         null
       ],
@@ -2581,11 +2581,12 @@
         "./policy.js",
         "./project.js",
         "./search.js",
-        "./validator.js"
+        "./validator.js",
+        "./verification.js"
       ],
       "path": "src/agent-protocol.js",
       "semanticBytes": 528,
-      "sourceBytes": 10633
+      "sourceBytes": 10910
     },
     {
       "blocks": [
@@ -2678,7 +2679,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "a5a7b75cb442a49a4479d4e383c06b126b9c7b8ba09c1cb80ddf419d8459156d",
+      "contentHash": "4cd3804beba0a9e894e5620bd6797eb94580eb512667ceb40d7e64d0b926352f",
       "declarations": [
         null
       ],
@@ -2687,7 +2688,7 @@
       ],
       "path": "src/agent-tools.js",
       "semanticBytes": 411,
-      "sourceBytes": 5429
+      "sourceBytes": 5866
     },
     {
       "blocks": [
@@ -3351,7 +3352,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "c47af223330bb835b06cf2560d06845a717efed9b164c2e5a01182bd98b15d4b",
+      "contentHash": "8db648c24181d40793c8054cee7475c03f74eb3a598bde31d3bc11bfba9dc7db",
       "declarations": [
         null
       ],
@@ -3363,6 +3364,7 @@
         "./doctor.js",
         "./editor.js",
         "./evaluation.js",
+        "./evidence-files.js",
         "./files.js",
         "./formatter.js",
         "./generator.js",
@@ -3380,11 +3382,12 @@
         "./spec.js",
         "./util.js",
         "./validator.js",
+        "./verification.js",
         "node:path"
       ],
       "path": "src/cli.js",
       "semanticBytes": 508,
-      "sourceBytes": 27452
+      "sourceBytes": 29305
     },
     {
       "blocks": [
@@ -5382,18 +5385,18 @@
     },
     {
       "blocks": [],
-      "contentHash": "69fcbe54e84217918fb86109092c02b090cdf0efbaf40adb0a83779f1991ce6a",
+      "contentHash": "8f3d2db78d482081212c047a0860eadde3a98117a2f398215caf8ae637e9f659",
       "declarations": [],
       "imports": [
         "./spec.js"
       ],
       "path": "src/index.d.ts",
       "semanticBytes": 0,
-      "sourceBytes": 38887
+      "sourceBytes": 40810
     },
     {
       "blocks": [],
-      "contentHash": "c443ade25247a5b428d37b3771414a20eab0e048f1636bd4c6ef132da6abece4",
+      "contentHash": "166ae540568f0c7da72ea6c765b46735877af59edbf88fc75a19473e3eeab09a",
       "declarations": [],
       "imports": [
         "./abort.js",
@@ -5433,11 +5436,12 @@
         "./spec.js",
         "./tokenizer.js",
         "./transaction.js",
-        "./validator.js"
+        "./validator.js",
+        "./verification.js"
       ],
       "path": "src/index.js",
       "semanticBytes": 0,
-      "sourceBytes": 4266
+      "sourceBytes": 4368
     },
     {
       "blocks": [
@@ -7724,6 +7728,121 @@
       "sourceBytes": 22114
     },
     {
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
+              "test execution",
+              "function coverage claims",
+              "semantic card validation"
+            ],
+            "id": "llmnav.evidence.verification",
+            "invariant": [
+              "Execution outcomes and current applicability remain separate and incomplete input coverage yields unknown applicability."
+            ],
+            "owns": [
+              "verification snapshots",
+              "content-addressed receipts",
+              "source applicability",
+              "evidence links"
+            ],
+            "rel": [
+              "workflow>llmnav.evidence.files"
+            ],
+            "risk": [],
+            "role": "Store caller-reported validation receipts and compare their declared inputs with current files.",
+            "scope": "module",
+            "search": [
+              "verification receipts",
+              "test evidence source versions",
+              "stale validation records"
+            ],
+            "stability": "contract",
+            "unknown": []
+          },
+          "end": 588,
+          "endLine": 10,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.evidence.verification"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Store caller-reported validation receipts and compare their declared inputs with current files."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "verification snapshots|content-addressed receipts|source applicability|evidence links"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "test execution|function coverage claims|semantic card validation"
+            },
+            {
+              "key": "search",
+              "line": 6,
+              "order": 4,
+              "value": "verification receipts|test evidence source versions|stale validation records"
+            },
+            {
+              "key": "invariant",
+              "line": 7,
+              "order": 5,
+              "value": "Execution outcomes and current applicability remain separate and incomplete input coverage yields unknown applicability."
+            },
+            {
+              "key": "rel",
+              "line": 8,
+              "order": 6,
+              "value": "workflow>llmnav.evidence.files"
+            },
+            {
+              "key": "stability",
+              "line": 9,
+              "order": 7,
+              "value": "contract"
+            }
+          ],
+          "filePath": "src/verification.js",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.evidence.verification\nrole=Store caller-reported validation receipts and compare their declared inputs with current files.\nowns=verification snapshots|content-addressed receipts|source applicability|evidence links\nexcludes=test execution|function coverage claims|semantic card validation\nsearch=verification receipts|test evidence source versions|stale validation records\ninvariant=Execution outcomes and current applicability remain separate and incomplete input coverage yields unknown applicability.\nrel=workflow>llmnav.evidence.files\nstability=contract\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "69cdf6c15f32fcd300249ecdecac1c5e5e6abfadf8112615a19c22cb53e2fecc",
+      "declarations": [
+        null
+      ],
+      "imports": [
+        "./abort.js",
+        "./concurrency.js",
+        "./evidence-files.js",
+        "./util.js",
+        "node:fs/promises",
+        "node:path"
+      ],
+      "path": "src/verification.js",
+      "semanticBytes": 588,
+      "sourceBytes": 9974
+    },
+    {
       "blocks": [],
       "contentHash": "ef12b2aed8ccb5ff7a503466baa2d6521f2d95fd1702936c5363786c72bb06c2",
       "declarations": [],
@@ -7784,7 +7903,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "0c2d7d015dfd83d681f33731b593ab11778ebfe671d1ce357e7867c0ddabfa00",
+      "contentHash": "61afd1ee7f2fdcd3d5be73b732af3d81ac9f2f0158f5cd4b8fa9929d11a6c4f4",
       "declarations": [],
       "imports": [
         "../src/agent-protocol.js",
@@ -7799,7 +7918,7 @@
       ],
       "path": "tests/agent-protocol.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 12692
+      "sourceBytes": 12719
     },
     {
       "blocks": [],
@@ -8814,6 +8933,23 @@
       "path": "tests/validator.test.js",
       "semanticBytes": 0,
       "sourceBytes": 13542
+    },
+    {
+      "blocks": [],
+      "contentHash": "90e45930f4ce8b9d5fe7ff542e3682e9d73460594f8a7bfc84572045a42d489d",
+      "declarations": [],
+      "imports": [
+        "../src/agent-protocol.js",
+        "../src/verification.js",
+        "node:assert/strict",
+        "node:fs/promises",
+        "node:os",
+        "node:path",
+        "node:test"
+      ],
+      "path": "tests/verification.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 4232
     }
   ],
   "indexerVersion": 11,

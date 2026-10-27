@@ -65,3 +65,4 @@
 {"id":"llmnav.eval.metadata","state":"active"}
 {"id":"llmnav.evidence.files","state":"active"}
 {"id":"llmnav.evidence.history","state":"active"}
+{"id":"llmnav.evidence.verification","state":"active"}

@@ -14,6 +14,8 @@ stability=architecture
 
 import path from "node:path";
 import { getFileHistory } from "./git-history.js";
+import { captureVerificationSnapshot, recordVerification, getVerification, readVerificationManifest } from "./verification.js";
+import { evidencePath } from "./evidence-files.js";
 import { analyzeProject, writeAnalysis } from "./analysis.js";
 import { discoverProject } from "./discovery.js";
 import { findProjectRoot } from "./files.js";
@@ -49,6 +51,9 @@ import { SEARCH_LIMITS } from "./policy.js";
 const VALUE_OPTIONS = new Set(["--root", "--format", "--top", "--depth", "--budget", "--max-edges", "--agents", "--file", "--fail-on", "--output", "--language", "--project", "--typescript", "--source-budget", "--offset", "--metadata-budget"]);
 
 const COMMAND_OPTIONS = Object.freeze({
+  snapshot: new Set(["--root", "--json", "--output", "--complete-inputs"]),
+  "record-verification": new Set(["--root", "--json", "--file"]),
+  verification: new Set(["--root", "--json", "--details", "--metadata-budget"]),
   history: new Set(["--root", "--json"]),
   init: new Set(["--agents", "--package-scripts", "--force", "--root", "--json"]),
   check: new Set(["--format", "--root", "--json"]),
@@ -94,6 +99,26 @@ export async function runCli(argv) {
   const root = rootOption ? path.resolve(rootOption) : await findProjectRoot(process.cwd());
 
   switch (command) {
+    case "snapshot": {
+      const snapshot = await captureVerificationSnapshot(root, getPositionals(args), { completeInputs: hasFlag(args, "--complete-inputs") });
+      const output = getOption(args, "--output");
+      if (output) await atomicWrite(root, (await evidencePath(root, output)).absolute, `${JSON.stringify(snapshot, null, 2)}\n`);
+      console.log(JSON.stringify(output ? { path: output, sourceCount: Object.keys(snapshot.sourceHashes).length } : snapshot, null, json ? 2 : 0));
+      return 0;
+    }
+    case "record-verification": {
+      const file = getOption(args, "--file");
+      if (!file) throw usageError("record-verification requires --file <manifest.json>.");
+      const input = await readVerificationManifest(root, file);
+      const recorded = await recordVerification(root, input);
+      console.log(JSON.stringify({ id: recorded.id, path: recorded.path }, null, json ? 2 : 0));
+      return 0;
+    }
+    case "verification": {
+      const id = getPositionals(args)[0];
+      console.log(JSON.stringify(await getVerification(root, id, { details: hasFlag(args, "--details"), metadataBudget: parseCliIntegerOption(args, "--metadata-budget", 4000) }), null, json ? 2 : 0));
+      return 0;
+    }
     case "history": {
       const file = getPositionals(args)[0];
       if (!file) throw usageError("history requires a repository-relative file path.");
@@ -630,6 +655,9 @@ Usage
   llmnav query "<task>" [--top ${SEARCH_LIMITS.top.default}]
   llmnav show <semantic-id> [--metadata] [--members] [--top 10] [--offset 0] [--metadata-budget 4000]
   llmnav history <file> [--json]
+  llmnav snapshot <file>... [--complete-inputs] [--output <snapshot.json>] [--json]
+  llmnav record-verification --file <manifest.json> [--json]
+  llmnav verification <receipt-id> [--details] [--metadata-budget 4000] [--json]
   llmnav context <semantic-id> [--depth ${SEARCH_LIMITS.depth.default}] [--budget ${SEARCH_LIMITS.budget.default}] [--max-edges ${SEARCH_LIMITS.maxEdges.default}]
   llmnav eval [--file path] [--top ${SEARCH_LIMITS.top.default}]
   llmnav doctor

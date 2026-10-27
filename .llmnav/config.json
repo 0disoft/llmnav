@@ -10,7 +10,7 @@
   },
   "coverageRules": [
     {
-      "match": ["src/evidence-files.js", "src/git-history.js"],
+      "match": ["src/evidence-files.js", "src/git-history.js", "src/verification.js"],
       "name": "on-demand local provenance",
       "requiredFields": ["owns", "invariant"],
       "scope": "module"

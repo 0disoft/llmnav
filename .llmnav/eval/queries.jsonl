@@ -1,4 +1,5 @@
 {"query":"parse and canonicalize llmnav comment blocks","expected":["llmnav.syntax.parse"]}
+{"query":"verification receipts test evidence source versions and stale validation records","expected":["llmnav.evidence.verification"]}
 {"query":"read file git history and uncommitted source changes","expected":["llmnav.evidence.history"]}
 {"query":"hash selected local evidence files with repository fingerprints","expected":["llmnav.evidence.files"]}
 {"query":"validate generated compiler metadata and bounded member pages","expected":["llmnav.structure.metadata"]}
