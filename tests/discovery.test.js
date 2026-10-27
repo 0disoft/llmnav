@@ -63,6 +63,26 @@ test("discovers live declarations and paths before init without writing cache or
   await assert.rejects(discoverProject(root, "session", { signal: controller.signal }), error => error === reason);
 });
 
+test("bounded discovery preserves full ranking, late winners, match counts and selected excerpts", async context => {
+  const root = await fixture(context);
+  const ordinary = Array.from({ length: 20 }, (_, i) => `export function operation${i}() {}\n`).join("");
+  await writeFile(path.join(root, "src/needle-a.ts"), ordinary);
+  await writeFile(path.join(root, "src/needle-b.ts"), ordinary);
+  await writeFile(path.join(root, "src/z.ts"), "export function needle() {}\nexport function needleLater() {}\n");
+  const complete = await discoverProject(root, "needle", { top: 100 });
+  assert.equal(complete.matched, 44);
+  assert.equal(complete.truncated, false);
+  assert.equal(complete.results[0].symbol, "needle");
+  for (const top of [1, 2, 3, 5]) {
+    const bounded = await discoverProject(root, "needle", { top, includeSource: true, sourceBudget: 4000 });
+    assert.equal(bounded.matched, complete.matched);
+    assert.equal(bounded.truncated, true);
+    assert.deepEqual(bounded.results.map(({ sourceExcerpt, ...candidate }) => candidate), complete.results.slice(0, top));
+    assert.equal(bounded.results[0].sourceExcerpt.text, "export function needle() {}");
+    assert.equal(bounded.results[0].sourceExcerpt.startLine, 1);
+  }
+});
+
 test("CLI, agent protocol and MCP expose the same unindexed discovery results", async context => {
   const root = await fixture(context);
   const expected = await discoverProject(root, "rotateSession", { top: 2 });

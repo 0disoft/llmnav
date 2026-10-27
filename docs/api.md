@@ -458,6 +458,8 @@ Returns `{ schemaVersion: 1, repositoryId, results, matched, truncated }`. Each 
 
 Use `{ top: 1, includeSource: true, sourceBudget: 4000 }` to locate and inspect a candidate in one call. The optional `sourceExcerpt` contains `{ scope, startLine, endLine, text, truncated }`. Text comes from the existing live scan, with LF normalization and no second file read. `sourceBudget` is a shared UTF-8 text-byte limit, default 4,000, minimum 256 and maximum 16,000; JSON metadata is additional. Later candidates omit the excerpt when the budget is exhausted. Default calls omit all excerpts and preserve existing result fields and ranking.
 
+Discovery keeps at most `top` ranking candidates in a stable bounded heap rather than retaining and sorting every match. Score, path, line, source-kind and encounter-order ties, duplicate candidates, total `matched`, and `truncated` semantics are preserved for both heuristic and precise discovery. For C matches and K requested results, ranking retains O(K) candidates and takes O(C log(K + 1) + K log K) comparisons. Source scanning and declaration extraction still inspect the selected files; this bounds ranking state, not total scan memory.
+
 `scope: "declaration"` uses the heuristic parser's declaration span. File and compiler hits use `scope: "window"`, starting at the candidate line; discovery does not extract compiler body-end coordinates. `truncated` describes byte-budget clipping, not semantic completeness. Read surrounding code when dependencies or behavior remain unclear. MCP accepts the same options on `llmnav_discover`; tool schema version 5 adds optional inputs without changing operation envelopes.
 
 ## Compiler analysis

@@ -11,6 +11,7 @@ stability=architecture
 */
 
 import { throwIfAborted } from "./abort.js";
+import { createBoundedSelection } from "./bounded-selection.js";
 import { extractSourceDeclarations } from "./declaration.js";
 import { loadProjectGraphInputs } from "./graph-input.js";
 import { scanProject } from "./project.js";
@@ -40,7 +41,7 @@ export async function discoverProject(root, query, options = {}) {
     ids.add(record.card.id);
     cardIdsByPath.set(record.relativePath, ids);
   }
-  const results = [];
+  const results = createBoundedSelection(top, compareCandidates);
   const spans = new WeakMap();
   let compiled = null;
   if (options.precise === true) {
@@ -83,17 +84,20 @@ export async function discoverProject(root, query, options = {}) {
       }
     }
   }
-  results.sort((left, right) => right.score - left.score || compareText(left.path, right.path) ||
-    left.line - right.line || compareText(left.source, right.source));
-  const selected = results.slice(0, top);
+  const selected = results.values();
   if (options.includeSource) packSource(selected, spans, sourceBudget);
   return {
     schemaVersion: 1,
     repositoryId: project.config.repositoryId,
     results: selected,
-    matched: results.length,
-    truncated: results.length > top,
+    matched: results.matched,
+    truncated: results.matched > top,
   };
+}
+
+function compareCandidates(left, right) {
+  return right.score - left.score || compareText(left.path, right.path) ||
+    left.line - right.line || compareText(left.source, right.source);
 }
 
 function sourceTokens(value = "") {
@@ -117,8 +121,7 @@ function addCandidate(results, candidate, queryTokens, normalized, pathTokens) {
   }
   if (score <= 0) return null;
   const result = { ...candidate, score, reasons };
-  results.push(result);
-  return result;
+  return results.add(result) ? result : null;
 }
 
 function packSource(results, spans, budget) {

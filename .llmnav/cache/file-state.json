@@ -3744,6 +3744,15 @@
       "sourceBytes": 3336
     },
     {
+      "blocks": [],
+      "contentHash": "6efe1904a158e55c81493e29398a829c65e68abb03dd0faf80d065cf96a13b1e",
+      "declarations": [],
+      "imports": [],
+      "path": "src/bounded-selection.js",
+      "semanticBytes": 0,
+      "sourceBytes": 1841
+    },
+    {
       "blocks": [
         {
           "card": {
@@ -4639,12 +4648,13 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "dc91b6637b32e29b55c0d9f0b576f7b9c2bee72507261b8bbe9c6133d45fdaf3",
+      "contentHash": "7095c44d9989adbd13a8f31fb46b6da1479361f7778117b70b7a98be7b568f82",
       "declarations": [
         null
       ],
       "imports": [
         "./abort.js",
+        "./bounded-selection.js",
         "./declaration.js",
         "./graph-input.js",
         "./policy.js",
@@ -4654,7 +4664,7 @@
       ],
       "path": "src/discovery.js",
       "semanticBytes": 597,
-      "sourceBytes": 7753
+      "sourceBytes": 7885
     },
     {
       "blocks": [
@@ -8011,7 +8021,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "a575f36ad78388d6c96136c95837c2a2000128da7e15e95c64b74f7e0e0c736a",
+      "contentHash": "d7ef766d7e4c698da5354d8eefef00b37bdd8cc092116b42ce4c0fa352d27245",
       "declarations": [
         null
       ],
@@ -8619,6 +8629,19 @@
     },
     {
       "blocks": [],
+      "contentHash": "7533e6729f60de881115cbbe59411733c269e5840fd22ed2968d33419573713f",
+      "declarations": [],
+      "imports": [
+        "../src/bounded-selection.js",
+        "node:assert/strict",
+        "node:test"
+      ],
+      "path": "tests/bounded-selection.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 2139
+    },
+    {
+      "blocks": [],
       "contentHash": "8f8171235ff2979892337c2625f761f03467240227d0bd37a3ff064ad8f6ce2e",
       "declarations": [],
       "imports": [
@@ -8816,7 +8839,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "993bad195320c88c78db9ad69ab7ad26b36b1cbcc28309a72302158fc9ee3eb7",
+      "contentHash": "0736f41f881807219c705b86e5e94caaa65b21533f687beecdb2b168c6fe192e",
       "declarations": [],
       "imports": [
         "../src/agent-protocol.js",
@@ -8832,7 +8855,7 @@
       ],
       "path": "tests/discovery.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 8259
+      "sourceBytes": 9500
     },
     {
       "blocks": [],

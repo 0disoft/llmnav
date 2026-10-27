@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.19.13] — 2026-10-27
+
+### Fixed
+
+* Bound live discovery ranking to the requested `top` count using a stable heap. Previously even `top: 1` retained every matched candidate before sorting. A generated 50-file fixture with 20,050 matches and `top: 3` now sorts only three retained candidates with identical results. Scores, path/line/source ordering, encounter-order ties, duplicates, total match counts, and source excerpts remain unchanged. Regression tests compare bounded selection against stable full sorting and cover late winners and input/output isolation. Source scanning and parsing costs are unchanged.
+
 ## [0.19.12] — 2026-10-27
 
 ### Fixed
