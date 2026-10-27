@@ -277,3 +277,9 @@ owns metadata comparison fixtures, real declaration probes, synthetic member loo
 excludes model token accounting, project execution, dependency installation, semantic card validation
 invariant Script observations distinguish output bytes and synthetic lookup costs from real agent token use.
 rel workflow>llmnav.structure.analyze, workflow>llmnav.structure.metadata
+
+@llmnav.evidence.files
+role Hash explicitly selected repository files for local provenance without retaining their contents.
+owns evidence path containment, bounded byte fingerprints, file handle lifetime
+excludes semantic card validation, secret content storage
+invariant Evidence paths remain inside the repository and open handles close after errors or cancellation.

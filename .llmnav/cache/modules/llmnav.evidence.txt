@@ -1,0 +1,15 @@
+llmnav-catalog/1 repository=llmnav catalog=llmnav.evidence
+Read semantic cards before opening source. Resolve current paths and signatures with llmnav query or show.
+
+@llmnav.evidence.files
+role Hash explicitly selected repository files for local provenance without retaining their contents.
+owns evidence path containment, bounded byte fingerprints, file handle lifetime
+excludes semantic card validation, secret content storage
+invariant Evidence paths remain inside the repository and open handles close after errors or cancellation.
+
+@llmnav.evidence.history
+role Read file-level Git provenance and current index and worktree state only when requested.
+owns file change commits, staging state, bounded history cache
+excludes function change dates, semantic card validation, repository mutation
+invariant Git dates describe files and volatile provenance never enters deterministic navigation artifacts.
+rel workflow>llmnav.evidence.files

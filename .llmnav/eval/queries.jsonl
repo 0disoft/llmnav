@@ -1,4 +1,6 @@
 {"query":"parse and canonicalize llmnav comment blocks","expected":["llmnav.syntax.parse"]}
+{"query":"read file git history and uncommitted source changes","expected":["llmnav.evidence.history"]}
+{"query":"hash selected local evidence files with repository fingerprints","expected":["llmnav.evidence.files"]}
 {"query":"validate generated compiler metadata and bounded member pages","expected":["llmnav.structure.metadata"]}
 {"query":"TypeScript signature metadata and parameter type origins","expected":["llmnav.structure.typescript-metadata"]}
 {"query":"measure metadata benchmark signature accuracy and member page costs","expected":["llmnav.eval.metadata"]}

@@ -10,13 +10,16 @@ stability=contract
 
 import { AUDIT_LIMITS, DISCOVERY_SOURCE_LIMITS, METADATA_LIMITS, SEARCH_LIMITS } from "./policy.js";
 
-export const AGENT_TOOL_SCHEMA_VERSION = 6;
+export const AGENT_TOOL_SCHEMA_VERSION = 7;
 
 // Duplicated from AUDIT_PRIORITIES on purpose: importing the audit module would load
 // repository execution code into the definition-only surface. A contract test keeps them equal.
 const AUDIT_PRIORITY_VALUES = Object.freeze(["high", "medium", "low"]);
 
 const DEFINITIONS = [
+  tool("llmnav_history", "Read file-level Git history and current staging/worktree state; dates never describe individual functions.", {
+    file: stringProperty("Repository-relative file path from a navigation result."),
+  }, ["file"]),
   tool("llmnav_query", "Find the most relevant semantic cards for a coding task.", {
     task: stringProperty("Task language to search for."),
     top: integerProperty("Maximum results.", SEARCH_LIMITS.top.minimum, SEARCH_LIMITS.top.maximum, SEARCH_LIMITS.top.default),

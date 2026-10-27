@@ -330,8 +330,8 @@ export interface LlmnavConfig {
 }
 
 export interface AgentToolDefinition {
-  schemaVersion: 6;
-  name: "llmnav_query" | "llmnav_show" | "llmnav_context" | "llmnav_check" | "llmnav_explain" | "llmnav_audit" | "llmnav_discover";
+  schemaVersion: 7;
+  name: "llmnav_history" | "llmnav_query" | "llmnav_show" | "llmnav_context" | "llmnav_check" | "llmnav_explain" | "llmnav_audit" | "llmnav_discover";
   description: string;
   inputSchema: {
     type: "object";
@@ -343,7 +343,7 @@ export interface AgentToolDefinition {
 
 export interface AgentOperationResult<T = unknown> {
   schemaVersion: 1;
-  operation: "query" | "show" | "context" | "check" | "explain" | "audit" | "discover" | "unknown";
+  operation: "history" | "query" | "show" | "context" | "check" | "explain" | "audit" | "discover" | "unknown";
   ok: boolean;
   data: T | null;
   error: { code: string; message: string } | null;
@@ -938,6 +938,7 @@ export function queryPreparedIndex(index: LlmnavIndex, searchIndex: LlmnavSearch
 export function queryIndexLegacy(index: LlmnavIndex, query: string, options?: { top?: number; lexicon?: { aliases: Record<string, string | string[]> } }): SearchResult[];
 export function queryProject(root: string, query: string, options?: GenerationLockOptions & { top?: number }): Promise<SearchResult[]>;
 export interface ShowOptions extends GenerationLockOptions {
+  /** History is queried separately through getFileHistory, preserving synchronous session show. */
   metadata?: boolean;
   members?: boolean;
   top?: number;
@@ -1020,3 +1021,20 @@ export interface AnalysisResult {
 }
 export function analyzeProject(root: string, options: ReadOptions & { language: "typescript" | "go"; project?: string; typescriptPath?: string; allowErrors?: boolean; metadata?: boolean; timeoutMs?: number; goCommand?: string }): Promise<AnalysisResult>;
 export function writeAnalysis(root: string, relativeOutput: string, result: AnalysisResult, options?: ReadOptions): Promise<string>;
+
+export interface FileHistory {
+  schemaVersion: 1;
+  scope: "file";
+  path: string;
+  status: "available" | "unknown";
+  head: string | null;
+  lastChange: { commit: string; committedAt: string; scope: "file" } | null;
+  reason?: "not-a-git-repository";
+  historyComplete?: boolean;
+  consistency?: "best-effort";
+  symbolHistory?: "unknown";
+  dirty?: { staged: boolean; unstaged: boolean; untracked: boolean };
+  indexHash?: string | null;
+  worktreeHash?: string | null;
+}
+export function getFileHistory(root: string, file: string, options?: ReadOptions & { gitCommand?: string; timeoutMs?: number }): Promise<FileHistory>;

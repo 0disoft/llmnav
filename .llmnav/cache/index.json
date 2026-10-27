@@ -393,9 +393,9 @@
         "index persistence format"
       ],
       "hashes": {
-        "body": "100acee17a9679d1ec0ed0eb743134591e300f3dd2524afaecec67133af7ec14",
+        "body": "c47af223330bb835b06cf2560d06845a717efed9b164c2e5a01182bd98b15d4b",
         "semantic": "f4671d61fc8164fc24498faa91ba84f777e28a7f325750991908542867a69b6e",
-        "structure": "2007e5915f59c7ddc671056f4582d748915de384b4e62d3fe18d7bc112f8df96"
+        "structure": "67bec9f4a96ea7b6cfc9753cc65dfe5589cb82cc6e03627a4fdd28d72ebee661"
       },
       "id": "llmnav.cli.dispatch",
       "imports": [
@@ -409,6 +409,7 @@
         "./files.js",
         "./formatter.js",
         "./generator.js",
+        "./git-history.js",
         "./graph-input.js",
         "./graph.js",
         "./initializer.js",
@@ -1327,9 +1328,9 @@
         "source mutation"
       ],
       "hashes": {
-        "body": "49508be5dd087c0f4a1a14a32c1ca29c7a734a4d49e7d09a16a1d27c715cb339",
+        "body": "26fd601627396e1e39e1bf3baabef18b4f7c2727d3ac6bcbe2ca0f4448d7c921",
         "semantic": "ce30fe54e5dab8eb3cda8e1e6afdcee3489c3f62267d99ff85257f4c819d21a4",
-        "structure": "da629f16933c0842f71c9911d4cca2d9a35d29c62bd24d27ae4ebbf5db578f4f"
+        "structure": "45fe55969712b51c5cbdd284dc10adfac1bfe9329652ea137d8b9a1293d4853f"
       },
       "id": "llmnav.agent.protocol",
       "imports": [
@@ -1339,6 +1340,7 @@
         "./code-metadata.js",
         "./discovery.js",
         "./errors.js",
+        "./git-history.js",
         "./graph-input.js",
         "./policy.js",
         "./project.js",
@@ -1440,7 +1442,7 @@
         "repository scope"
       ],
       "hashes": {
-        "body": "7a3ce644eb7121370054a405a1119ed940e345e92a6bdeb32cba7ea55aee4c7e",
+        "body": "a5a7b75cb442a49a4479d4e383c06b126b9c7b8ba09c1cb80ddf419d8459156d",
         "semantic": "d1de5aa0a4d4ade41371bd255707d45ec8ba04edd4d99f9d49242cd766df1f4a",
         "structure": "f7288c1ea4e3c498c7ca4e1d62c455c8e07d1cc102615842d2b06c21bc8cc503"
       },
@@ -1903,7 +1905,7 @@
         "source parsing"
       ],
       "hashes": {
-        "body": "fd0a431634a51cb9e840121d5f16841b1e4017b033e00d00742e4fe3997c5ac6",
+        "body": "360199c530521e143d66039bdf5b24948cfc574fa7e2a8577fefffdffbe28386",
         "semantic": "59aa3e9e793d505ecdf110fec023c201aaee0154d2f6c9cf71afe1bbf71a7be5",
         "structure": "e213e073414c75bc75df1c8669a7045096142b6c0845694191893d90bf23e3c2"
       },
@@ -2743,7 +2745,7 @@
         "project execution"
       ],
       "hashes": {
-        "body": "87c1000ce3439327eb4f4880cf07358aca4fb6f36654df865d7b0b1b8664d61a",
+        "body": "d3907ad7bf95588a6bf69d0c74a20788a83a72762c2cb00f516076b94372fe45",
         "semantic": "cbee233a5bc6268a9870a6c1431d67e0d901a09e1c48658af1f7c4177d652e4c",
         "structure": "b7714fe5396fcfc66f9e217287537120f0990284b0cc8f8375ee936c724a6eb3"
       },
@@ -3343,11 +3345,111 @@
         "member page costs"
       ],
       "stability": "architecture"
+    },
+    {
+      "boundaries": [],
+      "excludes": [
+        "semantic card validation",
+        "secret content storage"
+      ],
+      "hashes": {
+        "body": "f0053b8fb83e3877814f3a320ad1f27f03411b86acc1274786e7e7430cc1ee93",
+        "semantic": "5c5ec8849efac5594f57652fd430321d253306711d484238dd41ef8af2c19599",
+        "structure": "ce60ce3702c169140e234a1103b32508433ec4aee0858dfbd7d4c34d5a67fce7"
+      },
+      "id": "llmnav.evidence.files",
+      "imports": [
+        "./abort.js",
+        "./util.js",
+        "node:crypto",
+        "node:fs/promises",
+        "node:path"
+      ],
+      "invariant": [
+        "Evidence paths remain inside the repository and open handles close after errors or cancellation."
+      ],
+      "location": {
+        "declarationLine": null,
+        "endLine": 9,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/evidence-files.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "owns": [
+        "evidence path containment",
+        "bounded byte fingerprints",
+        "file handle lifetime"
+      ],
+      "role": "Hash explicitly selected repository files for local provenance without retaining their contents.",
+      "scope": "module",
+      "search": [
+        "local evidence file hashing",
+        "repository fingerprints"
+      ],
+      "stability": "architecture"
+    },
+    {
+      "boundaries": [],
+      "excludes": [
+        "function change dates",
+        "semantic card validation",
+        "repository mutation"
+      ],
+      "hashes": {
+        "body": "d819234b71e6b95b14cb023e0ac32528bf03a8186e06ae1f652fd1558461bb6c",
+        "semantic": "b31ef2c714f07d7b99b84c9f94529c0414d2a0c72bfd1f0360279ea5de5934f2",
+        "structure": "1fe871c577570e6df33800f2dd22fdc76030ccf6850be9a127ce8b613c95d333"
+      },
+      "id": "llmnav.evidence.history",
+      "imports": [
+        "./adapters/process.js",
+        "./evidence-files.js",
+        "./util.js",
+        "node:path"
+      ],
+      "invariant": [
+        "Git dates describe files and volatile provenance never enters deterministic navigation artifacts."
+      ],
+      "location": {
+        "declarationLine": null,
+        "endLine": 10,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/git-history.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "owns": [
+        "file change commits",
+        "staging state",
+        "bounded history cache"
+      ],
+      "rel": [
+        "workflow>llmnav.evidence.files"
+      ],
+      "role": "Read file-level Git provenance and current index and worktree state only when requested.",
+      "scope": "module",
+      "search": [
+        "file git history",
+        "last change commit",
+        "uncommitted source changes"
+      ],
+      "stability": "contract"
     }
   ],
   "contractFingerprints": {
     "configuration": {
-      "sha256": "faf883c2e528ccdb43e66b3cd013807b4fb3bea554590566052f5fe3f19e9cf1"
+      "sha256": "cfb4f64a88d4211ed3aa5d19dce8146a57df5c88432dc6a044dcd85075d5c6bb"
     },
     "exportedApi": {
       "count": 5,
@@ -3355,9 +3457,9 @@
     },
     "schemaVersion": 1
   },
-  "generatedBy": "llmnav@0.17.0",
+  "generatedBy": "llmnav@0.18.0",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "7bedfb63307dfa9e520057a7765bada2ac664e3a4232824c41e007bfa488dfc0",
+  "sourceHash": "523f43df89c5399262ebadb7f9411d7a9e1060917c0728e91ed2862589dbba73",
   "specVersion": "1"
 }

@@ -409,6 +409,20 @@
     {
       "confidence": 0.85,
       "from": "llmnav/llmnav.agent.protocol",
+      "id": "6e71ff598117b37cfffe2c492de6eb960fdd962abb45832e8b5f410dc4d3c688",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/agent-protocol.js",
+        "source": "src/agent-protocol.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.evidence.history"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.agent.protocol",
       "id": "4a8b99e65fd35f1e9af502d233e4cc143cbe58d5cf5beb5b2b4fd60167b76de8",
       "kind": "imports",
       "provenance": {
@@ -839,6 +853,20 @@
         "type": "source-card"
       },
       "to": "llmnav/llmnav.eval.measure"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.cli.dispatch",
+      "id": "f2cb186bdeaee8cfa1a09e50dc39ebbd30a6e0b6113a52a2274dc99ad8681afc",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/cli.js",
+        "source": "src/cli.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.evidence.history"
     },
     {
       "confidence": 0.85,
@@ -1693,6 +1721,62 @@
         "type": "local-import"
       },
       "to": "llmnav/llmnav.eval.real-navigation"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.evidence.files",
+      "id": "5b5585288a2550cc7d2819881057f3e80a8f80b669303828ac700a68c0e5db28",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/evidence-files.js",
+        "source": "src/evidence-files.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.support.abort"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.evidence.history",
+      "id": "2356217d7514ea30a1b3c1629aa10d0b4b1f72f7e5e85354a2ba52fa1bbbcda7",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/git-history.js",
+        "source": "src/git-history.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.evidence.files"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.evidence.history",
+      "id": "f27db7fa97ddae1d877e2dd7ba73830e2f8ccc4686538480b03abb922881b669",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/git-history.js",
+        "source": "src/git-history.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.evidence.files"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.evidence.history",
+      "id": "be34e2583e5c362b92405ee6355ef4022a1d8dbcc7f29e1448c20466a906ba7c",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/git-history.js",
+        "source": "src/git-history.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.structure.compiler-process"
     },
     {
       "confidence": 1,
@@ -4581,6 +4665,50 @@
     {
       "definitions": [],
       "external": false,
+      "key": "llmnav/llmnav.evidence.files",
+      "location": {
+        "declarationLine": null,
+        "endLine": 9,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/evidence-files.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Hash explicitly selected repository files for local provenance without retaining their contents.",
+      "semanticId": "llmnav.evidence.files",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
+      "key": "llmnav/llmnav.evidence.history",
+      "location": {
+        "declarationLine": null,
+        "endLine": 10,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/git-history.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Read file-level Git provenance and current index and worktree state only when requested.",
+      "semanticId": "llmnav.evidence.history",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
       "key": "llmnav/llmnav.graph.generate",
       "location": {
         "declarationLine": null,
@@ -5373,11 +5501,11 @@
   ],
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "af7660d6bd79d39f72107b032126a6ce2fc65d955856b473f87d3b335d902974",
+  "sourceHash": "08a65207aac25fe334e65b97e23997a0a02e9dffa7981e153ada80d213601a9a",
   "stats": {
-    "edgeCount": 277,
+    "edgeCount": 283,
     "importedIndexCount": 0,
-    "nodeCount": 65,
+    "nodeCount": 67,
     "unresolvedNodeCount": 0
   }
 }
