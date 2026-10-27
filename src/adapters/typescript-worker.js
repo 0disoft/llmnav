@@ -16,6 +16,9 @@ import { readFileSync, realpathSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { typeScriptMetadata } from "./typescript-metadata.js";
 
+// The native implementation expands Windows 8.3 ancestor names as TypeScript does.
+const physicalPath = realpathSync.native;
+
 let input = "";
 for await (const chunk of process.stdin) input += chunk;
 try { console.log(JSON.stringify(analyze(JSON.parse(input)))); }
@@ -28,8 +31,8 @@ function analyze(request) {
   }
   // Windows temp roots can use 8.3 aliases while TypeScript resolves full names.
   // Anchor both containment and selected-file identity to the same physical root.
-  const root = realpathSync(path.resolve(request.root));
-  const selectedPaths = request.files.map(file => realpathSync(path.resolve(file)));
+  const root = physicalPath(path.resolve(request.root));
+  const selectedPaths = request.files.map(file => physicalPath(path.resolve(file)));
   const configHashes = Object.create(null);
   const javascript = request.language === "javascript";
   let options = { target: ts.ScriptTarget.ESNext, module: ts.ModuleKind.NodeNext, moduleResolution: ts.ModuleResolutionKind.NodeNext, noEmit: true, skipLibCheck: true, types: [] };
@@ -57,7 +60,7 @@ function analyze(request) {
     const absolute = path.resolve(file);
     if (inside(root, absolute)) {
       let canonical;
-      try { canonical = realpathSync(absolute); }
+      try { canonical = physicalPath(absolute); }
       catch (error) { if (error.code === "ENOENT" || error.code === "ENOTDIR") return originalRead(file); throw error; }
       if (!inside(root, canonical)) throw new Error("Compiler input traverses a symlink outside the repository.");
       inputs.add(absolute);
@@ -132,7 +135,7 @@ function analyze(request) {
     if (!inside(root, absolute) && path.basename(absolute).toLowerCase() === "package.json") return undefined;
     let bytes;
     try {
-      const canonical = realpathSync(absolute);
+      const canonical = physicalPath(absolute);
       if (!inside(root, absolute) || !inside(root, canonical)) {
         throw new Error(`TypeScript configuration must stay inside the repository without escaping symlinks. ${JSON.stringify({ root, requested: absolute, canonical })}`);
       }

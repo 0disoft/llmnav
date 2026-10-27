@@ -234,6 +234,16 @@ test("TypeScript resolves package configurations through a repository path alias
   const actual = await analyzeTypeScript(alias, [path.join(alias, "main.mts")], options);
   assert.ok(expected.declarations.some(item => item.symbol === "value"));
   assert.deepEqual(actual, expected);
+  if (process.platform === "win32") {
+    const short = spawnSync("cmd.exe", ["/d", "/v:off", "/c", 'for %I in ("%LLMNAV_ALIAS_ROOT%") do @echo %~sI'], {
+      encoding: "utf8", windowsHide: true, windowsVerbatimArguments: true,
+      env: { ...process.env, LLMNAV_ALIAS_ROOT: root },
+    });
+    assert.equal(short.status, 0, short.stderr);
+    const shortRoot = short.stdout.trim();
+    assert.ok(shortRoot.length > 0);
+    assert.deepEqual(await analyzeTypeScript(shortRoot, [path.join(shortRoot, "main.mts")], options), expected);
+  }
 });
 
 test("TypeScript rejects configuration chains that escape the repository", async context => {
