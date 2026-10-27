@@ -22,7 +22,7 @@
       "scope": "module"
     },
     {
-      "match": ["src/analysis.js", "src/code-metadata.js", "src/adapters/process.js", "src/adapters/typescript.js", "src/adapters/typescript-worker.js", "src/adapters/typescript-metadata.js", "src/adapters/go.js", "src/adapters/go-analyzer.go", "src/adapters/python.js", "src/adapters/rust.js"],
+      "match": ["src/analysis.js", "src/code-metadata.js", "src/adapters/process.js", "src/adapters/typescript.js", "src/adapters/typescript-worker.js", "src/adapters/typescript-metadata.js", "src/adapters/go.js", "src/adapters/go-analyzer.go", "src/adapters/python.js", "src/adapters/rust.js", "src/adapters/rust-syntax.js", "src/adapters/rust-worker.js"],
       "name": "opt-in compiler analysis boundaries",
       "requiredFields": ["owns", "invariant"],
       "scope": "module"

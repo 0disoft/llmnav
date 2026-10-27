@@ -2396,7 +2396,7 @@
               "syntax precision"
             ],
             "rel": [
-              "workflow>llmnav.structure.analyze"
+              "workflow>llmnav.structure.rust-process"
             ],
             "risk": [],
             "role": "Extract conservative Rust declaration syntax with explicit limits instead of claiming compiler type resolution.",
@@ -2409,7 +2409,7 @@
             "stability": "architecture",
             "unknown": []
           },
-          "end": 588,
+          "end": 593,
           "endLine": 10,
           "entries": [
             {
@@ -2452,7 +2452,7 @@
               "key": "rel",
               "line": 8,
               "order": 6,
-              "value": "workflow>llmnav.structure.analyze"
+              "value": "workflow>llmnav.structure.rust-process"
             },
             {
               "key": "stability",
@@ -2461,11 +2461,11 @@
               "value": "architecture"
             }
           ],
-          "filePath": "src/adapters/rust.js",
+          "filePath": "src/adapters/rust-syntax.js",
           "indent": "",
           "newline": "\n",
           "prefix": null,
-          "raw": "/* llmnav/1 module\nid=llmnav.structure.rust\nrole=Extract conservative Rust declaration syntax with explicit limits instead of claiming compiler type resolution.\nowns=Rust lexical metadata|declared parameter types|local impl ownership|syntax precision\nexcludes=macro expansion|crate resolution|type checking|conditional compilation\nsearch=Rust syntax metadata|Rust impl fields|Rust function parameters\ninvariant=Comments, literals and macro token trees never create declarations and unresolved impl ownership remains unknown.\nrel=workflow>llmnav.structure.analyze\nstability=architecture\n*/",
+          "raw": "/* llmnav/1 module\nid=llmnav.structure.rust\nrole=Extract conservative Rust declaration syntax with explicit limits instead of claiming compiler type resolution.\nowns=Rust lexical metadata|declared parameter types|local impl ownership|syntax precision\nexcludes=macro expansion|crate resolution|type checking|conditional compilation\nsearch=Rust syntax metadata|Rust impl fields|Rust function parameters\ninvariant=Comments, literals and macro token trees never create declarations and unresolved impl ownership remains unknown.\nrel=workflow>llmnav.structure.rust-process\nstability=architecture\n*/",
           "scope": "module",
           "specVersion": "1",
           "start": 0,
@@ -2474,7 +2474,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "95abf16e776414d1459f2e0b6dd5b9dba45dbb4db26745bc6865db783b11d875",
+      "contentHash": "65e8df5ae2966c2f185ccaf195b70c6ceaf1328a4603499f339397a4c6e360f9",
       "declarations": [
         null
       ],
@@ -2483,9 +2483,240 @@
         "../util.js",
         "node:path"
       ],
+      "path": "src/adapters/rust-syntax.js",
+      "semanticBytes": 593,
+      "sourceBytes": 10374
+    },
+    {
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
+              "type checking",
+              "application execution",
+              "process lifecycle ownership"
+            ],
+            "id": "llmnav.structure.rust-worker",
+            "invariant": [
+              "The worker parses source as data and its parent owns deadlines, cancellation and process exit."
+            ],
+            "owns": [
+              "Rust worker input decoding",
+              "analysis result transport",
+              "analysis error transport"
+            ],
+            "rel": [
+              "workflow>llmnav.structure.rust",
+              "workflow>llmnav.structure.rust-process"
+            ],
+            "risk": [],
+            "role": "Run conservative Rust syntax extraction inside the owned analysis subprocess.",
+            "scope": "module",
+            "search": [
+              "Rust isolated worker",
+              "Rust syntax extraction process"
+            ],
+            "stability": "architecture",
+            "unknown": []
+          },
+          "end": 557,
+          "endLine": 11,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.structure.rust-worker"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Run conservative Rust syntax extraction inside the owned analysis subprocess."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "Rust worker input decoding|analysis result transport|analysis error transport"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "type checking|application execution|process lifecycle ownership"
+            },
+            {
+              "key": "search",
+              "line": 6,
+              "order": 4,
+              "value": "Rust isolated worker|Rust syntax extraction process"
+            },
+            {
+              "key": "invariant",
+              "line": 7,
+              "order": 5,
+              "value": "The worker parses source as data and its parent owns deadlines, cancellation and process exit."
+            },
+            {
+              "key": "rel",
+              "line": 8,
+              "order": 6,
+              "value": "workflow>llmnav.structure.rust"
+            },
+            {
+              "key": "rel",
+              "line": 9,
+              "order": 7,
+              "value": "workflow>llmnav.structure.rust-process"
+            },
+            {
+              "key": "stability",
+              "line": 10,
+              "order": 8,
+              "value": "architecture"
+            }
+          ],
+          "filePath": "src/adapters/rust-worker.js",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.structure.rust-worker\nrole=Run conservative Rust syntax extraction inside the owned analysis subprocess.\nowns=Rust worker input decoding|analysis result transport|analysis error transport\nexcludes=type checking|application execution|process lifecycle ownership\nsearch=Rust isolated worker|Rust syntax extraction process\ninvariant=The worker parses source as data and its parent owns deadlines, cancellation and process exit.\nrel=workflow>llmnav.structure.rust\nrel=workflow>llmnav.structure.rust-process\nstability=architecture\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "868f4c5a0b6c88f7a5004852126f4f144ffa0084fc192225e6cf2911c7e76429",
+      "declarations": [
+        null
+      ],
+      "imports": [
+        "./rust-syntax.js"
+      ],
+      "path": "src/adapters/rust-worker.js",
+      "semanticBytes": 557,
+      "sourceBytes": 1033
+    },
+    {
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
+              "type checking",
+              "macro expansion",
+              "application execution"
+            ],
+            "id": "llmnav.structure.rust-process",
+            "invariant": [
+              "CPU-intensive Rust parsing runs only in a bounded child process and cancellation waits for its exit."
+            ],
+            "owns": [
+              "Rust worker invocation",
+              "Rust analysis failure isolation"
+            ],
+            "rel": [
+              "workflow>llmnav.structure.analyze",
+              "workflow>llmnav.structure.compiler-process"
+            ],
+            "risk": [],
+            "role": "Isolate Rust syntax analysis so deadlines, cancellation and heap failures cannot block the calling event loop.",
+            "scope": "module",
+            "search": [
+              "Rust syntax metadata",
+              "Rust analysis deadline",
+              "Rust analysis cancellation"
+            ],
+            "stability": "architecture",
+            "unknown": []
+          },
+          "end": 588,
+          "endLine": 11,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.structure.rust-process"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Isolate Rust syntax analysis so deadlines, cancellation and heap failures cannot block the calling event loop."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "Rust worker invocation|Rust analysis failure isolation"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "type checking|macro expansion|application execution"
+            },
+            {
+              "key": "search",
+              "line": 6,
+              "order": 4,
+              "value": "Rust syntax metadata|Rust analysis deadline|Rust analysis cancellation"
+            },
+            {
+              "key": "invariant",
+              "line": 7,
+              "order": 5,
+              "value": "CPU-intensive Rust parsing runs only in a bounded child process and cancellation waits for its exit."
+            },
+            {
+              "key": "rel",
+              "line": 8,
+              "order": 6,
+              "value": "workflow>llmnav.structure.analyze"
+            },
+            {
+              "key": "rel",
+              "line": 9,
+              "order": 7,
+              "value": "workflow>llmnav.structure.compiler-process"
+            },
+            {
+              "key": "stability",
+              "line": 10,
+              "order": 8,
+              "value": "architecture"
+            }
+          ],
+          "filePath": "src/adapters/rust.js",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.structure.rust-process\nrole=Isolate Rust syntax analysis so deadlines, cancellation and heap failures cannot block the calling event loop.\nowns=Rust worker invocation|Rust analysis failure isolation\nexcludes=type checking|macro expansion|application execution\nsearch=Rust syntax metadata|Rust analysis deadline|Rust analysis cancellation\ninvariant=CPU-intensive Rust parsing runs only in a bounded child process and cancellation waits for its exit.\nrel=workflow>llmnav.structure.analyze\nrel=workflow>llmnav.structure.compiler-process\nstability=architecture\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "19ff229fea1d321d14bf0d377e09d6e0b5f300ae237e7574e0d49eca5efe6759",
+      "declarations": [
+        null
+      ],
+      "imports": [
+        "./process.js",
+        "node:url"
+      ],
       "path": "src/adapters/rust.js",
       "semanticBytes": 588,
-      "sourceBytes": 10363
+      "sourceBytes": 1542
     },
     {
       "blocks": [
@@ -7763,7 +7994,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "b74e5c201eb667fa8a4ca13b221841eaa221cfabe1b197bd13d2fc9a372eaec1",
+      "contentHash": "734a7ace0387dd722c907d4e3d451e449ad91447678b2c53665f167de5ccaf27",
       "declarations": [
         null
       ],
@@ -9130,6 +9361,24 @@
       "path": "tests/release-tag.test.js",
       "semanticBytes": 0,
       "sourceBytes": 1074
+    },
+    {
+      "blocks": [],
+      "contentHash": "8c0532bb332e87c1b8885e3a13962511be9963d7386058b8de4354ba47dee9cc",
+      "declarations": [],
+      "imports": [
+        "../src/adapters/rust-syntax.js",
+        "../src/adapters/rust.js",
+        "node:assert/strict",
+        "node:events",
+        "node:fs/promises",
+        "node:os",
+        "node:path",
+        "node:test"
+      ],
+      "path": "tests/rust-isolation.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 2610
     },
     {
       "blocks": [],

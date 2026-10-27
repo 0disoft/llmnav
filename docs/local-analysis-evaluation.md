@@ -2,6 +2,8 @@
 
 These are Windows x64 script observations on Node 24.18.0, TypeScript 6.0.3 and Python 3.14.6. They measure elapsed time and compact UTF-8 JSON bytes, not actual model tokens or completed agent tasks. Raw observations are in [local-analysis-results.json](local-analysis-results.json).
 
+These observations describe 0.19.0. Starting with 0.19.1, Rust runs in an isolated Node subprocess; its startup cost and deadline behavior are measured separately in [Rust analysis isolation](rust-analysis-isolation.md). The old Rust latency numbers below do not describe the isolated adapter.
+
 Reproduce from the repository root with installed tooling:
 
 ```sh

@@ -1909,7 +1909,7 @@
         "source parsing"
       ],
       "hashes": {
-        "body": "b74e5c201eb667fa8a4ca13b221841eaa221cfabe1b197bd13d2fc9a372eaec1",
+        "body": "734a7ace0387dd722c907d4e3d451e449ad91447678b2c53665f167de5ccaf27",
         "semantic": "59aa3e9e793d505ecdf110fec023c201aaee0154d2f6c9cf71afe1bbf71a7be5",
         "structure": "e213e073414c75bc75df1c8669a7045096142b6c0845694191893d90bf23e3c2"
       },
@@ -3632,9 +3632,9 @@
         "conditional compilation"
       ],
       "hashes": {
-        "body": "95abf16e776414d1459f2e0b6dd5b9dba45dbb4db26745bc6865db783b11d875",
-        "semantic": "bca9c4ec607707e6f02dad6b91b348c35f18fe8248cf9b01e1cf53b507e52a80",
-        "structure": "c276c185b148999b3a7ecef4b8f5c39112dc967ce75dc9d10373c3cecfecf691"
+        "body": "65e8df5ae2966c2f185ccaf195b70c6ceaf1328a4603499f339397a4c6e360f9",
+        "semantic": "a8ead275ee03e1dc320999bc24f824c1778b3cca3b1a06059e2b60ab1d3a18a5",
+        "structure": "3784f3be34efd79b76d1ae3f852aa196850d17f1fd39c9287b01131fbbdb9d84"
       },
       "id": "llmnav.structure.rust",
       "imports": [
@@ -3651,7 +3651,7 @@
         "exported": null,
         "kind": null,
         "language": null,
-        "path": "src/adapters/rust.js",
+        "path": "src/adapters/rust-syntax.js",
         "receiver": null,
         "signature": null,
         "startLine": 1,
@@ -3665,7 +3665,7 @@
         "syntax precision"
       ],
       "rel": [
-        "workflow>llmnav.structure.analyze"
+        "workflow>llmnav.structure.rust-process"
       ],
       "role": "Extract conservative Rust declaration syntax with explicit limits instead of claiming compiler type resolution.",
       "scope": "module",
@@ -3675,11 +3675,110 @@
         "Rust function parameters"
       ],
       "stability": "architecture"
+    },
+    {
+      "boundaries": [],
+      "excludes": [
+        "type checking",
+        "macro expansion",
+        "application execution"
+      ],
+      "hashes": {
+        "body": "19ff229fea1d321d14bf0d377e09d6e0b5f300ae237e7574e0d49eca5efe6759",
+        "semantic": "bc0bb7e2d2901aeaae9995e1cd71146ac2c67c23632738a6ddc26655c08628f7",
+        "structure": "d0842ff73f3908401d3fb30d6841b1dc82af8144d4ed10c4820d6da9eb108982"
+      },
+      "id": "llmnav.structure.rust-process",
+      "imports": [
+        "./process.js",
+        "node:url"
+      ],
+      "invariant": [
+        "CPU-intensive Rust parsing runs only in a bounded child process and cancellation waits for its exit."
+      ],
+      "location": {
+        "declarationLine": null,
+        "endLine": 11,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/adapters/rust.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "owns": [
+        "Rust worker invocation",
+        "Rust analysis failure isolation"
+      ],
+      "rel": [
+        "workflow>llmnav.structure.analyze",
+        "workflow>llmnav.structure.compiler-process"
+      ],
+      "role": "Isolate Rust syntax analysis so deadlines, cancellation and heap failures cannot block the calling event loop.",
+      "scope": "module",
+      "search": [
+        "Rust syntax metadata",
+        "Rust analysis deadline",
+        "Rust analysis cancellation"
+      ],
+      "stability": "architecture"
+    },
+    {
+      "boundaries": [],
+      "excludes": [
+        "type checking",
+        "application execution",
+        "process lifecycle ownership"
+      ],
+      "hashes": {
+        "body": "868f4c5a0b6c88f7a5004852126f4f144ffa0084fc192225e6cf2911c7e76429",
+        "semantic": "690ce0044370f0c71eed96b64a4087fe312bd08ad28c48a74d77df23dace597f",
+        "structure": "e46292bf8bd18048abf5dd9e33db00ef88aae62127fc23493c85d2463503675b"
+      },
+      "id": "llmnav.structure.rust-worker",
+      "imports": [
+        "./rust-syntax.js"
+      ],
+      "invariant": [
+        "The worker parses source as data and its parent owns deadlines, cancellation and process exit."
+      ],
+      "location": {
+        "declarationLine": null,
+        "endLine": 11,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/adapters/rust-worker.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "owns": [
+        "Rust worker input decoding",
+        "analysis result transport",
+        "analysis error transport"
+      ],
+      "rel": [
+        "workflow>llmnav.structure.rust",
+        "workflow>llmnav.structure.rust-process"
+      ],
+      "role": "Run conservative Rust syntax extraction inside the owned analysis subprocess.",
+      "scope": "module",
+      "search": [
+        "Rust isolated worker",
+        "Rust syntax extraction process"
+      ],
+      "stability": "architecture"
     }
   ],
   "contractFingerprints": {
     "configuration": {
-      "sha256": "5c0a36359ca0b5315a2581d81048397e5b3c6e10681e74c330364d9b30c0be69"
+      "sha256": "0583bd2af2936e76e9f8842c3187fb2be7faf12830ca1c02ac2215ad7ebe6afe"
     },
     "exportedApi": {
       "count": 5,
@@ -3687,9 +3786,9 @@
     },
     "schemaVersion": 1
   },
-  "generatedBy": "llmnav@0.19.0",
+  "generatedBy": "llmnav@0.19.1",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "eb8627e7c0811eb1fc76a64a03111f948c1fc82b7419bf1147a56222922d8697",
+  "sourceHash": "94105e0ee0f8585380c960996c743ac1600ddfa84a5ea0ea696d93371774927e",
   "specVersion": "1"
 }

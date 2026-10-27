@@ -3783,7 +3783,7 @@
     {
       "confidence": 0.85,
       "from": "llmnav/llmnav.structure.analyze",
-      "id": "257f3ef97d73e9bd1a7d56456b103517fb25f6a53f82ecf9af4925b68105e7c1",
+      "id": "d3fdcb18e73ecccb893ae0e4c8ebf68ffe47622ada5838c857dd7dc6cf8fa107",
       "kind": "imports",
       "provenance": {
         "generator": "llmnav",
@@ -3792,7 +3792,7 @@
         "source": "src/analysis.js",
         "type": "local-import"
       },
-      "to": "llmnav/llmnav.structure.rust"
+      "to": "llmnav/llmnav.structure.rust-process"
     },
     {
       "confidence": 0.85,
@@ -4021,7 +4021,35 @@
     {
       "confidence": 1,
       "from": "llmnav/llmnav.structure.rust",
-      "id": "538b26645f42ee37f4788da5a6ef215c4744488e5d6c3b0cb4b04651fb48b75b",
+      "id": "3720c1261fe7378ec61e19a17469e63ac4bed8bb10e238bc87c2b27aef2ccf7b",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/adapters/rust-syntax.js",
+        "source": "src/adapters/rust-syntax.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.structure.rust-process"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.structure.rust",
+      "id": "e4e72cb1bec8e218246eaaf693355ec4cb517ac8f5b186c7810cc06cf4cc6bd3",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/adapters/rust-syntax.js",
+        "source": "src/adapters/rust-syntax.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.support.abort"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.structure.rust-process",
+      "id": "8db30df5c40c4cb0408a742ee41e687d915a3c2e1556e2b744a58b29078988a4",
       "kind": "workflow",
       "provenance": {
         "generator": null,
@@ -4034,8 +4062,8 @@
     },
     {
       "confidence": 0.85,
-      "from": "llmnav/llmnav.structure.rust",
-      "id": "3ef2a2cc6489d7651afb593f75c38717cc9749f8b9cfadc500746b1cf3da369c",
+      "from": "llmnav/llmnav.structure.rust-process",
+      "id": "ed1aa6aee9c892f9c023f9c2c949e08842a184498ce9d1dec183bf687957f5af",
       "kind": "imports",
       "provenance": {
         "generator": "llmnav",
@@ -4044,7 +4072,63 @@
         "source": "src/adapters/rust.js",
         "type": "local-import"
       },
-      "to": "llmnav/llmnav.support.abort"
+      "to": "llmnav/llmnav.structure.compiler-process"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.structure.rust-process",
+      "id": "a8f4e44ddce55e2bface93404eb550ee99250e25f0f3032fdffcdd8404172bfa",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/adapters/rust.js",
+        "source": "src/adapters/rust.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.structure.compiler-process"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.structure.rust-worker",
+      "id": "7d4ff5b3ebf9e1d7e8236f75c1f3c38d68839ccac43db26d55418807a9e5cb99",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/adapters/rust-worker.js",
+        "source": "src/adapters/rust-worker.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.structure.rust"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.structure.rust-worker",
+      "id": "6f4d1feb6df51567b3f39dfda6d6936392cde112761a0a6c8caa12d30204e640",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/adapters/rust-worker.js",
+        "source": "src/adapters/rust-worker.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.structure.rust"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.structure.rust-worker",
+      "id": "0e7767877c71800f3464da3650973ddad1144d0f805303eedd530ccdcad06866",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/adapters/rust-worker.js",
+        "source": "src/adapters/rust-worker.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.structure.rust-process"
     },
     {
       "confidence": 1,
@@ -5662,7 +5746,7 @@
         "exported": null,
         "kind": null,
         "language": null,
-        "path": "src/adapters/rust.js",
+        "path": "src/adapters/rust-syntax.js",
         "receiver": null,
         "signature": null,
         "startLine": 1,
@@ -5672,6 +5756,50 @@
       "repositoryId": "llmnav",
       "role": "Extract conservative Rust declaration syntax with explicit limits instead of claiming compiler type resolution.",
       "semanticId": "llmnav.structure.rust",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
+      "key": "llmnav/llmnav.structure.rust-process",
+      "location": {
+        "declarationLine": null,
+        "endLine": 11,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/adapters/rust.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Isolate Rust syntax analysis so deadlines, cancellation and heap failures cannot block the calling event loop.",
+      "semanticId": "llmnav.structure.rust-process",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
+      "key": "llmnav/llmnav.structure.rust-worker",
+      "location": {
+        "declarationLine": null,
+        "endLine": 11,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/adapters/rust-worker.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Run conservative Rust syntax extraction inside the owned analysis subprocess.",
+      "semanticId": "llmnav.structure.rust-worker",
       "unresolved": false
     },
     {
@@ -5897,11 +6025,11 @@
   ],
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "f3e9b02f98971920c38748e5864734471963b2c6b476e1ffd5ca8ccca860e9fa",
+  "sourceHash": "3fef403d19cde3a064d6b2354c5e5fb2da9cd0f4cec1ca0da7249b7bd98b2b67",
   "stats": {
-    "edgeCount": 305,
+    "edgeCount": 311,
     "importedIndexCount": 0,
-    "nodeCount": 71,
+    "nodeCount": 73,
     "unresolvedNodeCount": 0
   }
 }

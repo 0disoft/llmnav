@@ -40,3 +40,4 @@
 {"query":"Python AST analysis annotations and fields without executing source","expected":["llmnav.structure.python"]}
 {"query":"Rust syntax metadata impl fields and function parameters","expected":["llmnav.structure.rust"]}
 {"query":"Python Rust JavaScript metadata history verification benchmark","expected":["llmnav.eval.local-analysis"]}
+{"query":"Rust analysis deadline cancellation and worker failure isolation","expected":["llmnav.structure.rust-process"]}

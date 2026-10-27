@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.19.1] — 2026-10-27
+
+### Fixed
+
+* Move Rust syntax parsing off the calling event loop into one owned Node subprocess per analysis. Reuse compiler-process deadlines, cancellation, exit cleanup and the 32 MiB output cap; bound the worker's V8 old-space heap to 256 MiB. Preserve declaration results, IDs, partial diagnostics and filesystem error codes. Large Rust inputs can no longer postpone the caller's deadline and abort callbacks until synchronous parsing finishes.
+
 ## [0.19.0] — 2026-10-27
 
 ### Added

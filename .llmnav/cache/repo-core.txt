@@ -303,4 +303,18 @@ role Extract conservative Rust declaration syntax with explicit limits instead o
 owns Rust lexical metadata, declared parameter types, local impl ownership, syntax precision
 excludes macro expansion, crate resolution, type checking, conditional compilation
 invariant Comments, literals and macro token trees never create declarations and unresolved impl ownership remains unknown.
-rel workflow>llmnav.structure.analyze
+rel workflow>llmnav.structure.rust-process
+
+@llmnav.structure.rust-process
+role Isolate Rust syntax analysis so deadlines, cancellation and heap failures cannot block the calling event loop.
+owns Rust worker invocation, Rust analysis failure isolation
+excludes type checking, macro expansion, application execution
+invariant CPU-intensive Rust parsing runs only in a bounded child process and cancellation waits for its exit.
+rel workflow>llmnav.structure.analyze, workflow>llmnav.structure.compiler-process
+
+@llmnav.structure.rust-worker
+role Run conservative Rust syntax extraction inside the owned analysis subprocess.
+owns Rust worker input decoding, analysis result transport, analysis error transport
+excludes type checking, application execution, process lifecycle ownership
+invariant The worker parses source as data and its parent owns deadlines, cancellation and process exit.
+rel workflow>llmnav.structure.rust, workflow>llmnav.structure.rust-process

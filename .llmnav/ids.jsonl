@@ -69,3 +69,5 @@
 {"id":"llmnav.eval.local-analysis","state":"active"}
 {"id":"llmnav.structure.python","state":"active"}
 {"id":"llmnav.structure.rust","state":"active"}
+{"id":"llmnav.structure.rust-worker","state":"active"}
+{"id":"llmnav.structure.rust-process","state":"active"}

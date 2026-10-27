@@ -69,3 +69,5 @@ llmnav.evidence.verification
 llmnav.eval.local-analysis
 llmnav.structure.python
 llmnav.structure.rust
+llmnav.structure.rust-process
+llmnav.structure.rust-worker
