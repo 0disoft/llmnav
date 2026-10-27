@@ -117,6 +117,38 @@ test("alias ties choose seeds in card order and display results in ID order", ()
   assert.equal(metrics.postingVisits, 0);
 });
 
+test("bounded ranking matches full sorting and preserves relation seeds across result limits", () => {
+  const cards = Array.from({ length: 300 }, (_, position) => {
+    const number = (position * 137) % 300;
+    return {
+      id: `feature.n${String(number).padStart(3, "0")}`,
+      role: "cobalt ".repeat(1 + number % 7),
+      excludes: number % 2 ? ["external billing"] : [],
+      rel: [`workflow>feature.n${String((number + 1) % 300).padStart(3, "0")}`],
+    };
+  });
+  const input = { cards }, before = structuredClone(input);
+  const { searchIndex } = buildInvertedIndex(input);
+  const lexicon = { aliases: { aliaszz: cards.map(card => card.id).reverse() } };
+  for (const query of ["cobalt", "aliaszz", "excludes: billing", "unmatchedzz"]) {
+    for (const top of [1, 3, 7, 100]) {
+      const expected = queryIndexLegacy(input, query, { top, lexicon });
+      const sort = Array.prototype.sort;
+      let sortedResults = 0, actual;
+      try {
+        Array.prototype.sort = function (...args) {
+          if (this[0]?.card || this[0]?.value?.card) sortedResults += this.length;
+          return Reflect.apply(sort, this, args);
+        };
+        actual = queryPreparedIndex(input, searchIndex, query, { top, lexicon });
+      } finally { Array.prototype.sort = sort; }
+      assert.deepEqual(actual, expected, `${query}, top=${top}`);
+      assert.ok(sortedResults <= top + 3, `${query}, top=${top}: sorted ${sortedResults} results`);
+    }
+  }
+  assert.deepEqual(input, before);
+});
+
 test("phrase thresholds and cancellation preserve query metrics", () => {
   const input = { cards: [{ id: "core.abc", role: "abc abcd" }] };
   const { searchIndex } = buildInvertedIndex(input);

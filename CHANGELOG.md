@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.19.16] — 2026-10-27
+
+### Fixed
+
+* Reuse bounded selection for semantic search seeds and final ranking instead of sorting every positive match twice. Seed ties retain card order; displayed ties retain semantic-ID order, and relation bonuses still run before final selection. A deterministic 20,000-card fixture with `top: 3` reduced sorted result rows from 40,000 to six. On native Windows, after warmup, median prepared-query time across seven measured runs changed from 138.2 ms to 80.8 ms with identical serialized output SHA-256; these are local fixture timings. Ranking selection now uses O(N log(K + 1)) time and O(K) live selection space for fixed seed count, while the existing score map remains O(N). Regression cases compare against full-sort legacy results for four result limits across token, alias, excluded-scope and unmatched queries, preserve caller inputs, and cap sorted rows at requested results plus three seeds.
+
 ## [0.19.15] — 2026-10-27
 
 ### Fixed

@@ -12,6 +12,7 @@ stability=architecture
 
 import path from "node:path";
 import { codeMetadataPage, validateMetadataOptions, withoutCodeMetadata } from "./code-metadata.js";
+import { createBoundedSelection } from "./bounded-selection.js";
 import { throwIfAborted } from "./abort.js";
 import { loadConfig } from "./config.js";
 import { ID_MATCH_POLICY, SEARCH_LIMITS, SEARCH_RANK } from "./policy.js";
@@ -433,17 +434,21 @@ function scoreExactPhrases(searchIndex, normalizedQuery, byId, resultsById, metr
 }
 
 function selectSearchSeeds(resultsById, cardOrder) {
-  const results = [...resultsById.values()].filter((result) => result.score > 0);
-  return results
-    .sort((left, right) => right.score - left.score || (cardOrder.get(left.card.id) ?? 0) - (cardOrder.get(right.card.id) ?? 0))
-    .slice(0, SEARCH_RANK.seedCount);
+  return selectTopSearchResults(resultsById, SEARCH_RANK.seedCount,
+    (left, right) => right.score - left.score || (cardOrder.get(left.card.id) ?? 0) - (cardOrder.get(right.card.id) ?? 0));
+}
+
+function selectTopSearchResults(resultsById, limit, compare) {
+  const selected = createBoundedSelection(limit, compare);
+  for (const result of resultsById.values()) {
+    if (result.score > 0) selected.add(result);
+  }
+  return selected.values();
 }
 
 function rankedSearchResults(resultsById, top) {
-  return [...resultsById.values()]
-    .filter((result) => result.score > 0)
-    .sort((left, right) => right.score - left.score || compareText(left.card.id, right.card.id))
-    .slice(0, top)
+  return selectTopSearchResults(resultsById, top,
+    (left, right) => right.score - left.score || compareText(left.card.id, right.card.id))
     .map((result) => ({
       id: result.card.id,
       score: Number(result.score.toFixed(SEARCH_RANK.scorePrecision)),

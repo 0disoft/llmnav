@@ -3,11 +3,11 @@
   "fileStateSchemaVersion": 1,
   "files": {
     ".llmnav/cache/agent-context.md": "6a3b2b8e91053cb08260df19cf18649cf33edbfbdee939f71e2ebd8b566e431a",
-    ".llmnav/cache/cards.jsonl": "90d9c757723f59acffe89a129c13bff6a6360e4ec1e6f6220a06c2669ac4a76d",
-    ".llmnav/cache/file-state.json": "f84c710b7fdb59c5c43cc902c22675b58c454c120a2617bd2654fd33ab62c572",
-    ".llmnav/cache/graph-state.json": "db1cab3f827bd1390ef46ebb447b4b452a2d3a916608c9cd509a4e6734c185a7",
+    ".llmnav/cache/cards.jsonl": "dbef8200001642dda54c5f660279034ddfe46f4867c249f1109bfeb00b05b210",
+    ".llmnav/cache/file-state.json": "c44e92bc2a8e211c8fe6e0c6008038d9d9f008ba7c1c1516bc194999ee474be1",
+    ".llmnav/cache/graph-state.json": "f2797d47528c9c3a8900ba0cb22d6a0e1646845c026e4c87ff50ee454dec6176",
     ".llmnav/cache/graph.json": "fd2b144687723c5bc4d39eedffa7e279d9cdc679110787d8709c5e99ef86fad1",
-    ".llmnav/cache/index.json": "4af80c3e445a7314342cce6077cd05787f90831da1deba0ca076c834b8c56416",
+    ".llmnav/cache/index.json": "dbb29f18703cb1e8f9365f9a6c26bab17bfec6eb70f7baa4e4031f5cd958b7da",
     ".llmnav/cache/modules/example.auth.txt": "ae0aebf37a7f541ec0af5a36c1584452703b5b4fcafd6f397d0a7a402c3a76e1",
     ".llmnav/cache/modules/example.billing.txt": "957e2c984d5c121e598956c4f78525016505b1c97d6a94273866d92c4166fecd",
     ".llmnav/cache/modules/example.privacy.txt": "0948627bfa62f11088fbbf1aec835cab50c35d2d03f49eadefbddc221169e0b7",
@@ -44,6 +44,6 @@
   "searchCardSetHash": "56b4192859b5b6f4f6a4709378e74a2ea95b8fa4e4a376efc173cc98808f9cf1",
   "searchIndexSchemaVersion": 2,
   "searchShardSchemaVersion": null,
-  "sourceHash": "900ee2bc38fac5a21db0c372a4527e39c4b08f4e21a01a6af518e3557ce45bef",
+  "sourceHash": "96277e3de327b2869f7013d897ceb26ffe27d301f738bff36132614bbdd137e5",
   "specVersion": "1"
 }

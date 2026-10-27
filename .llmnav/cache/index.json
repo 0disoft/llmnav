@@ -692,13 +692,14 @@
         "source mutation"
       ],
       "hashes": {
-        "body": "470463539d66ce6b4db40a78a9369c57e1c2db2b391d7a73200b0bf198623647",
+        "body": "a2d61a80cd3af1221602a29a256c67e3c55a0a1c7a61af63aca931758808df05",
         "semantic": "945f325a2ad2abfa71212b02dd952c071d47ed6d3848a16d247afd48dbe5ced6",
-        "structure": "361135a8b4c90d48c738b19b5810cb27a1e17e3dcb933405e527675afac4c3ae"
+        "structure": "87b476ce795698e809b291f0ea6b6131a38609868458cf6c3dc73a3538b5435a"
       },
       "id": "llmnav.search.query",
       "imports": [
         "./abort.js",
+        "./bounded-selection.js",
         "./code-metadata.js",
         "./config.js",
         "./generator.js",
@@ -1913,7 +1914,7 @@
         "source parsing"
       ],
       "hashes": {
-        "body": "49a08384b210a92c177575c5db3b36ea6751cc59cd004e4796846b23394c52c8",
+        "body": "124f0d53cdfb345cd7b0916c411fc8c69662fd4a2e4f50c415fad999f8c3638e",
         "semantic": "59aa3e9e793d505ecdf110fec023c201aaee0154d2f6c9cf71afe1bbf71a7be5",
         "structure": "e213e073414c75bc75df1c8669a7045096142b6c0845694191893d90bf23e3c2"
       },
@@ -3799,9 +3800,9 @@
     },
     "schemaVersion": 1
   },
-  "generatedBy": "llmnav@0.19.15",
+  "generatedBy": "llmnav@0.19.16",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "900ee2bc38fac5a21db0c372a4527e39c4b08f4e21a01a6af518e3557ce45bef",
+  "sourceHash": "96277e3de327b2869f7013d897ceb26ffe27d301f738bff36132614bbdd137e5",
   "specVersion": "1"
 }

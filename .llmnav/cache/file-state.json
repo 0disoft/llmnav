@@ -7883,12 +7883,13 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "470463539d66ce6b4db40a78a9369c57e1c2db2b391d7a73200b0bf198623647",
+      "contentHash": "a2d61a80cd3af1221602a29a256c67e3c55a0a1c7a61af63aca931758808df05",
       "declarations": [
         null
       ],
       "imports": [
         "./abort.js",
+        "./bounded-selection.js",
         "./code-metadata.js",
         "./config.js",
         "./generator.js",
@@ -7904,7 +7905,7 @@
       ],
       "path": "src/search.js",
       "semanticBytes": 464,
-      "sourceBytes": 37769
+      "sourceBytes": 37960
     },
     {
       "blocks": [],
@@ -8021,7 +8022,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "49a08384b210a92c177575c5db3b36ea6751cc59cd004e4796846b23394c52c8",
+      "contentHash": "124f0d53cdfb345cd7b0916c411fc8c69662fd4a2e4f50c415fad999f8c3638e",
       "declarations": [
         null
       ],
@@ -9532,7 +9533,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "6839410f58bd90ddb627812331a63ed0ab36ede195a3c69e20e15d1035fc1811",
+      "contentHash": "91282a4e05ddaa50d567e20b4d2b0fe56c3141021a38e6d91930eb7dc2ea8d1f",
       "declarations": [],
       "imports": [
         "../src/inverted-index.js",
@@ -9542,7 +9543,7 @@
       ],
       "path": "tests/search.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 8056
+      "sourceBytes": 9555
     },
     {
       "blocks": [],
