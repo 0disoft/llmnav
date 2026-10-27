@@ -2,7 +2,7 @@
 id=llmnav.structure.metadata
 role=Validate generated compiler metadata independently of reviewed semantic cards.
 owns=common metadata contract|type origin validation|bounded member pages
-excludes=compiler execution|semantic inference|source mutation
+excludes=compiler execution|semantic inference|source mutation|semantic card validation
 search=generated type metadata|compiler signature contract
 invariant=Metadata preserves compiler origins and bounds detail output without modifying semantic cards or default navigation responses.
 rel=workflow>llmnav.graph.import

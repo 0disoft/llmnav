@@ -373,6 +373,8 @@ import {
 
 The normative source vocabulary remains available from `llmnav/spec`.
 
+`analyzeProject(root, { language, metadata: true })` opts into graph input schema 3 declaration metadata. `showProjectCard(root, id, { metadata: true, members?, top?, offset?, metadataBudget? })` adds a bounded metadata page; prepared sessions and MCP show accept the same options. Defaults continue to exclude metadata. See [compiler metadata](precise-analysis.md#opt-in-declaration-metadata) for type origins, unsupported declarations, snapshot freshness, byte budgets and follow-up paging.
+
 ```js
 import { KEY_ORDER, EFFECT_KINDS, RISK_KINDS } from "llmnav/spec";
 ```

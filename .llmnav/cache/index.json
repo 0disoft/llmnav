@@ -638,8 +638,8 @@
         "search ranking"
       ],
       "hashes": {
-        "body": "f3b8ecabdd25e9d7ec8121382fa8892d69f941e6aa4ac1992d3b218f46a88716",
-        "semantic": "c5dc78b5539ae1579e7ce201a75625d8a2c88ab8d3b9dfd147ff61ffdd112f3b",
+        "body": "69ef80c850145fccca22aa58d429a105f913abd08774d912c01f6c4073cedb7e",
+        "semantic": "c0d0762a6878536296cfc3eead468424b72bc2a83e77268f152a4ac38f798254",
         "structure": "cdce9067edb0b10b2d86d01d4f587f36671973c3a5b629f5abe12251378856fe"
       },
       "id": "llmnav.rules.validate",
@@ -676,7 +676,9 @@
       "search": [
         "llmnav lint",
         "metadata validation",
-        "semantic drift"
+        "semantic drift",
+        "unknown effects",
+        "invalid semantic metadata"
       ],
       "stability": "architecture"
     },
@@ -3186,11 +3188,12 @@
       "excludes": [
         "compiler execution",
         "semantic inference",
-        "source mutation"
+        "source mutation",
+        "semantic card validation"
       ],
       "hashes": {
-        "body": "d131d9193d1844f690034f192aee6c20a795f6416200af162ec6363bd7a2201e",
-        "semantic": "dd9884624f01bbf9e81d8f5203747d6c50f9bb3e382b58539af2c050bcbc6864",
+        "body": "5a264dee473cc122b77280513291131569b08e0c715cf8b7507bc374276a9eb7",
+        "semantic": "c57d06da9f8ecb889ff49a8955177c4c859d0d419b84a0c3e003cc1db4cf92ed",
         "structure": "0796d6e2c37a8cbe72ae6d35603b611fa8afe03f4744b32636156c75c5608f47"
       },
       "id": "llmnav.structure.metadata",
@@ -3235,11 +3238,12 @@
       "excludes": [
         "compiler installation",
         "source mutation",
-        "business meaning inference"
+        "business meaning inference",
+        "semantic card validation"
       ],
       "hashes": {
-        "body": "9ab551c5b1eeb8dac90d65a37e3822711b12770d5d68b9bc8925a5371eee2fea",
-        "semantic": "fcf5a514cc5ed54d49ea268fde84ebd8dca89c48c7728aae84fc3db9640450b7",
+        "body": "3e07e90dc1ed3376a12bb6b0fbe42a84c53c6b2f808699ed2df0266ad974fb20",
+        "semantic": "81490b7529ead9ed3cfe6a004b8e1a210a3837ff585053e833b354cb1bc22003",
         "structure": "8cdc8fad689510d453bebc6fc4084742154a537c065b4ca446edd2537c2f985c"
       },
       "id": "llmnav.structure.typescript-metadata",
@@ -3276,11 +3280,74 @@
         "inferred types"
       ],
       "stability": "architecture"
+    },
+    {
+      "boundaries": [],
+      "excludes": [
+        "model token accounting",
+        "project execution",
+        "dependency installation",
+        "semantic card validation"
+      ],
+      "hashes": {
+        "body": "730ed559612502a78cc73aeb725b24078765da6a3d7f443b289b30359e8a94ed",
+        "semantic": "2b513593cd6c5f3deafb6ea660f99d3933b6a3a35e9d0f8d7446486a9fd1ce70",
+        "structure": "0205385d879d0aab840627217d31d627d16221d2865f33b8e6c36e0c08b732b7"
+      },
+      "id": "llmnav.eval.metadata",
+      "imports": [
+        "../src/agent-tools.js",
+        "../src/analysis.js",
+        "../src/code-metadata.js",
+        "../src/generator.js",
+        "../src/search.js",
+        "../src/util.js",
+        "node:assert/strict",
+        "node:child_process",
+        "node:fs/promises",
+        "node:os",
+        "node:path",
+        "node:perf_hooks",
+        "node:url"
+      ],
+      "invariant": [
+        "Script observations distinguish output bytes and synthetic lookup costs from real agent token use."
+      ],
+      "location": {
+        "declarationLine": null,
+        "endLine": 11,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "benchmarks/code-metadata.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "owns": [
+        "metadata comparison fixtures",
+        "real declaration probes",
+        "synthetic member lookup measurements"
+      ],
+      "rel": [
+        "workflow>llmnav.structure.analyze",
+        "workflow>llmnav.structure.metadata"
+      ],
+      "role": "Measure opt-in compiler metadata costs and bounded retrieval against explicit source facts.",
+      "scope": "module",
+      "search": [
+        "metadata benchmark",
+        "signature accuracy",
+        "member page costs"
+      ],
+      "stability": "architecture"
     }
   ],
   "contractFingerprints": {
     "configuration": {
-      "sha256": "819ce5086bbbd5e103833e37872adb34c29803a7b081d1009b0fd5e236c5224d"
+      "sha256": "faf883c2e528ccdb43e66b3cd013807b4fb3bea554590566052f5fe3f19e9cf1"
     },
     "exportedApi": {
       "count": 5,
@@ -3291,6 +3358,6 @@
   "generatedBy": "llmnav@0.17.0",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "db256cf28208af2a16cbd4b45aeebf791150028440fb746bbab471675586ce20",
+  "sourceHash": "7bedfb63307dfa9e520057a7765bada2ac664e3a4232824c41e007bfa488dfc0",
   "specVersion": "1"
 }

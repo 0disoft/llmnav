@@ -1444,6 +1444,104 @@
     },
     {
       "confidence": 0.85,
+      "from": "llmnav/llmnav.eval.metadata",
+      "id": "49dff53580a88532a035252f2abdb6ca5de1df4e7d6f937b66e6c1891d1721bd",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "benchmarks/code-metadata.js",
+        "source": "benchmarks/code-metadata.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.agent.tool-schema"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.eval.metadata",
+      "id": "e8dd51b3bcb5927fceb69a60342304619dcab7d19d2df3b1a45984ea6d6e77c9",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "benchmarks/code-metadata.js",
+        "source": "benchmarks/code-metadata.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.index.generate"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.eval.metadata",
+      "id": "019a97e6218092f4c736582958dbb34af8e946f3b19cbe2f614d2185c28affc0",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "benchmarks/code-metadata.js",
+        "source": "benchmarks/code-metadata.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.search.query"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.eval.metadata",
+      "id": "54d903312f28c18744533962fe2a6cb325c229681e870fab97ff57e51f6fce1b",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "benchmarks/code-metadata.js",
+        "source": "benchmarks/code-metadata.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.structure.analyze"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.eval.metadata",
+      "id": "762c17ad538746ac03d975c1a2d2e578212a0bde4c271db6ea4daaf63f8a3772",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "benchmarks/code-metadata.js",
+        "source": "benchmarks/code-metadata.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.structure.analyze"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.eval.metadata",
+      "id": "c1a87d7d04df3204a4cdbfd8975b22756b9941497145a3d7a9bd1c2031cea92b",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "benchmarks/code-metadata.js",
+        "source": "benchmarks/code-metadata.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.structure.metadata"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.eval.metadata",
+      "id": "fd0304cd22238a5116dd04735d9fc8c5d2e8b00ef040452ca227df8e7299f6f4",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "benchmarks/code-metadata.js",
+        "source": "benchmarks/code-metadata.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.structure.metadata"
+    },
+    {
+      "confidence": 0.85,
       "from": "llmnav/llmnav.eval.model-coding",
       "id": "917563c88d1a006179d04fb9c0f5fc91e2f04c32fdc6361c8d2e1f112c9d012a",
       "kind": "imports",
@@ -4395,6 +4493,28 @@
     {
       "definitions": [],
       "external": false,
+      "key": "llmnav/llmnav.eval.metadata",
+      "location": {
+        "declarationLine": null,
+        "endLine": 11,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "benchmarks/code-metadata.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Measure opt-in compiler metadata costs and bounded retrieval against explicit source facts.",
+      "semanticId": "llmnav.eval.metadata",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
       "key": "llmnav/llmnav.eval.model-coding",
       "location": {
         "declarationLine": null,
@@ -5253,11 +5373,11 @@
   ],
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "c1011f2c78316020cf4fa27f098fa07df50a525a61c3ed2e5135fb688de322af",
+  "sourceHash": "af7660d6bd79d39f72107b032126a6ce2fc65d955856b473f87d3b335d902974",
   "stats": {
-    "edgeCount": 270,
+    "edgeCount": 277,
     "importedIndexCount": 0,
-    "nodeCount": 64,
+    "nodeCount": 65,
     "unresolvedNodeCount": 0
   }
 }

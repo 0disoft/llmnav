@@ -32,3 +32,10 @@ role Compare semantic lookup on copied real source using Serena and the frozen d
 owns Serena retrieval measurements, symbol input mapping, external tool provenance
 excludes model coding outcomes, timing superiority claims
 invariant Tool failures remain failed observations and never become substitute text searches.
+
+@llmnav.eval.metadata
+role Measure opt-in compiler metadata costs and bounded retrieval against explicit source facts.
+owns metadata comparison fixtures, real declaration probes, synthetic member lookup measurements
+excludes model token accounting, project execution, dependency installation, semantic card validation
+invariant Script observations distinguish output bytes and synthetic lookup costs from real agent token use.
+rel workflow>llmnav.structure.analyze, workflow>llmnav.structure.metadata

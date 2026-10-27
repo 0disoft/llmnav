@@ -1,4 +1,7 @@
 {"query":"parse and canonicalize llmnav comment blocks","expected":["llmnav.syntax.parse"]}
+{"query":"validate generated compiler metadata and bounded member pages","expected":["llmnav.structure.metadata"]}
+{"query":"TypeScript signature metadata and parameter type origins","expected":["llmnav.structure.typescript-metadata"]}
+{"query":"measure metadata benchmark signature accuracy and member page costs","expected":["llmnav.eval.metadata"]}
 {"query":"문자열 내부 주석 오탐을 고쳐라","expected":["llmnav.syntax.parse"]}
 {"query":"reject unknown effects and stale semantic metadata","expected":["llmnav.rules.validate"]}
 {"query":"규칙 검사 진단 코드를 추가한다","expected":["llmnav.rules.validate"]}

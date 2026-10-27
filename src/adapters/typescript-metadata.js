@@ -2,7 +2,7 @@
 id=llmnav.structure.typescript-metadata
 role=Project compiler types and callable signatures into generated declaration metadata.
 owns=TypeScript type origins|callable parameters|metadata categories
-excludes=compiler installation|source mutation|business meaning inference
+excludes=compiler installation|source mutation|business meaning inference|semantic card validation
 search=TypeScript signature metadata|parameter types|inferred types
 invariant=Only compiler-resolved types and declarations supply metadata and type origins.
 rel=workflow>llmnav.structure.typescript-worker

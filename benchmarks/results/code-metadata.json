@@ -1,0 +1,200 @@
+{
+  "schemaVersion": 1,
+  "environment": {
+    "node": "v24.18.0",
+    "platform": "win32",
+    "arch": "x64",
+    "go": "go version go1.26.4 windows/amd64"
+  },
+  "method": "Two alternating analysis runs per mode; median elapsed milliseconds. Generation is full for both modes. Single-machine observations, not statistical speedup claims. Real code is copied into isolated projects; the Go semantic card is removed. Source updates rerun the complete compiler analysis.",
+  "observations": [
+    {
+      "name": "typescript-fixture",
+      "compiler": {
+        "name": "typescript",
+        "version": "6.0.3"
+      },
+      "sourceSha256": "fcc609665ac8effbc4cddeb0102e9c08c7bdde0b40e17c684c2df57a89f183c2",
+      "sourceBytes": 131,
+      "definitions": 6,
+      "references": 7,
+      "checkedFacts": 6,
+      "correctFacts": 6,
+      "legacy": {
+        "analysisMs": 2176.562,
+        "fullGenerationMs": 175.604,
+        "compilerInputBytes": 2059,
+        "cacheBytes": 30315,
+        "defaultShowMs": 50.254,
+        "defaultShowBytes": 1047
+      },
+      "metadata": {
+        "analysisMs": 2132.835,
+        "fullGenerationMs": 154.455,
+        "compilerInputBytes": 3501,
+        "cacheBytes": 35779,
+        "defaultShowMs": 44.565,
+        "defaultShowBytes": 1047
+      },
+      "detail": {
+        "coldSessionShowMs": 1.143,
+        "warmSessionShowMs": 0.222,
+        "responseBytes": 1930,
+        "pageBytes": 871,
+        "callsAfterKnownId": 1
+      },
+      "update": {
+        "unchangedGenerationMs": 81.323,
+        "fullReanalysisMs": 2167.555,
+        "generationAfterEditMs": 164.899
+      }
+    },
+    {
+      "name": "typescript-llmnav",
+      "compiler": {
+        "name": "typescript",
+        "version": "6.0.3"
+      },
+      "sourceSha256": "2b151e8f9634d485f3432892e68c15a49a209da4afb44f5535fe5fb18b77a371",
+      "sourceBytes": 38128,
+      "definitions": 1349,
+      "references": 1661,
+      "checkedFacts": 5,
+      "correctFacts": 5,
+      "legacy": {
+        "analysisMs": 2292.164,
+        "fullGenerationMs": 697.346,
+        "compilerInputBytes": 448645,
+        "cacheBytes": 3577667,
+        "defaultShowMs": 82.585,
+        "defaultShowBytes": 1069
+      },
+      "metadata": {
+        "analysisMs": 3115.13,
+        "fullGenerationMs": 815.619,
+        "compilerInputBytes": 788384,
+        "cacheBytes": 4774381,
+        "defaultShowMs": 77.996,
+        "defaultShowBytes": 1069
+      },
+      "detail": {
+        "coldSessionShowMs": 5.68,
+        "warmSessionShowMs": 0.364,
+        "responseBytes": 2504,
+        "pageBytes": 1423,
+        "callsAfterKnownId": 1
+      },
+      "update": {
+        "unchangedGenerationMs": 479.603,
+        "fullReanalysisMs": 3369.414,
+        "generationAfterEditMs": 860.324
+      }
+    },
+    {
+      "name": "go-fixture",
+      "compiler": {
+        "name": "go/types",
+        "version": "go1.26.4"
+      },
+      "sourceSha256": "46c4bea85716339dd181ddf34d4468f5e03fa173aef918dd2204774599bcd63a",
+      "sourceBytes": 122,
+      "definitions": 7,
+      "references": 9,
+      "checkedFacts": 6,
+      "correctFacts": 6,
+      "legacy": {
+        "analysisMs": 2763.147,
+        "fullGenerationMs": 150.724,
+        "compilerInputBytes": 2526,
+        "cacheBytes": 33418,
+        "defaultShowMs": 46.938,
+        "defaultShowBytes": 1015
+      },
+      "metadata": {
+        "analysisMs": 2889.453,
+        "fullGenerationMs": 176.577,
+        "compilerInputBytes": 4132,
+        "cacheBytes": 39538,
+        "defaultShowMs": 46.542,
+        "defaultShowBytes": 1015
+      },
+      "detail": {
+        "coldSessionShowMs": 0.413,
+        "warmSessionShowMs": 0.174,
+        "responseBytes": 1855,
+        "pageBytes": 828,
+        "callsAfterKnownId": 1
+      },
+      "update": {
+        "unchangedGenerationMs": 77.102,
+        "fullReanalysisMs": 2845.177,
+        "generationAfterEditMs": 155.473
+      }
+    },
+    {
+      "name": "go-llmnav",
+      "compiler": {
+        "name": "go/types",
+        "version": "go1.26.4"
+      },
+      "sourceSha256": "2a48d929c43a96392577b11a6dd4684419930b05911e67bc7cf18c5d4426be00",
+      "sourceBytes": 13864,
+      "definitions": 205,
+      "references": 741,
+      "checkedFacts": 6,
+      "correctFacts": 6,
+      "legacy": {
+        "analysisMs": 4232.336,
+        "fullGenerationMs": 266.655,
+        "compilerInputBytes": 145380,
+        "cacheBytes": 1050192,
+        "defaultShowMs": 49.782,
+        "defaultShowBytes": 1031
+      },
+      "metadata": {
+        "analysisMs": 4305.594,
+        "fullGenerationMs": 298.169,
+        "compilerInputBytes": 188443,
+        "cacheBytes": 1207824,
+        "defaultShowMs": 50.384,
+        "defaultShowBytes": 1031
+      },
+      "detail": {
+        "coldSessionShowMs": 1.61,
+        "warmSessionShowMs": 0.261,
+        "responseBytes": 1748,
+        "pageBytes": 705,
+        "callsAfterKnownId": 1
+      },
+      "update": {
+        "unchangedGenerationMs": 201.3,
+        "fullReanalysisMs": 4557.797,
+        "generationAfterEditMs": 456.925
+      }
+    }
+  ],
+  "synthetic": {
+    "definitions": 50001,
+    "requests": 100,
+    "coldIndexedPageMs": 187.933,
+    "warmIndexedTotalMs": 9.065,
+    "linearCountReferenceTotalMs": 258.181,
+    "fullMetadataBytes": 15578067,
+    "pageBytes": 1550,
+    "pageItems": 5,
+    "fullMetadataCalls": 1,
+    "onePageCalls": 1,
+    "enumerateAllPagesMinimumCalls": 10000
+  },
+  "toolDefinitions": {
+    "bytes": 4188,
+    "withoutMetadataOptionsBytes": 3568,
+    "addedBytes": 620
+  },
+  "limitations": [
+    "No model calls or provider token counts.",
+    "Full-metadata output and linear scans are synthetic references, not measured ordinary-agent navigation.",
+    "Default response compatibility does not imply unchanged graph loading time or storage.",
+    "Compiler/OS caches and single-run update timings affect measurements."
+  ]
+}

@@ -3,7 +3,7 @@ id=llmnav.rules.validate
 role=Reject unstable, ambiguous, oversized, or structurally invalid LLMNav metadata before indexing.
 owns=semantic lint rules|coverage rules|registry consistency
 excludes=source rewriting|search ranking
-search=llmnav lint|metadata validation|semantic drift
+search=llmnav lint|metadata validation|semantic drift|unknown effects|invalid semantic metadata
 rel=workflow>llmnav.syntax.parse
 stability=architecture
 */

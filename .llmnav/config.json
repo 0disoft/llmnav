@@ -10,7 +10,7 @@
   },
   "coverageRules": [
     {
-      "match": ["benchmarks/real-navigation.js", "benchmarks/serena-navigation.js", "benchmarks/model-coding.js"],
+      "match": ["benchmarks/real-navigation.js", "benchmarks/serena-navigation.js", "benchmarks/model-coding.js", "benchmarks/code-metadata.js"],
       "name": "real-source retrieval evaluation",
       "requiredFields": ["owns", "invariant"],
       "scope": "module"

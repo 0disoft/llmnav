@@ -1,6 +1,135 @@
 {
   "files": [
     {
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
+              "model token accounting",
+              "project execution",
+              "dependency installation",
+              "semantic card validation"
+            ],
+            "id": "llmnav.eval.metadata",
+            "invariant": [
+              "Script observations distinguish output bytes and synthetic lookup costs from real agent token use."
+            ],
+            "owns": [
+              "metadata comparison fixtures",
+              "real declaration probes",
+              "synthetic member lookup measurements"
+            ],
+            "rel": [
+              "workflow>llmnav.structure.analyze",
+              "workflow>llmnav.structure.metadata"
+            ],
+            "risk": [],
+            "role": "Measure opt-in compiler metadata costs and bounded retrieval against explicit source facts.",
+            "scope": "module",
+            "search": [
+              "metadata benchmark",
+              "signature accuracy",
+              "member page costs"
+            ],
+            "stability": "architecture",
+            "unknown": []
+          },
+          "end": 608,
+          "endLine": 11,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.eval.metadata"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Measure opt-in compiler metadata costs and bounded retrieval against explicit source facts."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "metadata comparison fixtures|real declaration probes|synthetic member lookup measurements"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "model token accounting|project execution|dependency installation|semantic card validation"
+            },
+            {
+              "key": "search",
+              "line": 6,
+              "order": 4,
+              "value": "metadata benchmark|signature accuracy|member page costs"
+            },
+            {
+              "key": "invariant",
+              "line": 7,
+              "order": 5,
+              "value": "Script observations distinguish output bytes and synthetic lookup costs from real agent token use."
+            },
+            {
+              "key": "rel",
+              "line": 8,
+              "order": 6,
+              "value": "workflow>llmnav.structure.analyze"
+            },
+            {
+              "key": "rel",
+              "line": 9,
+              "order": 7,
+              "value": "workflow>llmnav.structure.metadata"
+            },
+            {
+              "key": "stability",
+              "line": 10,
+              "order": 8,
+              "value": "architecture"
+            }
+          ],
+          "filePath": "benchmarks/code-metadata.js",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.eval.metadata\nrole=Measure opt-in compiler metadata costs and bounded retrieval against explicit source facts.\nowns=metadata comparison fixtures|real declaration probes|synthetic member lookup measurements\nexcludes=model token accounting|project execution|dependency installation|semantic card validation\nsearch=metadata benchmark|signature accuracy|member page costs\ninvariant=Script observations distinguish output bytes and synthetic lookup costs from real agent token use.\nrel=workflow>llmnav.structure.analyze\nrel=workflow>llmnav.structure.metadata\nstability=architecture\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "730ed559612502a78cc73aeb725b24078765da6a3d7f443b289b30359e8a94ed",
+      "declarations": [
+        null
+      ],
+      "imports": [
+        "../src/agent-tools.js",
+        "../src/analysis.js",
+        "../src/code-metadata.js",
+        "../src/generator.js",
+        "../src/search.js",
+        "../src/util.js",
+        "node:assert/strict",
+        "node:child_process",
+        "node:fs/promises",
+        "node:os",
+        "node:path",
+        "node:perf_hooks",
+        "node:url"
+      ],
+      "path": "benchmarks/code-metadata.js",
+      "semanticBytes": 608,
+      "sourceBytes": 11058
+    },
+    {
       "blocks": [],
       "contentHash": "c38b7f4ba59b32a73374e423f3745bb8dc86ae58f374dad538e130fbc3f813e8",
       "declarations": [],
@@ -2008,7 +2137,8 @@
             "excludes": [
               "compiler installation",
               "source mutation",
-              "business meaning inference"
+              "business meaning inference",
+              "semantic card validation"
             ],
             "id": "llmnav.structure.typescript-metadata",
             "invariant": [
@@ -2033,7 +2163,7 @@
             "stability": "architecture",
             "unknown": []
           },
-          "end": 522,
+          "end": 547,
           "endLine": 10,
           "entries": [
             {
@@ -2058,7 +2188,7 @@
               "key": "excludes",
               "line": 5,
               "order": 3,
-              "value": "compiler installation|source mutation|business meaning inference"
+              "value": "compiler installation|source mutation|business meaning inference|semantic card validation"
             },
             {
               "key": "search",
@@ -2089,7 +2219,7 @@
           "indent": "",
           "newline": "\n",
           "prefix": null,
-          "raw": "/* llmnav/1 module\nid=llmnav.structure.typescript-metadata\nrole=Project compiler types and callable signatures into generated declaration metadata.\nowns=TypeScript type origins|callable parameters|metadata categories\nexcludes=compiler installation|source mutation|business meaning inference\nsearch=TypeScript signature metadata|parameter types|inferred types\ninvariant=Only compiler-resolved types and declarations supply metadata and type origins.\nrel=workflow>llmnav.structure.typescript-worker\nstability=architecture\n*/",
+          "raw": "/* llmnav/1 module\nid=llmnav.structure.typescript-metadata\nrole=Project compiler types and callable signatures into generated declaration metadata.\nowns=TypeScript type origins|callable parameters|metadata categories\nexcludes=compiler installation|source mutation|business meaning inference|semantic card validation\nsearch=TypeScript signature metadata|parameter types|inferred types\ninvariant=Only compiler-resolved types and declarations supply metadata and type origins.\nrel=workflow>llmnav.structure.typescript-worker\nstability=architecture\n*/",
           "scope": "module",
           "specVersion": "1",
           "start": 0,
@@ -2098,14 +2228,14 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "9ab551c5b1eeb8dac90d65a37e3822711b12770d5d68b9bc8925a5371eee2fea",
+      "contentHash": "3e07e90dc1ed3376a12bb6b0fbe42a84c53c6b2f808699ed2df0266ad974fb20",
       "declarations": [
         null
       ],
       "imports": [],
       "path": "src/adapters/typescript-metadata.js",
-      "semanticBytes": 522,
-      "sourceBytes": 2923
+      "semanticBytes": 547,
+      "sourceBytes": 2948
     },
     {
       "blocks": [
@@ -3262,7 +3392,8 @@
             "excludes": [
               "compiler execution",
               "semantic inference",
-              "source mutation"
+              "source mutation",
+              "semantic card validation"
             ],
             "id": "llmnav.structure.metadata",
             "invariant": [
@@ -3286,7 +3417,7 @@
             "stability": "contract",
             "unknown": []
           },
-          "end": 519,
+          "end": 544,
           "endLine": 10,
           "entries": [
             {
@@ -3311,7 +3442,7 @@
               "key": "excludes",
               "line": 5,
               "order": 3,
-              "value": "compiler execution|semantic inference|source mutation"
+              "value": "compiler execution|semantic inference|source mutation|semantic card validation"
             },
             {
               "key": "search",
@@ -3342,7 +3473,7 @@
           "indent": "",
           "newline": "\n",
           "prefix": null,
-          "raw": "/* llmnav/1 module\nid=llmnav.structure.metadata\nrole=Validate generated compiler metadata independently of reviewed semantic cards.\nowns=common metadata contract|type origin validation|bounded member pages\nexcludes=compiler execution|semantic inference|source mutation\nsearch=generated type metadata|compiler signature contract\ninvariant=Metadata preserves compiler origins and bounds detail output without modifying semantic cards or default navigation responses.\nrel=workflow>llmnav.graph.import\nstability=contract\n*/",
+          "raw": "/* llmnav/1 module\nid=llmnav.structure.metadata\nrole=Validate generated compiler metadata independently of reviewed semantic cards.\nowns=common metadata contract|type origin validation|bounded member pages\nexcludes=compiler execution|semantic inference|source mutation|semantic card validation\nsearch=generated type metadata|compiler signature contract\ninvariant=Metadata preserves compiler origins and bounds detail output without modifying semantic cards or default navigation responses.\nrel=workflow>llmnav.graph.import\nstability=contract\n*/",
           "scope": "module",
           "specVersion": "1",
           "start": 0,
@@ -3351,7 +3482,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "d131d9193d1844f690034f192aee6c20a795f6416200af162ec6363bd7a2201e",
+      "contentHash": "5a264dee473cc122b77280513291131569b08e0c715cf8b7507bc374276a9eb7",
       "declarations": [
         null
       ],
@@ -3360,8 +3491,8 @@
         "./util.js"
       ],
       "path": "src/code-metadata.js",
-      "semanticBytes": 519,
-      "sourceBytes": 6699
+      "semanticBytes": 544,
+      "sourceBytes": 6724
     },
     {
       "blocks": [
@@ -7293,12 +7424,14 @@
             "search": [
               "llmnav lint",
               "metadata validation",
-              "semantic drift"
+              "semantic drift",
+              "unknown effects",
+              "invalid semantic metadata"
             ],
             "stability": "architecture",
             "unknown": []
           },
-          "end": 359,
+          "end": 401,
           "endLine": 9,
           "entries": [
             {
@@ -7329,7 +7462,7 @@
               "key": "search",
               "line": 6,
               "order": 4,
-              "value": "llmnav lint|metadata validation|semantic drift"
+              "value": "llmnav lint|metadata validation|semantic drift|unknown effects|invalid semantic metadata"
             },
             {
               "key": "rel",
@@ -7348,7 +7481,7 @@
           "indent": "",
           "newline": "\n",
           "prefix": null,
-          "raw": "/* llmnav/1 module\nid=llmnav.rules.validate\nrole=Reject unstable, ambiguous, oversized, or structurally invalid LLMNav metadata before indexing.\nowns=semantic lint rules|coverage rules|registry consistency\nexcludes=source rewriting|search ranking\nsearch=llmnav lint|metadata validation|semantic drift\nrel=workflow>llmnav.syntax.parse\nstability=architecture\n*/",
+          "raw": "/* llmnav/1 module\nid=llmnav.rules.validate\nrole=Reject unstable, ambiguous, oversized, or structurally invalid LLMNav metadata before indexing.\nowns=semantic lint rules|coverage rules|registry consistency\nexcludes=source rewriting|search ranking\nsearch=llmnav lint|metadata validation|semantic drift|unknown effects|invalid semantic metadata\nrel=workflow>llmnav.syntax.parse\nstability=architecture\n*/",
           "scope": "module",
           "specVersion": "1",
           "start": 0,
@@ -7357,7 +7490,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "f3b8ecabdd25e9d7ec8121382fa8892d69f941e6aa4ac1992d3b218f46a88716",
+      "contentHash": "69ef80c850145fccca22aa58d429a105f913abd08774d912c01f6c4073cedb7e",
       "declarations": [
         null
       ],
@@ -7369,8 +7502,8 @@
         "node:path"
       ],
       "path": "src/validator.js",
-      "semanticBytes": 359,
-      "sourceBytes": 22072
+      "semanticBytes": 401,
+      "sourceBytes": 22114
     },
     {
       "blocks": [],

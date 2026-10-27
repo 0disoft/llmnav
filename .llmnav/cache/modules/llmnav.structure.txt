@@ -59,13 +59,13 @@ rel workflow>llmnav.structure.analyze
 @llmnav.structure.metadata
 role Validate generated compiler metadata independently of reviewed semantic cards.
 owns common metadata contract, type origin validation, bounded member pages
-excludes compiler execution, semantic inference, source mutation
+excludes compiler execution, semantic inference, source mutation, semantic card validation
 invariant Metadata preserves compiler origins and bounds detail output without modifying semantic cards or default navigation responses.
 rel workflow>llmnav.graph.import
 
 @llmnav.structure.typescript-metadata
 role Project compiler types and callable signatures into generated declaration metadata.
 owns TypeScript type origins, callable parameters, metadata categories
-excludes compiler installation, source mutation, business meaning inference
+excludes compiler installation, source mutation, business meaning inference, semantic card validation
 invariant Only compiler-resolved types and declarations supply metadata and type origins.
 rel workflow>llmnav.structure.typescript-worker

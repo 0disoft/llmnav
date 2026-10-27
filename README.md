@@ -340,3 +340,5 @@ For editing sessions, run `llmnav mcp --auto-generate` to prepare current indexe
 ### Compiler-resolved TypeScript and Go navigation
 
 Run `llmnav analyze --language typescript` or `llmnav analyze --language go` with installed compiler tooling. Publish the graph with `--output`, configure `graph.indexFiles`, and generate. `discover --precise` finds compiler-resolved declarations and passes their IDs to `show` and `context`. Source hashes reject stale compiler inputs. See [compiler analysis](docs/precise-analysis.md) for setup, supported compiler APIs and partial-analysis limits.
+
+Add `--metadata` during analysis to extract compiler types, signatures, parameters and ownership. Request details with `llmnav show <id> --metadata --json`, or page direct members with `--metadata --members --top 5 --offset 0 --metadata-budget 4000`. Default navigation responses stay compact. Metadata increases analysis/storage costs; see the [measured comparison](docs/code-metadata-evaluation.md).
