@@ -5890,7 +5890,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "0d6c92d93809d055aad4e3fc4d1854566a3e0b9f9151a8ae4856ef82a52796ac",
+      "contentHash": "19babdefa4bcd47aeff5c138d961318439edb932f50645b4b55381fea8f0a0c6",
       "declarations": [
         null
       ],
@@ -5901,7 +5901,7 @@
       ],
       "path": "src/graph.js",
       "semanticBytes": 548,
-      "sourceBytes": 17659
+      "sourceBytes": 18383
     },
     {
       "blocks": [
@@ -8022,7 +8022,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "124f0d53cdfb345cd7b0916c411fc8c69662fd4a2e4f50c415fad999f8c3638e",
+      "contentHash": "5f9f8b9240ed5e03cc9e378ef977e81201593462dd6a16da68717b52f086bc1a",
       "declarations": [
         null
       ],
@@ -9024,7 +9024,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "ebf11363afef5b8a6b175ae16d60a4f581e918e7c9d4d4a6d58ea5e2a4aedf58",
+      "contentHash": "9f84b5f08df9448763076b63c350c4dc460db28108c505c4ff7f0205e23e3d75",
       "declarations": [],
       "imports": [
         "../src/evaluation.js",
@@ -9033,6 +9033,7 @@
         "../src/initializer.js",
         "../src/inverted-index.js",
         "../src/search.js",
+        "../src/util.js",
         "node:assert/strict",
         "node:fs/promises",
         "node:os",
@@ -9041,7 +9042,7 @@
       ],
       "path": "tests/graph-search.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 17053
+      "sourceBytes": 19378
     },
     {
       "blocks": [],
@@ -9064,7 +9065,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "2704e2e371243a0619071e4973b9ab5322733b4cc2b82f6be8b7966d2223921e",
+      "contentHash": "592bb7ff3670b153bcd0e7b8ecde6dc34b2b482a3c4b8b338f9892d45681f063",
       "declarations": [],
       "imports": [
         "../src/graph.js",
@@ -9073,7 +9074,7 @@
       ],
       "path": "tests/graph.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 7743
+      "sourceBytes": 8971
     },
     {
       "blocks": [],

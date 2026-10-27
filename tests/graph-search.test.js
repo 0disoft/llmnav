@@ -8,6 +8,7 @@ import { generateProject } from "../src/generator.js";
 import { initializeProject } from "../src/initializer.js";
 import { findGraphNode, GRAPH_SCHEMA_VERSION, resolveGraphNode } from "../src/graph.js";
 import { buildInvertedIndex } from "../src/inverted-index.js";
+import { sha256 } from "../src/util.js";
 import { buildContext, createProjectSession, loadSearchData, queryPreparedIndex, queryProject, showProjectCard } from "../src/search.js";
 
 test("evaluation ranks the same graph neighbors as project queries and sessions", async (context) => {
@@ -272,6 +273,42 @@ test("legacy context respects edge limits when the graph is missing or malformed
     assert.equal((await buildContext(root, "auth.session.rotate", { depth: 8, maxEdges: 1 })).included.length, 2);
     assert.deepEqual((await buildContext(root, "auth.session.revoke", { depth: 8, maxEdges: 0 })).included, ["auth.session.revoke"]);
     assert.equal((await buildContext(root, "auth.session.revoke", { depth: 8, maxEdges: 1 })).included.length, 2);
+  }
+});
+
+test("hash-matched graphs with invalid nodes fall back without breaking navigation or rewriting artifacts", async context => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-invalid-graph-node-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await writeFile(path.join(root, "package.json"), '{"name":"invalid-graph-node"}\n');
+  await mkdir(path.join(root, "src"));
+  await writeFile(path.join(root, "src/auth.ts"), [
+    sourceCard("auth.session.rotate", "rotateSession").replace("stability=contract", "rel=workflow>auth.session.revoke\nstability=contract"),
+    sourceCard("auth.session.revoke", "revokeSession"),
+  ].join("\n"));
+  assert.equal((await initializeProject(root, { agents: ["none"] })).ok, true);
+  const graphPath = path.join(root, ".llmnav/cache/graph.json");
+  const manifestPath = path.join(root, ".llmnav/cache/manifest.json");
+  const graph = JSON.parse(await readFile(graphPath, "utf8"));
+  const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
+  const initial = await loadSearchData(root);
+  const expected = queryPreparedIndex(initial.index, initial.searchIndex, "rotate", { lexicon: initial.lexicon });
+  const node = graph.nodes[0];
+  for (const candidate of [null, { ...node, semanticId: null }, { ...node, definitions: [null] }]) {
+    const graphText = JSON.stringify({ ...graph, nodes: [candidate] });
+    manifest.files[".llmnav/cache/graph.json"] = sha256(graphText);
+    const manifestText = JSON.stringify(manifest);
+    await writeFile(graphPath, graphText);
+    await writeFile(manifestPath, manifestText);
+    assert.equal((await loadSearchData(root)).graph, null);
+    assert.deepEqual(await queryProject(root, "rotate"), expected);
+    const session = await createProjectSession(root);
+    assert.deepEqual(session.query("rotate"), expected);
+    assert.equal(session.show("auth.session.rotate").card.id, "auth.session.rotate");
+    const packed = session.context("auth.session.rotate", { depth: 1, maxEdges: 1 });
+    assert.deepEqual(packed.included, ["auth.session.rotate", "auth.session.revoke"]);
+    assert.deepEqual(packed.includedEdges, []);
+    assert.equal(await readFile(graphPath, "utf8"), graphText);
+    assert.equal(await readFile(manifestPath, "utf8"), manifestText);
   }
 });
 

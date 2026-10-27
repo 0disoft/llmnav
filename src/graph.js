@@ -163,6 +163,7 @@ export function isCompatibleRepositoryGraph(graph, repositoryId = undefined) {
       typeof graph.repositoryId === "string" &&
       typeof graph.sourceHash === "string" &&
       Array.isArray(graph.nodes) &&
+      hasUsableGraphNodes(graph.nodes) &&
       Array.isArray(graph.edges) &&
       graph.edges.every((edge) =>
         edge &&
@@ -178,6 +179,20 @@ export function isCompatibleRepositoryGraph(graph, repositoryId = undefined) {
       ) &&
       (repositoryId === undefined || graph.repositoryId === repositoryId),
   );
+}
+
+function hasUsableGraphNodes(nodes) {
+  for (const node of nodes) {
+    if (!node || typeof node.key !== "string" || typeof node.repositoryId !== "string" ||
+      typeof node.semanticId !== "string" || node.role != null && typeof node.role !== "string" ||
+      !Array.isArray(node.definitions)) return false;
+    for (const definition of node.definitions) {
+      if (!definition || typeof definition.symbol !== "string" || typeof definition.path !== "string" ||
+        definition.line != null && (!Number.isSafeInteger(definition.line) || definition.line <= 0) ||
+        definition.kind != null && typeof definition.kind !== "string") return false;
+    }
+  }
+  return true;
 }
 
 export function resolveGraphNode(graph, id, localRepositoryId = graph?.repositoryId) {

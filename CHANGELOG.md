@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.19.17] — 2026-10-28
+
+### Fixed
+
+* Validate generated graph node identities, roles, and renderable definition fields before accepting a navigation graph. Previously a graph containing `nodes: [null]` passed compatibility checks and then threw a TypeError during node resolution; malformed definition arrays could similarly break context rendering. Invalid graphs now follow the existing optional-graph fallback to reviewed cards, even when the manifest hash matches the file. Regression coverage rejects 14 malformed or sparse node/definition shapes, checks three hash-matched malformed artifacts across project/session navigation, and confirms graph and manifest bytes remain unchanged. Existing snapshot validation reuse, graph ranking, and incremental generation remain covered by related tests.
+
 ## [0.19.16] — 2026-10-27
 
 ### Fixed

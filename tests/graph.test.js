@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { buildRepositoryGraph, createGraphResolver, resolveGraphNode } from "../src/graph.js";
+import { buildRepositoryGraph, createGraphResolver, isCompatibleRepositoryGraph, resolveGraphNode } from "../src/graph.js";
 
 test("builds deterministic graph edges with provenance and confidence", () => {
   const cards = [
@@ -139,6 +139,28 @@ function graphNode(key) {
     definitions: [{ symbol: "fixture", path: "src/fixture.ts", line: 1, kind: "function", provenance: { type: "generated-index", source: "fixture", generator: "fixture" } }],
   };
 }
+
+test("graph resolvers reject malformed node identities and definitions before lookup", () => {
+  const node = graphNode("local/core.target");
+  const definition = node.definitions[0];
+  const invalid = [
+    null, {}, { ...node, key: 12 }, { ...node, repositoryId: null }, { ...node, semanticId: null },
+    { ...node, role: {} }, { ...node, definitions: null }, { ...node, definitions: [null] },
+    { ...node, definitions: Array(1) },
+    { ...node, definitions: [{ ...definition, path: null }] },
+    { ...node, definitions: [{ ...definition, symbol: {} }] },
+    { ...node, definitions: [{ ...definition, line: "1" }] },
+    { ...node, definitions: [{ ...definition, kind: [] }] },
+  ];
+  for (const nodes of [...invalid.map(candidate => [candidate]), Array(1)]) {
+    const graph = { schemaVersion: 1, repositoryId: "local", sourceHash: "fixture", nodes, edges: [] };
+    assert.equal(isCompatibleRepositoryGraph(graph, "local"), false);
+    const resolver = createGraphResolver(graph, "local");
+    assert.equal(resolver.compatible, false);
+    assert.equal(resolver.resolve("core.target").state, "missing");
+    assert.equal(resolveGraphNode(graph, "core.target").state, "missing");
+  }
+});
 
 test("snapshot resolvers validate edges once and retain public mutable-input checks", context => {
   const nodes = ["local/core.target", "local/other.target", "other/shared.target", "third/shared.target"].map(graphNode);
