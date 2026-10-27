@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.19.12] — 2026-10-27
+
+### Fixed
+
+* Include filesystem change time in MCP session stamps. Same-size in-place edits that restore modification time now refresh aliases, registry, configuration, and generated artifacts instead of serving stale snapshots indefinitely. Regression coverage checks change-time-only differences for all seven stamped inputs, unchanged-session reuse, unchanged stat counts, and real alias rewrites with restored timestamps on the native filesystem. The change adds no filesystem calls or content hashing.
+
 ## [0.19.11] — 2026-10-27
 
 ### Fixed

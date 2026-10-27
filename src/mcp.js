@@ -240,8 +240,8 @@ export function createSessionCache(root, dependencies = {}) {
 /**
  * Identify the cache generation a prepared session was loaded from.
  *
- * Nanosecond timestamps and the file index are included, so a regeneration that
- * lands inside the same millisecond with an identical byte count is still seen.
+ * Nanosecond modification/change timestamps and the file index distinguish
+ * same-size edits, including in-place rewrites that restore modification time.
  * `statFile` is injectable for tests.
  */
 export async function sessionStamp(root, statFile = statCacheFile, options = {}) {
@@ -265,7 +265,7 @@ export async function sessionStamp(root, statFile = statCacheFile, options = {})
       throwIfAborted(options.signal);
       throw createIoError("stat", name, error);
     }
-    parts.push(info === null ? `${name}:missing` : `${name}:${info.mtimeNs}:${info.size}:${info.ino}`);
+    parts.push(info === null ? `${name}:missing` : `${name}:${info.mtimeNs}:${info.ctimeNs}:${info.size}:${info.ino}`);
   }
   return parts.join("|");
 }

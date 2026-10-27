@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { spawn, spawnSync } from "node:child_process";
 import { EventEmitter, getEventListeners, once } from "node:events";
-import { mkdir, mkdtemp, readFile, readdir, rename, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, readdir, rename, rm, stat, utimes, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
@@ -443,9 +443,9 @@ test("cache stamps separate regenerations inside one millisecond", async (contex
   context.after(() => rm(root, { recursive: true, force: true }));
   const filePathFor = (filePath) => path.basename(filePath);
   const files = new Map([
-    ["manifest.json", { mtimeNs: 1_000_000n, size: 10n, ino: 7n }],
-    ["index.json", { mtimeNs: 1_000_000n, size: 20n, ino: 7n }],
-    ["search-index.json", { mtimeNs: 1_000_000n, size: 30n, ino: 7n }],
+    ["manifest.json", { mtimeNs: 1_000_000n, ctimeNs: 1_000_000n, size: 10n, ino: 7n }],
+    ["index.json", { mtimeNs: 1_000_000n, ctimeNs: 1_000_000n, size: 20n, ino: 7n }],
+    ["search-index.json", { mtimeNs: 1_000_000n, ctimeNs: 1_000_000n, size: 30n, ino: 7n }],
     ["graph.json", null],
   ]);
   const readStamp = () => sessionStamp(root, async (filePath) => files.get(filePathFor(filePath)) ?? null);
@@ -453,21 +453,71 @@ test("cache stamps separate regenerations inside one millisecond", async (contex
   const baseStamp = await readStamp();
   assert.equal(
     baseStamp,
-    "cache=.llmnav/cache|manifest.json:1000000:10:7|index.json:1000000:20:7|search-index.json:1000000:30:7|graph.json:missing|config.json:missing|lexicon.json:missing|ids.jsonl:missing",
+    "cache=.llmnav/cache|manifest.json:1000000:1000000:10:7|index.json:1000000:1000000:20:7|search-index.json:1000000:1000000:30:7|graph.json:missing|config.json:missing|lexicon.json:missing|ids.jsonl:missing",
   );
   assert.equal(await readStamp(), baseStamp);
 
-  files.set("search-index.json", { mtimeNs: 1_000_001n, size: 30n, ino: 7n });
+  files.set("search-index.json", { mtimeNs: 1_000_001n, ctimeNs: 1_000_000n, size: 30n, ino: 7n });
   assert.notEqual(await readStamp(), baseStamp);
-  files.set("search-index.json", { mtimeNs: 1_000_000n, size: 30n, ino: 8n });
+  files.set("search-index.json", { mtimeNs: 1_000_000n, ctimeNs: 1_000_000n, size: 30n, ino: 8n });
   assert.notEqual(await readStamp(), baseStamp);
 
   // Registering active IDs rewrites the registry without touching the cache.
-  files.set("ids.jsonl", { mtimeNs: 1_000_000n, size: 40n, ino: 7n });
-  assert.match(await readStamp(), /\|ids\.jsonl:1000000:40:7$/u);
+  files.set("ids.jsonl", { mtimeNs: 1_000_000n, ctimeNs: 1_000_000n, size: 40n, ino: 7n });
+  assert.match(await readStamp(), /\|ids\.jsonl:1000000:1000000:40:7$/u);
   const beforeLexicon = await readStamp();
-  files.set("lexicon.json", { mtimeNs: 2_000_000n, size: 40n, ino: 7n });
+  files.set("lexicon.json", { mtimeNs: 2_000_000n, ctimeNs: 1_000_000n, size: 40n, ino: 7n });
   assert.notEqual(await readStamp(), beforeLexicon);
+});
+
+test("change-time-only edits refresh each stamped input once without extra stats", async context => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-mcp-ctime-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  const names = ["manifest.json", "index.json", "search-index.json", "graph.json", "config.json", "lexicon.json", "ids.jsonl"];
+  const files = new Map(names.map(name => [name, { mtimeNs: 1n, ctimeNs: 1000n, size: 10n, ino: 7n }]));
+  let stats = 0, refreshes = 0, creates = 0;
+  const session = { refresh: async () => { refreshes++; } };
+  const cache = createSessionCache(root, {
+    sessionStamp: () => sessionStamp(root, async file => { stats++; return files.get(path.basename(file)); }),
+    createSession: async () => { creates++; return session; },
+  });
+  assert.equal(await cache.current(), session);
+  let expectedRefreshes = 0;
+  for (const name of names) {
+    for (const ctimeNs of [999n, 1001n]) {
+      files.set(name, { ...files.get(name), ctimeNs });
+      const before = stats;
+      assert.equal(await cache.current(), session);
+      assert.equal(stats - before, names.length);
+      assert.equal(refreshes, ++expectedRefreshes, name);
+      await cache.current();
+      assert.equal(refreshes, expectedRefreshes, `${name}: unchanged stamps reuse the session`);
+    }
+  }
+  assert.equal(creates, 1);
+});
+
+test("MCP reloads same-size aliases rewritten in place with restored modification time", async context => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-mcp-restored-mtime-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await createProject(root);
+  const file = path.join(root, ".llmnav", "lexicon.json");
+  const timestamp = new Date("2020-01-01T00:00:00Z");
+  const lexicon = token => JSON.stringify({ version: 1, aliases: { [token]: "auth.session.rotate" } });
+  await writeFile(file, lexicon("oldtoken"));
+  await utimes(file, timestamp, timestamp);
+  const before = await stat(file, { bigint: true });
+  const server = createMcpServer({ root });
+  assert.equal((await callTool(server, 1, "llmnav_query", { task: "oldtoken" })).data[0].id, "auth.session.rotate");
+  await writeFile(file, lexicon("newtoken"));
+  await utimes(file, timestamp, timestamp);
+  const after = await stat(file, { bigint: true });
+  for (const key of ["mtimeNs", "size", "ino"]) assert.equal(after[key], before[key], key);
+  assert.notEqual(after.ctimeNs, before.ctimeNs);
+  const result = (await callTool(server, 2, "llmnav_query", { task: "newtoken" })).data;
+  assert.equal(result[0].id, "auth.session.rotate");
+  assert.deepEqual(result, await queryProject(root, "newtoken"));
+  assert.deepEqual((await callTool(server, 3, "llmnav_query", { task: "oldtoken" })).data, []);
 });
 
 test("MCP refreshes lexicon-only changes and generations in a configured cache directory", async (context) => {
