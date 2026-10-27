@@ -1,0 +1,1384 @@
+{
+  "complete": true,
+  "conditions": [
+    "baseline",
+    "llmnav-source"
+  ],
+  "controls": [
+    {
+      "mutant": {
+        "checks": [
+          {
+            "name": "API bounds and Unicode aggregate",
+            "passed": true
+          },
+          {
+            "detail": "Missing expected rejection.",
+            "error": "ERR_ASSERTION",
+            "name": "API rejects nearest invalid budgets",
+            "passed": false
+          },
+          {
+            "name": "default and ranking preserved",
+            "passed": true
+          },
+          {
+            "detail": "Expected values to be strictly equal:\n\n1 !== 256\n",
+            "error": "ERR_ASSERTION",
+            "name": "schema and operation limits",
+            "passed": false
+          },
+          {
+            "detail": "The expression evaluated to a falsy value:\n\n  assert.ok(bytes(JSON.parse(valid.stdout)) <= 256)\n",
+            "error": "ERR_ASSERTION",
+            "name": "CLI forwards and rejects budgets",
+            "passed": false
+          },
+          {
+            "name": "cancellation remains observable",
+            "passed": true
+          }
+        ],
+        "exitCode": 0,
+        "outputHash": "775fd02e06da06f03a786f43cbf1d5e53dd02c7ac3fd73594fae72797df2c836",
+        "passed": false,
+        "timedOut": false
+      },
+      "pristine": {
+        "checks": [
+          {
+            "name": "API bounds and Unicode aggregate",
+            "passed": true
+          },
+          {
+            "name": "API rejects nearest invalid budgets",
+            "passed": true
+          },
+          {
+            "name": "default and ranking preserved",
+            "passed": true
+          },
+          {
+            "name": "schema and operation limits",
+            "passed": true
+          },
+          {
+            "name": "CLI forwards and rejects budgets",
+            "passed": true
+          },
+          {
+            "name": "cancellation remains observable",
+            "passed": true
+          }
+        ],
+        "exitCode": 0,
+        "outputHash": "a99cd26f2aed903fe1afec4083f6bf9fb13e6ecc98173fdf8fddaa82e133941e",
+        "passed": true,
+        "timedOut": false
+      },
+      "task": "source-budget"
+    },
+    {
+      "mutant": {
+        "checks": [
+          {
+            "detail": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n  {\n    budget: 4000,\n    depth: 1,\n    id: 'policy.root',\n    included: [\n      'policy.root',\n+     'policy.incoming',\n+     'policy.outgoing'\n    ],\n+   includedEdges: [\n+     '2096ead4bdc510d53d44398d405ef00cf305ae8c6a74c2557dfbc952d1eea4c4',\n+     '7e9cc2faf0b6a947103441bca70952c286c83651c001bcfb9f4278217eaded17'\n+   ],\n+   maxEdges: 24,\n-   includedEdges: [],\n-   maxEdges: 0,\n    text: 'llmnav-context/1 root=policy.root depth=1\\n' +\n      '@policy.root\\n' +\n      'role Own workUnit policy boundary.\\n' +\n      'rel policy>policy.outgoing\\n' +\n+     'loc src/part0.js:1\\n' +\n+     '\\n' +\n+     '@policy.incoming\\n' +\n+     'role Own workUnit policy boundary.\\n' +\n+     'rel policy>policy.root\\n' +\n+     'loc src/part2.js:1\\n' +\n+     '\\n' +\n+     '@policy.outgoing\\n' +\n+     'role Own workUnit policy boundary.\\n' +\n+     'loc src/part1.js:1\\n' +\n+     '\\n' +\n+     'graph policy-fixture/policy.incoming -[policy confidence=1.00 provenance=source-card]-> policy-fixture/policy.root\\n' +\n+     'graph policy-fixture/policy.root -[policy confidence=1.00 provenance=source-card]-> policy-fixture/policy.outgoing'\n-     'loc src/part0.js:1'\n  }\n",
+            "error": "ERR_ASSERTION",
+            "name": "graph cap 0",
+            "passed": false
+          },
+          {
+            "detail": "Expected values to be strictly deep-equal:\n+ actual - expected\n... Skipped lines\n\n  {\n    budget: 4000,\n    depth: 1,\n    id: 'policy.root',\n    included: [\n      'policy.root',\n      'policy.incoming',\n+     'policy.outgoing'\n    ],\n    includedEdges: [\n      '2096ead4bdc510d53d44398d405ef00cf305ae8c6a74c2557dfbc952d1eea4c4',\n+     '7e9cc2faf0b6a947103441bca70952c286c83651c001bcfb9f4278217eaded17'\n    ],\n+   maxEdges: 24,\n-   maxEdges: 1,\n    text: 'llmnav-context/1 root=policy.root depth=1\\n' +\n      '@policy.root\\n' +\n      'role Own workUnit policy boundary.\\n' +\n      'rel policy>policy.outgoing\\n' +\n      'loc src/part0.js:1\\n' +\n...\n      '\\n' +\n+     '@policy.outgoing\\n' +\n+     'role Own workUnit policy boundary.\\n' +\n+     'loc src/part1.js:1\\n' +\n+     '\\n' +\n+     'graph policy-fixture/policy.incoming -[policy confidence=1.00 provenance=source-card]-> policy-fixture/policy.root\\n' +\n+     'graph policy-fixture/policy.root -[policy confidence=1.00 provenance=source-card]-> policy-fixture/policy.outgoing'\n-     'graph policy-fixture/policy.incoming -[policy confidence=1.00 provenance=source-card]-> policy-fixture/policy.root'\n  }\n",
+            "error": "ERR_ASSERTION",
+            "name": "graph cap 1",
+            "passed": false
+          },
+          {
+            "name": "graph cap 24",
+            "passed": true
+          },
+          {
+            "detail": "Expected \"actual\" to be strictly unequal to: 0",
+            "error": "ERR_ASSERTION",
+            "name": "graph defaults and rejection",
+            "passed": false
+          },
+          {
+            "detail": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n  {\n    budget: 4000,\n    depth: 1,\n    id: 'policy.root',\n    included: [\n      'policy.root',\n+     'policy.outgoing',\n+     'policy.incoming'\n    ],\n    includedEdges: [],\n+   maxEdges: 24,\n-   maxEdges: 0,\n    text: 'llmnav-context/1 root=policy.root depth=1\\n' +\n      '@policy.root\\n' +\n      'role Own workUnit policy boundary.\\n' +\n      'rel policy>policy.outgoing\\n' +\n+     'loc src/part0.js:1\\n' +\n+     '\\n' +\n+     '@policy.outgoing\\n' +\n+     'role Own workUnit policy boundary.\\n' +\n+     'loc src/part1.js:1\\n' +\n+     '\\n' +\n+     '@policy.incoming\\n' +\n+     'role Own workUnit policy boundary.\\n' +\n+     'rel policy>policy.root\\n' +\n+     'loc src/part2.js:1'\n-     'loc src/part0.js:1'\n  }\n",
+            "error": "ERR_ASSERTION",
+            "name": "legacy cap 0",
+            "passed": false
+          },
+          {
+            "detail": "Expected values to be strictly deep-equal:\n+ actual - expected\n... Skipped lines\n\n  {\n    budget: 4000,\n    depth: 1,\n    id: 'policy.root',\n    included: [\n      'policy.root',\n      'policy.outgoing',\n+     'policy.incoming'\n    ],\n    includedEdges: [],\n+   maxEdges: 24,\n-   maxEdges: 1,\n    text: 'llmnav-context/1 root=policy.root depth=1\\n' +\n      '@policy.root\\n' +\n      'role Own workUnit policy boundary.\\n' +\n      'rel policy>policy.outgoing\\n' +\n      'loc src/part0.js:1\\n' +\n...\n      'role Own workUnit policy boundary.\\n' +\n+     'loc src/part1.js:1\\n' +\n+     '\\n' +\n+     '@policy.incoming\\n' +\n+     'role Own workUnit policy boundary.\\n' +\n+     'rel policy>policy.root\\n' +\n+     'loc src/part2.js:1'\n-     'loc src/part1.js:1'\n  }\n",
+            "error": "ERR_ASSERTION",
+            "name": "legacy cap 1",
+            "passed": false
+          },
+          {
+            "name": "legacy cap 24",
+            "passed": true
+          },
+          {
+            "detail": "Expected \"actual\" to be strictly unequal to: 0",
+            "error": "ERR_ASSERTION",
+            "name": "legacy defaults and rejection",
+            "passed": false
+          }
+        ],
+        "exitCode": 0,
+        "outputHash": "09358e9d92ac141cad8e5055c5fcf2cfee00a59fdb18383f356efa15f0ca5804",
+        "passed": false,
+        "timedOut": false
+      },
+      "pristine": {
+        "checks": [
+          {
+            "name": "graph cap 0",
+            "passed": true
+          },
+          {
+            "name": "graph cap 1",
+            "passed": true
+          },
+          {
+            "name": "graph cap 24",
+            "passed": true
+          },
+          {
+            "name": "graph defaults and rejection",
+            "passed": true
+          },
+          {
+            "name": "legacy cap 0",
+            "passed": true
+          },
+          {
+            "name": "legacy cap 1",
+            "passed": true
+          },
+          {
+            "name": "legacy cap 24",
+            "passed": true
+          },
+          {
+            "name": "legacy defaults and rejection",
+            "passed": true
+          }
+        ],
+        "exitCode": 0,
+        "outputHash": "dcf595583e190e7f8fac7028c4b6c092713ce2b324533c7bd4fea8e2ca183874",
+        "passed": true,
+        "timedOut": false
+      },
+      "task": "zero-edge-cap"
+    }
+  ],
+  "engines": {
+    "src/abort.js": "18a3ec2f0725efdadd85763ebea5f71445c7f688f0dfecc7d694e7d9c85c708c",
+    "src/adapters/go-analyzer.go": "90ddbe7bfa1814f3c9f76b837e28c3e212d994bc45619024ce1ba9d7740f2a70",
+    "src/adapters/go.js": "ad5ab413e492e865ef832ec2aefa0a0f705ec9d7e951d82b92aefd213a145fde",
+    "src/adapters/process.js": "d3907ad7bf95588a6bf69d0c74a20788a83a72762c2cb00f516076b94372fe45",
+    "src/adapters/python.js": "ea8c604d050499322ae1104ba03cfe7c11f5c6c2b5ea3f80add1135d098a627e",
+    "src/adapters/rust-syntax.js": "65e8df5ae2966c2f185ccaf195b70c6ceaf1328a4603499f339397a4c6e360f9",
+    "src/adapters/rust-worker.js": "868f4c5a0b6c88f7a5004852126f4f144ffa0084fc192225e6cf2911c7e76429",
+    "src/adapters/rust.js": "19ff229fea1d321d14bf0d377e09d6e0b5f300ae237e7574e0d49eca5efe6759",
+    "src/adapters/typescript-metadata.js": "3e286a6388755dfc449cd05b36fa0e0d0056ec5e727e5f3e72f120d1d6707379",
+    "src/adapters/typescript-worker.js": "76deda4c02148b17eb5e62de1b9a11c20e144acc3c0b3aebd711ba27bac755f9",
+    "src/adapters/typescript.js": "695326d690777ef2f30796c0705f8444c4d5cad43a5234c22f850bd551db7215",
+    "src/agent-protocol.js": "929f84421e2d5bac1bcdc1497cef2853f17283a6bd8377fb3a4c5585710864ee",
+    "src/agent-tools.js": "8a3d208ce9db5f8e6219ac3336604832b1ea79d22a98917d8c85ef688dad637f",
+    "src/agents.js": "a18aa849695b84d06f88af6c4bd3f2105dcbccfc32f9254c609612b4397cb9de",
+    "src/analysis-languages.js": "83f58e9d5f560ff6ed7f1a3d5df7d1d1e9251da380e33833153925fb925eb92d",
+    "src/analysis.js": "641137db838637d10fa4c81c097d5976c094eb22e6afc6f2217eb67937977b1d",
+    "src/audit.js": "3cb98421bef868c458e21cdf0a44cc7edb9115f597db5dd3ef0feaed4387022c",
+    "src/boundaries.js": "6a44422eff84c612d54acc480e0c83deb7d05da9cc733abac84476e935f88e75",
+    "src/bounded-selection.js": "6efe1904a158e55c81493e29398a829c65e68abb03dd0faf80d065cf96a13b1e",
+    "src/changes.js": "790719c9493a40085f0ee84a0884b45e28a091454d682fe8b3bed7617addd9eb",
+    "src/cli.js": "fcb7ba60b90d9998c93fdc5d56de5a7694dcddc62d483756229da4be920db19a",
+    "src/code-metadata.js": "552db19e2e8a43b750e29f783719c473734f315dff3541b14d06016fb9e69e9e",
+    "src/concurrency.js": "d5f25877c4d08986a327009b912d53a1238e8ce6ebd8625b9da48929b95fec9b",
+    "src/config.js": "ac742e464a6fb41cd37d6a6a7545a5d251235fee0f3223cf67af12579383bf53",
+    "src/contracts.js": "2d8d0a8cd59947cfd13fb9b6e86e4d650782579b48848a36855fcab9d0298906",
+    "src/declaration.js": "8b39f3e53829096c10f931b2815e67e94c0ac9d1514a93db7328d3222cb866ae",
+    "src/discovery.js": "7095c44d9989adbd13a8f31fb46b6da1479361f7778117b70b7a98be7b568f82",
+    "src/doctor.js": "2fe554a09f5ab2794d871d5b26e66ca6a10e5135ec3ff5581999b6a754dfc62e",
+    "src/editor.js": "91f9402785af1db534722c65c078d5c7f9e0ae0975494e680737cffc4d188ada",
+    "src/errors.js": "7f6446cec1cd1a31615e91760d29727064b3ea185a8a122c31ee79ca914c55da",
+    "src/evaluation.js": "40b2bda5e0de9f21a5f7feba5059a326ed8be2e5303ce0ba7cfd68132501a3b3",
+    "src/evidence-files.js": "f0053b8fb83e3877814f3a320ad1f27f03411b86acc1274786e7e7430cc1ee93",
+    "src/files.js": "4be897432af867cb5859751892a78592425a4c3756354d091bfed9ab8ac9b0b4",
+    "src/formatter.js": "feb10b133d8334fd3955a6e0e4e9c5cd2bb12c8a15320b0aa04063465bdb13fc",
+    "src/generator.js": "4fb916facbcb4fb8aa2669546c1edfdf7e36d15a611dd70a31fdedd4a1fe8701",
+    "src/git-history.js": "d819234b71e6b95b14cb023e0ac32528bf03a8186e06ae1f652fd1558461bb6c",
+    "src/graph-input.js": "6238c4146d0ed862da45538355d30608f34d058a338a42f7b65a43d5895a9cec",
+    "src/graph.js": "19babdefa4bcd47aeff5c138d961318439edb932f50645b4b55381fea8f0a0c6",
+    "src/incremental.js": "408466e80e235814721fcbbda635dfa6b2a6f1b2c026eb28368fe57c152dac9f",
+    "src/index.d.ts": "85f68b1e2b4c9379567c8fc1dc347ccd9cc168d2ac0fb11f19448aad1befe7d0",
+    "src/index.js": "166ae540568f0c7da72ea6c765b46735877af59edbf88fc75a19473e3eeab09a",
+    "src/initializer.js": "06293e9bcc437b4f3b65241dc060bc7e29035d3e8dcfa51b5e728b06b2eeb2a0",
+    "src/inverted-index.js": "feacea4ec739f4ad625444e29cebefa6837a50bfbe2d198adf58ad3c3b327374",
+    "src/mcp-refresh.js": "862fe55c3c8e72934f22730332b91792448298caacce1fd8402cb500eda7b399",
+    "src/mcp.js": "4150ee86f0461faba65128151ae1d42592be3fcefab8bb9eb3d5542174786158",
+    "src/migration.js": "b241fa28810430267b31aa5da3736b2e26a2202ffbe8a8e8dc56cb895e9d4d5a",
+    "src/module-resolution.js": "777d193650c552eb35b67bfe5bc5e8d819d43c14c599e07f06b2cd07255e3157",
+    "src/parser.js": "9c8138f4c3c113e6574f151e8aad5e6784f416e76edadb065f49b4efef88da26",
+    "src/policy.js": "f89737ba2a4cb2300a543f9f8c44dd2aae73b55185eeb7c6f08c39da2aa7fc2a",
+    "src/project.js": "13628d9db1736cf8050d23d756da09cb138b243615c02b5e62c182ca3ae6a83b",
+    "src/prompt-bundle.js": "fbabe73f6815a33d532e602ddd561f2a9335319b462e38ae3f82d9a8d0eae322",
+    "src/query-source.js": "9aea6e7c3a1d6013310eb4627ba0ee78338e1854ed33d4dce4adcca0d68e1d3b",
+    "src/read-operation.js": "43cbaf8836ff449f39906eadfaadf73de4f4d95746d33db49bcf243d5e0cafbf",
+    "src/registry.js": "56f1dc8c89617e74abaca4924d28e3fc91ea4c488063adc11cc940519b4a497b",
+    "src/runtime.js": "ed651d9904596127119a3d875729b60df919a12e63ea39212adbf00f9a7c0852",
+    "src/sarif.js": "f2c22db65779ea006da20ec42dd8d05209e27df92a6715797d005e248af59ef1",
+    "src/search-shards.js": "f18798df830a6c51604b2d437148f449231449aea18f25b1bdad4f0bcbb1c071",
+    "src/search.js": "36dbcf611ef52b831944974e81cae0492601ef489bbd8e632804bc823b24befc",
+    "src/spec.d.ts": "cbfd1da0060e1d0153b6df8c20f70c9c8842c60252ab2313a70b275b9ed9e256",
+    "src/spec.js": "a86659b82cc68eff9d8ff575b17a67e014fe664ef952c81bdcbe5b4ef8fb24c3",
+    "src/tokenizer.js": "0c6b16cd13369e1efc38b067d594d89025d78451a3b03c35bfec7a089b20583b",
+    "src/transaction.js": "cc525bb13ab78bc4a34224bf3c7d3aa41944c6f69c64c8532839ae2c5617cd9a",
+    "src/util.js": "72b545cb2d15d7369752754b1bee66f797d3a9cf0c3a19d462c8893e1d6c678f",
+    "src/validator.js": "69ef80c850145fccca22aa58d429a105f913abd08774d912c01f6c4073cedb7e",
+    "src/verification.js": "69cdf6c15f32fcd300249ecdecac1c5e5e6abfadf8112615a19c22cb53e2fecc"
+  },
+  "environment": {
+    "codex": "codex-cli 0.164.0-alpha.11.1",
+    "node": "v24.18.0",
+    "platform": "win32"
+  },
+  "harnessHashes": {
+    "model-coding.js": "a45a204257e2016b5ef0be1838d97eec78f7e709a53188555ece3b4307548555",
+    "policy-cases.js": "ed26e9b74439377b415cde5ac8f918cfb483b12bdaf52b233cc9eb762b599b8d",
+    "policy-coding.js": "bcfba35a176b90f66418fbce345914a8364f91549f44aa4577ba6fc8ac060383",
+    "policy-oracle.js": "df38e76ce39c1100c12a6812f680d4b782005c242dc8f28c476caa22b28b0843"
+  },
+  "kind": "multi-file-policy-coding",
+  "limitations": [
+    "Two author-curated multi-file regressions in LLMNav's own annotated production code, not discovered incidents, blind holdouts or cross-project evidence.",
+    "Task difficulty, repeated-task familiarity and uncontrolled provider caching limit causal attribution; byte counts are not token counts.",
+    "Existing annotation/index construction and maintenance costs, monetary cost and resolved provider model are unmeasured."
+  ],
+  "measuredAt": "2026-10-27T18:50:18.333Z",
+  "methodology": {
+    "annotationCostMeasured": false,
+    "cacheControlled": false,
+    "concurrency": 1,
+    "existingCards": true,
+    "grading": "separate production-only copy; fixed hidden boundary checks",
+    "isolation": "workspace-write and prompt-enforced path/tool restrictions; not adversarial isolation",
+    "order": "rotate conditions by task and repetition",
+    "timeoutMs": 240000
+  },
+  "model": {
+    "reasoningEffort": "high",
+    "requested": "gpt-6.1-sol",
+    "resolvedProviderModel": null
+  },
+  "originalsUnchanged": true,
+  "preflight": {
+    "elapsedMs": 16264.3324,
+    "exitCode": 0,
+    "llmnavPassed": true,
+    "serenaPassed": null,
+    "timedOut": false,
+    "trace": {
+      "completed": true,
+      "errors": 0,
+      "itemTypes": {
+        "agent_message": 2,
+        "command_execution": 1,
+        "mcp_tool_call": 1
+      },
+      "tools": [
+        {
+          "commandHash": null,
+          "discovery": {
+            "candidates": 1,
+            "excerpts": 1,
+            "parsed": true,
+            "sourceBytes": 47,
+            "truncatedExcerpts": 0
+          },
+          "errorCategory": null,
+          "exitCode": null,
+          "responseBytes": 688,
+          "semanticCliMentioned": false,
+          "server": "eval_nav",
+          "status": "completed",
+          "tool": "llmnav_discover",
+          "toolError": false,
+          "type": "mcp_tool_call"
+        },
+        {
+          "commandHash": "190beda24a1a57d7eab7fa631f6f05c8958b2a34b7c045114a30739cd2083d47",
+          "discovery": null,
+          "errorCategory": null,
+          "exitCode": 0,
+          "responseBytes": 0,
+          "semanticCliMentioned": false,
+          "server": null,
+          "status": "completed",
+          "tool": null,
+          "toolError": false,
+          "type": "command_execution"
+        }
+      ],
+      "uncachedInputTokens": 5540,
+      "usage": {
+        "cache_write_input_tokens": 0,
+        "cached_input_tokens": 47232,
+        "input_tokens": 52772,
+        "output_tokens": 265,
+        "reasoning_output_tokens": 0
+      }
+    },
+    "writePassed": true
+  },
+  "repetitions": 1,
+  "rows": [
+    {
+      "acceptance": {
+        "checks": [
+          {
+            "name": "API bounds and Unicode aggregate",
+            "passed": true
+          },
+          {
+            "name": "API rejects nearest invalid budgets",
+            "passed": true
+          },
+          {
+            "name": "default and ranking preserved",
+            "passed": true
+          },
+          {
+            "name": "schema and operation limits",
+            "passed": true
+          },
+          {
+            "name": "CLI forwards and rejects budgets",
+            "passed": true
+          },
+          {
+            "name": "cancellation remains observable",
+            "passed": true
+          }
+        ],
+        "exitCode": 0,
+        "outputHash": "a99cd26f2aed903fe1afec4083f6bf9fb13e6ecc98173fdf8fddaa82e133941e",
+        "passed": true,
+        "timedOut": false
+      },
+      "changedFiles": [
+        "src/agent-tools.js",
+        "src/cli.js",
+        "src/discovery.js"
+      ],
+      "condition": "baseline",
+      "conditionAdhered": false,
+      "elapsedMs": 71514.24660000001,
+      "exitCode": 0,
+      "language": "javascript",
+      "navigationUsed": false,
+      "patches": [
+        {
+          "artifact": "policy-coding-focused-source-0.20.0-source-budget-baseline-0-src_agent-tools.js.patch",
+          "file": "src/agent-tools.js",
+          "hash": "97952a9b000c0db2ee179e2b04f24ff8921f6748f037fdd028aac0c00f8cb7cc"
+        },
+        {
+          "artifact": "policy-coding-focused-source-0.20.0-source-budget-baseline-0-src_cli.js.patch",
+          "file": "src/cli.js",
+          "hash": "c001cc06f36fdd5a53b5fbcd02cf491546db42527695d9a794d15de8abd71b7d"
+        },
+        {
+          "artifact": "policy-coding-focused-source-0.20.0-source-budget-baseline-0-src_discovery.js.patch",
+          "file": "src/discovery.js",
+          "hash": "865c54e0cd8c827e38600b419b60cec5d8396bd61d9f401266ea7c4979bce4b5"
+        }
+      ],
+      "repetition": 0,
+      "scopePassed": true,
+      "stderrHash": "39fb3d4411bb8998377fcfe71d5305b6a4d3adf945e8176a38add065ec754fef",
+      "success": false,
+      "task": "source-budget",
+      "timedOut": false,
+      "trace": {
+        "commandMetadata": [
+          {
+            "category": "search",
+            "commandHash": "b87e5291e867000151a6fb70f408597cf001cb403b08e1d70cd15ca2aee73de8",
+            "referencedFiles": []
+          },
+          {
+            "category": "search",
+            "commandHash": "63c74d40c027b87ef563a67d2c89c6f64845a670b5c13f1ba419e1dd1f70d0fc",
+            "referencedFiles": []
+          },
+          {
+            "category": "search",
+            "commandHash": "fab0503fc5eadf3ff7c27e86cb92788b5b3b874f4a8f3cfe18a3a7a1cafd1ba0",
+            "referencedFiles": []
+          },
+          {
+            "category": "read",
+            "commandHash": "23ba4ce522f02d515f3a52154abe46597c51d74c75f9ef053840b53fe27d12da",
+            "referencedFiles": [
+              "src/agent-tools.js",
+              "src/discovery.js"
+            ]
+          },
+          {
+            "category": "search",
+            "commandHash": "4766b0b508279af96773b2e71e10547e1a5c35b3ca1f488296ec644a912fb028",
+            "referencedFiles": [
+              "src/agent-protocol.js",
+              "src/cli.js",
+              "src/index.js",
+              "src/mcp.js",
+              "src/policy.js",
+              "src/query-source.js"
+            ]
+          },
+          {
+            "category": "read",
+            "commandHash": "1f9e3bc4e83ed4416fc3f437561e0f7b8621c82f3bde321b061f2a6a70b15538",
+            "referencedFiles": [
+              "src/agent-protocol.js",
+              "src/cli.js"
+            ]
+          },
+          {
+            "category": "search",
+            "commandHash": "5441b7c912fa9fb9cc88844d90c0280242832a92e0024c4a6ef076b282ccfff8",
+            "referencedFiles": [
+              "src/mcp.js",
+              "src/util.js"
+            ]
+          },
+          {
+            "category": "search",
+            "commandHash": "77866a0cad98a405cd3a2a263db86e77e70d1d0a2d935a89bc5a81becbd9eafb",
+            "referencedFiles": [
+              "src/cli.js",
+              "src/query-source.js"
+            ]
+          },
+          {
+            "category": "search",
+            "commandHash": "3a9bdb589b244c83a702a45c0c3c7d06d1769c280429fda47b2bb415bfc7a315",
+            "referencedFiles": [
+              "src/agent-tools.js",
+              "src/cli.js",
+              "src/discovery.js"
+            ]
+          }
+        ],
+        "completed": true,
+        "errors": 0,
+        "itemTypes": {
+          "agent_message": 3,
+          "command_execution": 9,
+          "file_change": 1
+        },
+        "queries": [],
+        "tools": [
+          {
+            "commandHash": "b87e5291e867000151a6fb70f408597cf001cb403b08e1d70cd15ca2aee73de8",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 288,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "63c74d40c027b87ef563a67d2c89c6f64845a670b5c13f1ba419e1dd1f70d0fc",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 1213,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "fab0503fc5eadf3ff7c27e86cb92788b5b3b874f4a8f3cfe18a3a7a1cafd1ba0",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 19869,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "23ba4ce522f02d515f3a52154abe46597c51d74c75f9ef053840b53fe27d12da",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 14795,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "4766b0b508279af96773b2e71e10547e1a5c35b3ca1f488296ec644a912fb028",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 31855,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "1f9e3bc4e83ed4416fc3f437561e0f7b8621c82f3bde321b061f2a6a70b15538",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 10644,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "5441b7c912fa9fb9cc88844d90c0280242832a92e0024c4a6ef076b282ccfff8",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 18527,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "77866a0cad98a405cd3a2a263db86e77e70d1d0a2d935a89bc5a81becbd9eafb",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 4864,
+            "semanticCliMentioned": true,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": null,
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 4,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "file_change"
+          },
+          {
+            "commandHash": "3a9bdb589b244c83a702a45c0c3c7d06d1769c280429fda47b2bb415bfc7a315",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 798,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          }
+        ],
+        "uncachedInputTokens": 34428,
+        "usage": {
+          "cache_write_input_tokens": 0,
+          "cached_input_tokens": 248704,
+          "input_tokens": 283132,
+          "output_tokens": 2166,
+          "reasoning_output_tokens": 657
+        }
+      }
+    },
+    {
+      "acceptance": {
+        "checks": [
+          {
+            "name": "API bounds and Unicode aggregate",
+            "passed": true
+          },
+          {
+            "name": "API rejects nearest invalid budgets",
+            "passed": true
+          },
+          {
+            "name": "default and ranking preserved",
+            "passed": true
+          },
+          {
+            "name": "schema and operation limits",
+            "passed": true
+          },
+          {
+            "name": "CLI forwards and rejects budgets",
+            "passed": true
+          },
+          {
+            "name": "cancellation remains observable",
+            "passed": true
+          }
+        ],
+        "exitCode": 0,
+        "outputHash": "a99cd26f2aed903fe1afec4083f6bf9fb13e6ecc98173fdf8fddaa82e133941e",
+        "passed": true,
+        "timedOut": false
+      },
+      "changedFiles": [
+        "src/agent-tools.js",
+        "src/cli.js",
+        "src/discovery.js"
+      ],
+      "condition": "llmnav-source",
+      "conditionAdhered": true,
+      "elapsedMs": 67388.9673,
+      "exitCode": 0,
+      "language": "javascript",
+      "navigationUsed": true,
+      "patches": [
+        {
+          "artifact": "policy-coding-focused-source-0.20.0-source-budget-llmnav-source-0-src_agent-tools.js.patch",
+          "file": "src/agent-tools.js",
+          "hash": "97952a9b000c0db2ee179e2b04f24ff8921f6748f037fdd028aac0c00f8cb7cc"
+        },
+        {
+          "artifact": "policy-coding-focused-source-0.20.0-source-budget-llmnav-source-0-src_cli.js.patch",
+          "file": "src/cli.js",
+          "hash": "bae5eafd287a226ccf24b43af565692ac6b5dc2e4b47978700819dc58ad58b97"
+        },
+        {
+          "artifact": "policy-coding-focused-source-0.20.0-source-budget-llmnav-source-0-src_discovery.js.patch",
+          "file": "src/discovery.js",
+          "hash": "865c54e0cd8c827e38600b419b60cec5d8396bd61d9f401266ea7c4979bce4b5"
+        }
+      ],
+      "repetition": 0,
+      "scopePassed": true,
+      "stderrHash": "745fb739709a808aa6cc3683b56dbfb7b961b0551f94707f4760cb0ef39d1885",
+      "success": true,
+      "task": "source-budget",
+      "timedOut": false,
+      "trace": {
+        "commandMetadata": [
+          {
+            "category": "search",
+            "commandHash": "e6ffaa5327e96839f1f77dd04e43ce6cd8202e1d09c22c513a6598a9e6459697",
+            "referencedFiles": []
+          },
+          {
+            "category": "read",
+            "commandHash": "326eeaf680288ed80db0ea716d08491240f6aa6ddb0a827702351e528b5bedca",
+            "referencedFiles": [
+              "src/agent-protocol.js",
+              "src/agent-tools.js",
+              "src/discovery.js"
+            ]
+          },
+          {
+            "category": "search",
+            "commandHash": "d3b5d8e54b20ab1714d68cf8ee0d8f9acf85a80f72221023c7e64dad0721e2e8",
+            "referencedFiles": [
+              "src/cli.js",
+              "src/mcp.js",
+              "src/policy.js",
+              "src/query-source.js"
+            ]
+          },
+          {
+            "category": "read",
+            "commandHash": "52942d2c67c4c00042c33dcc8b71f9acd67269101fcca60973cb8e2799c6d7c9",
+            "referencedFiles": [
+              "src/agent-protocol.js",
+              "src/cli.js",
+              "src/policy.js",
+              "src/query-source.js"
+            ]
+          },
+          {
+            "category": "search",
+            "commandHash": "05c48dbcdb57c8747227f9b9d73d9c3ff30f68b835957b164d559ae8e720202c",
+            "referencedFiles": [
+              "src/cli.js",
+              "src/util.js"
+            ]
+          },
+          {
+            "category": "other",
+            "commandHash": "aa3de845066ad00109cc0054120d9d6837a9a92a3817eb3886014af6fde8c3db",
+            "referencedFiles": [
+              "src/agent-tools.js",
+              "src/cli.js",
+              "src/discovery.js"
+            ]
+          }
+        ],
+        "completed": true,
+        "errors": 0,
+        "itemTypes": {
+          "agent_message": 3,
+          "command_execution": 6,
+          "mcp_tool_call": 1
+        },
+        "queries": [
+          {
+            "mode": "source",
+            "paths": [
+              "src/cli.js",
+              "src/agents.js",
+              "src/cli.js"
+            ],
+            "sourceBytes": 5725,
+            "windows": 3
+          }
+        ],
+        "tools": [
+          {
+            "commandHash": null,
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 8798,
+            "semanticCliMentioned": false,
+            "server": "eval_nav",
+            "status": "completed",
+            "tool": "llmnav_query",
+            "toolError": false,
+            "type": "mcp_tool_call"
+          },
+          {
+            "commandHash": "e6ffaa5327e96839f1f77dd04e43ce6cd8202e1d09c22c513a6598a9e6459697",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 5303,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "326eeaf680288ed80db0ea716d08491240f6aa6ddb0a827702351e528b5bedca",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 23906,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "d3b5d8e54b20ab1714d68cf8ee0d8f9acf85a80f72221023c7e64dad0721e2e8",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 32380,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "52942d2c67c4c00042c33dcc8b71f9acd67269101fcca60973cb8e2799c6d7c9",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 17267,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "05c48dbcdb57c8747227f9b9d73d9c3ff30f68b835957b164d559ae8e720202c",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 2496,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "aa3de845066ad00109cc0054120d9d6837a9a92a3817eb3886014af6fde8c3db",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 0,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          }
+        ],
+        "uncachedInputTokens": 40594,
+        "usage": {
+          "cache_write_input_tokens": 0,
+          "cached_input_tokens": 219776,
+          "input_tokens": 260370,
+          "output_tokens": 1914,
+          "reasoning_output_tokens": 653
+        }
+      }
+    },
+    {
+      "acceptance": {
+        "checks": [
+          {
+            "name": "graph cap 0",
+            "passed": true
+          },
+          {
+            "name": "graph cap 1",
+            "passed": true
+          },
+          {
+            "name": "graph cap 24",
+            "passed": true
+          },
+          {
+            "name": "graph defaults and rejection",
+            "passed": true
+          },
+          {
+            "name": "legacy cap 0",
+            "passed": true
+          },
+          {
+            "name": "legacy cap 1",
+            "passed": true
+          },
+          {
+            "name": "legacy cap 24",
+            "passed": true
+          },
+          {
+            "name": "legacy defaults and rejection",
+            "passed": true
+          }
+        ],
+        "exitCode": 0,
+        "outputHash": "dcf595583e190e7f8fac7028c4b6c092713ce2b324533c7bd4fea8e2ca183874",
+        "passed": true,
+        "timedOut": false
+      },
+      "changedFiles": [
+        "src/agent-protocol.js",
+        "src/cli.js"
+      ],
+      "condition": "llmnav-source",
+      "conditionAdhered": true,
+      "elapsedMs": 36122.13219999999,
+      "exitCode": 0,
+      "language": "javascript",
+      "navigationUsed": true,
+      "patches": [
+        {
+          "artifact": "policy-coding-focused-source-0.20.0-zero-edge-cap-llmnav-source-0-src_agent-protocol.js.patch",
+          "file": "src/agent-protocol.js",
+          "hash": "00d4a141fa28bdcf9b5075ddc5d12ae2288e0e862163b4418b0c468af772b73c"
+        },
+        {
+          "artifact": "policy-coding-focused-source-0.20.0-zero-edge-cap-llmnav-source-0-src_cli.js.patch",
+          "file": "src/cli.js",
+          "hash": "e6d1fcc545f0fe6fee1613697cfd64982ab31663aa0374c873e50e2021d82089"
+        }
+      ],
+      "repetition": 0,
+      "scopePassed": true,
+      "stderrHash": "3f8e99576876d80b6f8ad7cf6a5b3c9a4ec809d111ef3c6b542a7dd71b5e3ed7",
+      "success": true,
+      "task": "zero-edge-cap",
+      "timedOut": false,
+      "trace": {
+        "commandMetadata": [
+          {
+            "category": "search",
+            "commandHash": "e406765b05a7b566f2726c867722f48a15b3523add2a8ac0802fb5cae2e85a43",
+            "referencedFiles": [
+              "src/agent-protocol.js",
+              "src/cli.js",
+              "src/search.js"
+            ]
+          },
+          {
+            "category": "search",
+            "commandHash": "842f732460b6c306babaf7de696db1d93ca160290847ce39f08500d02ea4e848",
+            "referencedFiles": [
+              "src/agent-protocol.js",
+              "src/cli.js",
+              "src/mcp.js",
+              "src/search.js"
+            ]
+          },
+          {
+            "category": "search",
+            "commandHash": "2874a4b6427ea109fa646e283f5fb46d1f0be21f7441623d2b109ac8c984fe41",
+            "referencedFiles": [
+              "src/mcp.js",
+              "src/search.js",
+              "src/util.js"
+            ]
+          }
+        ],
+        "completed": true,
+        "errors": 0,
+        "itemTypes": {
+          "agent_message": 2,
+          "command_execution": 3,
+          "file_change": 1,
+          "mcp_tool_call": 1
+        },
+        "queries": [
+          {
+            "mode": "source",
+            "paths": [
+              "src/cli.js",
+              "src/agent-protocol.js",
+              "src/agent-tools.js",
+              "src/index.d.ts",
+              "src/policy.js",
+              "src/search.js",
+              "src/cli.js",
+              "src/index.d.ts",
+              "src/search.js",
+              "src/cli.js"
+            ],
+            "sourceBytes": 12000,
+            "windows": 10
+          }
+        ],
+        "tools": [
+          {
+            "commandHash": null,
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 16475,
+            "semanticCliMentioned": false,
+            "server": "eval_nav",
+            "status": "completed",
+            "tool": "llmnav_query",
+            "toolError": false,
+            "type": "mcp_tool_call"
+          },
+          {
+            "commandHash": "e406765b05a7b566f2726c867722f48a15b3523add2a8ac0802fb5cae2e85a43",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 13751,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "842f732460b6c306babaf7de696db1d93ca160290847ce39f08500d02ea4e848",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 10451,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "2874a4b6427ea109fa646e283f5fb46d1f0be21f7441623d2b109ac8c984fe41",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 2396,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": null,
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 4,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "file_change"
+          }
+        ],
+        "uncachedInputTokens": 20187,
+        "usage": {
+          "cache_write_input_tokens": 0,
+          "cached_input_tokens": 160512,
+          "input_tokens": 180699,
+          "output_tokens": 912,
+          "reasoning_output_tokens": 61
+        }
+      }
+    },
+    {
+      "acceptance": {
+        "checks": [
+          {
+            "name": "graph cap 0",
+            "passed": true
+          },
+          {
+            "name": "graph cap 1",
+            "passed": true
+          },
+          {
+            "name": "graph cap 24",
+            "passed": true
+          },
+          {
+            "name": "graph defaults and rejection",
+            "passed": true
+          },
+          {
+            "name": "legacy cap 0",
+            "passed": true
+          },
+          {
+            "name": "legacy cap 1",
+            "passed": true
+          },
+          {
+            "name": "legacy cap 24",
+            "passed": true
+          },
+          {
+            "name": "legacy defaults and rejection",
+            "passed": true
+          }
+        ],
+        "exitCode": 0,
+        "outputHash": "dcf595583e190e7f8fac7028c4b6c092713ce2b324533c7bd4fea8e2ca183874",
+        "passed": true,
+        "timedOut": false
+      },
+      "changedFiles": [
+        "src/agent-protocol.js",
+        "src/cli.js"
+      ],
+      "condition": "baseline",
+      "conditionAdhered": true,
+      "elapsedMs": 42167.744600000005,
+      "exitCode": 0,
+      "language": "javascript",
+      "navigationUsed": false,
+      "patches": [
+        {
+          "artifact": "policy-coding-focused-source-0.20.0-zero-edge-cap-baseline-0-src_agent-protocol.js.patch",
+          "file": "src/agent-protocol.js",
+          "hash": "00d4a141fa28bdcf9b5075ddc5d12ae2288e0e862163b4418b0c468af772b73c"
+        },
+        {
+          "artifact": "policy-coding-focused-source-0.20.0-zero-edge-cap-baseline-0-src_cli.js.patch",
+          "file": "src/cli.js",
+          "hash": "e6d1fcc545f0fe6fee1613697cfd64982ab31663aa0374c873e50e2021d82089"
+        }
+      ],
+      "repetition": 0,
+      "scopePassed": true,
+      "stderrHash": "3dbb944bdad0c065b8593ee443c1d13e8cbf2b6daa8a2c4a9da3c95474e53f24",
+      "success": true,
+      "task": "zero-edge-cap",
+      "timedOut": false,
+      "trace": {
+        "commandMetadata": [
+          {
+            "category": "search",
+            "commandHash": "5f51c227774e0db6e12785ea30d47699de09b15bce7b3ce8e735c8af86e86058",
+            "referencedFiles": []
+          },
+          {
+            "category": "read",
+            "commandHash": "a67a77c9a83b33982a62d5c588cf03f20cc191085a650630c46c43841a68944c",
+            "referencedFiles": [
+              "src/agent-protocol.js",
+              "src/cli.js"
+            ]
+          },
+          {
+            "category": "search",
+            "commandHash": "c13302fd8f1cc305bb1eda1444455909eea98804ceae555fb40584b044fcfe5f",
+            "referencedFiles": []
+          },
+          {
+            "category": "search",
+            "commandHash": "d74d8f06cec1f1d8b5f1ae625ac89e0ba4af9e821ec43eb336e9f8ddaa9e1421",
+            "referencedFiles": [
+              "src/policy.js",
+              "src/search.js"
+            ]
+          },
+          {
+            "category": "search",
+            "commandHash": "cf53cae9f8121c43ea1301c16187ca602af96bd456f6ffe4836d60eec4f2a831",
+            "referencedFiles": []
+          },
+          {
+            "category": "search",
+            "commandHash": "a1521e63494bfcd66d095afaedf6766f2472655cbd2e8c78a5f42c585c4f5c26",
+            "referencedFiles": [
+              "src/agent-protocol.js",
+              "src/agent-tools.js",
+              "src/cli.js",
+              "src/search.js"
+            ]
+          },
+          {
+            "category": "read",
+            "commandHash": "3e3313eb5baa24b85df34aad6517f0e230c0ba22773f11d1403f12cedac2234c",
+            "referencedFiles": [
+              "src/cli.js",
+              "src/mcp.js"
+            ]
+          },
+          {
+            "category": "search",
+            "commandHash": "a6977c9bf3d0b88d2ab142c41c2a15db8e7617ef5ad547f2a808f67735125f85",
+            "referencedFiles": [
+              "src/cli.js"
+            ]
+          }
+        ],
+        "completed": true,
+        "errors": 0,
+        "itemTypes": {
+          "agent_message": 3,
+          "command_execution": 8,
+          "file_change": 1
+        },
+        "queries": [],
+        "tools": [
+          {
+            "commandHash": "5f51c227774e0db6e12785ea30d47699de09b15bce7b3ce8e735c8af86e86058",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 7418,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "a67a77c9a83b33982a62d5c588cf03f20cc191085a650630c46c43841a68944c",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 14202,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "c13302fd8f1cc305bb1eda1444455909eea98804ceae555fb40584b044fcfe5f",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 3429,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "d74d8f06cec1f1d8b5f1ae625ac89e0ba4af9e821ec43eb336e9f8ddaa9e1421",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 14118,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "cf53cae9f8121c43ea1301c16187ca602af96bd456f6ffe4836d60eec4f2a831",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 4037,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "a1521e63494bfcd66d095afaedf6766f2472655cbd2e8c78a5f42c585c4f5c26",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 11265,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "3e3313eb5baa24b85df34aad6517f0e230c0ba22773f11d1403f12cedac2234c",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 4907,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "a6977c9bf3d0b88d2ab142c41c2a15db8e7617ef5ad547f2a808f67735125f85",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 143,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": null,
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 4,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "file_change"
+          }
+        ],
+        "uncachedInputTokens": 27875,
+        "usage": {
+          "cache_write_input_tokens": 0,
+          "cached_input_tokens": 169984,
+          "input_tokens": 197859,
+          "output_tokens": 1167,
+          "reasoning_output_tokens": 111
+        }
+      }
+    }
+  ],
+  "schemaVersion": 1,
+  "sourceCommit": "a44306096ebf7290eb5e1add46bd8e29ab06f103",
+  "sourceFiles": 255,
+  "sourceHash": "257e7894e6023897d8154eab3472802aaacdcdde41f81ffd62ea66b6cad5f57b",
+  "summary": [
+    {
+      "acceptancePasses": 2,
+      "attempts": 2,
+      "cacheShare": 0.8704695098245081,
+      "cachedInputTokens": 418688,
+      "condition": "baseline",
+      "conditionViolations": 1,
+      "inputTokens": 480991,
+      "mcpFailures": 0,
+      "navigationAttempts": 0,
+      "outputTokens": 3333,
+      "responseBytes": 162380,
+      "scopeFailures": 0,
+      "successes": 1,
+      "timeouts": 0,
+      "toolEvents": 19,
+      "totalElapsedMs": 113681.99120000002,
+      "uncachedInputTokens": 62303
+    },
+    {
+      "acceptancePasses": 2,
+      "attempts": 2,
+      "cacheShare": 0.8621961643189614,
+      "cachedInputTokens": 380288,
+      "condition": "llmnav-source",
+      "conditionViolations": 0,
+      "inputTokens": 441069,
+      "mcpFailures": 0,
+      "navigationAttempts": 2,
+      "outputTokens": 2826,
+      "responseBytes": 133227,
+      "scopeFailures": 0,
+      "successes": 2,
+      "timeouts": 0,
+      "toolEvents": 12,
+      "totalElapsedMs": 103511.0995,
+      "uncachedInputTokens": 60781
+    }
+  ]
+}
