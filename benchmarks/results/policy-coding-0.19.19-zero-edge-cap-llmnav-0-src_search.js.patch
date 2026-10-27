@@ -1,0 +1,40 @@
+diff --git a/src/search.js b/src/search.js
+index 76e7bc2..7e1acd6 100644
+--- a/src/search.js
++++ b/src/search.js
+@@ -666,7 +666,7 @@ function buildSnapshotContext(snapshot, id, options = {}) {
+ function buildGraphContext(index, graph, rootNode, options) {
+   const { depth, budget, maxEdges } = options;
+   const byId = indexCardLookup(index);
+-  const graphAdjacency = buildGraphAdjacency(graph);
++  const graphAdjacency = maxEdges > 0 ? buildGraphAdjacency(graph) : new Map();
+   const queue = [{ key: rootNode.key, depth: 0 }];
+   const visited = new Set();
+   const selected = [];
+@@ -680,7 +680,7 @@ function buildGraphContext(index, graph, rootNode, options) {
+     if (!node) continue;
+     const localId = localSemanticId(node.key, index.repositoryId);
+     selected.push({ node, card: localId ? byId.get(localId) ?? null : null });
+-    if (current.depth >= depth) continue;
++    if (current.depth >= depth || selectedEdges.length >= maxEdges) continue;
+     for (const entry of graphAdjacency.get(current.key) ?? []) {
+       if (selectedEdges.length >= maxEdges) break;
+       if (!seenEdges.has(entry.edge.id)) {
+@@ -730,7 +730,7 @@ function buildLegacyContext(index, rootId, options) {
+   const start = byId.get(rootId);
+   if (!start) throw new Error(`No indexed source card exists for semantic ID ${rootId}.`);
+   const reverse = new Map();
+-  for (const card of index.cards) {
++  for (const card of maxEdges > 0 ? index.cards : []) {
+     for (const relation of card.rel ?? []) {
+       const target = relation.slice(relation.indexOf(">") + 1);
+       const list = reverse.get(target) ?? [];
+@@ -750,7 +750,7 @@ function buildLegacyContext(index, rootId, options) {
+     const card = byId.get(current.id);
+     if (!card) continue;
+     selected.push(card);
+-    if (current.depth >= depth) continue;
++    if (current.depth >= depth || traversedEdges >= maxEdges) continue;
+     for (const relation of card.rel ?? []) {
+       if (traversedEdges >= maxEdges) break;
+       const target = relation.slice(relation.indexOf(">") + 1);

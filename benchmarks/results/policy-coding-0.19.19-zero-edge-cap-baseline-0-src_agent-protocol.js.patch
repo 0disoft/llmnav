@@ -1,0 +1,13 @@
+diff --git a/src/agent-protocol.js b/src/agent-protocol.js
+index 237a6b9..fbbb7d1 100644
+--- a/src/agent-protocol.js
++++ b/src/agent-protocol.js
+@@ -163,7 +163,7 @@ async function handleContext(input, root, options) {
+     ...executionOptions,
+     depth: input.depth ?? SEARCH_LIMITS.depth.default,
+     budget: input.budget ?? SEARCH_LIMITS.budget.default,
+-    maxEdges: input.maxEdges || SEARCH_LIMITS.maxEdges.default,
++    maxEdges: input.maxEdges ?? SEARCH_LIMITS.maxEdges.default,
+   };
+   const data = options.session
+     ? await options.session.context(input.id.trim(), contextOptions)

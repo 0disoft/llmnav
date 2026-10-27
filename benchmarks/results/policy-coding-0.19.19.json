@@ -1,0 +1,1412 @@
+{
+  "artifactPostprocessing": "Repository-relative patch headers normalized after capture; repair hunks and measured counters unchanged.",
+  "complete": true,
+  "conditions": [
+    "baseline",
+    "llmnav"
+  ],
+  "controls": [
+    {
+      "mutant": {
+        "checks": [
+          {
+            "name": "API bounds and Unicode aggregate",
+            "passed": true
+          },
+          {
+            "detail": "Missing expected rejection.",
+            "error": "ERR_ASSERTION",
+            "name": "API rejects nearest invalid budgets",
+            "passed": false
+          },
+          {
+            "name": "default and ranking preserved",
+            "passed": true
+          },
+          {
+            "detail": "Expected values to be strictly equal:\n\n1 !== 256\n",
+            "error": "ERR_ASSERTION",
+            "name": "schema and operation limits",
+            "passed": false
+          },
+          {
+            "detail": "The expression evaluated to a falsy value:\n\n  assert.ok(bytes(JSON.parse(valid.stdout)) <= 256)\n",
+            "error": "ERR_ASSERTION",
+            "name": "CLI forwards and rejects budgets",
+            "passed": false
+          },
+          {
+            "name": "cancellation remains observable",
+            "passed": true
+          }
+        ],
+        "exitCode": 0,
+        "outputHash": "775fd02e06da06f03a786f43cbf1d5e53dd02c7ac3fd73594fae72797df2c836",
+        "passed": false,
+        "timedOut": false
+      },
+      "pristine": {
+        "checks": [
+          {
+            "name": "API bounds and Unicode aggregate",
+            "passed": true
+          },
+          {
+            "name": "API rejects nearest invalid budgets",
+            "passed": true
+          },
+          {
+            "name": "default and ranking preserved",
+            "passed": true
+          },
+          {
+            "name": "schema and operation limits",
+            "passed": true
+          },
+          {
+            "name": "CLI forwards and rejects budgets",
+            "passed": true
+          },
+          {
+            "name": "cancellation remains observable",
+            "passed": true
+          }
+        ],
+        "exitCode": 0,
+        "outputHash": "a99cd26f2aed903fe1afec4083f6bf9fb13e6ecc98173fdf8fddaa82e133941e",
+        "passed": true,
+        "timedOut": false
+      },
+      "task": "source-budget"
+    },
+    {
+      "mutant": {
+        "checks": [
+          {
+            "detail": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n  {\n    budget: 4000,\n    depth: 1,\n    id: 'policy.root',\n    included: [\n      'policy.root',\n+     'policy.incoming',\n+     'policy.outgoing'\n    ],\n+   includedEdges: [\n+     '2096ead4bdc510d53d44398d405ef00cf305ae8c6a74c2557dfbc952d1eea4c4',\n+     '7e9cc2faf0b6a947103441bca70952c286c83651c001bcfb9f4278217eaded17'\n+   ],\n+   maxEdges: 24,\n-   includedEdges: [],\n-   maxEdges: 0,\n    text: 'llmnav-context/1 root=policy.root depth=1\\n' +\n      '@policy.root\\n' +\n      'role Own workUnit policy boundary.\\n' +\n      'rel policy>policy.outgoing\\n' +\n+     'loc src/part0.js:1\\n' +\n+     '\\n' +\n+     '@policy.incoming\\n' +\n+     'role Own workUnit policy boundary.\\n' +\n+     'rel policy>policy.root\\n' +\n+     'loc src/part2.js:1\\n' +\n+     '\\n' +\n+     '@policy.outgoing\\n' +\n+     'role Own workUnit policy boundary.\\n' +\n+     'loc src/part1.js:1\\n' +\n+     '\\n' +\n+     'graph policy-fixture/policy.incoming -[policy confidence=1.00 provenance=source-card]-> policy-fixture/policy.root\\n' +\n+     'graph policy-fixture/policy.root -[policy confidence=1.00 provenance=source-card]-> policy-fixture/policy.outgoing'\n-     'loc src/part0.js:1'\n  }\n",
+            "error": "ERR_ASSERTION",
+            "name": "graph cap 0",
+            "passed": false
+          },
+          {
+            "detail": "Expected values to be strictly deep-equal:\n+ actual - expected\n... Skipped lines\n\n  {\n    budget: 4000,\n    depth: 1,\n    id: 'policy.root',\n    included: [\n      'policy.root',\n      'policy.incoming',\n+     'policy.outgoing'\n    ],\n    includedEdges: [\n      '2096ead4bdc510d53d44398d405ef00cf305ae8c6a74c2557dfbc952d1eea4c4',\n+     '7e9cc2faf0b6a947103441bca70952c286c83651c001bcfb9f4278217eaded17'\n    ],\n+   maxEdges: 24,\n-   maxEdges: 1,\n    text: 'llmnav-context/1 root=policy.root depth=1\\n' +\n      '@policy.root\\n' +\n      'role Own workUnit policy boundary.\\n' +\n      'rel policy>policy.outgoing\\n' +\n      'loc src/part0.js:1\\n' +\n...\n      '\\n' +\n+     '@policy.outgoing\\n' +\n+     'role Own workUnit policy boundary.\\n' +\n+     'loc src/part1.js:1\\n' +\n+     '\\n' +\n+     'graph policy-fixture/policy.incoming -[policy confidence=1.00 provenance=source-card]-> policy-fixture/policy.root\\n' +\n+     'graph policy-fixture/policy.root -[policy confidence=1.00 provenance=source-card]-> policy-fixture/policy.outgoing'\n-     'graph policy-fixture/policy.incoming -[policy confidence=1.00 provenance=source-card]-> policy-fixture/policy.root'\n  }\n",
+            "error": "ERR_ASSERTION",
+            "name": "graph cap 1",
+            "passed": false
+          },
+          {
+            "name": "graph cap 24",
+            "passed": true
+          },
+          {
+            "detail": "Expected \"actual\" to be strictly unequal to: 0",
+            "error": "ERR_ASSERTION",
+            "name": "graph defaults and rejection",
+            "passed": false
+          },
+          {
+            "detail": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n  {\n    budget: 4000,\n    depth: 1,\n    id: 'policy.root',\n    included: [\n      'policy.root',\n+     'policy.outgoing',\n+     'policy.incoming'\n    ],\n    includedEdges: [],\n+   maxEdges: 24,\n-   maxEdges: 0,\n    text: 'llmnav-context/1 root=policy.root depth=1\\n' +\n      '@policy.root\\n' +\n      'role Own workUnit policy boundary.\\n' +\n      'rel policy>policy.outgoing\\n' +\n+     'loc src/part0.js:1\\n' +\n+     '\\n' +\n+     '@policy.outgoing\\n' +\n+     'role Own workUnit policy boundary.\\n' +\n+     'loc src/part1.js:1\\n' +\n+     '\\n' +\n+     '@policy.incoming\\n' +\n+     'role Own workUnit policy boundary.\\n' +\n+     'rel policy>policy.root\\n' +\n+     'loc src/part2.js:1'\n-     'loc src/part0.js:1'\n  }\n",
+            "error": "ERR_ASSERTION",
+            "name": "legacy cap 0",
+            "passed": false
+          },
+          {
+            "detail": "Expected values to be strictly deep-equal:\n+ actual - expected\n... Skipped lines\n\n  {\n    budget: 4000,\n    depth: 1,\n    id: 'policy.root',\n    included: [\n      'policy.root',\n      'policy.outgoing',\n+     'policy.incoming'\n    ],\n    includedEdges: [],\n+   maxEdges: 24,\n-   maxEdges: 1,\n    text: 'llmnav-context/1 root=policy.root depth=1\\n' +\n      '@policy.root\\n' +\n      'role Own workUnit policy boundary.\\n' +\n      'rel policy>policy.outgoing\\n' +\n      'loc src/part0.js:1\\n' +\n...\n      'role Own workUnit policy boundary.\\n' +\n+     'loc src/part1.js:1\\n' +\n+     '\\n' +\n+     '@policy.incoming\\n' +\n+     'role Own workUnit policy boundary.\\n' +\n+     'rel policy>policy.root\\n' +\n+     'loc src/part2.js:1'\n-     'loc src/part1.js:1'\n  }\n",
+            "error": "ERR_ASSERTION",
+            "name": "legacy cap 1",
+            "passed": false
+          },
+          {
+            "name": "legacy cap 24",
+            "passed": true
+          },
+          {
+            "detail": "Expected \"actual\" to be strictly unequal to: 0",
+            "error": "ERR_ASSERTION",
+            "name": "legacy defaults and rejection",
+            "passed": false
+          }
+        ],
+        "exitCode": 0,
+        "outputHash": "09358e9d92ac141cad8e5055c5fcf2cfee00a59fdb18383f356efa15f0ca5804",
+        "passed": false,
+        "timedOut": false
+      },
+      "pristine": {
+        "checks": [
+          {
+            "name": "graph cap 0",
+            "passed": true
+          },
+          {
+            "name": "graph cap 1",
+            "passed": true
+          },
+          {
+            "name": "graph cap 24",
+            "passed": true
+          },
+          {
+            "name": "graph defaults and rejection",
+            "passed": true
+          },
+          {
+            "name": "legacy cap 0",
+            "passed": true
+          },
+          {
+            "name": "legacy cap 1",
+            "passed": true
+          },
+          {
+            "name": "legacy cap 24",
+            "passed": true
+          },
+          {
+            "name": "legacy defaults and rejection",
+            "passed": true
+          }
+        ],
+        "exitCode": 0,
+        "outputHash": "dcf595583e190e7f8fac7028c4b6c092713ce2b324533c7bd4fea8e2ca183874",
+        "passed": true,
+        "timedOut": false
+      },
+      "task": "zero-edge-cap"
+    }
+  ],
+  "engines": {
+    "src/abort.js": "18a3ec2f0725efdadd85763ebea5f71445c7f688f0dfecc7d694e7d9c85c708c",
+    "src/adapters/go-analyzer.go": "90ddbe7bfa1814f3c9f76b837e28c3e212d994bc45619024ce1ba9d7740f2a70",
+    "src/adapters/go.js": "ad5ab413e492e865ef832ec2aefa0a0f705ec9d7e951d82b92aefd213a145fde",
+    "src/adapters/process.js": "d3907ad7bf95588a6bf69d0c74a20788a83a72762c2cb00f516076b94372fe45",
+    "src/adapters/python.js": "ea8c604d050499322ae1104ba03cfe7c11f5c6c2b5ea3f80add1135d098a627e",
+    "src/adapters/rust-syntax.js": "65e8df5ae2966c2f185ccaf195b70c6ceaf1328a4603499f339397a4c6e360f9",
+    "src/adapters/rust-worker.js": "868f4c5a0b6c88f7a5004852126f4f144ffa0084fc192225e6cf2911c7e76429",
+    "src/adapters/rust.js": "19ff229fea1d321d14bf0d377e09d6e0b5f300ae237e7574e0d49eca5efe6759",
+    "src/adapters/typescript-metadata.js": "3e286a6388755dfc449cd05b36fa0e0d0056ec5e727e5f3e72f120d1d6707379",
+    "src/adapters/typescript-worker.js": "76deda4c02148b17eb5e62de1b9a11c20e144acc3c0b3aebd711ba27bac755f9",
+    "src/adapters/typescript.js": "695326d690777ef2f30796c0705f8444c4d5cad43a5234c22f850bd551db7215",
+    "src/agent-protocol.js": "0a486a0d559fc83604bf1dca4e8e184b6a7d03e5e128b03f517263214b40b5ce",
+    "src/agent-tools.js": "73316e4293258e0490a2b5f06578b1ee48f2c59cacbaab115d24b88d7e0a94d1",
+    "src/agents.js": "a18aa849695b84d06f88af6c4bd3f2105dcbccfc32f9254c609612b4397cb9de",
+    "src/analysis-languages.js": "83f58e9d5f560ff6ed7f1a3d5df7d1d1e9251da380e33833153925fb925eb92d",
+    "src/analysis.js": "641137db838637d10fa4c81c097d5976c094eb22e6afc6f2217eb67937977b1d",
+    "src/audit.js": "3cb98421bef868c458e21cdf0a44cc7edb9115f597db5dd3ef0feaed4387022c",
+    "src/boundaries.js": "6a44422eff84c612d54acc480e0c83deb7d05da9cc733abac84476e935f88e75",
+    "src/bounded-selection.js": "6efe1904a158e55c81493e29398a829c65e68abb03dd0faf80d065cf96a13b1e",
+    "src/changes.js": "790719c9493a40085f0ee84a0884b45e28a091454d682fe8b3bed7617addd9eb",
+    "src/cli.js": "fcb7ba60b90d9998c93fdc5d56de5a7694dcddc62d483756229da4be920db19a",
+    "src/code-metadata.js": "552db19e2e8a43b750e29f783719c473734f315dff3541b14d06016fb9e69e9e",
+    "src/concurrency.js": "d5f25877c4d08986a327009b912d53a1238e8ce6ebd8625b9da48929b95fec9b",
+    "src/config.js": "ac742e464a6fb41cd37d6a6a7545a5d251235fee0f3223cf67af12579383bf53",
+    "src/contracts.js": "2d8d0a8cd59947cfd13fb9b6e86e4d650782579b48848a36855fcab9d0298906",
+    "src/declaration.js": "8b39f3e53829096c10f931b2815e67e94c0ac9d1514a93db7328d3222cb866ae",
+    "src/discovery.js": "7095c44d9989adbd13a8f31fb46b6da1479361f7778117b70b7a98be7b568f82",
+    "src/doctor.js": "2fe554a09f5ab2794d871d5b26e66ca6a10e5135ec3ff5581999b6a754dfc62e",
+    "src/editor.js": "91f9402785af1db534722c65c078d5c7f9e0ae0975494e680737cffc4d188ada",
+    "src/errors.js": "7f6446cec1cd1a31615e91760d29727064b3ea185a8a122c31ee79ca914c55da",
+    "src/evaluation.js": "40b2bda5e0de9f21a5f7feba5059a326ed8be2e5303ce0ba7cfd68132501a3b3",
+    "src/evidence-files.js": "f0053b8fb83e3877814f3a320ad1f27f03411b86acc1274786e7e7430cc1ee93",
+    "src/files.js": "4be897432af867cb5859751892a78592425a4c3756354d091bfed9ab8ac9b0b4",
+    "src/formatter.js": "feb10b133d8334fd3955a6e0e4e9c5cd2bb12c8a15320b0aa04063465bdb13fc",
+    "src/generator.js": "4fb916facbcb4fb8aa2669546c1edfdf7e36d15a611dd70a31fdedd4a1fe8701",
+    "src/git-history.js": "d819234b71e6b95b14cb023e0ac32528bf03a8186e06ae1f652fd1558461bb6c",
+    "src/graph-input.js": "6238c4146d0ed862da45538355d30608f34d058a338a42f7b65a43d5895a9cec",
+    "src/graph.js": "19babdefa4bcd47aeff5c138d961318439edb932f50645b4b55381fea8f0a0c6",
+    "src/incremental.js": "408466e80e235814721fcbbda635dfa6b2a6f1b2c026eb28368fe57c152dac9f",
+    "src/index.d.ts": "5b220df8b519c34cd124a599e7720610430fadf2e453f7c3240924d493ee70f3",
+    "src/index.js": "166ae540568f0c7da72ea6c765b46735877af59edbf88fc75a19473e3eeab09a",
+    "src/initializer.js": "06293e9bcc437b4f3b65241dc060bc7e29035d3e8dcfa51b5e728b06b2eeb2a0",
+    "src/inverted-index.js": "feacea4ec739f4ad625444e29cebefa6837a50bfbe2d198adf58ad3c3b327374",
+    "src/mcp-refresh.js": "862fe55c3c8e72934f22730332b91792448298caacce1fd8402cb500eda7b399",
+    "src/mcp.js": "4150ee86f0461faba65128151ae1d42592be3fcefab8bb9eb3d5542174786158",
+    "src/migration.js": "b241fa28810430267b31aa5da3736b2e26a2202ffbe8a8e8dc56cb895e9d4d5a",
+    "src/module-resolution.js": "777d193650c552eb35b67bfe5bc5e8d819d43c14c599e07f06b2cd07255e3157",
+    "src/parser.js": "9c8138f4c3c113e6574f151e8aad5e6784f416e76edadb065f49b4efef88da26",
+    "src/policy.js": "a20e7afe6831e758cbcec7565f4f4175f65c83a83d3593d7097577d63daa4fa6",
+    "src/project.js": "13628d9db1736cf8050d23d756da09cb138b243615c02b5e62c182ca3ae6a83b",
+    "src/prompt-bundle.js": "fbabe73f6815a33d532e602ddd561f2a9335319b462e38ae3f82d9a8d0eae322",
+    "src/read-operation.js": "43cbaf8836ff449f39906eadfaadf73de4f4d95746d33db49bcf243d5e0cafbf",
+    "src/registry.js": "56f1dc8c89617e74abaca4924d28e3fc91ea4c488063adc11cc940519b4a497b",
+    "src/runtime.js": "ed651d9904596127119a3d875729b60df919a12e63ea39212adbf00f9a7c0852",
+    "src/sarif.js": "f2c22db65779ea006da20ec42dd8d05209e27df92a6715797d005e248af59ef1",
+    "src/search-shards.js": "f18798df830a6c51604b2d437148f449231449aea18f25b1bdad4f0bcbb1c071",
+    "src/search.js": "a2d61a80cd3af1221602a29a256c67e3c55a0a1c7a61af63aca931758808df05",
+    "src/spec.d.ts": "cbfd1da0060e1d0153b6df8c20f70c9c8842c60252ab2313a70b275b9ed9e256",
+    "src/spec.js": "1906c69a0c422baede62a4964fb01b21a33ac40b4f284facc4ba11227599e911",
+    "src/tokenizer.js": "0c6b16cd13369e1efc38b067d594d89025d78451a3b03c35bfec7a089b20583b",
+    "src/transaction.js": "cc525bb13ab78bc4a34224bf3c7d3aa41944c6f69c64c8532839ae2c5617cd9a",
+    "src/util.js": "72b545cb2d15d7369752754b1bee66f797d3a9cf0c3a19d462c8893e1d6c678f",
+    "src/validator.js": "69ef80c850145fccca22aa58d429a105f913abd08774d912c01f6c4073cedb7e",
+    "src/verification.js": "69cdf6c15f32fcd300249ecdecac1c5e5e6abfadf8112615a19c22cb53e2fecc"
+  },
+  "environment": {
+    "codex": "codex-cli 0.164.0-alpha.11.1",
+    "node": "v24.18.0",
+    "platform": "win32"
+  },
+  "harnessHashes": {
+    "model-coding.js": "a45a204257e2016b5ef0be1838d97eec78f7e709a53188555ece3b4307548555",
+    "policy-cases.js": "ed26e9b74439377b415cde5ac8f918cfb483b12bdaf52b233cc9eb762b599b8d",
+    "policy-coding.js": "ff75367265669df7f924d4bdc7af461f3bc7047a1e6dd54e6d0b2e3ac223311c",
+    "policy-oracle.js": "df38e76ce39c1100c12a6812f680d4b782005c242dc8f28c476caa22b28b0843"
+  },
+  "kind": "multi-file-policy-coding",
+  "limitations": [
+    "Two author-curated multi-file regressions in LLMNav's own annotated production code, not discovered incidents, blind holdouts or cross-project evidence.",
+    "Task difficulty, repeated-task familiarity and uncontrolled provider caching limit causal attribution; byte counts are not token counts.",
+    "Existing annotation/index construction and maintenance costs, monetary cost and resolved provider model are unmeasured."
+  ],
+  "measuredAt": "2026-10-27T17:02:52.371Z",
+  "methodology": {
+    "annotationCostMeasured": false,
+    "cacheControlled": false,
+    "concurrency": 1,
+    "existingCards": true,
+    "grading": "separate production-only copy; fixed hidden boundary checks",
+    "isolation": "workspace-write and prompt-enforced path/tool restrictions; not adversarial isolation",
+    "order": "alternate conditions by task and repetition",
+    "timeoutMs": 240000
+  },
+  "model": {
+    "reasoningEffort": "high",
+    "requested": "gpt-6.1-sol",
+    "resolvedProviderModel": null
+  },
+  "originalsUnchanged": true,
+  "preflight": {
+    "elapsedMs": 19123.607300000003,
+    "exitCode": 0,
+    "llmnavPassed": true,
+    "serenaPassed": null,
+    "timedOut": false,
+    "trace": {
+      "completed": true,
+      "errors": 0,
+      "itemTypes": {
+        "agent_message": 2,
+        "command_execution": 1,
+        "mcp_tool_call": 1
+      },
+      "tools": [
+        {
+          "commandHash": null,
+          "discovery": {
+            "candidates": 1,
+            "excerpts": 1,
+            "parsed": true,
+            "sourceBytes": 47,
+            "truncatedExcerpts": 0
+          },
+          "errorCategory": null,
+          "exitCode": null,
+          "responseBytes": 688,
+          "semanticCliMentioned": false,
+          "server": "eval_nav",
+          "status": "completed",
+          "tool": "llmnav_discover",
+          "toolError": false,
+          "type": "mcp_tool_call"
+        },
+        {
+          "commandHash": "46ec08a79214d85447bddef894cb09fce6cbe2847eb0c3cfa0dd87429f85d86a",
+          "discovery": null,
+          "errorCategory": null,
+          "exitCode": 0,
+          "responseBytes": 0,
+          "semanticCliMentioned": false,
+          "server": null,
+          "status": "completed",
+          "tool": null,
+          "toolError": false,
+          "type": "command_execution"
+        }
+      ],
+      "uncachedInputTokens": 18460,
+      "usage": {
+        "cache_write_input_tokens": 0,
+        "cached_input_tokens": 66816,
+        "input_tokens": 85276,
+        "output_tokens": 232,
+        "reasoning_output_tokens": 0
+      }
+    },
+    "writePassed": true
+  },
+  "repetitions": 1,
+  "rows": [
+    {
+      "acceptance": {
+        "checks": [
+          {
+            "name": "API bounds and Unicode aggregate",
+            "passed": true
+          },
+          {
+            "name": "API rejects nearest invalid budgets",
+            "passed": true
+          },
+          {
+            "name": "default and ranking preserved",
+            "passed": true
+          },
+          {
+            "name": "schema and operation limits",
+            "passed": true
+          },
+          {
+            "name": "CLI forwards and rejects budgets",
+            "passed": true
+          },
+          {
+            "name": "cancellation remains observable",
+            "passed": true
+          }
+        ],
+        "exitCode": 0,
+        "outputHash": "a99cd26f2aed903fe1afec4083f6bf9fb13e6ecc98173fdf8fddaa82e133941e",
+        "passed": true,
+        "timedOut": false
+      },
+      "changedFiles": [
+        "src/agent-tools.js",
+        "src/cli.js",
+        "src/discovery.js"
+      ],
+      "condition": "baseline",
+      "conditionAdhered": true,
+      "elapsedMs": 69462.9961,
+      "exitCode": 0,
+      "language": "javascript",
+      "navigationUsed": false,
+      "patches": [
+        {
+          "artifact": "policy-coding-0.19.19-source-budget-baseline-0-src_agent-tools.js.patch",
+          "file": "src/agent-tools.js",
+          "hash": "1e814d5dc4bdaf5fb6dce548eedcd89b96917a5ea4e67c155c0f2709c2599474"
+        },
+        {
+          "artifact": "policy-coding-0.19.19-source-budget-baseline-0-src_cli.js.patch",
+          "file": "src/cli.js",
+          "hash": "fb4a7e1b1630192a53a4b7ed42b8df4ca73ec96d2d21391477fc1c5b500f13f3"
+        },
+        {
+          "artifact": "policy-coding-0.19.19-source-budget-baseline-0-src_discovery.js.patch",
+          "file": "src/discovery.js",
+          "hash": "865c54e0cd8c827e38600b419b60cec5d8396bd61d9f401266ea7c4979bce4b5"
+        }
+      ],
+      "repetition": 0,
+      "scopePassed": true,
+      "stderrHash": "e2d619605f60a69c4c9ec679886b7bc7df2d2a7d6b8ace2c8c197460031cadb3",
+      "success": true,
+      "task": "source-budget",
+      "timedOut": false,
+      "trace": {
+        "commandMetadata": [
+          {
+            "category": "search",
+            "commandHash": "467a70d36e80f9d22e8b3721fde77dc6dd7d6ffe1c0f5cc30c1b164c78f0470e",
+            "referencedFiles": []
+          },
+          {
+            "category": "search",
+            "commandHash": "ad87c2a0edc0d84997787a34b53dbcad99e3fca990aba3b01611be49bb52e0a2",
+            "referencedFiles": []
+          },
+          {
+            "category": "read",
+            "commandHash": "33ea94ea28afc3dc2a9ceac01cc545f70661045c5ac791ccbc6e9d6a8d04872f",
+            "referencedFiles": [
+              "src/agent-protocol.js",
+              "src/agent-tools.js",
+              "src/discovery.js"
+            ]
+          },
+          {
+            "category": "search",
+            "commandHash": "228f7f43321c53d28d17f91efbc197b2cb4d30a05e3fd58fca159ab545e76c0f",
+            "referencedFiles": [
+              "src/cli.js"
+            ]
+          },
+          {
+            "category": "search",
+            "commandHash": "923a36a5d99c682f2f959936f0302f3d80ebc42475d8e9f509fa0537e767cefa",
+            "referencedFiles": [
+              "src/cli.js",
+              "src/util.js"
+            ]
+          },
+          {
+            "category": "search",
+            "commandHash": "1cc1e2e1b61fce00806175e94f1a662067d8670ef7d914ba7ffd5428104bb4a2",
+            "referencedFiles": [
+              "src/agent-protocol.js",
+              "src/cli.js",
+              "src/index.js",
+              "src/mcp.js"
+            ]
+          },
+          {
+            "category": "read",
+            "commandHash": "6280fdf91a7112085bc83369fdd7281befcd7b64f46a22825e45cf555e214f89",
+            "referencedFiles": [
+              "src/cli.js",
+              "src/mcp.js",
+              "src/util.js"
+            ]
+          }
+        ],
+        "completed": true,
+        "errors": 0,
+        "itemTypes": {
+          "agent_message": 3,
+          "command_execution": 7,
+          "file_change": 1
+        },
+        "tools": [
+          {
+            "commandHash": "467a70d36e80f9d22e8b3721fde77dc6dd7d6ffe1c0f5cc30c1b164c78f0470e",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 350,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "ad87c2a0edc0d84997787a34b53dbcad99e3fca990aba3b01611be49bb52e0a2",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 10964,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "33ea94ea28afc3dc2a9ceac01cc545f70661045c5ac791ccbc6e9d6a8d04872f",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 20529,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "228f7f43321c53d28d17f91efbc197b2cb4d30a05e3fd58fca159ab545e76c0f",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 1,
+            "responseBytes": 10214,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "failed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "923a36a5d99c682f2f959936f0302f3d80ebc42475d8e9f509fa0537e767cefa",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 3225,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "1cc1e2e1b61fce00806175e94f1a662067d8670ef7d914ba7ffd5428104bb4a2",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 1,
+            "responseBytes": 13854,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "failed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "6280fdf91a7112085bc83369fdd7281befcd7b64f46a22825e45cf555e214f89",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 4222,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": null,
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 4,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "file_change"
+          }
+        ],
+        "uncachedInputTokens": 28938,
+        "usage": {
+          "cache_write_input_tokens": 0,
+          "cached_input_tokens": 197504,
+          "input_tokens": 226442,
+          "output_tokens": 1879,
+          "reasoning_output_tokens": 459
+        }
+      }
+    },
+    {
+      "acceptance": {
+        "checks": [
+          {
+            "name": "API bounds and Unicode aggregate",
+            "passed": true
+          },
+          {
+            "name": "API rejects nearest invalid budgets",
+            "passed": true
+          },
+          {
+            "name": "default and ranking preserved",
+            "passed": true
+          },
+          {
+            "name": "schema and operation limits",
+            "passed": true
+          },
+          {
+            "name": "CLI forwards and rejects budgets",
+            "passed": true
+          },
+          {
+            "name": "cancellation remains observable",
+            "passed": true
+          }
+        ],
+        "exitCode": 0,
+        "outputHash": "a99cd26f2aed903fe1afec4083f6bf9fb13e6ecc98173fdf8fddaa82e133941e",
+        "passed": true,
+        "timedOut": false
+      },
+      "changedFiles": [
+        "src/agent-tools.js",
+        "src/cli.js",
+        "src/discovery.js"
+      ],
+      "condition": "llmnav",
+      "conditionAdhered": true,
+      "elapsedMs": 86303.05719999998,
+      "exitCode": 0,
+      "language": "javascript",
+      "navigationUsed": false,
+      "patches": [
+        {
+          "artifact": "policy-coding-0.19.19-source-budget-llmnav-0-src_agent-tools.js.patch",
+          "file": "src/agent-tools.js",
+          "hash": "1e814d5dc4bdaf5fb6dce548eedcd89b96917a5ea4e67c155c0f2709c2599474"
+        },
+        {
+          "artifact": "policy-coding-0.19.19-source-budget-llmnav-0-src_cli.js.patch",
+          "file": "src/cli.js",
+          "hash": "fb4a7e1b1630192a53a4b7ed42b8df4ca73ec96d2d21391477fc1c5b500f13f3"
+        },
+        {
+          "artifact": "policy-coding-0.19.19-source-budget-llmnav-0-src_discovery.js.patch",
+          "file": "src/discovery.js",
+          "hash": "865c54e0cd8c827e38600b419b60cec5d8396bd61d9f401266ea7c4979bce4b5"
+        }
+      ],
+      "repetition": 0,
+      "scopePassed": true,
+      "stderrHash": "e242f2a825677b8e8c5cb2f8403cb704e69272df8569a106e39fe13015487d2c",
+      "success": true,
+      "task": "source-budget",
+      "timedOut": false,
+      "trace": {
+        "commandMetadata": [
+          {
+            "category": "search",
+            "commandHash": "eb1ba97e7c8d3692b71fc7812b0b202b3da2958583c2886abaf8d3108eb024a3",
+            "referencedFiles": []
+          },
+          {
+            "category": "other",
+            "commandHash": "a2f3eeacef3221f2cc349912d5983da529f1c851165e23138d48f51330290748",
+            "referencedFiles": []
+          },
+          {
+            "category": "read",
+            "commandHash": "c9e43655fcb3dea871a7b7dd7e96a2145e705e89d51f2a5afadad1b9efeb9197",
+            "referencedFiles": [
+              "src/discovery.js"
+            ]
+          },
+          {
+            "category": "read",
+            "commandHash": "8240e7c6b9858c07495d8db853a745d820d298ad805511c5ae77a4903ecec57a",
+            "referencedFiles": [
+              "src/agent-protocol.js",
+              "src/agent-tools.js"
+            ]
+          },
+          {
+            "category": "search",
+            "commandHash": "4ef7e919a94b845869c632778a47b04a2004857b8f208be06302a1b13c27df2c",
+            "referencedFiles": [
+              "src/cli.js",
+              "src/policy.js"
+            ]
+          },
+          {
+            "category": "search",
+            "commandHash": "d0f217a0a1b1c3e412f091ad1ca39ed19fa955e522f6dd8bc409e82c357bc9f6",
+            "referencedFiles": [
+              "src/index.d.ts",
+              "src/index.js",
+              "src/mcp.js"
+            ]
+          },
+          {
+            "category": "search",
+            "commandHash": "c7af8b8f3714f04348d493c7dba6b181e5a5b06b837bc437b7fce3c436599089",
+            "referencedFiles": [
+              "src/agent-protocol.js",
+              "src/cli.js",
+              "src/util.js"
+            ]
+          },
+          {
+            "category": "search",
+            "commandHash": "95f54dfa6a8e274d264ab7fb76c6776f94ac2bbe14633d7a537d9b5bcf00f54e",
+            "referencedFiles": [
+              "src/cli.js"
+            ]
+          }
+        ],
+        "completed": true,
+        "errors": 0,
+        "itemTypes": {
+          "agent_message": 3,
+          "command_execution": 8,
+          "file_change": 1
+        },
+        "tools": [
+          {
+            "commandHash": "eb1ba97e7c8d3692b71fc7812b0b202b3da2958583c2886abaf8d3108eb024a3",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 1,
+            "responseBytes": 3352,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "failed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "a2f3eeacef3221f2cc349912d5983da529f1c851165e23138d48f51330290748",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 936,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "c9e43655fcb3dea871a7b7dd7e96a2145e705e89d51f2a5afadad1b9efeb9197",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 8004,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "8240e7c6b9858c07495d8db853a745d820d298ad805511c5ae77a4903ecec57a",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 12452,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "4ef7e919a94b845869c632778a47b04a2004857b8f208be06302a1b13c27df2c",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 1,
+            "responseBytes": 12821,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "failed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "d0f217a0a1b1c3e412f091ad1ca39ed19fa955e522f6dd8bc409e82c357bc9f6",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 1,
+            "responseBytes": 10256,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "failed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "c7af8b8f3714f04348d493c7dba6b181e5a5b06b837bc437b7fce3c436599089",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 6181,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "95f54dfa6a8e274d264ab7fb76c6776f94ac2bbe14633d7a537d9b5bcf00f54e",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 3529,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": null,
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 4,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "file_change"
+          }
+        ],
+        "uncachedInputTokens": 27367,
+        "usage": {
+          "cache_write_input_tokens": 0,
+          "cached_input_tokens": 171392,
+          "input_tokens": 198759,
+          "output_tokens": 2473,
+          "reasoning_output_tokens": 1053
+        }
+      }
+    },
+    {
+      "acceptance": {
+        "checks": [
+          {
+            "name": "graph cap 0",
+            "passed": true
+          },
+          {
+            "name": "graph cap 1",
+            "passed": true
+          },
+          {
+            "name": "graph cap 24",
+            "passed": true
+          },
+          {
+            "name": "graph defaults and rejection",
+            "passed": true
+          },
+          {
+            "name": "legacy cap 0",
+            "passed": true
+          },
+          {
+            "name": "legacy cap 1",
+            "passed": true
+          },
+          {
+            "name": "legacy cap 24",
+            "passed": true
+          },
+          {
+            "name": "legacy defaults and rejection",
+            "passed": true
+          }
+        ],
+        "exitCode": 0,
+        "outputHash": "dcf595583e190e7f8fac7028c4b6c092713ce2b324533c7bd4fea8e2ca183874",
+        "passed": true,
+        "timedOut": false
+      },
+      "changedFiles": [
+        "src/agent-protocol.js",
+        "src/cli.js",
+        "src/search.js"
+      ],
+      "condition": "llmnav",
+      "conditionAdhered": true,
+      "elapsedMs": 70738.9296,
+      "exitCode": 0,
+      "language": "javascript",
+      "navigationUsed": false,
+      "patches": [
+        {
+          "artifact": "policy-coding-0.19.19-zero-edge-cap-llmnav-0-src_agent-protocol.js.patch",
+          "file": "src/agent-protocol.js",
+          "hash": "cb542e95698b0345ab580d3835de1c9cc40cbebf6e50fe125d577bd1f46283c2"
+        },
+        {
+          "artifact": "policy-coding-0.19.19-zero-edge-cap-llmnav-0-src_cli.js.patch",
+          "file": "src/cli.js",
+          "hash": "e6d1fcc545f0fe6fee1613697cfd64982ab31663aa0374c873e50e2021d82089"
+        },
+        {
+          "artifact": "policy-coding-0.19.19-zero-edge-cap-llmnav-0-src_search.js.patch",
+          "file": "src/search.js",
+          "hash": "17fe351e49e8742e709e20e11200b9ed5151dd289ce9e714790391088e674f49"
+        }
+      ],
+      "repetition": 0,
+      "scopePassed": true,
+      "stderrHash": "1c75f58c284eb1763c60a5de6ac43020ff152bec1a8bb9dca489a3945aa1ff3d",
+      "success": true,
+      "task": "zero-edge-cap",
+      "timedOut": false,
+      "trace": {
+        "commandMetadata": [
+          {
+            "category": "search",
+            "commandHash": "3c08e6e0f38a6f75ea77219f776a98e66b58d12802e0a895ad6fa6144fcd9722",
+            "referencedFiles": []
+          },
+          {
+            "category": "read",
+            "commandHash": "e75895e53a23d28fc09ca6feda2054a758b9babc42199b79508be2eec99b5f96",
+            "referencedFiles": [
+              "src/agent-protocol.js",
+              "src/cli.js"
+            ]
+          },
+          {
+            "category": "search",
+            "commandHash": "47959d7564a2cdd041621355f1c5959473492e704db6d67a6810661176315167",
+            "referencedFiles": [
+              "src/agent-protocol.js",
+              "src/cli.js",
+              "src/policy.js",
+              "src/project.js",
+              "src/search.js"
+            ]
+          },
+          {
+            "category": "search",
+            "commandHash": "22f5064df89381131d0938aef9749167060e5696de44e5eb57e7671a50110dc3",
+            "referencedFiles": [
+              "src/agent-protocol.js",
+              "src/policy.js"
+            ]
+          },
+          {
+            "category": "search",
+            "commandHash": "449ae2fcdce304b0bb72327c688b7c817afb31e39d638922f8ed5af4e9d7712e",
+            "referencedFiles": [
+              "src/agent-tools.js",
+              "src/cli.js",
+              "src/mcp.js",
+              "src/search.js"
+            ]
+          },
+          {
+            "category": "read",
+            "commandHash": "a8ed8e496a8bbedcfaf0015088d6a1fcbe29028c3085b553364f31511e9157d1",
+            "referencedFiles": [
+              "src/agent-protocol.js",
+              "src/mcp.js"
+            ]
+          },
+          {
+            "category": "search",
+            "commandHash": "c321e4060518fbf667f0fd184a9490443a944a821a4013bd6289197355b1ada0",
+            "referencedFiles": [
+              "src/cli.js",
+              "src/mcp.js",
+              "src/search.js"
+            ]
+          },
+          {
+            "category": "search",
+            "commandHash": "f337ee91dea973e0e5fea3ce231dc8ab9f8e2f0231b468305893a73252fddb72",
+            "referencedFiles": [
+              "src/cli.js",
+              "src/mcp.js",
+              "src/search.js"
+            ]
+          },
+          {
+            "category": "search",
+            "commandHash": "9a3cab7430074afd533f7e70dcd29e119182b10d64af0371a81533c1d55db337",
+            "referencedFiles": [
+              "src/cli.js",
+              "src/util.js"
+            ]
+          }
+        ],
+        "completed": true,
+        "errors": 0,
+        "itemTypes": {
+          "agent_message": 3,
+          "command_execution": 9,
+          "file_change": 1
+        },
+        "tools": [
+          {
+            "commandHash": "3c08e6e0f38a6f75ea77219f776a98e66b58d12802e0a895ad6fa6144fcd9722",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 5590,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "e75895e53a23d28fc09ca6feda2054a758b9babc42199b79508be2eec99b5f96",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 7745,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "47959d7564a2cdd041621355f1c5959473492e704db6d67a6810661176315167",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 11129,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "22f5064df89381131d0938aef9749167060e5696de44e5eb57e7671a50110dc3",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 10305,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "449ae2fcdce304b0bb72327c688b7c817afb31e39d638922f8ed5af4e9d7712e",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 14465,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "a8ed8e496a8bbedcfaf0015088d6a1fcbe29028c3085b553364f31511e9157d1",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 4528,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "c321e4060518fbf667f0fd184a9490443a944a821a4013bd6289197355b1ada0",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 6345,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "f337ee91dea973e0e5fea3ce231dc8ab9f8e2f0231b468305893a73252fddb72",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 1566,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "9a3cab7430074afd533f7e70dcd29e119182b10d64af0371a81533c1d55db337",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 1,
+            "responseBytes": 305,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "failed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": null,
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 4,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "file_change"
+          }
+        ],
+        "uncachedInputTokens": 28908,
+        "usage": {
+          "cache_write_input_tokens": 0,
+          "cached_input_tokens": 247424,
+          "input_tokens": 276332,
+          "output_tokens": 1910,
+          "reasoning_output_tokens": 392
+        }
+      }
+    },
+    {
+      "acceptance": {
+        "checks": [
+          {
+            "name": "graph cap 0",
+            "passed": true
+          },
+          {
+            "name": "graph cap 1",
+            "passed": true
+          },
+          {
+            "name": "graph cap 24",
+            "passed": true
+          },
+          {
+            "name": "graph defaults and rejection",
+            "passed": true
+          },
+          {
+            "name": "legacy cap 0",
+            "passed": true
+          },
+          {
+            "name": "legacy cap 1",
+            "passed": true
+          },
+          {
+            "name": "legacy cap 24",
+            "passed": true
+          },
+          {
+            "name": "legacy defaults and rejection",
+            "passed": true
+          }
+        ],
+        "exitCode": 0,
+        "outputHash": "dcf595583e190e7f8fac7028c4b6c092713ce2b324533c7bd4fea8e2ca183874",
+        "passed": true,
+        "timedOut": false
+      },
+      "changedFiles": [
+        "src/agent-protocol.js",
+        "src/cli.js",
+        "src/search.js"
+      ],
+      "condition": "baseline",
+      "conditionAdhered": true,
+      "elapsedMs": 72990.04909999995,
+      "exitCode": 0,
+      "language": "javascript",
+      "navigationUsed": false,
+      "patches": [
+        {
+          "artifact": "policy-coding-0.19.19-zero-edge-cap-baseline-0-src_agent-protocol.js.patch",
+          "file": "src/agent-protocol.js",
+          "hash": "cb542e95698b0345ab580d3835de1c9cc40cbebf6e50fe125d577bd1f46283c2"
+        },
+        {
+          "artifact": "policy-coding-0.19.19-zero-edge-cap-baseline-0-src_cli.js.patch",
+          "file": "src/cli.js",
+          "hash": "e6d1fcc545f0fe6fee1613697cfd64982ab31663aa0374c873e50e2021d82089"
+        },
+        {
+          "artifact": "policy-coding-0.19.19-zero-edge-cap-baseline-0-src_search.js.patch",
+          "file": "src/search.js",
+          "hash": "d92316aa7f50ca411bbdd858191ca65fdcfa12dd813319e851733c3697c9ec13"
+        }
+      ],
+      "repetition": 0,
+      "scopePassed": true,
+      "stderrHash": "0c14e1b36b560709b754d236b01bbeb1eac5aa0f9eefc40b26ef9a82f3bb4766",
+      "success": true,
+      "task": "zero-edge-cap",
+      "timedOut": false,
+      "trace": {
+        "commandMetadata": [
+          {
+            "category": "search",
+            "commandHash": "5f51c227774e0db6e12785ea30d47699de09b15bce7b3ce8e735c8af86e86058",
+            "referencedFiles": []
+          },
+          {
+            "category": "search",
+            "commandHash": "b5eb07c274ed350093875ca0886be54974ac7403aea6dbdff8af7b6148068628",
+            "referencedFiles": [
+              "src/agent-protocol.js",
+              "src/cli.js",
+              "src/search.js"
+            ]
+          },
+          {
+            "category": "search",
+            "commandHash": "a12b4eea9cfac1ad62368095d9198dc22af1dd8102193079a1c295d68bb864c1",
+            "referencedFiles": [
+              "src/agent-protocol.js",
+              "src/agent-tools.js",
+              "src/cli.js",
+              "src/policy.js",
+              "src/search.js"
+            ]
+          },
+          {
+            "category": "search",
+            "commandHash": "8b830b3c9e0860b3806ca9807d1b98c76560ba59bc8a322daaaa577ed0ba09ba",
+            "referencedFiles": [
+              "src/agent-protocol.js",
+              "src/cli.js",
+              "src/search.js",
+              "src/util.js"
+            ]
+          },
+          {
+            "category": "search",
+            "commandHash": "9cd09f44c6d14f33fa6db87be4bd5ac9fcf651cb2ad1ccaf38cfc11ab6f11163",
+            "referencedFiles": []
+          }
+        ],
+        "completed": true,
+        "errors": 0,
+        "itemTypes": {
+          "agent_message": 3,
+          "command_execution": 5,
+          "file_change": 1
+        },
+        "tools": [
+          {
+            "commandHash": "5f51c227774e0db6e12785ea30d47699de09b15bce7b3ce8e735c8af86e86058",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 5590,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "b5eb07c274ed350093875ca0886be54974ac7403aea6dbdff8af7b6148068628",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 15576,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "a12b4eea9cfac1ad62368095d9198dc22af1dd8102193079a1c295d68bb864c1",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 19527,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "8b830b3c9e0860b3806ca9807d1b98c76560ba59bc8a322daaaa577ed0ba09ba",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 4878,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": "9cd09f44c6d14f33fa6db87be4bd5ac9fcf651cb2ad1ccaf38cfc11ab6f11163",
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": 0,
+            "responseBytes": 8731,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "command_execution"
+          },
+          {
+            "commandHash": null,
+            "discovery": null,
+            "errorCategory": null,
+            "exitCode": null,
+            "responseBytes": 4,
+            "semanticCliMentioned": false,
+            "server": null,
+            "status": "completed",
+            "tool": null,
+            "toolError": false,
+            "type": "file_change"
+          }
+        ],
+        "uncachedInputTokens": 42065,
+        "usage": {
+          "cache_write_input_tokens": 0,
+          "cached_input_tokens": 179968,
+          "input_tokens": 222033,
+          "output_tokens": 2014,
+          "reasoning_output_tokens": 643
+        }
+      }
+    }
+  ],
+  "schemaVersion": 1,
+  "sourceCommit": "8ede9eeee1c451850f6beb912cb7d311bbd9a4e1",
+  "sourceFiles": 250,
+  "sourceHash": "e3177390aaafd11f2da50454c5133653da9c8d9dbf255510a07d08151301f6de",
+  "summary": [
+    {
+      "acceptancePasses": 2,
+      "attempts": 2,
+      "cacheShare": 0.8416790233569318,
+      "cachedInputTokens": 377472,
+      "condition": "baseline",
+      "conditionViolations": 0,
+      "inputTokens": 448475,
+      "mcpFailures": 0,
+      "navigationAttempts": 0,
+      "outputTokens": 3893,
+      "responseBytes": 117668,
+      "scopeFailures": 0,
+      "successes": 2,
+      "timeouts": 0,
+      "toolEvents": 14,
+      "totalElapsedMs": 142453.04519999993,
+      "uncachedInputTokens": 71003
+    },
+    {
+      "acceptancePasses": 2,
+      "attempts": 2,
+      "cacheShare": 0.8815490085057389,
+      "cachedInputTokens": 418816,
+      "condition": "llmnav",
+      "conditionViolations": 0,
+      "inputTokens": 475091,
+      "mcpFailures": 0,
+      "navigationAttempts": 0,
+      "outputTokens": 4383,
+      "responseBytes": 119517,
+      "scopeFailures": 0,
+      "successes": 2,
+      "timeouts": 0,
+      "toolEvents": 19,
+      "totalElapsedMs": 157041.98679999998,
+      "uncachedInputTokens": 56275
+    }
+  ]
+}

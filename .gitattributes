@@ -1,5 +1,8 @@
 * text=auto eol=lf
 
+# Unified patches retain a space prefix on empty context lines.
+benchmarks/results/*.patch whitespace=-blank-at-eol
+
 *.png binary
 *.jpg binary
 *.jpeg binary

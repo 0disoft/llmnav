@@ -61,7 +61,7 @@ function discoveryMetrics(item) {
     truncatedExcerpts: excerpts.filter(excerpt => excerpt.truncated).length };
 }
 
-async function execute(command, args, { cwd, timeoutMs = 90000, env = process.env } = {}) {
+export async function execute(command, args, { cwd, timeoutMs = 90000, env = process.env } = {}) {
   const started = performance.now();
   const child = spawn(command, args, { cwd, env, shell: false, windowsHide: true, detached: process.platform !== "win32", stdio: ["ignore", "pipe", "pipe"] });
   let stdout = "", stderr = "", timedOut = false;
@@ -96,7 +96,7 @@ async function grade(root, entry, task) {
   } finally { await rm(grader, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 }); }
 }
 
-async function sourceSnapshot(root) {
+export async function sourceSnapshot(root) {
   const output = [];
   async function visit(relative) {
     const files = await readdir(path.join(root, relative), { withFileTypes: true });
@@ -111,7 +111,7 @@ async function sourceSnapshot(root) {
   return output;
 }
 
-async function preflightModel(options, workspaceParent) {
+export async function preflightModel(options, workspaceParent) {
   const root = await mkdtemp(path.join(workspaceParent, "llmnav-model-preflight-"));
   try {
     await mkdir(path.join(root, "src"));
