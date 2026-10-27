@@ -1,5 +1,7 @@
 # Navigation token cost review
 
+The newer [0.20.0 multi-file source-query evaluation](multi-file-policy-evaluation.md#source-query-follow-up-0200) retains an unfavorable twelve-trial cohort, then a selection repair and four follow-up trials. One condition-adhering repair pair observed 8.7% less total input and 14.3% less time than ordinary navigation. The other pair has a flagged baseline; cache state and repeated-task familiarity are uncontrolled. Broader token savings remain unproven.
+
 The confirmed waste was an extra locate step that often replaced neither a source read nor an agent round trip. The installed instructions also required a query before broad search and a subsequent `show`, even for simple tasks where ordinary search was sufficient. Version 0.16.0 adds bounded source excerpts and makes those navigation steps conditional.
 
 ## Evidence and attribution

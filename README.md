@@ -66,6 +66,8 @@ Already know the file and identifier? A direct read or exact text search is usua
 
 Semantic queries use generated cards and indexes. Compiler metadata requires the [analysis setup](docs/precise-analysis.md); file history requires Git.
 
+For a repair spanning several files, MCP/provider-neutral `llmnav_query` can return compact cards and live source windows together with `includeSource:true` and specific `sourceTerms`, such as `["maxEdges", "--max-edges"]`. Reuse sufficient windows before another read; [source budgets and omissions](docs/api.md#agent-operation-protocol) remain explicit.
+
 ## Add meaning where it matters
 
 Use cards for architectural modules, public entry points, authentication, payments, privacy, and code with non-obvious invariants. Start with one useful boundary.
@@ -168,6 +170,8 @@ The [controlled coding pilot](docs/model-coding-evaluation.md) tested eight smal
 These are historical observations from one pilot completed on **2026-10-25**, not a benchmark of the current release. They support successful task completion in that fixture, while LLMNav used more uncached input than ordinary navigation.
 
 The subsequent [token cost review](docs/token-cost-review.md) documents source excerpts and conditional routing, including cohorts that still showed higher token use. Use LLMNav when it helps locate an unclear responsibility or recover needed context, and measure its cost on your own tasks.
+
+The [0.20.0 source-query follow-up](docs/multi-file-policy-evaluation.md#source-query-follow-up-0200) observed 8.7% less total input and 14.3% less time in one condition-adhering policy-repair pair. It also preserves a twelve-trial cohort that regressed against ordinary navigation and a flagged comparison pair. Broader savings remain unproven.
 
 | Explore the evidence | Report |
 | --- | --- |
