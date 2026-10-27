@@ -1909,7 +1909,7 @@
         "source parsing"
       ],
       "hashes": {
-        "body": "196ea82949a9cc2413e56bb62ccdc357c85bbfc24972653d127f6323a2677c7c",
+        "body": "b4a32553e6976c5d9dee2ae2fa0740e050aeabc393ed19b05e7e7a2be09609c2",
         "semantic": "59aa3e9e793d505ecdf110fec023c201aaee0154d2f6c9cf71afe1bbf71a7be5",
         "structure": "e213e073414c75bc75df1c8669a7045096142b6c0845694191893d90bf23e3c2"
       },
@@ -2959,14 +2959,15 @@
         "runtime dispatch inference"
       ],
       "hashes": {
-        "body": "c22d557d3269f75e4c245150df7a4ee40a081cc8c8e628f064a3a595f9d76cb8",
-        "semantic": "1bed39c7d3bed339ae9121089e95da93c07c9765380ea788b6607b591066cdaa",
-        "structure": "b7283ff0fa01e26793e8d818283e4d04763fd0bdd2669de075991f12921887f2"
+        "body": "90ddbe7bfa1814f3c9f76b837e28c3e212d994bc45619024ce1ba9d7740f2a70",
+        "semantic": "6df80ea356697c6675caa19636aa4ab5b0ccddba9446365445abba2e5593b3e7",
+        "structure": "7e4880964a545a45b989dfa9fddaf3f6d2776da7d87ea1e09b92fdf8f10cc4f2"
       },
       "id": "llmnav.structure.go-worker",
       "imports": [
         "binding",
         "constant",
+        "crypto/sha256",
         "encoding/json",
         "fmt",
         "function",
@@ -3006,7 +3007,8 @@
         "cross-package reference resolution",
         "receiver identity",
         "physical source positions",
-        "Go UTF16 offsets"
+        "Go UTF16 offsets",
+        "Go source consumption hashes"
       ],
       "rel": [
         "workflow>llmnav.structure.analyze"
@@ -3791,9 +3793,9 @@
     },
     "schemaVersion": 1
   },
-  "generatedBy": "llmnav@0.19.4",
+  "generatedBy": "llmnav@0.19.5",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "58e8344f9b0fb9706c81d840283952b87c00194a959d080be4f20d3c287ef714",
+  "sourceHash": "503f507b3d1a4773b8f0fc4b5f5c77c5c84089ead5047cbb5545e1f550b1e961",
   "specVersion": "1"
 }

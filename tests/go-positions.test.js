@@ -8,6 +8,7 @@ import { analyzeGo } from "../src/adapters/go.js";
 import { analyzeProject, writeAnalysis } from "../src/analysis.js";
 import { loadConfig } from "../src/config.js";
 import { loadGraphInputs } from "../src/graph-input.js";
+import { sha256 } from "../src/util.js";
 
 const goMissing = spawnSync("go", ["version"], { windowsHide: true }).status !== 0;
 async function fixture(context, sources) {
@@ -29,6 +30,7 @@ test("Go offsets use UTF-16 across BOM, Unicode, CRLF and ASCII files while reta
   const root = await fixture(context, sources);
   const files = Object.keys(sources).map(file => path.join(root, file));
   const raw = await analyzeGo(root, files, { metadata: true });
+  for (const [file, source] of Object.entries(sources)) assert.equal(raw.configHashes[file], sha256(Buffer.from(source)));
   for (const row of raw.declarations) {
     if (row.kind === "module") { assert.equal(row.offset, -1); continue; }
     const source = sources[row.path];

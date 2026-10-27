@@ -1934,7 +1934,8 @@
               "cross-package reference resolution",
               "receiver identity",
               "physical source positions",
-              "Go UTF16 offsets"
+              "Go UTF16 offsets",
+              "Go source consumption hashes"
             ],
             "rel": [
               "workflow>llmnav.structure.analyze"
@@ -1950,7 +1951,7 @@
             "stability": "architecture",
             "unknown": []
           },
-          "end": 598,
+          "end": 627,
           "endLine": 10,
           "entries": [
             {
@@ -1969,7 +1970,7 @@
               "key": "owns",
               "line": 4,
               "order": 2,
-              "value": "Go declaration identity|cross-package reference resolution|receiver identity|physical source positions|Go UTF16 offsets"
+              "value": "Go declaration identity|cross-package reference resolution|receiver identity|physical source positions|Go UTF16 offsets|Go source consumption hashes"
             },
             {
               "key": "excludes",
@@ -2006,7 +2007,7 @@
           "indent": "",
           "newline": "\n",
           "prefix": null,
-          "raw": "/* llmnav/1 module\nid=llmnav.structure.go-worker\nrole=Resolve Go object identity and lexical references from standard-library type information.\nowns=Go declaration identity|cross-package reference resolution|receiver identity|physical source positions|Go UTF16 offsets\nexcludes=project execution|module installation|runtime dispatch inference\nsearch=Go precise references|go types definitions|Go receiver methods\ninvariant=Compiler-selected production sources determine references and line directives never replace physical locations.\nrel=workflow>llmnav.structure.analyze\nstability=architecture\n*/",
+          "raw": "/* llmnav/1 module\nid=llmnav.structure.go-worker\nrole=Resolve Go object identity and lexical references from standard-library type information.\nowns=Go declaration identity|cross-package reference resolution|receiver identity|physical source positions|Go UTF16 offsets|Go source consumption hashes\nexcludes=project execution|module installation|runtime dispatch inference\nsearch=Go precise references|go types definitions|Go receiver methods\ninvariant=Compiler-selected production sources determine references and line directives never replace physical locations.\nrel=workflow>llmnav.structure.analyze\nstability=architecture\n*/",
           "scope": "module",
           "specVersion": "1",
           "start": 0,
@@ -2015,13 +2016,14 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "c22d557d3269f75e4c245150df7a4ee40a081cc8c8e628f064a3a595f9d76cb8",
+      "contentHash": "90ddbe7bfa1814f3c9f76b837e28c3e212d994bc45619024ce1ba9d7740f2a70",
       "declarations": [
         null
       ],
       "imports": [
         "binding",
         "constant",
+        "crypto/sha256",
         "encoding/json",
         "fmt",
         "function",
@@ -2041,8 +2043,8 @@
         "variable"
       ],
       "path": "src/adapters/go-analyzer.go",
-      "semanticBytes": 598,
-      "sourceBytes": 15584
+      "semanticBytes": 627,
+      "sourceBytes": 16267
     },
     {
       "blocks": [
@@ -7999,7 +8001,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "196ea82949a9cc2413e56bb62ccdc357c85bbfc24972653d127f6323a2677c7c",
+      "contentHash": "b4a32553e6976c5d9dee2ae2fa0740e050aeabc393ed19b05e7e7a2be09609c2",
       "declarations": [
         null
       ],
@@ -8919,13 +8921,14 @@
     },
     {
       "blocks": [],
-      "contentHash": "8d252f1a4c7639afa6a99ff1c27ccb996c54cbcde22a2539bb01f4d50d7ad08c",
+      "contentHash": "4a2979291c4b089ae9519b42c654f00dc1e0f4bce031eb465e1b0b27201666df",
       "declarations": [],
       "imports": [
         "../src/adapters/go.js",
         "../src/analysis.js",
         "../src/config.js",
         "../src/graph-input.js",
+        "../src/util.js",
         "node:assert/strict",
         "node:child_process",
         "node:fs/promises",
@@ -8935,7 +8938,24 @@
       ],
       "path": "tests/go-positions.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 4585
+      "sourceBytes": 4749
+    },
+    {
+      "blocks": [],
+      "contentHash": "80934118ab08d2d40427506da17d0f7698c96d80d0284c96fec5d70498d25695",
+      "declarations": [],
+      "imports": [
+        "../src/analysis.js",
+        "node:assert/strict",
+        "node:child_process",
+        "node:fs/promises",
+        "node:os",
+        "node:path",
+        "node:test"
+      ],
+      "path": "tests/go-snapshot.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 2434
     },
     {
       "blocks": [],

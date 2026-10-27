@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.19.5] — 2026-10-27
+
+### Fixed
+
+* Hash selected Go sources from the same buffer passed to the parser, before parsing so partial syntax failures also retain their consumed-version proof. Reuse parent snapshot validation to reject a transient source edit followed by undo (A → B → A). Previously an intermediate `Phantom` declaration could be published with the restored source's hash; the regression now rejects both valid and malformed intermediate sources and preserves existing output. Hashing adds O(S) work over consumed source bytes, a 64-character digest per selected file and no source-content reads. Rerun Go analysis to refresh saved results.
+
 ## [0.19.4] — 2026-10-27
 
 ### Fixed

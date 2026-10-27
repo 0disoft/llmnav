@@ -1,7 +1,7 @@
 /* llmnav/1 module
 id=llmnav.structure.go-worker
 role=Resolve Go object identity and lexical references from standard-library type information.
-owns=Go declaration identity|cross-package reference resolution|receiver identity|physical source positions|Go UTF16 offsets
+owns=Go declaration identity|cross-package reference resolution|receiver identity|physical source positions|Go UTF16 offsets|Go source consumption hashes
 excludes=project execution|module installation|runtime dispatch inference
 search=Go precise references|go types definitions|Go receiver methods
 invariant=Compiler-selected production sources determine references and line directives never replace physical locations.
@@ -13,6 +13,7 @@ stability=architecture
 package main
 
 import (
+	"crypto/sha256"
 	"encoding/json"
 	"fmt"
 	"go/ast"
@@ -83,6 +84,7 @@ type report struct {
 	References   []reference       `json:"references"`
 	Diagnostics  []string          `json:"diagnostics"`
 	Inputs       []string          `json:"inputs"`
+	ConfigHashes map[string]string `json:"configHashes"`
 }
 type analyzer struct {
 	request  request
@@ -153,7 +155,7 @@ func run() error {
 	}
 	input.Root = root
 	a := &analyzer{request: input, fset: token.NewFileSet(), listed: map[string]listedPackage{}, packages: map[string]*types.Package{}, infos: map[string]*types.Info{}, syntax: map[string][]*ast.File{}, checking: map[string]bool{}, selected: map[string]bool{}, objects: map[types.Object]string{}, owners: map[ast.Node]string{}, offsets: map[string]utf16Offsets{}}
-	a.report = report{Compiler: map[string]string{"name": "go/types", "version": runtime.Version()}, Declarations: []declaration{}, References: []reference{}, Diagnostics: []string{}, Inputs: []string{}}
+	a.report = report{Compiler: map[string]string{"name": "go/types", "version": runtime.Version()}, Declarations: []declaration{}, References: []reference{}, Diagnostics: []string{}, Inputs: []string{}, ConfigHashes: map[string]string{}}
 	for _, file := range input.Files {
 		canonical, err := filepath.EvalSymlinks(file)
 		if err != nil {
@@ -253,16 +255,9 @@ func (a *analyzer) Import(name string) (*types.Package, error) {
 		if !a.inside(canonical) {
 			return nil, fmt.Errorf("source symlink escapes repository: %s", file)
 		}
-		source, err := os.ReadFile(file)
+		syntax, err := a.parseSource(file)
 		if err != nil {
 			return nil, err
-		}
-		syntax, err := parser.ParseFile(a.fset, file, source, 0)
-		if err != nil {
-			return nil, err
-		}
-		if a.selected[filepath.Clean(file)] {
-			a.offsets[file] = indexUTF16Offsets(source)
 		}
 		files = append(files, syntax)
 		a.report.Inputs = append(a.report.Inputs, a.relative(file))
@@ -281,6 +276,32 @@ func (a *analyzer) Import(name string) (*types.Package, error) {
 	a.syntax[name] = files
 	return checked, nil
 }
+
+// Fingerprint exactly the bytes consumed, including a failed partial analysis.
+func (a *analyzer) parseSource(file string) (*ast.File, error) {
+	source, err := os.ReadFile(file)
+	if err != nil {
+		return nil, err
+	}
+	selected := a.selected[filepath.Clean(file)]
+	if selected {
+		name := a.relative(file)
+		hash := fmt.Sprintf("%x", sha256.Sum256(source))
+		if previous, exists := a.report.ConfigHashes[name]; exists && previous != hash {
+			return nil, fmt.Errorf("source changed during analysis: %s", name)
+		}
+		a.report.ConfigHashes[name] = hash
+	}
+	syntax, err := parser.ParseFile(a.fset, file, source, 0)
+	if err != nil {
+		return nil, err
+	}
+	if selected {
+		a.offsets[file] = indexUTF16Offsets(source)
+	}
+	return syntax, nil
+}
+
 func (a *analyzer) collect(name string) {
 	info := a.infos[name]
 	if info == nil {

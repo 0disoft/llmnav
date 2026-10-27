@@ -74,7 +74,7 @@
     "llmnav.support.runtime",
     "llmnav.syntax.parse"
   ],
-  "cardSetHash": "b67789ac5ea56ba61e233bd6e7e4f95f3e87804349e9d11e1d3ae3b20219cb69",
+  "cardSetHash": "76a139e7339a4ba2409865c2827f460721039ce1eacefb749f87860aa7ce0b79",
   "documentCount": 73,
   "documents": [
     [
@@ -796,7 +796,7 @@
       ]
     ],
     [
-      "3a0fe60e3936199d2a92a2832943fc8c1177b1af19f3c238ca2ed8698affa08a",
+      "577527ed67a1722da6643dedffb178f312d24d45ab48b1259221b4dcf84345c6",
       [
         "resolve go object identity and lexical references from standard-library type information.",
         "go precise references",
@@ -807,7 +807,8 @@
         "cross-package reference resolution",
         "receiver identity",
         "physical source positions",
-        "go utf16 offsets"
+        "go utf16 offsets",
+        "go source consumption hashes"
       ]
     ],
     [
@@ -5481,6 +5482,13 @@
     ],
     [
       [
+        56,
+        [
+          3,
+          1
+        ]
+      ],
+      [
         65,
         [
           3,
@@ -9372,7 +9380,7 @@
           2,
           3,
           3,
-          2,
+          3,
           9,
           2
         ]
@@ -9571,6 +9579,13 @@
         43,
         [
           1,
+          1
+        ]
+      ],
+      [
+        56,
+        [
+          3,
           1
         ]
       ],
@@ -19913,7 +19928,7 @@
         56,
         [
           3,
-          1
+          2
         ]
       ],
       [
