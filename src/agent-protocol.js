@@ -50,7 +50,7 @@ const OPERATIONS = new Map([
   ["llmnav_audit", "audit"],
 ]);
 
-// Validation runs once in resolveRequest; handlers only execute work and report failure kinds.
+// resolveRequest owns validation; handlers only execute work and report failure kinds.
 const OPERATION_HANDLERS = new Map([
   ["verification", async (input, root, options) => ({ data: await getVerification(root, input.id, { ...options, details: input.details, metadataBudget: input.metadataBudget }) })],
   ["history", async (input, root, options) => ({ data: await getFileHistory(root, input.file, options) })],
@@ -62,6 +62,12 @@ const OPERATION_HANDLERS = new Map([
   ["explain", handleExplain],
   ["audit", handleAudit],
 ]);
+
+// Transports can reject invalid input before preparing repository state.
+// Execution revalidates caller-owned arguments after asynchronous preparation.
+export function validateAgentOperationInput(name, input = {}) {
+  return resolveRequest(name, input).failure ?? null;
+}
 
 export async function executeAgentOperation(root, name, input = {}, options = {}) {
   const request = resolveRequest(name, input);

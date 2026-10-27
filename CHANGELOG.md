@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.19.10] — 2026-10-27
+
+### Fixed
+
+* Reject unknown MCP tools and malformed arguments before loading navigation snapshots or preparing source-derived indexes. Share the agent protocol's validator and retain execution-time validation after asynchronous preparation. Previously a query missing its required task could refresh seven generated artifacts before returning `LNVAP002`. Invalid requests now make zero snapshot-load attempts, preserve generated files byte-for-byte and return the same envelopes as direct agent operations. Tests cover automatic generation on/off, unknown tools, missing/null/extra arguments, range and metadata-budget failures, and a subsequent valid request that still refreshes changed source.
+
 ## [0.19.9] — 2026-10-27
 
 ### Fixed

@@ -15,7 +15,7 @@ import { on } from "node:events";
 import path from "node:path";
 import readline from "node:readline";
 import { Transform } from "node:stream";
-import { executeAgentOperation, getAgentToolDefinitions } from "./agent-protocol.js";
+import { executeAgentOperation, getAgentToolDefinitions, validateAgentOperationInput } from "./agent-protocol.js";
 import { createIoError, DEFAULT_REQUEST_TIMEOUT_MS, toErrorPayload, withDeadline } from "./errors.js";
 import { createProjectSession } from "./search.js";
 import { PACKAGE_VERSION } from "./spec.js";
@@ -123,6 +123,8 @@ async function callTool(id, params, root, session, sessionCache, requestTimeoutM
   try {
     throwIfAborted(options.signal);
     const operation = Promise.resolve().then(async () => {
+      const invalid = validateAgentOperationInput(params.name, input);
+      if (invalid !== null) return invalid;
       const activeSession = SESSION_INDEPENDENT_TOOLS.has(params.name)
         ? null : await resolveSession(session, sessionCache, controller.signal);
       throwIfAborted(controller.signal);

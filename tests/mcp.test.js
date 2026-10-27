@@ -8,7 +8,7 @@ import test from "node:test";
 import { PassThrough, Readable } from "node:stream";
 import { fileURLToPath } from "node:url";
 import { createMcpServer, createSessionCache, MCP_PROTOCOL_VERSION, MCP_SERVER_NAME, serveMcpStdio, sessionStamp } from "../src/mcp.js";
-import { getAgentToolDefinitions } from "../src/agent-protocol.js";
+import { executeAgentOperation, getAgentToolDefinitions } from "../src/agent-protocol.js";
 import { generateProject } from "../src/generator.js";
 import { initializeProject } from "../src/initializer.js";
 import { queryProject } from "../src/search.js";
@@ -59,6 +59,54 @@ test("rejects malformed frames without crashing the session", async (context) =>
 
   const notification = await server.handleMessage({ jsonrpc: "2.0", method: "notifications/initialized" });
   assert.equal(notification, null);
+});
+
+for (const autoGenerate of [false, true]) {
+  test(`invalid MCP operations never load a snapshot (autoGenerate=${autoGenerate})`, async () => {
+    let loads = 0;
+    const server = createMcpServer({ root: ".", autoGenerate, createSession: () => {
+      loads += 1;
+      throw new Error("Invalid input must not load a snapshot.");
+    } });
+    const cases = [
+      ["llmnav_unknown", {}],
+      ["llmnav_query", {}],
+      ["llmnav_query", null],
+      ["llmnav_query", { task: "fixture", top: 0 }],
+      ["llmnav_query", { task: "fixture", unexpected: true }],
+      ["llmnav_show", { id: "fixture.app", metadataBudget: 511 }],
+    ];
+    for (const [index, [name, args]] of cases.entries()) {
+      const expected = await executeAgentOperation(".", name, args);
+      assert.equal(expected.ok, false);
+      const response = await server.handleMessage({ jsonrpc: "2.0", id: index, method: "tools/call", params: { name, arguments: args } });
+      assert.equal(response.result.isError, true);
+      assert.deepEqual(JSON.parse(response.result.content[0].text), expected);
+    }
+    assert.equal(loads, 0);
+    assert.equal(server.status().phase, "idle");
+  });
+}
+
+test("invalid MCP input preserves generated artifacts after source edits", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-mcp-invalid-effects-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await createProject(root);
+  const cache = path.join(root, ".llmnav", "cache");
+  const entries = await readdir(cache, { recursive: true, withFileTypes: true });
+  const files = entries.filter(entry => entry.isFile()).map(entry => path.relative(cache, path.join(entry.parentPath, entry.name))).sort();
+  const paths = (await readdir(cache, { recursive: true })).sort();
+  const before = await Promise.all(files.map(file => readFile(path.join(cache, file))));
+  const source = path.join(root, "src", "rotate.ts");
+  await writeFile(source, (await readFile(source, "utf8")).replace("Rotate one refresh-token family", "Rotate the changed refresh-token family"));
+  const server = createMcpServer({ root, autoGenerate: true });
+  const rejected = await server.handleMessage({ jsonrpc: "2.0", id: 1, method: "tools/call", params: { name: "llmnav_query", arguments: {} } });
+  assert.equal(JSON.parse(rejected.result.content[0].text).error.code, "LNVAP002");
+  assert.deepEqual((await readdir(cache, { recursive: true })).sort(), paths);
+  assert.deepEqual(await Promise.all(files.map(file => readFile(path.join(cache, file)))), before);
+  assert.equal(server.status().phase, "idle");
+  await callTool(server, 2, "llmnav_query", { task: "changed refresh-token family" });
+  assert.notDeepEqual(await readFile(path.join(cache, "manifest.json")), before[files.indexOf("manifest.json")]);
 });
 
 test("serves the stable agent tool schema over JSON-RPC", async (context) => {
