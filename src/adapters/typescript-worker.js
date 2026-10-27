@@ -26,8 +26,10 @@ function analyze(request) {
   if (!/^[56]\./u.test(ts.version ?? "") || typeof ts.createProgram !== "function") {
     throw new Error("This adapter supports TypeScript Compiler API 5.x and 6.x. Native TypeScript 7 requires its own API adapter.");
   }
-  const root = path.resolve(request.root);
-  const selectedPaths = request.files.map(file => path.resolve(file));
+  // Windows temp roots can use 8.3 aliases while TypeScript resolves full names.
+  // Anchor both containment and selected-file identity to the same physical root.
+  const root = realpathSync(path.resolve(request.root));
+  const selectedPaths = request.files.map(file => realpathSync(path.resolve(file)));
   const configHashes = Object.create(null);
   const javascript = request.language === "javascript";
   let options = { target: ts.ScriptTarget.ESNext, module: ts.ModuleKind.NodeNext, moduleResolution: ts.ModuleResolutionKind.NodeNext, noEmit: true, skipLibCheck: true, types: [] };

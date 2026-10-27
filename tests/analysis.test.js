@@ -6,6 +6,7 @@ import path from "node:path";
 import test from "node:test";
 import { analyzeProject, writeAnalysis } from "../src/analysis.js";
 import { analyzeGo } from "../src/adapters/go.js";
+import { analyzeTypeScript } from "../src/adapters/typescript.js";
 import { discoverProject } from "../src/discovery.js";
 import { generateProject } from "../src/generator.js";
 import { showProjectCard, buildContext } from "../src/search.js";
@@ -216,6 +217,23 @@ test("TypeScript ignores ancestor package probes without accepting external conf
   await writeFile(path.join(outer, "base.json"), JSON.stringify({ compilerOptions: { types: [] } }));
   await writeFile(path.join(root, "tsconfig.json"), JSON.stringify({ extends: "../base.json", files: ["main.mts"] }));
   await assert.rejects(analyzeProject(root, options), /configuration must stay inside/u);
+});
+
+test("TypeScript resolves package configurations through a repository path alias", async context => {
+  const root = await fixture(context, {
+    "main.mts": "export const value = true;\n",
+    "tsconfig.json": JSON.stringify({ extends: "@fixture/config", files: ["main.mts"] }),
+    "node_modules/@fixture/config/package.json": JSON.stringify({ name: "@fixture/config", tsconfig: "base.json" }),
+    "node_modules/@fixture/config/base.json": JSON.stringify({ compilerOptions: { types: [], module: "NodeNext", moduleResolution: "NodeNext" } }),
+  });
+  const alias = `${root}-alias`;
+  await symlink(root, alias, process.platform === "win32" ? "junction" : "dir");
+  context.after(() => rm(alias, { recursive: true, force: true }));
+  const options = { project: "tsconfig.json" };
+  const expected = await analyzeTypeScript(root, [path.join(root, "main.mts")], options);
+  const actual = await analyzeTypeScript(alias, [path.join(alias, "main.mts")], options);
+  assert.ok(expected.declarations.some(item => item.symbol === "value"));
+  assert.deepEqual(actual, expected);
 });
 
 test("TypeScript rejects configuration chains that escape the repository", async context => {

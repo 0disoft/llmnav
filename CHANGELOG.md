@@ -9,6 +9,7 @@ The npm package follows Semantic Versioning. The `llmnav/N` source protocol is v
 ### Fixed
 
 * Ignore out-of-repository ancestor `package.json` probes during TypeScript configuration resolution without reading them. A parent manifest could previously abort valid package-based config chains, including on Windows CI. Explicit external configuration files and escaping configuration symlinks remain rejected. Regression coverage compares unchanged graphs and diagnostics with absent, valid, and malformed parent manifests and retains the external-config rejection check.
+* Canonicalize the TypeScript worker's repository root and selected source paths together before checking containment and file identity. Windows temporary-directory aliases could otherwise make package-based configurations appear to escape the repository. A real directory and a directory alias now produce identical declarations, references, diagnostics, and consumed-input hashes.
 
 ## [0.19.18] — 2026-10-28
 
