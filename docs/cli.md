@@ -259,7 +259,7 @@ Prints the active source specification version, canonical key order, stability v
 llmnav tools [--json]
 ```
 
-Prints the fixed provider-neutral tool definitions for `query`, `show`, `context`, `check`, `explain`, `audit`, and `discover`. Each definition carries schemaVersion 6; JSON output wraps the ordered definitions in a schemaVersion 1 command envelope. Tool inputs reject unknown fields and never accept a repository root; a trusted host binds repository scope when it calls the library dispatcher.
+Prints the fixed provider-neutral tool definitions for `query`, `show`, `context`, `check`, `explain`, `audit`, `discover`, `history` and `verification`. Each definition carries schemaVersion 7; JSON output wraps the ordered definitions in a schemaVersion 1 command envelope. Tool inputs reject unknown fields and never accept a repository root; a trusted host binds repository scope when it calls the library dispatcher.
 
 ## `llmnav mcp`
 
@@ -300,4 +300,8 @@ Works before initialization or generation. Searches selected source paths, heuri
 
 ## Compiler analysis
 
-`llmnav analyze --language <typescript|go> [--project tsconfig.json] [--typescript <compiler.js>] [--allow-errors] [--metadata] [--output .llmnav/imports/code.json] [--json]` runs installed compiler tooling. It writes only when `--output` is supplied. `--metadata` emits optional schema 3 compiler types, signatures, parameters and ownership. `discover --precise` requires configured, fresh compiler inputs. See [compiler analysis](precise-analysis.md).
+`llmnav analyze --language <typescript|javascript|go|python|rust> [--project tsconfig.json] [--typescript <compiler.js>] [--python python] [--allow-errors] [--metadata] [--output .llmnav/imports/code.json] [--json]` runs opt-in analysis. It writes only with `--output`. `--metadata` emits optional schema 3 types, signatures, parameters and ownership; Python/Rust are explicitly partial syntax analyses. `discover --precise` requires configured, fresh saved inputs. See [analysis support](precise-analysis.md).
+
+## Local history and verification
+
+`llmnav history <file> --json` reads the last file commit/date and current staged, unstaged and untracked state. It does not assign dates to functions. `llmnav snapshot <files...> --output <snapshot.json>` captures declared inputs before a check; `llmnav record-verification --file <manifest.json>` retains the caller-reported result and evidence. `llmnav verification <id> [--details] [--metadata-budget 4000] --json` checks current applicability. See [receipt manifests, limits and unknown states](local-evidence.md).

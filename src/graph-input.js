@@ -9,6 +9,7 @@ stability=architecture
 */
 
 import path from "node:path";
+import { analysisFilePattern } from "./analysis-languages.js";
 import { throwIfAborted } from "./abort.js";
 import { collectSourceFiles } from "./files.js";
 import { DEFAULT_IO_CONCURRENCY, mapWithConcurrency } from "./concurrency.js";
@@ -181,9 +182,9 @@ function compareReferences(left, right) {
 }
 
 export async function assertCompilerInputFresh(root, parsed, config, options = {}) {
-  const adapter = parsed.generator?.match(/^llmnav-(typescript|go)@1;/u)?.[1];
+  const adapter = parsed.generator?.match(/^llmnav-(typescript|javascript|go|python|rust)(?:-syntax)?@1;/u)?.[1];
   if (adapter) {
-    const extension = adapter === "go" ? /\.go$/u : /\.(?:[cm]?ts|tsx)$/u;
+    const extension = analysisFilePattern(adapter);
     const current = (await collectSourceFiles(root, config, [], options)).map(source => toPosix(path.relative(root, source)))
       .filter(source => extension.test(source)).sort(compareText);
     const expected = Object.keys(parsed.sourceHashes).filter(source => extension.test(source)).sort(compareText);

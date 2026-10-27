@@ -31,6 +31,8 @@ export const authSession = true;
 
   const host = await createLlmnavHost(root);
   assert.deepEqual(host.toolDefinitions.map((item) => item.name), [
+    "llmnav_verification",
+    "llmnav_history",
     "llmnav_query",
     "llmnav_show",
     "llmnav_context",
@@ -38,7 +40,7 @@ export const authSession = true;
     "llmnav_explain",
     "llmnav_audit",
     "llmnav_discover",
-    ]);
+  ]);
   assert.deepEqual(host.basePromptPartitions.map((item) => item.id), [
     "package:tool-definitions",
     "package:agent-protocol",

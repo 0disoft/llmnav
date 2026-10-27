@@ -66,3 +66,6 @@ llmnav.eval.metadata
 llmnav.evidence.files
 llmnav.evidence.history
 llmnav.evidence.verification
+llmnav.eval.local-analysis
+llmnav.structure.python
+llmnav.structure.rust

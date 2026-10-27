@@ -92,14 +92,16 @@ const CATEGORIES = new Set(["module", "type", "function", "method", "field", "pa
 const ORIGINS = new Set(["declared", "inferred", "unknown"]);
 
 export function normalizeCodeMetadata(value, normalizeId) {
-  object(value, ["language", "category", "owner", "status", "type", "typeOrigin", "signatures", "parameters"]);
-  if (!["typescript", "go"].includes(value.language)) throw new Error("metadata language must be typescript or go");
+  object(value, ["language", "category", "owner", "status", "type", "typeOrigin", "signatures", "parameters"], ["precision"]);
+  if (!["typescript", "javascript", "go", "python", "rust"].includes(value.language)) throw new Error("Unsupported metadata language");
+  if (value.precision !== undefined && !["syntax", "compiler"].includes(value.precision)) throw new Error("Invalid metadata precision");
   if (!CATEGORIES.has(value.category)) throw new Error("metadata category is unsupported");
   if (!["available", "partial"].includes(value.status)) throw new Error("metadata status must be available or partial");
   type(value);
   if (!Array.isArray(value.signatures) || value.signatures.some(item => typeof item !== "string")) throw new Error("metadata signatures must be strings");
   if (!Array.isArray(value.parameters)) throw new Error("metadata parameters must be an array");
   return { language: value.language, category: value.category, owner: value.owner === null ? null : normalizeId(value.owner),
+    ...(value.precision ? { precision: value.precision } : {}),
     status: value.status, type: text(value.type), typeOrigin: value.typeOrigin,
     signatures: value.signatures.map(text), parameters: value.parameters.map(parameter => {
       object(parameter, ["name", "type", "typeOrigin", "optional", "variadic"]);
@@ -115,8 +117,8 @@ function type(value) {
     throw new Error("metadata type must identify a declared, inferred, or unknown origin");
   }
 }
-function object(value, keys) {
-  if (!value || typeof value !== "object" || Array.isArray(value) || keys.some(key => !Object.hasOwn(value, key)) || Object.keys(value).some(key => !keys.includes(key))) {
+function object(value, keys, optional = []) {
+  if (!value || typeof value !== "object" || Array.isArray(value) || keys.some(key => !Object.hasOwn(value, key)) || Object.keys(value).some(key => !keys.includes(key) && !optional.includes(key))) {
     throw new Error("Invalid metadata fields");
   }
 }

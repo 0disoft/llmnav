@@ -37,3 +37,6 @@
 {"query":"compare real TypeScript and Go source navigation with rg and precise discovery","expected":["llmnav.eval.real-navigation"]}
 {"query":"compare Serena semantic symbol lookup on real source","expected":["llmnav.eval.serena-navigation"]}
 {"query":"grade actual model coding tasks with hidden acceptance tests","expected":["llmnav.eval.model-coding"]}
+{"query":"Python AST analysis annotations and fields without executing source","expected":["llmnav.structure.python"]}
+{"query":"Rust syntax metadata impl fields and function parameters","expected":["llmnav.structure.rust"]}
+{"query":"Python Rust JavaScript metadata history verification benchmark","expected":["llmnav.eval.local-analysis"]}

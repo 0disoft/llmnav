@@ -443,7 +443,8 @@ export interface CodeParameter {
 }
 
 export interface CodeMetadata {
-  language: "typescript" | "go";
+  language: "typescript" | "javascript" | "go" | "python" | "rust";
+  precision?: "syntax" | "compiler";
   category: "module" | "type" | "function" | "method" | "field" | "parameter" | "variable" | "constant" | "binding";
   owner: string | null;
   status: "available" | "partial";
@@ -980,6 +981,8 @@ export * from "./spec.js";
 
 export interface SourceCandidate {
   source: "file" | "declaration" | "compiler";
+  precision?: "syntax";
+  analyzer?: string;
   id?: string;
   compiler?: string;
   path: string;
@@ -1013,13 +1016,15 @@ export interface CompilerGraphInput {
 }
 export interface AnalysisResult {
   schemaVersion: 1;
-  language: "typescript" | "go";
+  language: "typescript" | "javascript" | "go" | "python" | "rust";
+  precision?: "syntax" | "compiler";
+  limitations?: string[];
   compiler: { name: string; version: string };
   diagnostics: Array<unknown>;
   counts: { definitions: number; references: number; cardBindings: number };
   graph: CompilerGraphInput;
 }
-export function analyzeProject(root: string, options: ReadOptions & { language: "typescript" | "go"; project?: string; typescriptPath?: string; allowErrors?: boolean; metadata?: boolean; timeoutMs?: number; goCommand?: string }): Promise<AnalysisResult>;
+export function analyzeProject(root: string, options: ReadOptions & { language: AnalysisResult["language"]; project?: string; typescriptPath?: string; allowErrors?: boolean; metadata?: boolean; timeoutMs?: number; goCommand?: string; pythonCommand?: string }): Promise<AnalysisResult>;
 export function writeAnalysis(root: string, relativeOutput: string, result: AnalysisResult, options?: ReadOptions): Promise<string>;
 
 export interface FileHistory {

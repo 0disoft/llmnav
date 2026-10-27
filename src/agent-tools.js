@@ -31,7 +31,7 @@ const DEFINITIONS = [
   }, ["task"]),
   tool("llmnav_show", "Resolve one local or qualified workspace semantic ID.", {
     id: stringProperty("Semantic ID or repository-qualified semantic ID."),
-    metadata: { type: "boolean", description: "Include a bounded compiler metadata page.", default: false },
+    metadata: { type: "boolean", description: "Include bounded declaration metadata with its type origins and available precision.", default: false },
     members: { type: "boolean", description: "Page direct members instead of the declaration; requires metadata.", default: false },
     top: integerProperty("Metadata page size.", METADATA_LIMITS.top.minimum, METADATA_LIMITS.top.maximum, METADATA_LIMITS.top.default),
     offset: integerProperty("Metadata page offset.", 0, Number.MAX_SAFE_INTEGER, 0),
@@ -60,7 +60,7 @@ const DEFINITIONS = [
   }),
   tool("llmnav_discover", "Locate live source without cards or an index. Use top:1 and includeSource:true to locate and read a candidate in one call; read more only if the excerpt is insufficient or truncated. Declaration boundaries are heuristic, not reviewed business rules.", {
     task: stringProperty("Source identifiers or task language to search for."),
-    precise: { type: "boolean", description: "Use configured compiler definitions; reject stale analysis.", default: false },
+    precise: { type: "boolean", description: "Use fresh saved analysis; distinguish compiler and partial syntax definitions.", default: false },
     includeSource: { type: "boolean", description: "Include bounded live source excerpts; use these before another file read.", default: false },
     sourceBudget: integerProperty("Total UTF-8 source bytes across results; excludes JSON metadata.", DISCOVERY_SOURCE_LIMITS.minimum, DISCOVERY_SOURCE_LIMITS.maximum, DISCOVERY_SOURCE_LIMITS.default),
     top: integerProperty("Maximum results.", SEARCH_LIMITS.top.minimum, SEARCH_LIMITS.top.maximum, SEARCH_LIMITS.top.default),

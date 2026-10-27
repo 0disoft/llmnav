@@ -1472,6 +1472,132 @@
     },
     {
       "confidence": 0.85,
+      "from": "llmnav/llmnav.eval.local-analysis",
+      "id": "a49c79299b550a0b978a6317d4abf62b775de34276b7d883ddfd254271b6ab38",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "benchmarks/local-analysis.js",
+        "source": "benchmarks/local-analysis.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.evidence.history"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.eval.local-analysis",
+      "id": "6a9dcb139c859fc9c99f8dd486a6ff7bf6ba25d891a5d131f23c1b517404f2c6",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "benchmarks/local-analysis.js",
+        "source": "benchmarks/local-analysis.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.evidence.history"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.eval.local-analysis",
+      "id": "4c92012111172c7bd072a3c470465011be662943aa3f9725d41ab9c77bd7c560",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "benchmarks/local-analysis.js",
+        "source": "benchmarks/local-analysis.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.evidence.verification"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.eval.local-analysis",
+      "id": "1f87a29c4760553aab63395082f9347d21dd1ffe3bdeed105023026e362eee27",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "benchmarks/local-analysis.js",
+        "source": "benchmarks/local-analysis.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.evidence.verification"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.eval.local-analysis",
+      "id": "8a39f68fc361160d1a2bd278c03b5165d702819a5a1c575ae7f9773e111d9e2e",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "benchmarks/local-analysis.js",
+        "source": "benchmarks/local-analysis.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.index.generate"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.eval.local-analysis",
+      "id": "8debc533a6f178c4266b0df48f1434fae9dfe0507a8b30bc68b7b49641ab902d",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "benchmarks/local-analysis.js",
+        "source": "benchmarks/local-analysis.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.search.query"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.eval.local-analysis",
+      "id": "71aff9b5b8659c6f00dd1862014ae354e5396dd5e084335cbe82b0fc7b323157",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "benchmarks/local-analysis.js",
+        "source": "benchmarks/local-analysis.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.structure.analyze"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.eval.local-analysis",
+      "id": "60db5573ecf2f657de0fc1b0ac54727bb89a62bb9784d31b6ab20906ea7343e6",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "benchmarks/local-analysis.js",
+        "source": "benchmarks/local-analysis.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.structure.analyze"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.eval.local-analysis",
+      "id": "0f34e1cb1ebd5b651a2728ec55713263f043c2eb2a96aa280d62fee55766906a",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "benchmarks/local-analysis.js",
+        "source": "benchmarks/local-analysis.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.structure.metadata"
+    },
+    {
+      "confidence": 0.85,
       "from": "llmnav/llmnav.eval.measure",
       "id": "919ffeb36c1d7edc9d93fbca34d2c1b9da1be952c31339b9626372493394ed90",
       "kind": "imports",
@@ -3643,6 +3769,34 @@
     {
       "confidence": 0.85,
       "from": "llmnav/llmnav.structure.analyze",
+      "id": "eaa578a589bbabe277041ba32f3ad7dd53f6012e0f6130244f8aa84fe5155d59",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/analysis.js",
+        "source": "src/analysis.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.structure.python"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.structure.analyze",
+      "id": "257f3ef97d73e9bd1a7d56456b103517fb25f6a53f82ecf9af4925b68105e7c1",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/analysis.js",
+        "source": "src/analysis.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.structure.rust"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.structure.analyze",
       "id": "8f946a9e3f4ee963e222e63d108291cd013e8b86fcf2fb8aa5617e12add60124",
       "kind": "imports",
       "provenance": {
@@ -3835,6 +3989,62 @@
         "type": "local-import"
       },
       "to": "llmnav/llmnav.support.concurrency"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.structure.python",
+      "id": "975bc6deea805d28527919d058c7017c87dd9e90d95f6932b8ad4cd4bdbc1683",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/adapters/python.js",
+        "source": "src/adapters/python.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.structure.analyze"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.structure.python",
+      "id": "3934e2992b4a81470a14765d2d45dd652a18a05ad57f338671dae9c21249ffa5",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/adapters/python.js",
+        "source": "src/adapters/python.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.structure.compiler-process"
+    },
+    {
+      "confidence": 1,
+      "from": "llmnav/llmnav.structure.rust",
+      "id": "538b26645f42ee37f4788da5a6ef215c4744488e5d6c3b0cb4b04651fb48b75b",
+      "kind": "workflow",
+      "provenance": {
+        "generator": null,
+        "line": 1,
+        "path": "src/adapters/rust.js",
+        "source": "src/adapters/rust.js",
+        "type": "source-card"
+      },
+      "to": "llmnav/llmnav.structure.analyze"
+    },
+    {
+      "confidence": 0.85,
+      "from": "llmnav/llmnav.structure.rust",
+      "id": "3ef2a2cc6489d7651afb593f75c38717cc9749f8b9cfadc500746b1cf3da369c",
+      "kind": "imports",
+      "provenance": {
+        "generator": "llmnav",
+        "line": null,
+        "path": "src/adapters/rust.js",
+        "source": "src/adapters/rust.js",
+        "type": "local-import"
+      },
+      "to": "llmnav/llmnav.support.abort"
     },
     {
       "confidence": 1,
@@ -4653,6 +4863,28 @@
     {
       "definitions": [],
       "external": false,
+      "key": "llmnav/llmnav.eval.local-analysis",
+      "location": {
+        "declarationLine": null,
+        "endLine": 12,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "benchmarks/local-analysis.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Measure additional language metadata and on-demand provenance costs in disposable repositories.",
+      "semanticId": "llmnav.eval.local-analysis",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
       "key": "llmnav/llmnav.eval.measure",
       "location": {
         "declarationLine": null,
@@ -5262,7 +5494,7 @@
         "visibility": null
       },
       "repositoryId": "llmnav",
-      "role": "Connect opt-in compiler-resolved TypeScript and Go definitions and references to semantic cards.",
+      "role": "Connect opt-in compiler or syntax declarations to semantic cards with explicit analysis precision.",
       "semanticId": "llmnav.structure.analyze",
       "unresolved": false
     },
@@ -5396,6 +5628,50 @@
       "repositoryId": "llmnav",
       "role": "Resolve repository-contained language modules without executing project toolchains or following metadata symlinks.",
       "semanticId": "llmnav.structure.modules",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
+      "key": "llmnav/llmnav.structure.python",
+      "location": {
+        "declarationLine": null,
+        "endLine": 10,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/adapters/python.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Extract Python declaration metadata with an isolated standard AST parser without importing application code.",
+      "semanticId": "llmnav.structure.python",
+      "unresolved": false
+    },
+    {
+      "definitions": [],
+      "external": false,
+      "key": "llmnav/llmnav.structure.rust",
+      "location": {
+        "declarationLine": null,
+        "endLine": 10,
+        "exported": null,
+        "kind": null,
+        "language": null,
+        "path": "src/adapters/rust.js",
+        "receiver": null,
+        "signature": null,
+        "startLine": 1,
+        "symbol": null,
+        "visibility": null
+      },
+      "repositoryId": "llmnav",
+      "role": "Extract conservative Rust declaration syntax with explicit limits instead of claiming compiler type resolution.",
+      "semanticId": "llmnav.structure.rust",
       "unresolved": false
     },
     {
@@ -5621,11 +5897,11 @@
   ],
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "4788228d881f92533883a9f37ad732d7ca946a43676c194e20d01d7abbadb22a",
+  "sourceHash": "f3e9b02f98971920c38748e5864734471963b2c6b476e1ffd5ca8ccca860e9fa",
   "stats": {
-    "edgeCount": 290,
+    "edgeCount": 305,
     "importedIndexCount": 0,
-    "nodeCount": 68,
+    "nodeCount": 71,
     "unresolvedNodeCount": 0
   }
 }

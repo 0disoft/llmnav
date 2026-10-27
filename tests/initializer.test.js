@@ -30,6 +30,7 @@ for (const name of ["123-calculator", "@team/123-calculator", `project-${"a".rep
     const initialized = run(root, "init", "--agents", "none");
     assert.equal(initialized.status, 0, initialized.stderr);
     assert.equal(JSON.parse(initialized.stdout).ok, true);
+    assert.match(await readFile(path.join(root, ".llmnav", ".gitignore"), "utf8"), /^local\/$/mu);
     const configPath = path.join(root, ".llmnav", "config.json");
     const configText = await readFile(configPath, "utf8");
     const config = JSON.parse(configText);

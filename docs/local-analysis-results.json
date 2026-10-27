@@ -1,0 +1,162 @@
+{
+  "schemaVersion": 1,
+  "environment": {
+    "node": "v24.18.0",
+    "platform": "win32",
+    "arch": "x64"
+  },
+  "method": "One sequential local run per case/mode; wall times include subprocess startup. Baseline means the same adapter without metadata, not a historical release or ordinary agent task. Script byte counts are compact UTF-8 JSON, not model tokens.",
+  "observations": [
+    {
+      "language": "javascript",
+      "input": "fixture",
+      "analyzer": {
+        "name": "typescript",
+        "version": "6.0.3"
+      },
+      "precision": "compiler",
+      "sourceSha256": "517f6b752ad7d0973aa4e0e3c72c73396d78184e7ab245d93c8188cdb1d577a2",
+      "sourceBytes": 82,
+      "checkedFacts": 4,
+      "correctFacts": 4,
+      "definitions": 3,
+      "references": 3,
+      "diagnostics": 0,
+      "legacyAnalysisMs": 2043.566,
+      "metadataAnalysisMs": 1910.919,
+      "generationMs": {
+        "legacy": 197.456,
+        "metadata": 156.57
+      },
+      "legacyGraphBytes": 1058,
+      "metadataGraphBytes": 1759,
+      "defaultShowBytes": 1023,
+      "detailedShowBytes": 1764,
+      "knownIdDetailCalls": 1,
+      "coldDetailMs": 1.144,
+      "warmDetailMs": 0.255,
+      "fullReanalysisMs": 1925.106,
+      "generationAfterEditMs": 181.998
+    },
+    {
+      "language": "javascript",
+      "input": "src/tokenizer.js",
+      "analyzer": {
+        "name": "typescript",
+        "version": "6.0.3"
+      },
+      "precision": "compiler",
+      "sourceSha256": "a109204ae6325e21bd531de23e409bf6205b02fb28c1a9507ae7b5b7cef22e06",
+      "sourceBytes": 912,
+      "checkedFacts": 4,
+      "correctFacts": 4,
+      "definitions": 15,
+      "references": 35,
+      "diagnostics": 0,
+      "legacyAnalysisMs": 2248.128,
+      "metadataAnalysisMs": 2195.369,
+      "generationMs": {
+        "legacy": 177.083,
+        "metadata": 175.156
+      },
+      "legacyGraphBytes": 8084,
+      "metadataGraphBytes": 11469,
+      "defaultShowBytes": 1063,
+      "detailedShowBytes": 1813,
+      "knownIdDetailCalls": 1,
+      "coldDetailMs": 0.785,
+      "warmDetailMs": 0.174,
+      "fullReanalysisMs": 2114.204,
+      "generationAfterEditMs": 177.335
+    },
+    {
+      "language": "python",
+      "input": "fixture",
+      "analyzer": {
+        "name": "python-ast",
+        "version": "3.14.6"
+      },
+      "precision": "syntax",
+      "sourceSha256": "95b26a1e49380b1c00bed2d02189e3401ccaac6118f6e6aa7b1e57d75abde00e",
+      "sourceBytes": 92,
+      "checkedFacts": 4,
+      "correctFacts": 4,
+      "definitions": 6,
+      "references": 5,
+      "diagnostics": 0,
+      "legacyAnalysisMs": 710.273,
+      "metadataAnalysisMs": 572.454,
+      "generationMs": {
+        "legacy": 153.855,
+        "metadata": 163.868
+      },
+      "legacyGraphBytes": 1696,
+      "metadataGraphBytes": 3126,
+      "defaultShowBytes": 1015,
+      "detailedShowBytes": 1835,
+      "knownIdDetailCalls": 1,
+      "coldDetailMs": 0.325,
+      "warmDetailMs": 0.258,
+      "fullReanalysisMs": 601.707,
+      "generationAfterEditMs": 178.609
+    },
+    {
+      "language": "rust",
+      "input": "fixture",
+      "analyzer": {
+        "name": "rust-lexical",
+        "version": "1"
+      },
+      "precision": "syntax",
+      "sourceSha256": "f350194f7e123255e94c675eee7272f81899c70c24b13ba1ddacd2285716e185",
+      "sourceBytes": 105,
+      "checkedFacts": 4,
+      "correctFacts": 4,
+      "definitions": 6,
+      "references": 5,
+      "diagnostics": 0,
+      "legacyAnalysisMs": 18.247,
+      "metadataAnalysisMs": 12.558,
+      "generationMs": {
+        "legacy": 142.208,
+        "metadata": 161.286
+      },
+      "legacyGraphBytes": 1691,
+      "metadataGraphBytes": 3153,
+      "defaultShowBytes": 1005,
+      "detailedShowBytes": 1824,
+      "knownIdDetailCalls": 1,
+      "coldDetailMs": 0.198,
+      "warmDetailMs": 0.211,
+      "fullReanalysisMs": 10.548,
+      "generationAfterEditMs": 174.132
+    }
+  ],
+  "large": {
+    "definitions": 50001,
+    "pageItems": 5,
+    "fullGraphBytes": 14266945,
+    "pageBytes": 1418,
+    "coldPageMs": 227.831,
+    "warm100PagesMs": 5.73,
+    "allPagesMinimumCalls": 10000
+  },
+  "provenance": {
+    "coldHistoryMs": 648.025,
+    "warmHistoryMs": 521.871,
+    "historyBytes": 546,
+    "snapshotMs": 8.499,
+    "recordMs": 21.401,
+    "readMs": 7.764,
+    "receiptBytes": 620,
+    "summaryBytes": 388,
+    "outcome": "unknown",
+    "matchingInputs": "matches",
+    "changedInputs": "stale"
+  },
+  "limitations": [
+    "Single-machine timings with warm filesystem/toolchain caches; no statistical speedup claim.",
+    "Python and Rust syntax facts do not imply type checking or call resolution. Source updates rerun full language analysis; compiler-level incremental refresh is not implemented.",
+    "No real agent/model experiment; raw source/full graphs are byte references, not a matched-task token baseline."
+  ]
+}

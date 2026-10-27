@@ -66,3 +66,6 @@
 {"id":"llmnav.evidence.files","state":"active"}
 {"id":"llmnav.evidence.history","state":"active"}
 {"id":"llmnav.evidence.verification","state":"active"}
+{"id":"llmnav.eval.local-analysis","state":"active"}
+{"id":"llmnav.structure.python","state":"active"}
+{"id":"llmnav.structure.rust","state":"active"}

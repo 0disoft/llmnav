@@ -49,6 +49,8 @@ test("prints provider-neutral tool schemas outside a repository", () => {
   assert.equal(result.status, 0, result.stderr);
   const output = JSON.parse(result.stdout);
   assert.deepEqual(output.tools.map((item) => item.name), [
+    "llmnav_verification",
+    "llmnav_history",
     "llmnav_query",
     "llmnav_show",
     "llmnav_context",
@@ -56,7 +58,8 @@ test("prints provider-neutral tool schemas outside a repository", () => {
     "llmnav_explain",
     "llmnav_audit",
     "llmnav_discover",
-    ]);
+  ]);
+  assert.ok(output.tools.every(item => item.schemaVersion === 7));
 });
 
 test("generate --full bypasses incremental accelerators", async (context) => {

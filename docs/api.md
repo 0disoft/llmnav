@@ -387,7 +387,7 @@ Each query record requires a non-empty `query`. A positive case supplies at leas
 
 ## Agent operation protocol
 
-`getAgentToolDefinitions()` returns defensive copies of seven schemaVersion 6 tool definitions in fixed order. Their JSON Schema inputs reject unknown fields and deliberately omit the repository root.
+`getAgentToolDefinitions()` returns defensive copies of nine schemaVersion 7 tool definitions in fixed order. Their JSON Schema inputs reject unknown fields and deliberately omit the repository root.
 
 ```js
 import { executeAgentOperation, getAgentToolDefinitions } from "llmnav";
@@ -458,4 +458,8 @@ Use `{ top: 1, includeSource: true, sourceBudget: 4000 }` to locate and inspect 
 
 ## Compiler analysis
 
-`analyzeProject(root, { language, project?, typescriptPath?, allowErrors?, signal?, timeoutMs? })` returns compiler diagnostics and a schema 2 graph input. `writeAnalysis(root, relativeOutput, result, options?)` rechecks source freshness and atomically publishes it. `discoverProject` accepts `precise: true` to search configured compiler definitions with explicit provenance. See [compiler analysis](precise-analysis.md).
+`analyzeProject(root, { language, project?, typescriptPath?, pythonCommand?, allowErrors?, metadata?, signal?, timeoutMs? })` supports TypeScript, JavaScript, Go, Python and Rust. It returns diagnostics and schema 2 graph input (schema 3 with metadata). Python/Rust expose syntax precision and limitations rather than compiler resolution. `writeAnalysis` rechecks source freshness before atomic publication; `discoverProject(root, task, { precise: true })` searches configured saved definitions with explicit provenance. See [analysis support](precise-analysis.md).
+
+## Local provenance
+
+`getFileHistory(root, file, options?)` provides file-level Git history and current working state. `captureVerificationSnapshot(root, files, options?)`, `recordVerification(root, manifest, options?)` and `getVerification(root, id, options?)` retain caller-reported checks and assess source, environment and evidence applicability separately from outcomes. API callers can pass cancellation and detail budgets. MCP exposes read-only `llmnav_history` and `llmnav_verification`. See [local evidence](local-evidence.md) for manifests, unknown states and immutable local storage.

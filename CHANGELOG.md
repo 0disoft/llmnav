@@ -4,6 +4,13 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.19.0] — 2026-10-27
+
+### Added
+
+* JavaScript analysis through the existing TypeScript compiler adapter, with JSDoc annotations and unknown implicit-any metadata. Python uses an isolated standard AST parser; Rust provides a conservative dependency-free lexical extractor. Syntax analyses expose partial precision and limitations, reuse existing IDs/member pages/freshness proofs, and never claim compiler call resolution.
+* Reproducible additional-language and on-demand Git/verification cost measurements. Keep local verification receipts ignored in newly initialized repositories and synchronize history/verification API and CLI documentation.
+
 ## [0.18.0] — 2026-10-27
 
 ### Added

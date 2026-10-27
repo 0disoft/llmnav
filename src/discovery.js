@@ -51,7 +51,8 @@ export async function discoverProject(root, query, options = {}) {
       for (const definition of index.definitions) {
         if (definition.kind === "module") continue;
         const list = compiled.get(definition.path) ?? [];
-        list.push({ ...definition, compiler: index.generator }); compiled.set(definition.path, list);
+        const syntax = /^llmnav-(?:python|rust)-syntax@1;/u.test(index.generator ?? "");
+        list.push({ ...definition, compiler: index.generator, syntax }); compiled.set(definition.path, list);
       }
     }
     if (!loaded.indexes.length) throw new Error("No configured compiler graph. Run llmnav analyze, configure graph.indexFiles, and generate first.");
@@ -69,8 +70,9 @@ export async function discoverProject(root, query, options = {}) {
     for (const declaration of declarations) {
       throwIfAborted(options.signal);
       const match = addCandidate(results, {
-        ...base, source: compiled === null ? "declaration" : "compiler", line: declaration.line,
-        ...(compiled === null ? {} : { id: declaration.id, compiler: declaration.compiler }),
+        ...base, source: compiled === null || declaration.syntax ? "declaration" : "compiler", line: declaration.line,
+        ...(compiled === null ? {} : declaration.syntax ? { id: declaration.id, precision: "syntax", analyzer: declaration.compiler }
+          : { id: declaration.id, compiler: declaration.compiler }),
         symbol: declaration.symbol, signature: declaration.signature,
         kind: declaration.kind, language: declaration.language,
       }, queryTokens, normalized, pathTokens);

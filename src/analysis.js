@@ -1,16 +1,19 @@
 /* llmnav/1 module
 id=llmnav.structure.analyze
-role=Connect opt-in compiler-resolved TypeScript and Go definitions and references to semantic cards.
+role=Connect opt-in compiler or syntax declarations to semantic cards with explicit analysis precision.
 owns=compiler adapter orchestration|generated structural IDs|source freshness proofs|analysis publication
 excludes=dependency installation|project execution|runtime dispatch inference
-search=precise TypeScript analysis|Go type checker|compiler definition reference graph
-invariant=Compiler output is validated and source changes invalidate it before publication or compiler-input loading.
+search=precise TypeScript analysis|Go type checker|Python AST|Rust syntax|JavaScript metadata
+invariant=Analysis output is validated, precision is explicit and source changes invalidate it before publication or graph-input loading.
 rel=workflow>llmnav.graph.import
 rel=workflow>llmnav.search.discover
 stability=architecture
 */
 
 import path from "node:path";
+import { analysisFilePattern, analysisIdPrefix } from "./analysis-languages.js";
+import { analyzePython } from "./adapters/python.js";
+import { analyzeRust } from "./adapters/rust.js";
 import { throwIfAborted } from "./abort.js";
 import { analyzeTypeScript } from "./adapters/typescript.js";
 import { analyzeGo } from "./adapters/go.js";
@@ -22,22 +25,22 @@ import { assertNoSymlinkTraversal, atomicWrite, compareText, readBytes, sha256, 
 
 export async function analyzeProject(root, options = {}) {
   root = path.resolve(root);
-  if (!["typescript", "go"].includes(options.language)) throw new TypeError("analyze requires language typescript or go.");
+  const matches = analysisFilePattern(options.language);
   const project = await scanProject(root, options);
   const errors = validateProject(project).filter(item => item.severity === "error");
   if (errors.length) throw new Error(errors.map(item => `${item.code}: ${item.message}`).join("; "));
-  const matches = options.language === "go" ? /\.go$/u : /\.(?:[cm]?ts|tsx)$/u;
   const selected = project.fileRecords.filter(file => matches.test(file.relativePath));
   if (!selected.length) throw new Error(`No selected ${options.language} sources found.`);
   const sourceHashes = Object.fromEntries(selected.map(file => [file.relativePath, file.contentHash]));
-  const metadata = options.language === "go" ? ["go.mod", "go.sum"] : [options.project, "package-lock.json", "bun.lock", "pnpm-lock.yaml"].filter(Boolean);
+  const metadata = options.language === "go" ? ["go.mod", "go.sum"] : ["typescript", "javascript"].includes(options.language)
+    ? [options.project, "package-lock.json", "bun.lock", "pnpm-lock.yaml"].filter(Boolean) : [];
   for (const file of metadata) {
     const absolute = path.resolve(root, file);
     await assertNoSymlinkTraversal(root, absolute, file);
     const content = await readBytes(absolute, null, options);
     if (content !== null) sourceHashes[file.split(path.sep).join("/")] = sha256(content);
   }
-  const adapter = options.language === "go" ? analyzeGo : analyzeTypeScript;
+  const adapter = ({ go: analyzeGo, python: analyzePython, rust: analyzeRust })[options.language] ?? analyzeTypeScript;
   const raw = await adapter(root, selected.map(file => file.absolutePath), options);
   throwIfAborted(options.signal);
   for (const [file, hash] of Object.entries(raw.configHashes ?? {})) {
@@ -53,6 +56,7 @@ export async function analyzeProject(root, options = {}) {
   normalizeGraphInput(graph);
   const cardIds = new Set(project.records.map(record => record.card.id));
   return { schemaVersion: 1, language: options.language, compiler: raw.compiler, diagnostics: raw.diagnostics,
+    ...(raw.precision ? { precision: raw.precision, limitations: raw.limitations } : {}),
     counts: { definitions: graph.definitions.length, references: graph.references.length, cardBindings: graph.definitions.filter(item => cardIds.has(item.id)).length }, graph };
 }
 
@@ -111,7 +115,7 @@ export function connectDefinitions(project, raw, language, sourceHashes, options
     const matchedCard = bindCard(item);
     const identity = `${language}:${item.path}:${item.qualified}`;
     const occurrence = occurrences.get(identity) ?? 0; occurrences.set(identity, occurrence + 1);
-    const id = matchedCard ? matchedCard.card.id : `code.${language === "go" ? "go" : "ts"}.s${sha256(`${identity}:${occurrence}`).slice(0, 32)}`;
+    const id = matchedCard ? matchedCard.card.id : `code.${analysisIdPrefix(language)}.s${sha256(`${identity}:${occurrence}`).slice(0, 32)}`;
     ids.set(item.key, id);
     if (!definitionIds.has(id)) {
       definitionIds.add(id);
@@ -139,7 +143,7 @@ export function connectDefinitions(project, raw, language, sourceHashes, options
   for (const item of raw.references) add(item);
   definitions.sort((left, right) => compareText(left.id, right.id));
   const references = [...unique.values()].sort((left, right) => compareText(left.from, right.from) || compareText(left.to, right.to) || compareText(left.kind, right.kind) || compareText(left.path, right.path) || left.line - right.line);
-  return { schemaVersion: options.metadata === true ? 3 : 2, repositoryId: project.config.repositoryId, generator: `llmnav-${language}@1;${raw.compiler.name}@${raw.compiler.version}`,
+  return { schemaVersion: options.metadata === true ? 3 : 2, repositoryId: project.config.repositoryId, generator: `llmnav-${language}${raw.precision === "syntax" ? "-syntax" : ""}@1;${raw.compiler.name}@${raw.compiler.version}`,
     sourceHashes, definitions, references };
 }
 

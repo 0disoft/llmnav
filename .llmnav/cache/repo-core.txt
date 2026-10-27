@@ -204,10 +204,10 @@ invariant Automatic candidates carry source provenance and never claim reviewed 
 rel workflow>llmnav.declaration.extract, workflow>llmnav.audit.coverage
 
 @llmnav.structure.analyze
-role Connect opt-in compiler-resolved TypeScript and Go definitions and references to semantic cards.
+role Connect opt-in compiler or syntax declarations to semantic cards with explicit analysis precision.
 owns compiler adapter orchestration, generated structural IDs, source freshness proofs, analysis publication
 excludes dependency installation, project execution, runtime dispatch inference
-invariant Compiler output is validated and source changes invalidate it before publication or compiler-input loading.
+invariant Analysis output is validated, precision is explicit and source changes invalidate it before publication or graph-input loading.
 rel workflow>llmnav.graph.import, workflow>llmnav.search.discover
 
 @llmnav.structure.compiler-process
@@ -283,3 +283,24 @@ role Hash explicitly selected repository files for local provenance without reta
 owns evidence path containment, bounded byte fingerprints, file handle lifetime
 excludes semantic card validation, secret content storage
 invariant Evidence paths remain inside the repository and open handles close after errors or cancellation.
+
+@llmnav.eval.local-analysis
+role Measure additional language metadata and on-demand provenance costs in disposable repositories.
+owns additional language fixtures, history lookup observations, verification receipt costs
+excludes model token accounting, application execution, dependency installation
+invariant Measurements use disposable inputs and never equate output bytes with actual model tokens.
+rel workflow>llmnav.structure.analyze, workflow>llmnav.evidence.history, workflow>llmnav.evidence.verification
+
+@llmnav.structure.python
+role Extract Python declaration metadata with an isolated standard AST parser without importing application code.
+owns Python syntax metadata, annotation origins, lexical ownership, syntax diagnostics
+excludes type checking, import resolution, call inference, application execution
+invariant Only explicit annotations provide types and parsing never imports target modules.
+rel workflow>llmnav.structure.analyze
+
+@llmnav.structure.rust
+role Extract conservative Rust declaration syntax with explicit limits instead of claiming compiler type resolution.
+owns Rust lexical metadata, declared parameter types, local impl ownership, syntax precision
+excludes macro expansion, crate resolution, type checking, conditional compilation
+invariant Comments, literals and macro token trees never create declarations and unresolved impl ownership remains unknown.
+rel workflow>llmnav.structure.analyze

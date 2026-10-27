@@ -337,8 +337,8 @@ Discovery uses syntax heuristics and the repository language; it does not infer 
 
 For editing sessions, run `llmnav mcp --auto-generate` to prepare current indexes before semantic navigation calls.
 
-### Compiler-resolved TypeScript and Go navigation
+### Compiler and syntax navigation
 
-Run `llmnav analyze --language typescript` or `llmnav analyze --language go` with installed compiler tooling. Publish the graph with `--output`, configure `graph.indexFiles`, and generate. `discover --precise` finds compiler-resolved declarations and passes their IDs to `show` and `context`. Source hashes reject stale compiler inputs. See [compiler analysis](docs/precise-analysis.md) for setup, supported compiler APIs and partial-analysis limits.
+Run `llmnav analyze --language typescript`, `javascript` or `go` with installed compiler tooling. Python uses the installed standard AST parser; Rust provides conservative built-in syntax extraction. Add `--metadata` for bounded type/signature details, publish with `--output`, configure `graph.indexFiles`, then generate. `discover --precise` finds saved declarations and passes IDs to `show` and `context`, distinguishing syntax from compiler precision. Source hashes reject stale inputs. See [analysis support and limits](docs/precise-analysis.md), [file history and verification receipts](docs/local-evidence.md), and [measured costs](docs/local-analysis-evaluation.md).
 
 Add `--metadata` during analysis to extract compiler types, signatures, parameters and ownership. Request details with `llmnav show <id> --metadata --json`, or page direct members with `--metadata --members --top 5 --offset 0 --metadata-budget 4000`. Default navigation responses stay compact. Metadata increases analysis/storage costs; see the [measured comparison](docs/code-metadata-evaluation.md).

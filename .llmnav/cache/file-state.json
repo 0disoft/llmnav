@@ -328,6 +328,140 @@
       "sourceBytes": 1552
     },
     {
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
+              "model token accounting",
+              "application execution",
+              "dependency installation"
+            ],
+            "id": "llmnav.eval.local-analysis",
+            "invariant": [
+              "Measurements use disposable inputs and never equate output bytes with actual model tokens."
+            ],
+            "owns": [
+              "additional language fixtures",
+              "history lookup observations",
+              "verification receipt costs"
+            ],
+            "rel": [
+              "workflow>llmnav.structure.analyze",
+              "workflow>llmnav.evidence.history",
+              "workflow>llmnav.evidence.verification"
+            ],
+            "risk": [],
+            "role": "Measure additional language metadata and on-demand provenance costs in disposable repositories.",
+            "scope": "module",
+            "search": [
+              "Python Rust JavaScript metadata evaluation",
+              "history verification benchmark"
+            ],
+            "stability": "architecture",
+            "unknown": []
+          },
+          "end": 641,
+          "endLine": 12,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.eval.local-analysis"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Measure additional language metadata and on-demand provenance costs in disposable repositories."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "additional language fixtures|history lookup observations|verification receipt costs"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "model token accounting|application execution|dependency installation"
+            },
+            {
+              "key": "search",
+              "line": 6,
+              "order": 4,
+              "value": "Python Rust JavaScript metadata evaluation|history verification benchmark"
+            },
+            {
+              "key": "invariant",
+              "line": 7,
+              "order": 5,
+              "value": "Measurements use disposable inputs and never equate output bytes with actual model tokens."
+            },
+            {
+              "key": "rel",
+              "line": 8,
+              "order": 6,
+              "value": "workflow>llmnav.structure.analyze"
+            },
+            {
+              "key": "rel",
+              "line": 9,
+              "order": 7,
+              "value": "workflow>llmnav.evidence.history"
+            },
+            {
+              "key": "rel",
+              "line": 10,
+              "order": 8,
+              "value": "workflow>llmnav.evidence.verification"
+            },
+            {
+              "key": "stability",
+              "line": 11,
+              "order": 9,
+              "value": "architecture"
+            }
+          ],
+          "filePath": "benchmarks/local-analysis.js",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.eval.local-analysis\nrole=Measure additional language metadata and on-demand provenance costs in disposable repositories.\nowns=additional language fixtures|history lookup observations|verification receipt costs\nexcludes=model token accounting|application execution|dependency installation\nsearch=Python Rust JavaScript metadata evaluation|history verification benchmark\ninvariant=Measurements use disposable inputs and never equate output bytes with actual model tokens.\nrel=workflow>llmnav.structure.analyze\nrel=workflow>llmnav.evidence.history\nrel=workflow>llmnav.evidence.verification\nstability=architecture\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "c34f38bd529abf0d29960dc45f40d557b7dbea0b4ba4c1c8e6b4e7b1ca121923",
+      "declarations": [
+        null
+      ],
+      "imports": [
+        "../src/analysis.js",
+        "../src/code-metadata.js",
+        "../src/generator.js",
+        "../src/git-history.js",
+        "../src/search.js",
+        "../src/util.js",
+        "../src/verification.js",
+        "node:assert/strict",
+        "node:child_process",
+        "node:fs/promises",
+        "node:os",
+        "node:path",
+        "node:perf_hooks"
+      ],
+      "path": "benchmarks/local-analysis.js",
+      "semanticBytes": 641,
+      "sourceBytes": 10267
+    },
+    {
       "blocks": [],
       "contentHash": "b5ce6d095a1c6692837072de44313bf01f5bbe86b6759e2f39e6dbf75e830e4a",
       "declarations": [],
@@ -2135,6 +2269,230 @@
           "card": {
             "effect": [],
             "excludes": [
+              "type checking",
+              "import resolution",
+              "call inference",
+              "application execution"
+            ],
+            "id": "llmnav.structure.python",
+            "invariant": [
+              "Only explicit annotations provide types and parsing never imports target modules."
+            ],
+            "owns": [
+              "Python syntax metadata",
+              "annotation origins",
+              "lexical ownership",
+              "syntax diagnostics"
+            ],
+            "rel": [
+              "workflow>llmnav.structure.analyze"
+            ],
+            "risk": [],
+            "role": "Extract Python declaration metadata with an isolated standard AST parser without importing application code.",
+            "scope": "module",
+            "search": [
+              "Python AST analysis",
+              "Python parameter annotations",
+              "Python fields"
+            ],
+            "stability": "architecture",
+            "unknown": []
+          },
+          "end": 547,
+          "endLine": 10,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.structure.python"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Extract Python declaration metadata with an isolated standard AST parser without importing application code."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "Python syntax metadata|annotation origins|lexical ownership|syntax diagnostics"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "type checking|import resolution|call inference|application execution"
+            },
+            {
+              "key": "search",
+              "line": 6,
+              "order": 4,
+              "value": "Python AST analysis|Python parameter annotations|Python fields"
+            },
+            {
+              "key": "invariant",
+              "line": 7,
+              "order": 5,
+              "value": "Only explicit annotations provide types and parsing never imports target modules."
+            },
+            {
+              "key": "rel",
+              "line": 8,
+              "order": 6,
+              "value": "workflow>llmnav.structure.analyze"
+            },
+            {
+              "key": "stability",
+              "line": 9,
+              "order": 7,
+              "value": "architecture"
+            }
+          ],
+          "filePath": "src/adapters/python.js",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.structure.python\nrole=Extract Python declaration metadata with an isolated standard AST parser without importing application code.\nowns=Python syntax metadata|annotation origins|lexical ownership|syntax diagnostics\nexcludes=type checking|import resolution|call inference|application execution\nsearch=Python AST analysis|Python parameter annotations|Python fields\ninvariant=Only explicit annotations provide types and parsing never imports target modules.\nrel=workflow>llmnav.structure.analyze\nstability=architecture\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "0ecbcb0caf482e2cc2448986dcb9b0d68fad95ac9b572a5b07aa4eeb041cc757",
+      "declarations": [
+        null
+      ],
+      "imports": [
+        "./process.js"
+      ],
+      "path": "src/adapters/python.js",
+      "semanticBytes": 547,
+      "sourceBytes": 6530
+    },
+    {
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
+              "macro expansion",
+              "crate resolution",
+              "type checking",
+              "conditional compilation"
+            ],
+            "id": "llmnav.structure.rust",
+            "invariant": [
+              "Comments, literals and macro token trees never create declarations and unresolved impl ownership remains unknown."
+            ],
+            "owns": [
+              "Rust lexical metadata",
+              "declared parameter types",
+              "local impl ownership",
+              "syntax precision"
+            ],
+            "rel": [
+              "workflow>llmnav.structure.analyze"
+            ],
+            "risk": [],
+            "role": "Extract conservative Rust declaration syntax with explicit limits instead of claiming compiler type resolution.",
+            "scope": "module",
+            "search": [
+              "Rust syntax metadata",
+              "Rust impl fields",
+              "Rust function parameters"
+            ],
+            "stability": "architecture",
+            "unknown": []
+          },
+          "end": 588,
+          "endLine": 10,
+          "entries": [
+            {
+              "key": "id",
+              "line": 2,
+              "order": 0,
+              "value": "llmnav.structure.rust"
+            },
+            {
+              "key": "role",
+              "line": 3,
+              "order": 1,
+              "value": "Extract conservative Rust declaration syntax with explicit limits instead of claiming compiler type resolution."
+            },
+            {
+              "key": "owns",
+              "line": 4,
+              "order": 2,
+              "value": "Rust lexical metadata|declared parameter types|local impl ownership|syntax precision"
+            },
+            {
+              "key": "excludes",
+              "line": 5,
+              "order": 3,
+              "value": "macro expansion|crate resolution|type checking|conditional compilation"
+            },
+            {
+              "key": "search",
+              "line": 6,
+              "order": 4,
+              "value": "Rust syntax metadata|Rust impl fields|Rust function parameters"
+            },
+            {
+              "key": "invariant",
+              "line": 7,
+              "order": 5,
+              "value": "Comments, literals and macro token trees never create declarations and unresolved impl ownership remains unknown."
+            },
+            {
+              "key": "rel",
+              "line": 8,
+              "order": 6,
+              "value": "workflow>llmnav.structure.analyze"
+            },
+            {
+              "key": "stability",
+              "line": 9,
+              "order": 7,
+              "value": "architecture"
+            }
+          ],
+          "filePath": "src/adapters/rust.js",
+          "indent": "",
+          "newline": "\n",
+          "prefix": null,
+          "raw": "/* llmnav/1 module\nid=llmnav.structure.rust\nrole=Extract conservative Rust declaration syntax with explicit limits instead of claiming compiler type resolution.\nowns=Rust lexical metadata|declared parameter types|local impl ownership|syntax precision\nexcludes=macro expansion|crate resolution|type checking|conditional compilation\nsearch=Rust syntax metadata|Rust impl fields|Rust function parameters\ninvariant=Comments, literals and macro token trees never create declarations and unresolved impl ownership remains unknown.\nrel=workflow>llmnav.structure.analyze\nstability=architecture\n*/",
+          "scope": "module",
+          "specVersion": "1",
+          "start": 0,
+          "startLine": 1,
+          "style": "block",
+          "syntaxErrors": []
+        }
+      ],
+      "contentHash": "95abf16e776414d1459f2e0b6dd5b9dba45dbb4db26745bc6865db783b11d875",
+      "declarations": [
+        null
+      ],
+      "imports": [
+        "../abort.js",
+        "../util.js",
+        "node:path"
+      ],
+      "path": "src/adapters/rust.js",
+      "semanticBytes": 588,
+      "sourceBytes": 10363
+    },
+    {
+      "blocks": [
+        {
+          "card": {
+            "effect": [],
+            "excludes": [
               "compiler installation",
               "source mutation",
               "business meaning inference",
@@ -2228,14 +2586,14 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "3e07e90dc1ed3376a12bb6b0fbe42a84c53c6b2f808699ed2df0266ad974fb20",
+      "contentHash": "3e286a6388755dfc449cd05b36fa0e0d0056ec5e727e5f3e72f120d1d6707379",
       "declarations": [
         null
       ],
       "imports": [],
       "path": "src/adapters/typescript-metadata.js",
       "semanticBytes": 547,
-      "sourceBytes": 2948
+      "sourceBytes": 3248
     },
     {
       "blocks": [
@@ -2335,7 +2693,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "bf2f0d9c114c4ba9f07437021f80b5348b29faad25a2e6cae92cd894b0f0615f",
+      "contentHash": "863e1cb2b09a219adc17ef27cccedf1e7e98bbd2238e85a4a55ce2cbd9eff74e",
       "declarations": [
         null
       ],
@@ -2348,7 +2706,7 @@
       ],
       "path": "src/adapters/typescript-worker.js",
       "semanticBytes": 546,
-      "sourceBytes": 11165
+      "sourceBytes": 11453
     },
     {
       "blocks": [
@@ -2445,7 +2803,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "e5e364619baba00e4fd36045ce4d91da45e22e98bb5d13beca616cde9e4edbe4",
+      "contentHash": "695326d690777ef2f30796c0705f8444c4d5cad43a5234c22f850bd551db7215",
       "declarations": [
         null
       ],
@@ -2457,7 +2815,7 @@
       ],
       "path": "src/adapters/typescript.js",
       "semanticBytes": 486,
-      "sourceBytes": 1566
+      "sourceBytes": 1594
     },
     {
       "blocks": [
@@ -2679,7 +3037,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "4cd3804beba0a9e894e5620bd6797eb94580eb512667ceb40d7e64d0b926352f",
+      "contentHash": "73316e4293258e0490a2b5f06578b1ee48f2c59cacbaab115d24b88d7e0a94d1",
       "declarations": [
         null
       ],
@@ -2688,7 +3046,7 @@
       ],
       "path": "src/agent-tools.js",
       "semanticBytes": 411,
-      "sourceBytes": 5866
+      "sourceBytes": 5927
     },
     {
       "blocks": [
@@ -2791,6 +3149,15 @@
       "sourceBytes": 7142
     },
     {
+      "blocks": [],
+      "contentHash": "83f58e9d5f560ff6ed7f1a3d5df7d1d1e9251da380e33833153925fb925eb92d",
+      "declarations": [],
+      "imports": [],
+      "path": "src/analysis-languages.js",
+      "semanticBytes": 0,
+      "sourceBytes": 556
+    },
+    {
       "blocks": [
         {
           "card": {
@@ -2802,7 +3169,7 @@
             ],
             "id": "llmnav.structure.analyze",
             "invariant": [
-              "Compiler output is validated and source changes invalidate it before publication or compiler-input loading."
+              "Analysis output is validated, precision is explicit and source changes invalidate it before publication or graph-input loading."
             ],
             "owns": [
               "compiler adapter orchestration",
@@ -2815,17 +3182,19 @@
               "workflow>llmnav.search.discover"
             ],
             "risk": [],
-            "role": "Connect opt-in compiler-resolved TypeScript and Go definitions and references to semantic cards.",
+            "role": "Connect opt-in compiler or syntax declarations to semantic cards with explicit analysis precision.",
             "scope": "module",
             "search": [
               "precise TypeScript analysis",
               "Go type checker",
-              "compiler definition reference graph"
+              "Python AST",
+              "Rust syntax",
+              "JavaScript metadata"
             ],
             "stability": "architecture",
             "unknown": []
           },
-          "end": 632,
+          "end": 661,
           "endLine": 11,
           "entries": [
             {
@@ -2838,7 +3207,7 @@
               "key": "role",
               "line": 3,
               "order": 1,
-              "value": "Connect opt-in compiler-resolved TypeScript and Go definitions and references to semantic cards."
+              "value": "Connect opt-in compiler or syntax declarations to semantic cards with explicit analysis precision."
             },
             {
               "key": "owns",
@@ -2856,13 +3225,13 @@
               "key": "search",
               "line": 6,
               "order": 4,
-              "value": "precise TypeScript analysis|Go type checker|compiler definition reference graph"
+              "value": "precise TypeScript analysis|Go type checker|Python AST|Rust syntax|JavaScript metadata"
             },
             {
               "key": "invariant",
               "line": 7,
               "order": 5,
-              "value": "Compiler output is validated and source changes invalidate it before publication or compiler-input loading."
+              "value": "Analysis output is validated, precision is explicit and source changes invalidate it before publication or graph-input loading."
             },
             {
               "key": "rel",
@@ -2887,7 +3256,7 @@
           "indent": "",
           "newline": "\n",
           "prefix": null,
-          "raw": "/* llmnav/1 module\nid=llmnav.structure.analyze\nrole=Connect opt-in compiler-resolved TypeScript and Go definitions and references to semantic cards.\nowns=compiler adapter orchestration|generated structural IDs|source freshness proofs|analysis publication\nexcludes=dependency installation|project execution|runtime dispatch inference\nsearch=precise TypeScript analysis|Go type checker|compiler definition reference graph\ninvariant=Compiler output is validated and source changes invalidate it before publication or compiler-input loading.\nrel=workflow>llmnav.graph.import\nrel=workflow>llmnav.search.discover\nstability=architecture\n*/",
+          "raw": "/* llmnav/1 module\nid=llmnav.structure.analyze\nrole=Connect opt-in compiler or syntax declarations to semantic cards with explicit analysis precision.\nowns=compiler adapter orchestration|generated structural IDs|source freshness proofs|analysis publication\nexcludes=dependency installation|project execution|runtime dispatch inference\nsearch=precise TypeScript analysis|Go type checker|Python AST|Rust syntax|JavaScript metadata\ninvariant=Analysis output is validated, precision is explicit and source changes invalidate it before publication or graph-input loading.\nrel=workflow>llmnav.graph.import\nrel=workflow>llmnav.search.discover\nstability=architecture\n*/",
           "scope": "module",
           "specVersion": "1",
           "start": 0,
@@ -2896,14 +3265,17 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "598f1fc48f293e06797d64f1bcd600900dd9173c93bc47b19f7d99a97f89eeda",
+      "contentHash": "641137db838637d10fa4c81c097d5976c094eb22e6afc6f2217eb67937977b1d",
       "declarations": [
         null
       ],
       "imports": [
         "./abort.js",
         "./adapters/go.js",
+        "./adapters/python.js",
+        "./adapters/rust.js",
         "./adapters/typescript.js",
+        "./analysis-languages.js",
         "./config.js",
         "./graph-input.js",
         "./project.js",
@@ -2912,8 +3284,8 @@
         "node:path"
       ],
       "path": "src/analysis.js",
-      "semanticBytes": 632,
-      "sourceBytes": 9032
+      "semanticBytes": 661,
+      "sourceBytes": 9340
     },
     {
       "blocks": [
@@ -3352,7 +3724,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "8db648c24181d40793c8054cee7475c03f74eb3a598bde31d3bc11bfba9dc7db",
+      "contentHash": "d7c33f4841b70c357eba252e8d73d9533713e8f7c4c4bf3099617c16d55def97",
       "declarations": [
         null
       ],
@@ -3387,7 +3759,7 @@
       ],
       "path": "src/cli.js",
       "semanticBytes": 508,
-      "sourceBytes": 29305
+      "sourceBytes": 29475
     },
     {
       "blocks": [
@@ -3487,7 +3859,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "5a264dee473cc122b77280513291131569b08e0c715cf8b7507bc374276a9eb7",
+      "contentHash": "552db19e2e8a43b750e29f783719c473734f315dff3541b14d06016fb9e69e9e",
       "declarations": [
         null
       ],
@@ -3497,7 +3869,7 @@
       ],
       "path": "src/code-metadata.js",
       "semanticBytes": 544,
-      "sourceBytes": 6724
+      "sourceBytes": 7001
     },
     {
       "blocks": [
@@ -4029,7 +4401,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "7105ed8d243f07174a29ed29afc8d09ad77676f632f4190995263c10dc43fde6",
+      "contentHash": "4ae038eaccd7bcc71e8e9870dc750ad73e3b86108e8d5e54c8cc2f103b20f049",
       "declarations": [
         null
       ],
@@ -4044,7 +4416,7 @@
       ],
       "path": "src/discovery.js",
       "semanticBytes": 597,
-      "sourceBytes": 7524
+      "sourceBytes": 7752
     },
     {
       "blocks": [
@@ -5141,12 +5513,13 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "3b8e5e48230e88c04f749512c89420a2032dc574fe8cefd786873cb45eb919d2",
+      "contentHash": "bbc0bd27a091fc7bd660cc5bbebe7deb39671e4b2f07c0c8217ae2e2fe056c6e",
       "declarations": [
         null
       ],
       "imports": [
         "./abort.js",
+        "./analysis-languages.js",
         "./code-metadata.js",
         "./concurrency.js",
         "./files.js",
@@ -5157,7 +5530,7 @@
       ],
       "path": "src/graph-input.js",
       "semanticBytes": 397,
-      "sourceBytes": 9444
+      "sourceBytes": 9519
     },
     {
       "blocks": [
@@ -5385,14 +5758,14 @@
     },
     {
       "blocks": [],
-      "contentHash": "8f3d2db78d482081212c047a0860eadde3a98117a2f398215caf8ae637e9f659",
+      "contentHash": "5b220df8b519c34cd124a599e7720610430fadf2e453f7c3240924d493ee70f3",
       "declarations": [],
       "imports": [
         "./spec.js"
       ],
       "path": "src/index.d.ts",
       "semanticBytes": 0,
-      "sourceBytes": 40810
+      "sourceBytes": 41056
     },
     {
       "blocks": [],
@@ -5547,7 +5920,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "5b37d2b44fb6fdeb05a64f5b7fc7f26b373fd13eb3eabeece4a3c0b448b621db",
+      "contentHash": "06293e9bcc437b4f3b65241dc060bc7e29035d3e8dcfa51b5e728b06b2eeb2a0",
       "declarations": [
         null
       ],
@@ -5562,7 +5935,7 @@
       ],
       "path": "src/initializer.js",
       "semanticBytes": 493,
-      "sourceBytes": 7300
+      "sourceBytes": 7308
     },
     {
       "blocks": [
@@ -7390,7 +7763,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "360199c530521e143d66039bdf5b24948cfc574fa7e2a8577fefffdffbe28386",
+      "contentHash": "b74e5c201eb667fa8a4ca13b221841eaa221cfabe1b197bd13d2fc9a372eaec1",
       "declarations": [
         null
       ],
@@ -7886,6 +8259,27 @@
     },
     {
       "blocks": [],
+      "contentHash": "b87e23ae4f275408288625c3f2d8f5a3925e1f1abf1d2d92b4373e28bb31bf1d",
+      "declarations": [],
+      "imports": [
+        "../src/analysis.js",
+        "../src/config.js",
+        "../src/discovery.js",
+        "../src/graph-input.js",
+        "node:assert/strict",
+        "node:child_process",
+        "node:fs/promises",
+        "node:os",
+        "node:path",
+        "node:test",
+        "node:url"
+      ],
+      "path": "tests/additional-languages.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 8764
+    },
+    {
+      "blocks": [],
       "contentHash": "98f951b7d620724a35822d0b09ecdc3a70b66eb463867801e42dba10f1aef170",
       "declarations": [],
       "imports": [
@@ -7997,7 +8391,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "10688d0f532326fd3d763ae088f5eb682b32bb6830c113922f87bc6e4b8ae14c",
+      "contentHash": "def8202fc3342af5b1ecd0dcb02dacb43bbc3a6bc4295334b3c3d0191dba52ff",
       "declarations": [],
       "imports": [
         "../src/cli.js",
@@ -8012,7 +8406,7 @@
       ],
       "path": "tests/cli.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 5303
+      "sourceBytes": 5417
     },
     {
       "blocks": [],
@@ -8421,7 +8815,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "f75c93af6614fc470dbfffcec90e43e1dee2c1b7b74f9ff88271f70874a22ee6",
+      "contentHash": "efbeb6fd682b902bceb269203bb1e0f4bfe105521e8ad2be2350fe404aa68ed6",
       "declarations": [],
       "imports": [
         "../src/initializer.js",
@@ -8435,7 +8829,7 @@
       ],
       "path": "tests/initializer.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 7863
+      "sourceBytes": 7962
     },
     {
       "blocks": [],
@@ -8648,7 +9042,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "b71247d6388826c50cb21c1acf090af4d90c81d79bd4b4f2be4569c2521f5ace",
+      "contentHash": "c7dc7cdd8a380b304a83565824c35f5046973d0e3534b516fcfc455663e4bb9c",
       "declarations": [],
       "imports": [
         "../examples/provider-neutral-host.mjs",
@@ -8664,7 +9058,7 @@
       ],
       "path": "tests/provider-neutral-example.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 4740
+      "sourceBytes": 4787
     },
     {
       "blocks": [],

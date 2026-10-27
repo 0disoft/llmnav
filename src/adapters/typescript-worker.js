@@ -29,8 +29,10 @@ function analyze(request) {
   const root = path.resolve(request.root);
   const selectedPaths = request.files.map(file => path.resolve(file));
   const configHashes = Object.create(null);
+  const javascript = request.language === "javascript";
   let options = { target: ts.ScriptTarget.ESNext, module: ts.ModuleKind.NodeNext, moduleResolution: ts.ModuleResolutionKind.NodeNext, noEmit: true, skipLibCheck: true, types: [] };
   let names = selectedPaths;
+  if (javascript) Object.assign(options, { allowJs: true, checkJs: true, noImplicitAny: false });
   if (request.project) {
     const project = path.resolve(root, request.project);
     if (!inside(root, project)) throw new Error("TypeScript project must be inside the repository.");
@@ -39,6 +41,7 @@ function analyze(request) {
     const parsed = ts.parseJsonConfigFileContent(loaded.config, { ...ts.sys, readFile: readConfig }, path.dirname(project));
     if (parsed.errors.length) throw new Error(parsed.errors.map(error => ts.flattenDiagnosticMessageText(error.messageText, "\n")).join("\n"));
     options = { ...parsed.options, noEmit: true, incremental: false };
+    if (javascript) Object.assign(options, { allowJs: true, checkJs: true });
     names = parsed.fileNames;
   }
   const host = ts.createCompilerHost(options);
@@ -58,7 +61,7 @@ function analyze(request) {
       inputs.add(absolute);
       // Package imports/exports and module type affect resolution without a source edit.
       // Hash the same metadata bytes decoded for the compiler, as for tsconfig files.
-      if (path.basename(absolute) === "package.json") return readConfig(absolute);
+      if (javascript || path.basename(absolute) === "package.json") return readConfig(absolute);
     }
     return originalRead(file);
   };
@@ -90,7 +93,7 @@ function analyze(request) {
           const qualified = `${scope}/${kind}:${node.name.text}`;
           const display = (ts.isMethodDeclaration(node) || ts.isMethodSignature(node)) && node.parent.name ? `${node.parent.name.text}.${node.name.text}` : node.name.text;
           const record = { key, symbol: node.name.text, display, path: relative(source.fileName), line: source.getLineAndCharacterOfPosition(declaration.name.getStart(source)).line + 1, offset: declaration.getStart(source), kind, qualified, parent: nearestOwner(node.parent) };
-          if (request.metadata) record.metadata = typeScriptMetadata(ts, checker, declaration, partial);
+          if (request.metadata) record.metadata = typeScriptMetadata(ts, checker, declaration, partial, javascript ? "javascript" : "typescript");
           // Retain card attachment to the first signature when the implementation has no card.
           if (declaration !== node) {
             record.signatureOffset = node.getStart(source);
