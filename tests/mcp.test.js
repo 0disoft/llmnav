@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { EventEmitter, getEventListeners, once } from "node:events";
-import { mkdir, mkdtemp, readFile, rename, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, readdir, rename, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
@@ -14,6 +14,7 @@ import { initializeProject } from "../src/initializer.js";
 import { queryProject } from "../src/search.js";
 import { PACKAGE_VERSION } from "../src/spec.js";
 import { sha256 } from "../src/util.js";
+import { captureVerificationSnapshot, recordVerification } from "../src/verification.js";
 
 const CLI = fileURLToPath(new URL("../bin/llmnav.js", import.meta.url));
 
@@ -85,16 +86,56 @@ test("serves the stable agent tool schema over JSON-RPC", async (context) => {
   assert.deepEqual(ping.result, {});
 });
 
-test("MCP annotations distinguish automatic cache writes from live discovery", async () => {
+test("MCP annotations distinguish automatic cache writes from session-independent reads", async () => {
   const server = createMcpServer({ root: ".", autoGenerate: true });
   const listed = await server.handleMessage({ jsonrpc: "2.0", id: 1, method: "tools/list" });
   for (const tool of listed.result.tools) {
-    assert.equal(tool.annotations.readOnlyHint, tool.name === "llmnav_discover");
+    assert.equal(tool.annotations.readOnlyHint, ["llmnav_discover", "llmnav_history", "llmnav_verification"].includes(tool.name));
     assert.equal(tool.annotations.destructiveHint, false);
   }
   // Transport-specific hints do not change the provider-neutral schema contract.
   assert.ok(getAgentToolDefinitions().every(tool => !Object.hasOwn(tool, "annotations")));
 });
+
+for (const autoGenerate of [false, true]) {
+  test(`local evidence bypasses MCP snapshot loading (autoGenerate=${autoGenerate})`, async (context) => {
+    const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-mcp-evidence-"));
+    context.after(() => rm(root, { recursive: true, force: true }));
+    await writeFile(path.join(root, "source.ts"), "export const value = 1;\n");
+    await writeFile(path.join(root, "test.log"), "PASS\n");
+    const git = (...args) => {
+      const result = spawnSync("git", ["-c", "commit.gpgsign=false", "-c", "core.hooksPath=.no-hooks", "-c", "user.name=Fixture", "-c", "user.email=fixture@example.invalid", ...args], { cwd: root, encoding: "utf8", windowsHide: true });
+      assert.equal(result.status, 0, result.stderr);
+      return result.stdout.trim();
+    };
+    git("init", "-q");
+    git("add", "source.ts");
+    git("commit", "-qm", "fixture");
+    const head = git("rev-parse", "HEAD");
+    const snapshot = await captureVerificationSnapshot(root, ["source.ts"], { completeInputs: true });
+    const receipt = await recordVerification(root, { snapshot, command: ["fixture-check"], outcome: "passed", evidence: ["test.log"] });
+    let loads = 0;
+    const server = createMcpServer({ root, autoGenerate, createSession: () => {
+      loads += 1;
+      throw new Error("Navigation snapshot must not be loaded for local evidence.");
+    } });
+
+    const history = await callTool(server, 1, "llmnav_history", { file: "source.ts" });
+    assert.equal(history.data.lastChange.commit, head);
+    assert.deepEqual(history.data.dirty, { staged: false, unstaged: false, untracked: false });
+    const verification = await callTool(server, 2, "llmnav_verification", { id: receipt.id });
+    assert.equal(verification.data.outcome, "passed");
+    assert.equal(verification.data.applicability, "matches");
+    const missing = await callTool(server, 3, "llmnav_verification", { id: "0".repeat(64) });
+    assert.equal(missing.data.status, "unknown");
+    const invalid = await server.handleMessage({ jsonrpc: "2.0", id: 4, method: "tools/call", params: { name: "llmnav_verification", arguments: { id: 123 } } });
+    assert.equal(invalid.result.isError, true);
+    assert.equal(JSON.parse(invalid.result.content[0].text).error.code, "LNVAP002");
+    assert.equal(loads, 0);
+    assert.equal(server.status().phase, "idle");
+    assert.deepEqual(await readdir(path.join(root, ".llmnav")), ["local"]);
+  });
+}
 
 test("executes agent operations over one stdio session in request order", async (context) => {
   const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-mcp-session-"));

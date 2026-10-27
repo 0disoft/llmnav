@@ -37,6 +37,9 @@ const INTERNAL_ERROR = -32603;
 // The registry is included because active-ID merges rewrite it without a generation.
 const SESSION_CACHE_FILES = ["manifest.json", "index.json", "search-index.json", "graph.json"];
 
+// Live discovery and local evidence do not consume a navigation snapshot.
+const SESSION_INDEPENDENT_TOOLS = new Set(["llmnav_discover", "llmnav_history", "llmnav_verification"]);
+
 export function createMcpServer(options = {}) {
   const root = options.root;
   if (typeof root !== "string" || root.length === 0) {
@@ -119,7 +122,7 @@ async function callTool(id, params, root, session, sessionCache, requestTimeoutM
   try {
     throwIfAborted(options.signal);
     const operation = Promise.resolve().then(async () => {
-      const activeSession = params.name === "llmnav_discover"
+      const activeSession = SESSION_INDEPENDENT_TOOLS.has(params.name)
         ? null : await resolveSession(session, sessionCache, controller.signal);
       throwIfAborted(controller.signal);
       return executeAgentOperation(root, params.name, input, {
@@ -279,10 +282,10 @@ function toMcpTool(definition, autoGenerate) {
     name: definition.name,
     description: definition.description,
     inputSchema: definition.inputSchema,
-    // Discovery never prepares an index. Other operations can write generated
+    // Session-independent reads never prepare an index. Other operations can write generated
     // cache files only when the host explicitly opts into automatic generation.
     annotations: {
-      readOnlyHint: !autoGenerate || definition.name === "llmnav_discover",
+      readOnlyHint: !autoGenerate || SESSION_INDEPENDENT_TOOLS.has(definition.name),
       destructiveHint: false,
       idempotentHint: true,
       openWorldHint: false,

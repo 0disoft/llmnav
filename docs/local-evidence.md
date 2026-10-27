@@ -6,7 +6,7 @@
 llmnav history src/analysis.js --json
 ```
 
-API: `getFileHistory(root, file, { signal, timeoutMs, gitCommand })`; MCP: `llmnav_history` with `{ file }`. Use a path from `show` or `discover`. The operation has no default-navigation cost and writes no Git state or generated artifact.
+API: `getFileHistory(root, file, { signal, timeoutMs, gitCommand })`; MCP: `llmnav_history` with `{ file }`. Use a path from `show` or `discover`. The operation has no default-navigation cost and writes no Git state or generated artifact. MCP history and verification lookups work without a generated navigation index and remain read-only with `autoGenerate: true`.
 
 `lastChange` names the last file commit and committer date, with `scope: "file"`. `dirty` separates staged, unstaged and untracked changes. Index and working-file byte fingerprints refresh even when HEAD is unchanged. Missing/deleted working files have a null hash. Unborn repositories have no HEAD or last change; non-Git folders return `unknown`. Missing tools, permissions, cancellation and process failures propagate rather than becoming an empty history.
 

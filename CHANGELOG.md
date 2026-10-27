@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.19.8] — 2026-10-27
+
+### Fixed
+
+* Isolate MCP file-history and verification lookups from navigation snapshot loading. Previously both calls failed without a generated index despite the corresponding API operations succeeding, and automatic generation could unnecessarily prepare caches before these reads. Share the session-independent tool set with read-only annotations. Regression fixtures query a real Git commit, a matching receipt, a missing receipt and invalid input without loading a snapshot or creating generated artifacts, with automatic generation both disabled and enabled. Navigation session loads for these lookups drop from one attempt per call to zero; public tool inputs and result envelopes are unchanged.
+
 ## [0.19.7] — 2026-10-27
 
 ### Fixed

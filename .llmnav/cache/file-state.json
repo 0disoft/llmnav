@@ -6519,7 +6519,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "94be853ab91fa0ef134b5868e92e0df49d85234f80c6e0329cbf17d7fb45a55a",
+      "contentHash": "9cd1f9b286ddbf9ced783ccba2ac8d67a7680f0ab765b37ee819ebfa77f9ca21",
       "declarations": [
         null
       ],
@@ -6540,7 +6540,7 @@
       ],
       "path": "src/mcp.js",
       "semanticBytes": 667,
-      "sourceBytes": 16310
+      "sourceBytes": 16524
     },
     {
       "blocks": [
@@ -8010,7 +8010,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "da6dc76d0c5f76fb9777a411e2298cda85a770ffdb38e5b5fd45d608af22f9e2",
+      "contentHash": "84b72e8133d3a31e29b601ca73a4cb8dd3163e502d880d65c31c878ac6505cf2",
       "declarations": [
         null
       ],
@@ -9192,7 +9192,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "712b8311d3c3fb7711bd7b98a47f05345422a7dd5a9f75c3e75a887cd7bce0e1",
+      "contentHash": "86cd50d3f68681fed0d65cd46c69212434952689aaded46c3fb5b8681e98d9d0",
       "declarations": [],
       "imports": [
         "../src/agent-protocol.js",
@@ -9202,6 +9202,7 @@
         "../src/search.js",
         "../src/spec.js",
         "../src/util.js",
+        "../src/verification.js",
         "node:assert/strict",
         "node:child_process",
         "node:events",
@@ -9214,7 +9215,7 @@
       ],
       "path": "tests/mcp.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 27579
+      "sourceBytes": 30190
     },
     {
       "blocks": [],
