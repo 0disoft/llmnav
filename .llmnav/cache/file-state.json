@@ -5280,7 +5280,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "7fd13b5c9813be8e6d83320a982ed22e4e4fb667c8d00806d8b5090f51aaa851",
+      "contentHash": "4be897432af867cb5859751892a78592425a4c3756354d091bfed9ab8ac9b0b4",
       "declarations": [
         null
       ],
@@ -5293,7 +5293,7 @@
       ],
       "path": "src/files.js",
       "semanticBytes": 485,
-      "sourceBytes": 5303
+      "sourceBytes": 5473
     },
     {
       "blocks": [
@@ -8011,7 +8011,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "8bc42d50b7425bc4fa914e1c5cffc8cdccea8be5c94cd4fc7cb658391401ea62",
+      "contentHash": "70c1d7d4ec1a31e5d18b860d6a4839c76c0c3c0a179c22d22d7e773c21e89221",
       "declarations": [
         null
       ],
@@ -9582,6 +9582,27 @@
       "path": "tests/source-read.test.js",
       "semanticBytes": 0,
       "sourceBytes": 5333
+    },
+    {
+      "blocks": [],
+      "contentHash": "0b100149093e3e389a212e717f8f2df880982e5fbffb7c26a484c9b6a0a7dabd",
+      "declarations": [],
+      "imports": [
+        "../src/config.js",
+        "../src/files.js",
+        "../src/generator.js",
+        "../src/initializer.js",
+        "../src/search.js",
+        "node:assert/strict",
+        "node:fs/promises",
+        "node:module",
+        "node:os",
+        "node:path",
+        "node:test"
+      ],
+      "path": "tests/source-traversal-race.test.js",
+      "semanticBytes": 0,
+      "sourceBytes": 3320
     },
     {
       "blocks": [],

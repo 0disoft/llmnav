@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.19.11] — 2026-10-27
+
+### Fixed
+
+* Restrict optional-source `ENOENT` handling to the initial root probe. A directory disappearing during traversal now fails the scan instead of silently discarding successfully read sibling batches and publishing an incomplete index. A deterministic reproduction previously reported successful generation while dropping one of two cards even though its source still existed. Regression tests remove a directory immediately before reading it, verify byte-for-byte preservation of published control state in full/incremental and serial/parallel modes, and confirm recovery on the next generation. Initially absent optional roots remain supported. The change adds no filesystem calls or retries.
+
 ## [0.19.10] — 2026-10-27
 
 ### Fixed

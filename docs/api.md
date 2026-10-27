@@ -227,6 +227,8 @@ MCP shared session loads have a separate 15000 ms deadline, configurable with `s
 
 Generation verification uses at most eight concurrent file reads, preserves sorted failure precedence, and completes pending reads before rollback. Each staged artifact is read once for exact-byte and manifest verification; installed files are independently reread after the directory swap. Go module discovery uses the scan's `ioConcurrency` limit and retains sorted module output and metadata symlink checks.
 
+Source roots absent at their initial probe remain optional. Once directory traversal starts, a disappearing directory fails the scan with its original filesystem error. Full and incremental generation preserve the published cache, registry and stable order rather than publishing an incomplete source set. Retry generation after the source tree settles.
+
 Registry resolution uses an explicit traversal stack and path-position lookup, so long redirect chains do not consume the JavaScript call stack. Shared acyclic replacement branches are visited once per resolution. Multi-target candidates retain their input order and remain ambiguous; cycle results retain the first depth-first witness. Validation classifies cycle-reaching IDs in linear graph work without constructing a result chain for every ID.
 
 ## Build and update an inverted index

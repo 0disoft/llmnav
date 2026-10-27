@@ -52,20 +52,24 @@ export async function collectSourceFiles(root, config, requestedPaths = [], opti
     const absolute = path.resolve(root, sourceRoot);
     assertInsideRoot(root, absolute, sourceRoot);
     if (isInternalPath(root, absolute, config)) continue;
+    let details;
     try {
       await assertNoSymlinkTraversal(root, absolute, `Source path ${JSON.stringify(sourceRoot)}`);
-      const details = await lstat(absolute);
-      if (details.isSymbolicLink()) throw new Error(`Source path ${JSON.stringify(sourceRoot)} is a symbolic link.`);
-      if (details.isFile()) {
-        if (shouldIncludeFile(root, absolute, config)) files.set(absolute, true);
-      } else if (details.isDirectory()) {
-        await walkDirectory(root, absolute, config, files, {
-          signal: options.signal,
-          ioConcurrency: options.ioConcurrency ?? DEFAULT_IO_CONCURRENCY,
-        });
-      }
+      details = await lstat(absolute);
     } catch (error) {
-      if (!error || typeof error !== "object" || error.code !== "ENOENT") throw error;
+      if (error && typeof error === "object" && error.code === "ENOENT") continue;
+      throw error;
+    }
+    if (details.isSymbolicLink()) throw new Error(`Source path ${JSON.stringify(sourceRoot)} is a symbolic link.`);
+    if (details.isFile()) {
+      if (shouldIncludeFile(root, absolute, config)) files.set(absolute, true);
+    } else if (details.isDirectory()) {
+      // Once traversal starts, a missing descendant means the scan is incomplete.
+      // Do not publish it as though unrelated sibling files had been deleted.
+      await walkDirectory(root, absolute, config, files, {
+        signal: options.signal,
+        ioConcurrency: options.ioConcurrency ?? DEFAULT_IO_CONCURRENCY,
+      });
     }
   }
   return [...files.keys()].sort((left, right) => compareText(relativePosix(root, left), relativePosix(root, right)));
