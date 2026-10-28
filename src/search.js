@@ -800,6 +800,7 @@ function contextNodeId(node, localRepositoryId) {
 }
 
 function applyGraphBonuses(index, graph, seeds, byId, resultsById, metrics) {
+  if (seeds.length === 0) return;
   const adjacency = buildGraphAdjacency(graph);
   for (const seed of seeds) {
     const key = `${index.repositoryId}/${seed.card.id}`;

@@ -33,6 +33,44 @@ const index = {
   ],
 };
 
+test("unmatched queries skip graph expansion while later matches still receive bonuses", context => {
+  const count = 4096;
+  const name = index => `fixture.n${String(index).padStart(4, "0")}`;
+  const input = { repositoryId: "fixture", cards: [
+    { id: name(0), role: "cobalt policy", rel: [] },
+    { id: name(1), role: "quartz boundary", rel: [] },
+  ] };
+  let fromReads = 0;
+  const graph = { schemaVersion: 1, repositoryId: "fixture", sourceHash: "fixture",
+    nodes: Array.from({ length: count + 1 }, (_, index) => ({
+      key: `fixture/${name(index)}`, repositoryId: "fixture", semanticId: name(index), definitions: [],
+    })),
+    edges: Array.from({ length: count }, (_, index) => ({
+      id: `e${index}`,
+      get from() { fromReads++; return `fixture/${name(index)}`; },
+      to: `fixture/${name(index + 1)}`, kind: "workflow", confidence: 1, provenance: { type: "source-card" },
+    })),
+  };
+  const { searchIndex } = buildInvertedIndex(input);
+  const unmatched = () => {
+    fromReads = 0;
+    const metrics = {};
+    assert.deepEqual(queryPreparedIndex(input, searchIndex, "missingqzxterm", { graph, metrics }), []);
+    assert.equal(metrics.graphEdgesVisited, 0);
+    context.diagnostic(JSON.stringify({ edges: count, fromReads }));
+    // Public graphs still receive compatibility validation; expansion adds no work.
+    assert.ok(fromReads <= count, `Unexpected graph expansion: ${fromReads} endpoint reads`);
+  };
+  unmatched();
+  const metrics = {};
+  const matched = queryPreparedIndex(input, searchIndex, "cobalt", { graph, metrics });
+  assert.deepEqual(matched.map(result => result.id), [name(0), name(1)]);
+  assert.ok(matched[1].score > 0);
+  assert.deepEqual(matched[1].reasons, ["graph-out:workflow@1.00"]);
+  assert.equal(metrics.graphEdgesVisited, 1);
+  unmatched();
+});
+
 test("query reason accumulation stays bounded without changing scores, seeds or reason order", context => {
   const input = { cards: [
     { id: "fixture.boundary", role: "cobalt delta epsilon zeta eta theta iota", rel: ["workflow>fixture.other"] },

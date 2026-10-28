@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.20.11] — 2026-10-28
+
+### Changed
+
+* Skip graph-bonus adjacency construction when semantic search has no scored seeds. Queries without matching cards previously copied and sorted all graph edges and built both directions of adjacency before returning no results. On a sorted 4,096-edge fixture, an unmatched query now reads edge `from` fields 4,096 times for compatibility validation instead of 20,478 times including expansion. The skipped phase also avoids constructing 8,192 adjacency entries. Endpoint reads are measured by the regression; adjacency-entry counts follow the allocation sites. Nonempty matches still expand graph neighbors and retain their bonus reasons; the regression checks an unmatched query before and after a matching query. Results, scores, ordering, graph compatibility checks and filesystem I/O are unchanged.
+
 ## [0.20.10] — 2026-10-28
 
 ### Fixed

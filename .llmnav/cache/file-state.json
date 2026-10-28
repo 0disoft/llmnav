@@ -8119,7 +8119,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "70de3a18902e32c78a93e1d11b18300f22e8f18f5f589da4e84f39cbd81954c6",
+      "contentHash": "5be7fee82c28b742d57c18f35ca913f26ea3bee8c07d30124cbfc23fe0fa76c0",
       "declarations": [
         null
       ],
@@ -8141,7 +8141,7 @@
       ],
       "path": "src/search.js",
       "semanticBytes": 464,
-      "sourceBytes": 38640
+      "sourceBytes": 38674
     },
     {
       "blocks": [],
@@ -8258,7 +8258,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "039ddee54c99d496eb61b06572ffade89d90cb628821656dad9824328a51317e",
+      "contentHash": "749f29ec95e00669ed284f56d3d910a2907ff29d2dc8d293dbb52b68ed3278ab",
       "declarations": [
         null
       ],
@@ -9842,7 +9842,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "37617f680583df95267a237d9e5e64efd465246bd9eda15a3b58c93a35963b00",
+      "contentHash": "33a794c6ff83a274af63110c6d5423f8f6c1ebde6ae646be1b2e6d0f6cd84557",
       "declarations": [],
       "imports": [
         "../src/inverted-index.js",
@@ -9853,7 +9853,7 @@
       ],
       "path": "tests/search.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 11456
+      "sourceBytes": 13268
     },
     {
       "blocks": [],
