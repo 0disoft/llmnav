@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.20.5] — 2026-10-28
+
+### Changed
+
+* Index distinct discovery query tokens once and probe candidate vocabularies for long queries instead of scanning every absent term for every declaration. Short queries and dense-match cases retain the query scan; the selection accounts for candidate sorting cost. Restore original query-token order before scoring to preserve addition order, explanations, field precedence, duplicate handling, ranking and excerpts. A synthetic regression with 100 declarations plus one file candidate and 2,000 absent terms removes 606,000 absent-term `Set.has` calls and performs 1,202 candidate-token `Map.has` calls instead. This measures matching work, not end-to-end or agent latency. Filesystem I/O is unchanged; the per-query ordinal map adds O(query token count) storage.
+
 ## [0.20.4] — 2026-10-28
 
 ### Fixed

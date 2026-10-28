@@ -32,7 +32,7 @@ export async function discoverProject(root, query, options = {}) {
     throw new RangeError(`discover sourceBudget must be an integer from ${DISCOVERY_SOURCE_LIMITS.minimum} to ${DISCOVERY_SOURCE_LIMITS.maximum} UTF-8 bytes.`);
   }
   const project = await scanProject(root, options);
-  const queryTokens = [...new Set(tokenize(query))];
+  const queryTokens = new Map([...new Set(tokenize(query))].map((token, index) => [token, index]));
   const normalized = normalizeSearchText(query);
   const cardIdsByPath = new Map();
   for (const record of project.records) {
@@ -105,12 +105,26 @@ function sourceTokens(value = "") {
   return new Set([...tokenize(value), ...tokenize(words)]);
 }
 
+function matchingQueryTokens(queryTokens, symbolTokens, pathTokens, signatureTokens) {
+  const fieldSize = symbolTokens.size + pathTokens.size + signatureTokens.size;
+  // Include the worst-case sort cost so dense matches keep the linear query scan.
+  const indexedWork = fieldSize * (1 + Math.ceil(Math.log2(fieldSize + 1)));
+  if (queryTokens.size <= indexedWork) return queryTokens.keys();
+  // Long queries are indexed once; probe the smaller candidate vocabulary instead.
+  const matched = new Set();
+  for (const tokens of [symbolTokens, pathTokens, signatureTokens]) {
+    for (const token of tokens) if (queryTokens.has(token)) matched.add(token);
+  }
+  // Keep floating-point addition and explanation order identical to the query scan.
+  return [...matched].sort((left, right) => queryTokens.get(left) - queryTokens.get(right));
+}
+
 function addCandidate(results, candidate, queryTokens, normalized, pathTokens) {
   const symbolTokens = sourceTokens(candidate.symbol);
   const signatureTokens = sourceTokens(candidate.signature);
   const reasons = [];
   let score = 0;
-  for (const token of queryTokens) {
+  for (const token of matchingQueryTokens(queryTokens, symbolTokens, pathTokens, signatureTokens)) {
     if (symbolTokens.has(token)) { score += DISCOVERY_RANK.symbolToken; reasons.push(`symbol=${token}`); }
     else if (pathTokens.has(token)) { score += DISCOVERY_RANK.pathToken; reasons.push(`path=${token}`); }
     else if (signatureTokens.has(token)) { score += DISCOVERY_RANK.signatureToken; reasons.push(`signature=${token}`); }

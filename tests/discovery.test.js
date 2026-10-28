@@ -83,6 +83,35 @@ test("bounded discovery preserves full ranking, late winners, match counts and s
   }
 });
 
+test("long discovery queries index absent terms once and preserve ranking and reason order", async context => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-discovery-terms-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await writeFile(path.join(root, "work.ts"), Array.from({ length: 100 }, (_, i) =>
+    `export function workAlpha${i}(value: number): number { return value; }\n`).join(""));
+  const absent = Array.from({ length: 2000 }, (_, i) => `absentqueryterm${i}`);
+  const options = { top: 3, includeSource: true, sourceBudget: 256 };
+  for (const terms of ["number work", "work number work"]) {
+    const expected = await discoverProject(root, terms, options);
+    const originalSetHas = Set.prototype.has, originalMapHas = Map.prototype.has;
+    let absentProbes = 0, indexedProbes = 0;
+    const setMock = context.mock.method(Set.prototype, "has", function (key) {
+      if (typeof key === "string" && key.startsWith("absentqueryterm")) absentProbes++;
+      return originalSetHas.call(this, key);
+    });
+    const mapMock = context.mock.method(Map.prototype, "has", function (key) {
+      if (this.get(absent[0]) === 0) indexedProbes++;
+      return originalMapHas.call(this, key);
+    });
+    let actual;
+    try { actual = await discoverProject(root, [...absent, terms].join(" "), options); }
+    finally { setMock.mock.restore(); mapMock.mock.restore(); }
+    context.diagnostic(JSON.stringify({ candidates: 101, absentTerms: absent.length, absentProbes, indexedProbes }));
+    assert.deepEqual(actual, expected);
+    assert.ok(absentProbes <= absent.length * 3, `absent term probes: ${absentProbes}`);
+    assert.ok(indexedProbes < 4000, `candidate token probes: ${indexedProbes}`);
+  }
+});
+
 test("CLI, agent protocol and MCP expose the same unindexed discovery results", async context => {
   const root = await fixture(context);
   const expected = await discoverProject(root, "rotateSession", { top: 2 });

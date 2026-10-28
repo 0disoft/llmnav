@@ -4786,7 +4786,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "7095c44d9989adbd13a8f31fb46b6da1479361f7778117b70b7a98be7b568f82",
+      "contentHash": "d82bbdd3957b6333d125148e5273b23f3a78a5e551c23e616dc5e56b760ba970",
       "declarations": [
         null
       ],
@@ -4802,7 +4802,7 @@
       ],
       "path": "src/discovery.js",
       "semanticBytes": 597,
-      "sourceBytes": 7885
+      "sourceBytes": 8837
     },
     {
       "blocks": [
@@ -8258,7 +8258,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "c5416c58f722d8e31041b57487986d1de6fb343f406e6717e9f76de8cfe51c2f",
+      "contentHash": "40238c973f9ca80994ee69c7c4d8ad3aa5ce610e1f65ba641fd3d1f1a4a9bc78",
       "declarations": [
         null
       ],
@@ -9098,7 +9098,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "0736f41f881807219c705b86e5e94caaa65b21533f687beecdb2b168c6fe192e",
+      "contentHash": "ae7c5fc684e5c814f90a7ede18efc47b8104fcd21bddd2540c6fd1f1f22f7eac",
       "declarations": [],
       "imports": [
         "../src/agent-protocol.js",
@@ -9114,7 +9114,7 @@
       ],
       "path": "tests/discovery.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 9500
+      "sourceBytes": 11251
     },
     {
       "blocks": [],
