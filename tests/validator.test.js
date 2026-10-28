@@ -6,6 +6,9 @@ import test from "node:test";
 import { initializeProject } from "../src/initializer.js";
 import { scanProject } from "../src/project.js";
 import { validateProject } from "../src/validator.js";
+import { loadConfig } from "../src/config.js";
+import { DEFAULT_CONFIG } from "../src/spec.js";
+import { deepMerge } from "../src/util.js";
 
 async function fixture(source) {
   const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-validator-"));
@@ -142,6 +145,39 @@ test("rejects malformed custom vocabulary identifiers", async (context) => {
     () => scanProject(root),
     /additionalEffects\[0\][\s\S]*additionalRisks\[0\][\s\S]*additionalRelations\[0\]/u,
   );
+});
+
+test("configuration merge preserves special JSON keys as own data without changing prototypes", () => {
+  const baseline = structuredClone(DEFAULT_CONFIG);
+  for (const key of ["__proto__", "constructor", "toString"]) {
+    const override = JSON.parse(`{"${key}":{"unreviewedFlag":true}}`);
+    const merged = deepMerge(DEFAULT_CONFIG, override);
+    assert.equal(Object.getPrototypeOf(merged), Object.prototype, key);
+    assert.equal(Object.hasOwn(merged, key), true, key);
+    assert.deepEqual(merged[key], { unreviewedFlag: true });
+    assert.equal(merged.unreviewedFlag, undefined);
+    merged[key].unreviewedFlag = false;
+    assert.equal(override[key].unreviewedFlag, true);
+  }
+  assert.deepEqual(DEFAULT_CONFIG, baseline);
+});
+
+test("configuration rejects prototype injection at every merged settings boundary", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-config-prototype-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await mkdir(path.join(root, ".llmnav"));
+  const file = path.join(root, ".llmnav", "config.json");
+  await writeFile(file, '{"repositoryId":"safe-config","lint":{"maxSearchTerms":8}}');
+  const { config } = await loadConfig(root);
+  assert.equal(config.repositoryId, "safe-config");
+  assert.equal(config.lint.maxSearchTerms, 8);
+  assert.equal(config.lint.minSearchTerms, DEFAULT_CONFIG.lint.minSearchTerms);
+  for (const name of ["", "lint", "lint.maxBlockBytes", "generation", "audit", "graph", "evaluation"]) {
+    let input = JSON.parse('{"__proto__":{"unreviewedFlag":true}}');
+    for (const key of name.split(".").filter(Boolean).reverse()) input = { [key]: input };
+    await writeFile(file, JSON.stringify(input));
+    await assert.rejects(() => loadConfig(root), error => error.message.includes(`${name || "configuration"} contains unknown property "__proto__"`));
+  }
 });
 
 test("rejects unknown configuration and coverage properties", async (context) => {

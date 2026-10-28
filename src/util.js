@@ -309,7 +309,11 @@ export function deepMerge(base, override) {
   if (base && override && typeof base === "object" && typeof override === "object") {
     const result = structuredClone(base);
     for (const [key, value] of Object.entries(override)) {
-      result[key] = key in result ? deepMerge(result[key], value) : structuredClone(value);
+      // JSON keys are data: never invoke __proto__ setters or merge inherited members.
+      Object.defineProperty(result, key, {
+        value: Object.hasOwn(result, key) ? deepMerge(result[key], value) : structuredClone(value),
+        enumerable: true, writable: true, configurable: true,
+      });
     }
     return result;
   }

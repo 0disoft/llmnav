@@ -8258,14 +8258,14 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "04837c72b01cc98f89ea7fac92013b8d91f34fd718aa54bba30ad95df3b3e417",
+      "contentHash": "039ddee54c99d496eb61b06572ffade89d90cb628821656dad9824328a51317e",
       "declarations": [
         null
       ],
       "imports": [],
       "path": "src/spec.js",
       "semanticBytes": 507,
-      "sourceBytes": 5307
+      "sourceBytes": 5308
     },
     {
       "blocks": [
@@ -8472,7 +8472,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "88e3f94e5f962fb002bae4c99004d76e59501e3b68797d990accea915410bd90",
+      "contentHash": "eb916b1377c7fc95235f0fe87e862e008390768c9286fd055fc3dc98856d573d",
       "declarations": [],
       "imports": [
         "./abort.js",
@@ -8487,7 +8487,7 @@
       ],
       "path": "src/util.js",
       "semanticBytes": 0,
-      "sourceBytes": 17688
+      "sourceBytes": 17899
     },
     {
       "blocks": [
@@ -10029,11 +10029,14 @@
     },
     {
       "blocks": [],
-      "contentHash": "2ec40a284a5d1a4c5a9556de07c8559db01bc4f34548d14ac154b3c0d2f5d97c",
+      "contentHash": "0927f4da6026a0c2c158a854074a4144aefd6bf8e3c15943e20244365dfb396f",
       "declarations": [],
       "imports": [
+        "../src/config.js",
         "../src/initializer.js",
         "../src/project.js",
+        "../src/spec.js",
+        "../src/util.js",
         "../src/validator.js",
         "node:assert/strict",
         "node:fs/promises",
@@ -10043,7 +10046,7 @@
       ],
       "path": "tests/validator.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 14350
+      "sourceBytes": 16369
     },
     {
       "blocks": [],

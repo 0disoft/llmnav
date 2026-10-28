@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.20.10] — 2026-10-28
+
+### Fixed
+
+* Merge configuration keys as own data properties and consult only existing own properties. A JSON `__proto__` member previously changed the merged object's prototype and disappeared from unknown-key validation. It now remains visible to the existing validator and is rejected at the root and nested settings boundaries. Normal partial overrides, cloned arrays and input ownership are preserved; inherited names such as `constructor` no longer enter recursive merging. Tests cover prototype identity, special own keys, unchanged inputs, accepted partial configuration and seven rejected injection locations.
+
 ## [0.20.9] — 2026-10-28
 
 ### Fixed
