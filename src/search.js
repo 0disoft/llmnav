@@ -372,7 +372,7 @@ function matchingAliasReasons(aliases, normalizedQuery) {
     const targets = Array.isArray(targetValue) ? targetValue : [targetValue];
     for (const target of targets) {
       const reasons = aliasReasons.get(target) ?? [];
-      reasons.push(`alias=${JSON.stringify(alias)}`);
+      retainSearchReason(reasons, `alias=${JSON.stringify(alias)}`);
       aliasReasons.set(target, reasons);
     }
   }
@@ -876,9 +876,18 @@ function compareGraphEdgesForTraversal(left, right) {
 function addScore(resultsById, card, score, reasons) {
   const existing = resultsById.get(card.id) ?? { card, score: 0, reasons: [] };
   existing.score += score;
-  if (Array.isArray(reasons)) existing.reasons.push(...reasons);
-  else existing.reasons.push(reasons);
+  if (Array.isArray(reasons)) {
+    for (const reason of reasons) {
+      if (existing.reasons.length >= SEARCH_RANK.reasonLimit) break;
+      retainSearchReason(existing.reasons, reason);
+    }
+  } else retainSearchReason(existing.reasons, reasons);
   resultsById.set(card.id, existing);
+}
+
+// Only the first distinct display reasons survive; every score still contributes.
+function retainSearchReason(reasons, reason) {
+  if (reasons.length < SEARCH_RANK.reasonLimit && !reasons.includes(reason)) reasons.push(reason);
 }
 
 function boundedInteger(value, fallback, minimum, maximum) {

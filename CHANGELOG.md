@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.20.7] — 2026-10-28
+
+### Changed
+
+* Bound production query explanation accumulation to the first six distinct reasons per target at both alias collection and score accumulation, rather than retaining every hit until final rendering. Scores still accumulate in their original order, and ranking, relation seeds and displayed explanations remain unchanged. A regression with 4,096 repeated query tokens reduced the largest retained score-reason array from 4,102 entries to 6; alias cases cover 5, 6, 7 and 4,096 normalized matches with duplicate targets. This bounds explanation storage, not total query memory or posting traversal work. Differential checks compare complete results with the unchanged legacy scorer.
+
 ## [0.20.6] — 2026-10-28
 
 ### Changed

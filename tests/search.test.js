@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { queryIndex, queryIndexLegacy, queryPreparedIndex, tokenize } from "../src/search.js";
 import { buildInvertedIndex } from "../src/inverted-index.js";
+import { SEARCH_RANK } from "../src/policy.js";
 
 const index = {
   cards: [
@@ -31,6 +32,38 @@ const index = {
     },
   ],
 };
+
+test("query reason accumulation stays bounded without changing scores, seeds or reason order", context => {
+  const input = { cards: [
+    { id: "fixture.boundary", role: "cobalt delta epsilon zeta eta theta iota", rel: ["workflow>fixture.other"] },
+    { id: "fixture.other", role: "cobalt cobalt", rel: [] },
+  ] };
+  const { searchIndex } = buildInvertedIndex(input);
+  const word = "abcdefghijkl";
+  for (const aliasCount of [0, 5, 6, 7, 4096]) {
+    const aliases = Object.fromEntries(Array.from({ length: aliasCount }, (_, mask) => [
+      [...word].map((letter, bit) => mask & (1 << bit) ? letter.toUpperCase() : letter).join(""),
+      ["fixture.boundary", "fixture.boundary"],
+    ]));
+    const lexicon = { aliases };
+    const query = `${word} ${"cobalt ".repeat(aliasCount ? 2 : 4096)}delta epsilon zeta eta theta iota`;
+    const expected = queryIndexLegacy(input, query, { lexicon });
+    const originalSet = Map.prototype.set;
+    let scoreReasons = 0, aliasReasons = 0, actual;
+    try {
+      Map.prototype.set = function (key, value) {
+        if (value?.card && Array.isArray(value.reasons)) scoreReasons = Math.max(scoreReasons, value.reasons.length);
+        if (Array.isArray(value) && typeof value[0] === "string" && value[0].startsWith("alias=")) aliasReasons = Math.max(aliasReasons, value.length);
+        return Reflect.apply(originalSet, this, [key, value]);
+      };
+      actual = queryPreparedIndex(input, searchIndex, query, { lexicon });
+    } finally { Map.prototype.set = originalSet; }
+    assert.deepEqual(actual, expected);
+    context.diagnostic(JSON.stringify({ aliasCount, scoreReasons, aliasReasons }));
+    assert.ok(scoreReasons <= SEARCH_RANK.reasonLimit, `Retained score reasons: ${scoreReasons}`);
+    assert.ok(aliasReasons <= SEARCH_RANK.reasonLimit, `Retained alias reasons: ${aliasReasons}`);
+  }
+});
 
 test("ranks matching semantic cards", () => {
   const [result] = queryIndex(index, "replayed refresh token", { top: 3, lexicon: { aliases: {} } });
