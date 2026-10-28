@@ -202,15 +202,16 @@ export async function atomicWrite(root, filePath, content, options = {}) {
   const parent = path.dirname(filePath);
   const label = options.label ?? relativePosix(root, filePath);
   await assertNoSymlinkTraversal(root, filePath, label);
+  const mode = await replacementPermissions(filePath);
   await mkdir(parent, { recursive: true });
   const parentIdentity = await directoryIdentity(root, parent, label);
   const runtime = options.runtime ?? DEFAULT_RUNTIME;
   const temporaryPath = `${filePath}.tmp-${runtime.pid}-${runtime.randomHex(8)}`;
   let owned = false;
   try {
-    const handle = await (options.io?.open ?? open)(temporaryPath, "wx");
+    const handle = await (options.io?.open ?? open)(temporaryPath, "wx", mode);
     owned = true;
-    await writeFileAndClose(handle, content);
+    await writeFileAndClose(handle, content, { mode });
     await options.beforeCommit?.({ filePath, temporaryPath });
     await assertNoSymlinkTraversal(root, filePath, label);
     const currentIdentity = await directoryIdentity(root, parent, label);
@@ -234,11 +235,24 @@ export async function atomicWrite(root, filePath, content, options = {}) {
   }
 }
 
+async function replacementPermissions(filePath) {
+  try {
+    const details = await lstat(filePath);
+    // Copy ordinary access bits only, never privileged set-id bits to a new inode.
+    return details.isFile() ? details.mode & 0o777 : undefined;
+  } catch (error) {
+    if (error.code === "ENOENT") return undefined;
+    throw error;
+  }
+}
+
 /** Close an owned handle without replacing a write or sync failure. */
-export async function writeFileAndClose(handle, content, { sync = false } = {}) {
+export async function writeFileAndClose(handle, content, { sync = false, mode } = {}) {
   const failures = [];
   try {
     await handle.writeFile(content, "utf8");
+    // Creation respects umask; restore the target's exact access bits before publishing.
+    if (mode !== undefined) await handle.chmod(mode);
     if (sync) await handle.sync();
   } catch (error) {
     failures.push(error);

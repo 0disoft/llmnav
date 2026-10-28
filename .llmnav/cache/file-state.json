@@ -8258,7 +8258,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "15a2fc9d855d88c869a78a9d28da8998e684d620b0067b278f113ac360f6623d",
+      "contentHash": "c5416c58f722d8e31041b57487986d1de6fb343f406e6717e9f76de8cfe51c2f",
       "declarations": [
         null
       ],
@@ -8472,7 +8472,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "72b545cb2d15d7369752754b1bee66f797d3a9cf0c3a19d462c8893e1d6c678f",
+      "contentHash": "88e3f94e5f962fb002bae4c99004d76e59501e3b68797d990accea915410bd90",
       "declarations": [],
       "imports": [
         "./abort.js",
@@ -8487,7 +8487,7 @@
       ],
       "path": "src/util.js",
       "semanticBytes": 0,
-      "sourceBytes": 17123
+      "sourceBytes": 17688
     },
     {
       "blocks": [
@@ -9168,7 +9168,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "3e7163841e93cbb56ca6f583d56966dd820d26bbd84fb05d6c6351ada4bbdd77",
+      "contentHash": "add3aadefc8c64f16a859295ea9f5da4ff343b03ac842ea330fcfb0213d836ac",
       "declarations": [],
       "imports": [
         "../src/config.js",
@@ -9191,7 +9191,7 @@
       ],
       "path": "tests/filesystem-safety.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 15309
+      "sourceBytes": 19308
     },
     {
       "blocks": [],

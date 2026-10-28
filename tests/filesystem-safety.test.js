@@ -131,6 +131,91 @@ test("formatting rejects concurrent edits instead of overwriting current source"
   assert.ok((await readFile(filePath, "utf8")).includes("value = 2"));
 });
 
+test("atomic replacement carries existing permissions through creation and handle closure", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-atomic-mode-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  const target = path.join(root, "source.js");
+  await writeFile(target, "previous");
+  const mode = (await fs.stat(target)).mode & 0o777;
+  const events = [];
+  await atomicWrite(root, target, "next", {
+    io: { open: async (temporary, flags, creationMode) => {
+      assert.equal(creationMode, mode);
+      const handle = await open(temporary, flags, creationMode);
+      return {
+        writeFile: async (...args) => { events.push("write"); await handle.writeFile(...args); },
+        chmod: async permissions => {
+          assert.equal(permissions, mode);
+          events.push("chmod");
+          await handle.chmod(permissions);
+        },
+        close: async () => { events.push("close"); await handle.close(); },
+      };
+    } },
+    beforeCommit: async ({ temporaryPath }) => {
+      assert.deepEqual(events, ["write", "chmod", "close"]);
+      assert.equal(await readFile(target, "utf8"), "previous");
+      assert.equal(await readFile(temporaryPath, "utf8"), "next");
+    },
+  });
+  assert.equal(await readFile(target, "utf8"), "next");
+  assert.equal((await fs.stat(target)).mode & 0o777, mode);
+});
+
+test("formatting preserves POSIX executable and private modes despite a restrictive umask", {
+  skip: process.platform === "win32" ? "Windows does not implement POSIX permission bits." : false,
+}, async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-format-mode-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  const source = "/* llmnav/1 file\nrole=Own the fixture boundary.\nid=fixture.test\nstability=architecture\n*/\nexport const value = 1;\n";
+  const target = path.join(root, "source.js");
+  const previousUmask = process.umask();
+  try {
+    for (const mask of [0o022, 0o077]) {
+      process.umask(mask);
+      for (const mode of [0o755, 0o600]) {
+        await writeFile(target, source);
+        await fs.chmod(target, mode);
+        await formatProject(root, { paths: ["source.js"], check: true });
+        assert.equal(await readFile(target, "utf8"), source);
+        assert.equal((await fs.stat(target)).mode & 0o777, mode);
+        assert.deepEqual((await formatProject(root, { paths: ["source.js"] })).changedFiles, ["source.js"]);
+        assert.equal((await fs.stat(target)).mode & 0o777, mode);
+        assert.ok((await readFile(target, "utf8")).includes("export const value = 1;"));
+      }
+    }
+    const created = path.join(root, "new.json");
+    await atomicWrite(root, created, "{}");
+    assert.equal((await fs.stat(created)).mode & 0o777, 0o600);
+  } finally { process.umask(previousUmask); }
+});
+
+test("permission and close failures preserve the target and remove the owned temporary file", async (context) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-atomic-mode-failure-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  const target = path.join(root, "source.js");
+  await writeFile(target, "previous");
+  const permission = Object.assign(new Error("chmod denied"), { code: "EACCES" });
+  const close = Object.assign(new Error("close failed"), { code: "EIO" });
+  let closed = 0;
+  await assert.rejects(() => atomicWrite(root, target, "next", {
+    io: { open: async (...args) => {
+      const handle = await open(...args);
+      return {
+        writeFile: (...writeArgs) => handle.writeFile(...writeArgs),
+        chmod: async () => { throw permission; },
+        close: async () => { closed++; await handle.close(); throw close; },
+      };
+    } },
+  }), error => {
+    assert.deepEqual(error.errors, [permission, close]);
+    return true;
+  });
+  assert.equal(closed, 1);
+  assert.equal(await readFile(target, "utf8"), "previous");
+  assert.deepEqual(await readdir(root), ["source.js"]);
+});
+
 test("concurrent formatters re-read source under the repository lock", { timeout: 15000 }, async (context) => {
   const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-format-serialized-"));
   context.after(() => rm(root, { recursive: true, force: true }));

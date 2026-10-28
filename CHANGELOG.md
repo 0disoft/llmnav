@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.20.4] — 2026-10-28
+
+### Fixed
+
+* Preserve an existing regular file's ordinary POSIX access bits (`rwx`) when atomically replacing sources, configuration and control files. Previously replacement used `0666 & ~umask`, so formatting could remove executable bits from `0755` scripts or broaden `0600` access to `0644` under umask `0022`. Create the temporary file with the target's access bits and restore them on its open handle after writing to account for restrictive umasks. Permission failures close the handle, retain the original target and clean up the temporary file. New files retain default creation permissions; special set-id bits are not copied. Each existing-file replacement adds one `lstat` and one handle `chmod`, with unchanged O(source bytes) work. Windows regressions verify permission arguments, operation ordering and failure cleanup; the native POSIX mode/umask integration test is skipped on Windows.
+
 ## [0.20.3] — 2026-10-28
 
 ### Fixed
