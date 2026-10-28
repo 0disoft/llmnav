@@ -42,7 +42,7 @@ export async function runCompiler(command, args, options = {}) {
     });
     child.once("close", code => {
       clearTimeout(timer);
-      options.signal?.removeEventListener("abort", onAbort);
+      options.signal?.removeEventListener?.("abort", onAbort);
       if (failure) reject(failure);
       else if (code !== 0) reject(Object.assign(new Error(`Compiler analysis exited ${code}: ${errors.trim()}`), { exitCode: code }));
       else resolve(output);

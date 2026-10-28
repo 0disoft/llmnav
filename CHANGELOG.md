@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.20.3] — 2026-10-28
+
+### Fixed
+
+* Honor the optional `removeEventListener` method in the public `AbortSignalLike` contract when compiler and Git subprocesses close. A supported structural signal without that method previously threw an uncaught `TypeError` from the close event and terminated the host process even after a successful command. An isolated-process regression verifies success, command failure, spawn failure, timeout, cancellation reason identity and the public history API; native signal listener cleanup remains covered. Required signatures and runtime dependencies remain unchanged.
+
 ## [0.20.2] — 2026-10-28
 
 ### Fixed

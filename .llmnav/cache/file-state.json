@@ -2392,7 +2392,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "33b3dc348a2001ccf2be5fff21fb67b2206b8de373ab2491fa49bd8a13fdcabe",
+      "contentHash": "5f246eed6d47988d93da887dcb91cb4aba37ceddaf358ffd828b0e6345ff98bf",
       "declarations": [
         null
       ],
@@ -2402,7 +2402,7 @@
       ],
       "path": "src/adapters/process.js",
       "semanticBytes": 521,
-      "sourceBytes": 2783
+      "sourceBytes": 2785
     },
     {
       "blocks": [
@@ -8258,7 +8258,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "59a2556d35a7106f4028bb602c51faddace4910ac7cdfc45f5714d5c73a0b9d7",
+      "contentHash": "15a2fc9d855d88c869a78a9d28da8998e684d620b0067b278f113ac360f6623d",
       "declarations": [
         null
       ],
@@ -8956,17 +8956,21 @@
     },
     {
       "blocks": [],
-      "contentHash": "117dbac955a0576aae01dafa2c14ebcddb93d7d923a442f24d659f9f316d321f",
+      "contentHash": "e8e503c6dfaf2c8b74ad76ba32fa9eb9d4849c69daddc97e9834a0dcb2a28db1",
       "declarations": [],
       "imports": [
         "../src/adapters/process.js",
         "node:assert/strict",
+        "node:child_process",
         "node:events",
+        "node:fs/promises",
+        "node:os",
+        "node:path",
         "node:test"
       ],
       "path": "tests/compiler-process.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 2153
+      "sourceBytes": 4584
     },
     {
       "blocks": [],
