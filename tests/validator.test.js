@@ -16,6 +16,18 @@ async function fixture(source) {
   return root;
 }
 
+test("oversized list cards reach byte-limit diagnostics instead of throwing a RangeError", async (context) => {
+  const root = await fixture("export function feature() {}\n");
+  context.after(() => rm(root, { recursive: true, force: true }));
+  const source = `/* llmnav/1 module\nid=fixture.large\nrole=Own one fixture boundary.\nsearch=first|${"tag|".repeat(199_998)}last\nstability=architecture\n*/\n`;
+  await writeFile(path.join(root, "src", "feature.ts"), source);
+  const project = await scanProject(root);
+  const record = project.records.find((record) => record.card.id === "fixture.large");
+  assert.equal(record.card.search.length, 200_000);
+  const diagnostics = validateProject(project);
+  assert.ok(diagnostics.some((item) => item.code === "LNV013" && item.message.includes("block is")));
+});
+
 test("relation validation shares redirect tails and refreshes states on each pass", async (context) => {
   const root = await fixture(`/* llmnav/1 module\nid=client.base\nrole=Validate semantic relation targets against durable registry identities.\nowns=reference validation\nsearch=registry state|reference check\nrel=workflow>node.0\nstability=architecture\n*/\n`);
   context.after(() => rm(root, { recursive: true, force: true }));

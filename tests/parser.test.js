@@ -4,6 +4,16 @@ import { Script } from "node:vm";
 import { canonicalizeSource, formatLlmnavBlock, parseLlmnavBlocks } from "../src/parser.js";
 import { findAttachedDeclaration } from "../src/declaration.js";
 
+test("large list fields preserve values without exceeding the call argument limit", () => {
+  const count = 200_000;
+  const expected = ["first", ...Array(count - 2).fill("tag"), "last"];
+  for (const key of ["owns", "excludes", "search", "effect", "risk"]) {
+    const source = `/* llmnav/1 module\n${key}= first |${" tag |".repeat(count - 2)} last \n*/`;
+    const [block] = parseLlmnavBlocks(source, "large.js");
+    assert.deepEqual(block.card[key], expected, key);
+  }
+});
+
 test("comment placement does not rescan a shared long-line prefix", (context) => {
   for (const [open, close, filePath] of [["/*", "*/", "long.js"], ["<!--", "-->", "long.html"]]) {
     for (const prefixCharacter of ["x", " "]) {

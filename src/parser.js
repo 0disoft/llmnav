@@ -547,7 +547,8 @@ function materializeCard(scope, entries) {
     if (SCALAR_KEYS.includes(entry.key)) {
       card[entry.key] = entry.value;
     } else if (LIST_KEYS.includes(entry.key)) {
-      card[entry.key].push(...splitPipe(entry.value));
+      // Byte-limited source can still contain more values than a call accepts.
+      for (const value of splitPipe(entry.value)) card[entry.key].push(value);
     } else if (REPEATABLE_KEYS.includes(entry.key)) {
       card[entry.key].push(entry.value);
     } else {

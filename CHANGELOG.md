@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.20.9] — 2026-10-28
+
+### Fixed
+
+* Append parsed list values individually instead of expanding an entire list into function arguments. A source file with 200,000 search values (800,103 bytes, below the 16 MiB parser limit) previously threw `RangeError` before card-size validation. It now reaches the existing `LNV013` size diagnostic. The five list fields preserve trimming, order and duplicates; source and card byte limits remain unchanged. Regression tests cover collection and real project scanning followed by validation.
+
 ## [0.20.8] — 2026-10-28
 
 ### Fixed
