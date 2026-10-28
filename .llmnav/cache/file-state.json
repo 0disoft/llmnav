@@ -7258,7 +7258,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "415daad7589463cd71161531f8bef3e2517038eddff23b577b6b7c8877ace347",
+      "contentHash": "ee9825e86d4696a2be383c1d821a68b0e3d76ee432bb0ecbef68b1aaccfe19d1",
       "declarations": [
         null
       ],
@@ -7275,7 +7275,7 @@
       ],
       "path": "src/project.js",
       "semanticBytes": 510,
-      "sourceBytes": 3613
+      "sourceBytes": 3724
     },
     {
       "blocks": [
@@ -8258,7 +8258,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "40238c973f9ca80994ee69c7c4d8ad3aa5ce610e1f65ba641fd3d1f1a4a9bc78",
+      "contentHash": "2550570f75278cee0ac67cb5652da3c25a1dde14a18abc9b02b1329ba5c2c6fa",
       "declarations": [
         null
       ],
@@ -9350,6 +9350,21 @@
     },
     {
       "blocks": [],
+      "contentHash": "90dfd8b155d198ea5f0db9b9e35af6a946f76bfcea733b62f126f6a014565bd4",
+      "declarations": [],
+      "imports": [
+        "../../src/project.js",
+        "node:assert/strict",
+        "node:fs/promises",
+        "node:os",
+        "node:path"
+      ],
+      "path": "tests/helpers/source-scan-memory-worker.js",
+      "semanticBytes": 0,
+      "sourceBytes": 1788
+    },
+    {
+      "blocks": [],
       "contentHash": "ab2be6ce91242516ba4d60ae3ed05f32914890b313e20020ccc02ee851c21cde",
       "declarations": [],
       "imports": [
@@ -9579,7 +9594,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "e8d0e5a75a34bf5af760e80f5d0dea3c09865595e306e99d5f33a345a3e299b2",
+      "contentHash": "bab094dc11a69cf46698201bb5f972ee1e953ca2bbb6669e04b819f05903deed",
       "declarations": [],
       "imports": [
         "node:assert/strict",
@@ -9589,7 +9604,7 @@
       ],
       "path": "tests/performance.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 1312
+      "sourceBytes": 2016
     },
     {
       "blocks": [],

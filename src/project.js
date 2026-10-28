@@ -41,7 +41,6 @@ export async function scanProject(root, options = {}) {
       blocks,
       contentHash: sha256(source),
       imports: extractImports(source, relativePath),
-      declarationScanContext: createDeclarationScanContext(source),
     };
   }, { signal: options.signal });
   const records = [];
@@ -49,7 +48,7 @@ export async function scanProject(root, options = {}) {
   let sourceBytes = 0;
   let semanticBytes = 0;
 
-  for (const { absolutePath, relativePath, source, blocks, contentHash, imports, declarationScanContext } of scanned) {
+  for (const { absolutePath, relativePath, source, blocks, contentHash, imports } of scanned) {
     throwIfAborted(options.signal);
     const fileBytes = Buffer.byteLength(source);
     const fileSemanticBytes = blocks.reduce((sum, block) => sum + Buffer.byteLength(block.raw), 0);
@@ -67,8 +66,12 @@ export async function scanProject(root, options = {}) {
       imports,
     };
     fileRecords.push(fileRecord);
+    // Keep the line index local to one file, and skip it without symbol cards.
+    let declarationScanContext;
     for (const block of blocks) {
-      const declaration = findAttachedDeclaration(source, block, relativePath, declarationScanContext);
+      const declaration = block.scope === "symbol"
+        ? findAttachedDeclaration(source, block, relativePath, declarationScanContext ??= createDeclarationScanContext(source))
+        : null;
       records.push({
         root,
         absolutePath,

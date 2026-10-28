@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.20.6] — 2026-10-28
+
+### Changed
+
+* Keep full-scan declaration line indexes local to one file instead of retaining every index in the parallel read results. Build an index only for a file's first symbol card and reuse its scan budget for subsequent symbol cards. Reachable declaration-index storage changes from O(total source lines) to O(largest file's lines); returned sources, cards and declarations remain unchanged. An isolated Windows/Node v24.18.0 injected-read fixture with 16 files, 200,000 lines per file and 6,400,000 source bytes reduced the additional heap retained after forced GC just before the last source read from 32,595,320 to 643,632 bytes. This measures one scan phase, not total RSS or end-to-end peak memory; source text remains retained by the public scan API. Reproduce the regression gate with `node --test --test-name-pattern="source scan does not retain" tests/performance.test.js`.
+
 ## [0.20.5] — 2026-10-28
 
 ### Changed
