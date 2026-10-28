@@ -689,6 +689,39 @@ test("opt-in MCP generation follows source edits, renames, deletion and recovery
   assert.deepEqual((await callTool(server, 8, "llmnav_query", { task: "refresh token" })).data, []);
 });
 
+for (const autoGenerate of [false, true]) {
+  test(`MCP recovers deleted cache inputs on the next request only with auto-generation (autoGenerate=${autoGenerate})`, async context => {
+    const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-mcp-cache-recovery-"));
+    context.after(async () => {
+      assert.equal(path.dirname(root), path.resolve(os.tmpdir()));
+      assert.ok(path.basename(root).startsWith("llmnav-mcp-cache-recovery-"));
+      await rm(root, { recursive: true, force: true });
+    });
+    await createProject(root);
+    const server = createMcpServer({ root, autoGenerate });
+    const original = await callTool(server, 1, "llmnav_query", { task: "refresh token" });
+    const source = path.join(root, "src/rotate.ts"), before = await readFile(source);
+    const indexPath = path.join(root, ".llmnav/cache/index.json");
+    await rm(indexPath);
+    const request = id => server.handleMessage({ jsonrpc: "2.0", id, method: "tools/call",
+      params: { name: "llmnav_query", arguments: { task: "refresh token" } } });
+    const failed = await request(2);
+    assert.match(failed.error.message, /No generated index found/u);
+    assert.equal(server.status().phase, "error");
+    const retried = await request(3);
+    if (autoGenerate) {
+      assert.equal(retried.error, undefined, retried.error?.message);
+      assert.deepEqual(JSON.parse(retried.result.content[0].text), original);
+      assert.equal(server.status().phase, "ready");
+      assert.ok((await stat(indexPath)).isFile());
+    } else {
+      assert.match(retried.error.message, /No generated index found/u);
+      await assert.rejects(readFile(indexPath), { code: "ENOENT" });
+    }
+    assert.deepEqual(await readFile(source), before);
+  });
+}
+
 test("MCP auto-generation rejects stale compiler configuration dependencies and recovers", async context => {
   const root = await mkdtemp(path.join(os.tmpdir(), "llmnav-mcp-compiler-inputs-"));
   context.after(() => rm(root, { recursive: true, force: true }));

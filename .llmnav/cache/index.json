@@ -1915,7 +1915,7 @@
         "source parsing"
       ],
       "hashes": {
-        "body": "8286d9383a476d756ee580eedeb567ccd20082101c2b711758fa53107c4fadfb",
+        "body": "d33d1cc8e9c94db0345979acf97e4290b25ebdf56425668531c61ba85f282482",
         "semantic": "59aa3e9e793d505ecdf110fec023c201aaee0154d2f6c9cf71afe1bbf71a7be5",
         "structure": "e213e073414c75bc75df1c8669a7045096142b6c0845694191893d90bf23e3c2"
       },
@@ -2239,7 +2239,7 @@
         "index preparation"
       ],
       "hashes": {
-        "body": "4150ee86f0461faba65128151ae1d42592be3fcefab8bb9eb3d5542174786158",
+        "body": "d210ac351f0ac2ce2bdc29ddb0e1f30200d6908bec0d04c261d0bfc5620c40af",
         "semantic": "27353c21e442ab2e82f1729de2ce8d5050e2b297ca7e9f232f148945e717e6f7",
         "structure": "605e615bfd8f1ced92a0f7543090b6c9c0ffc3f1c0dcee413c6f474a5bc4fa4f"
       },
@@ -2585,7 +2585,7 @@
         "request cancellation ownership"
       ],
       "hashes": {
-        "body": "862fe55c3c8e72934f22730332b91792448298caacce1fd8402cb500eda7b399",
+        "body": "c62253241475f9b5a6dec2032b1decc8f5e92562cf270cbfc9595976d8f27618",
         "semantic": "273f312a13397e49d44806ba090489f8b4f0b901e54593397ba22b84a00ab671",
         "structure": "1e0e45992d4016d4732d0b31ece9ba48cc408cb8a9011d2a439a9ab046930fdb"
       },
@@ -3897,9 +3897,9 @@
     },
     "schemaVersion": 1
   },
-  "generatedBy": "llmnav@0.20.7",
+  "generatedBy": "llmnav@0.20.8",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "6f1ece310f1142346bb916628e4e91663c9972dee114aefc9715da79676130f9",
+  "sourceHash": "5b3a268e72a40c836eaea50278a9f4429cd73c4daf5e7a21f2d41a2ead938c62",
   "specVersion": "1"
 }

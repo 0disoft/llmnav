@@ -6538,7 +6538,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "862fe55c3c8e72934f22730332b91792448298caacce1fd8402cb500eda7b399",
+      "contentHash": "c62253241475f9b5a6dec2032b1decc8f5e92562cf270cbfc9595976d8f27618",
       "declarations": [
         null
       ],
@@ -6555,7 +6555,7 @@
       ],
       "path": "src/mcp-refresh.js",
       "semanticBytes": 507,
-      "sourceBytes": 4878
+      "sourceBytes": 4989
     },
     {
       "blocks": [
@@ -6667,7 +6667,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "4150ee86f0461faba65128151ae1d42592be3fcefab8bb9eb3d5542174786158",
+      "contentHash": "d210ac351f0ac2ce2bdc29ddb0e1f30200d6908bec0d04c261d0bfc5620c40af",
       "declarations": [
         null
       ],
@@ -6689,7 +6689,7 @@
       ],
       "path": "src/mcp.js",
       "semanticBytes": 667,
-      "sourceBytes": 17064
+      "sourceBytes": 17194
     },
     {
       "blocks": [
@@ -8258,7 +8258,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "8286d9383a476d756ee580eedeb567ccd20082101c2b711758fa53107c4fadfb",
+      "contentHash": "d33d1cc8e9c94db0345979acf97e4290b25ebdf56425668531c61ba85f282482",
       "declarations": [
         null
       ],
@@ -9491,7 +9491,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "7c1a8d2b487a191c710fcd6c1983e1544ef2e431db7c9b8844bb414d4e45ed9d",
+      "contentHash": "074e872074f453b701a85ebbeeb24b9a38a93f799b919f96092beeadea264d21",
       "declarations": [],
       "imports": [
         "../src/agent-protocol.js",
@@ -9514,7 +9514,7 @@
       ],
       "path": "tests/mcp.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 37635
+      "sourceBytes": 39371
     },
     {
       "blocks": [],
@@ -9857,7 +9857,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "9f84af9cc4c297ed8c25004e0c188246c6556d9353629a01343ce2c1f015f1bd",
+      "contentHash": "c7f14c3db8dc0225d79c3b2623126848ee7080768c33ca8da735f3397f766efa",
       "declarations": [],
       "imports": [
         "../src/mcp-refresh.js",
@@ -9872,7 +9872,7 @@
       ],
       "path": "tests/session-cache.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 11068
+      "sourceBytes": 12060
     },
     {
       "blocks": [],

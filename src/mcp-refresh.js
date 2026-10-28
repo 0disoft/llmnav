@@ -30,7 +30,8 @@ export function createSourcePreparation(root, dependencies = {}) {
     try {
       const nextStamp = await readStamp(root, options);
       throwIfAborted(options.signal);
-      if (nextStamp === preparedStamp) return;
+      // A failed snapshot load invalidates readiness even when source is unchanged.
+      if (nextStamp === preparedStamp && options.force !== true) return;
       const result = await generate(root, { signal: options.signal });
       throwIfAborted(options.signal);
       if (!result.ok) {

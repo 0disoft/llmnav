@@ -190,6 +190,7 @@ export function createSessionCache(root, dependencies = {}) {
   };
 
   function startLoad() {
+    const forcePreparation = phase === "error";
     phase = "checking";
     lastError = null;
     const controller = new AbortController();
@@ -197,7 +198,7 @@ export function createSessionCache(root, dependencies = {}) {
     dependencies.signal?.addEventListener("abort", onAbort);
     if (dependencies.signal?.aborted) onAbort();
     const record = { promise: null };
-    const work = Promise.resolve().then(() => load(controller.signal));
+    const work = Promise.resolve().then(() => load(controller.signal, forcePreparation));
     record.promise = withDeadline("MCP session load", timeoutMs, work, {
       signal: controller.signal, scheduler: dependencies.scheduler,
     }).catch(error => {
@@ -215,10 +216,10 @@ export function createSessionCache(root, dependencies = {}) {
     return record;
   }
 
-  async function load(signal) {
+  async function load(signal, forcePreparation) {
     if (prepare !== null) {
       phase = "preparing";
-      await abortable(prepare({ signal }), signal);
+      await abortable(prepare({ signal, ...(forcePreparation ? { force: true } : {}) }), signal);
       throwIfAborted(signal);
     }
     phase = "loading";

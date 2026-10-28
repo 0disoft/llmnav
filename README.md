@@ -119,7 +119,7 @@ Add narrow coverage rules and real retrieval queries as you adopt more boundarie
 | MCP clients | `llmnav mcp`, using the shared agent tool schema |
 | Custom hosts | ESM API, typed exports, and a [runnable host example](docs/provider-neutral-integration.md) |
 
-For MCP editing sessions, `llmnav mcp --auto-generate` prepares indexes before semantic navigation requests. Reanalyze stale compiler inputs separately. The default MCP server reads existing indexes.
+For MCP editing sessions, `llmnav mcp --auto-generate` prepares indexes before semantic navigation requests. After a snapshot load fails, the next navigation request prepares the indexes again even if source files have not changed. Reanalyze stale compiler inputs separately. The default MCP server reads existing indexes.
 
 See [agent integration](docs/agent-integration.md) for setup and [editor integration](docs/editor-integration.md) for diagnostics.
 

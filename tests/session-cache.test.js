@@ -137,6 +137,29 @@ test("shared preparation runs once, preserves cancellation ownership, and retrie
   assert.equal(generates, 3);
 });
 
+test("failed snapshot loads force one shared preparation without a source edit", async () => {
+  let generates = 0, failLoad = true;
+  const cause = new Error("snapshot unavailable");
+  const prepare = createSourcePreparation("unused", {
+    sourceStamp: async () => "unchanged",
+    generateProject: async () => { generates++; return { ok: true }; },
+  });
+  const session = { refresh: async () => {} };
+  const cache = createSessionCache("unused", {
+    prepare, sessionStamp: async () => "same",
+    createSession: async () => { if (failLoad) throw cause; return session; },
+  });
+  await assert.rejects(cache.current(), error => error === cause);
+  assert.equal(generates, 1);
+  failLoad = false;
+  const first = cache.current(), second = cache.current();
+  assert.equal(first, second);
+  assert.equal(await first, session);
+  assert.equal(generates, 2);
+  assert.equal(await cache.current(), session);
+  assert.equal(generates, 2, "healthy unchanged requests must not regenerate");
+});
+
 test("edits during preparation and late abandoned completions are not acknowledged", async () => {
   let stamp = "first", generates = 0;
   const gate = Promise.withResolvers(), started = Promise.withResolvers();

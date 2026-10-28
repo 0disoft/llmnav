@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.20.8] — 2026-10-28
+
+### Fixed
+
+* In MCP auto-generation mode, a failed snapshot load now invalidates preparation readiness for the next request even when source stamps are unchanged. Removing a warmed session's primary index previously left every subsequent request failing until a source edit or server restart. The next request now performs one shared generation, restores the index and reloads the session; healthy unchanged requests still skip generation. The original failing request remains an error, cancellation and deadlines retain their existing owners, and read-only MCP mode never regenerates artifacts. Regression coverage includes real cache deletion, unchanged source bytes, concurrent recovery subscribers and the healthy request after recovery.
+
 ## [0.20.7] — 2026-10-28
 
 ### Changed
