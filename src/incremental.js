@@ -138,6 +138,7 @@ function createIncrementalScan(root, files, previousFiles, hintFiles) {
 
 async function scanSourceFile(scan, absolutePath) {
   const relativePath = relativePosix(scan.root, absolutePath);
+  await assertNoSymlinkTraversal(scan.root, absolutePath, relativePath);
   const details = await stat(absolutePath, { bigint: true });
   const fingerprint = statFingerprint(details);
   const { stateFile, counters } = await reuseOrParseFile(scan, {

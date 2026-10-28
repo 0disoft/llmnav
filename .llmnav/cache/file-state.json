@@ -5428,7 +5428,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "4be897432af867cb5859751892a78592425a4c3756354d091bfed9ab8ac9b0b4",
+      "contentHash": "48674401d35cb18e3bf24a78bba8fb4a31653a13f54aa7f331ffe755874a9973",
       "declarations": [
         null
       ],
@@ -5441,7 +5441,7 @@
       ],
       "path": "src/files.js",
       "semanticBytes": 485,
-      "sourceBytes": 5473
+      "sourceBytes": 5556
     },
     {
       "blocks": [
@@ -5540,7 +5540,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "feb10b133d8334fd3955a6e0e4e9c5cd2bb12c8a15320b0aa04063465bdb13fc",
+      "contentHash": "7ea594a5c0f3711f07d66bf5b7c4d40bbbfd7ac8107d83701d615002e8e839ad",
       "declarations": [
         null
       ],
@@ -5553,7 +5553,7 @@
       ],
       "path": "src/formatter.js",
       "semanticBytes": 461,
-      "sourceBytes": 1818
+      "sourceBytes": 1910
     },
     {
       "blocks": [
@@ -6130,7 +6130,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "408466e80e235814721fcbbda635dfa6b2a6f1b2c026eb28368fe57c152dac9f",
+      "contentHash": "23e72310198d480f6e262f545b1c57e4f812e6c3b833809a7f0d0bddb78f2e33",
       "declarations": [
         null
       ],
@@ -6149,7 +6149,7 @@
       ],
       "path": "src/incremental.js",
       "semanticBytes": 381,
-      "sourceBytes": 12939
+      "sourceBytes": 13012
     },
     {
       "blocks": [],
@@ -7258,7 +7258,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "13628d9db1736cf8050d23d756da09cb138b243615c02b5e62c182ca3ae6a83b",
+      "contentHash": "415daad7589463cd71161531f8bef3e2517038eddff23b577b6b7c8877ace347",
       "declarations": [
         null
       ],
@@ -7275,7 +7275,7 @@
       ],
       "path": "src/project.js",
       "semanticBytes": 510,
-      "sourceBytes": 3496
+      "sourceBytes": 3613
     },
     {
       "blocks": [
@@ -8258,7 +8258,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "8ebae720ff7e2592b6e3da3961ec2ea7019151ae15a305fd93ddcd2e707e9abf",
+      "contentHash": "59a2556d35a7106f4028bb602c51faddace4910ac7cdfc45f5714d5c73a0b9d7",
       "declarations": [
         null
       ],
@@ -9899,11 +9899,12 @@
     },
     {
       "blocks": [],
-      "contentHash": "0b100149093e3e389a212e717f8f2df880982e5fbffb7c26a484c9b6a0a7dabd",
+      "contentHash": "cacdc509828a9d19667243580e02fc3452d8b97988bb4e244b074f8731bef1a0",
       "declarations": [],
       "imports": [
         "../src/config.js",
         "../src/files.js",
+        "../src/formatter.js",
         "../src/generator.js",
         "../src/initializer.js",
         "../src/search.js",
@@ -9916,7 +9917,7 @@
       ],
       "path": "tests/source-traversal-race.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 3320
+      "sourceBytes": 6474
     },
     {
       "blocks": [],

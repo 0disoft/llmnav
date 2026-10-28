@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.20.2] — 2026-10-28
+
+### Fixed
+
+* Recheck symbolic-link traversal before enumerating descendant directories and before consuming sources in full scans, incremental scans and formatting. A directory replaced by a Windows junction or POSIX directory symlink after its parent was listed could previously import external source cards and publish a successful index. Deterministic replacement tests cover both pre-directory and post-file enumeration boundaries, reject before external source reads and preserve published state. Each added guard performs up to one `lstat` per relative path component; path checks remain point-in-time checks rather than an OS-atomic filesystem sandbox.
+
 ## [0.20.1] — 2026-10-28
 
 ### Fixed

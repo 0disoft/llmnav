@@ -18,7 +18,7 @@ import { collectSourceFiles } from "./files.js";
 import { parseLlmnavBlocks } from "./parser.js";
 import { loadRegistry } from "./registry.js";
 import { loadModuleResolution } from "./module-resolution.js";
-import { readSourceText, relativePosix, sha256 } from "./util.js";
+import { assertNoSymlinkTraversal, readSourceText, relativePosix, sha256 } from "./util.js";
 
 export async function scanProject(root, options = {}) {
   throwIfAborted(options.signal);
@@ -30,6 +30,7 @@ export async function scanProject(root, options = {}) {
   });
   const scanned = await mapWithConcurrency(files, ioConcurrency, async (absolutePath) => {
     throwIfAborted(options.signal);
+    await assertNoSymlinkTraversal(root, absolutePath, relativePosix(root, absolutePath));
     const source = await readSourceText(absolutePath, options);
     const relativePath = relativePosix(root, absolutePath);
     const blocks = parseLlmnavBlocks(source, relativePath);

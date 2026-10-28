@@ -99,6 +99,7 @@ async function walkDirectory(root, directory, config, files, options) {
 
 async function readDirectory(root, directory, config, signal) {
   throwIfAborted(signal);
+  await assertNoSymlinkTraversal(root, directory, relativePosix(root, directory));
   const entries = await readdir(directory, { withFileTypes: true });
   entries.sort((left, right) => compareText(left.name, right.name));
   const batch = { files: [], directories: [] };

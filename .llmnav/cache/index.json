@@ -845,7 +845,7 @@
         "cache directory commit"
       ],
       "hashes": {
-        "body": "408466e80e235814721fcbbda635dfa6b2a6f1b2c026eb28368fe57c152dac9f",
+        "body": "23e72310198d480f6e262f545b1c57e4f812e6c3b833809a7f0d0bddb78f2e33",
         "semantic": "26e0abf92c39ff07a7eb622d795d5ecbc83c7704b7c1ed09cd3ad339e3c04865",
         "structure": "4533f320f5c701808b979357ece450b56bdbc35f1117a5d53a2556e684a33657"
       },
@@ -1703,7 +1703,7 @@
         "cache generation"
       ],
       "hashes": {
-        "body": "13628d9db1736cf8050d23d756da09cb138b243615c02b5e62c182ca3ae6a83b",
+        "body": "415daad7589463cd71161531f8bef3e2517038eddff23b577b6b7c8877ace347",
         "semantic": "c7cfa511ec9a14754b58e0f03bae113bd850ef9c716034a56d82449368d41af2",
         "structure": "517aaddbddf27c31e036025d481e979e53150796b717f0201c2bf800f623eb90"
       },
@@ -1811,7 +1811,7 @@
         "generated artifact selection"
       ],
       "hashes": {
-        "body": "4be897432af867cb5859751892a78592425a4c3756354d091bfed9ab8ac9b0b4",
+        "body": "48674401d35cb18e3bf24a78bba8fb4a31653a13f54aa7f331ffe755874a9973",
         "semantic": "c4bc743c8234815ec4eb769379036544321fbbbedfeeb363c580bb1658320a33",
         "structure": "41ab60f39516b3c84d5f12f567dfee581cd6351517842d0f142034010e2febdf"
       },
@@ -1863,7 +1863,7 @@
         "generated cache formatting"
       ],
       "hashes": {
-        "body": "feb10b133d8334fd3955a6e0e4e9c5cd2bb12c8a15320b0aa04063465bdb13fc",
+        "body": "7ea594a5c0f3711f07d66bf5b7c4d40bbbfd7ac8107d83701d615002e8e839ad",
         "semantic": "96da0bbe3ce024aae971854f5333d10bf58c99073f1236d1be40b435a0d7191b",
         "structure": "dc1237f3835a25375141f1cea90bdac0eb8cca91c439326de38eb186159a5035"
       },
@@ -1915,7 +1915,7 @@
         "source parsing"
       ],
       "hashes": {
-        "body": "8ebae720ff7e2592b6e3da3961ec2ea7019151ae15a305fd93ddcd2e707e9abf",
+        "body": "59a2556d35a7106f4028bb602c51faddace4910ac7cdfc45f5714d5c73a0b9d7",
         "semantic": "59aa3e9e793d505ecdf110fec023c201aaee0154d2f6c9cf71afe1bbf71a7be5",
         "structure": "e213e073414c75bc75df1c8669a7045096142b6c0845694191893d90bf23e3c2"
       },
@@ -3897,9 +3897,9 @@
     },
     "schemaVersion": 1
   },
-  "generatedBy": "llmnav@0.20.1",
+  "generatedBy": "llmnav@0.20.2",
   "repositoryId": "llmnav",
   "schemaVersion": 1,
-  "sourceHash": "d85572e96a00afa5ee255645610c66b4d0ba6819e3864f07b0ed81a4e6ea2bd9",
+  "sourceHash": "869e1421e267356fda5e97df9950f873e8a6d33f47ff76daa65e0f348e908a62",
   "specVersion": "1"
 }
