@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 The npm package follows Semantic Versioning. The `llmnav/N` source protocol is versioned independently.
 
+## [0.20.1] — 2026-10-28
+
+### Fixed
+
+* Stop rebuilding retained compiler diagnostics after their 1,048,576 UTF-16 character cap is full. Continue draining stderr, preserving the exact diagnostic prefix, exit errors, Unicode truncation, timeout and cancellation behavior. This removes one prefix concatenation and slice per discarded chunk without adding dependencies or changing subprocess I/O volume. In a local Windows/Node v24.18.0 synthetic test emitting 64 MiB of ASCII stderr, three alternating baseline/current runs reduced median elapsed time from 1,168.96 to 386.23 ms and parent CPU time from 985 to 187 ms. Reproduce with `node benchmarks/compiler-diagnostics.js f2e94a5`; these timings describe diagnostic flooding, not normal compiler throughput.
+
 ## [0.20.0] — 2026-10-28
 
 ### Added

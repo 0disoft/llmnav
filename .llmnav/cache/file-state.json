@@ -168,6 +168,20 @@
       "sourceBytes": 1808
     },
     {
+      "blocks": [],
+      "contentHash": "48a55c15669f56b19316290eb61145602c25f1416f7bfdcd59b1b60fa73f43dd",
+      "declarations": [],
+      "imports": [
+        "../src/adapters/process.js",
+        "node:assert/strict",
+        "node:child_process",
+        "node:perf_hooks"
+      ],
+      "path": "benchmarks/compiler-diagnostics.js",
+      "semanticBytes": 0,
+      "sourceBytes": 1770
+    },
+    {
       "blocks": [
         {
           "card": {
@@ -2378,7 +2392,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "d3907ad7bf95588a6bf69d0c74a20788a83a72762c2cb00f516076b94372fe45",
+      "contentHash": "33b3dc348a2001ccf2be5fff21fb67b2206b8de373ab2491fa49bd8a13fdcabe",
       "declarations": [
         null
       ],
@@ -2388,7 +2402,7 @@
       ],
       "path": "src/adapters/process.js",
       "semanticBytes": 521,
-      "sourceBytes": 2668
+      "sourceBytes": 2783
     },
     {
       "blocks": [
@@ -8244,7 +8258,7 @@
           "syntaxErrors": []
         }
       ],
-      "contentHash": "a86659b82cc68eff9d8ff575b17a67e014fe664ef952c81bdcbe5b4ef8fb24c3",
+      "contentHash": "8ebae720ff7e2592b6e3da3961ec2ea7019151ae15a305fd93ddcd2e707e9abf",
       "declarations": [
         null
       ],
@@ -8942,7 +8956,7 @@
     },
     {
       "blocks": [],
-      "contentHash": "5493337e239a8e0f92972bdcc761aa1b9679a5291e95e1288a088aaec1f65471",
+      "contentHash": "117dbac955a0576aae01dafa2c14ebcddb93d7d923a442f24d659f9f316d321f",
       "declarations": [],
       "imports": [
         "../src/adapters/process.js",
@@ -8952,7 +8966,7 @@
       ],
       "path": "tests/compiler-process.test.js",
       "semanticBytes": 0,
-      "sourceBytes": 1212
+      "sourceBytes": 2153
     },
     {
       "blocks": [],

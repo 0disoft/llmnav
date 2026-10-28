@@ -12,6 +12,8 @@ stability=architecture
 import { spawn } from "node:child_process";
 import { assertAbortSignal, createAbortError, throwIfAborted } from "../abort.js";
 
+const STDERR_CHARACTER_LIMIT = 1024 * 1024;
+
 // Compiler processes are opt-in. Observe exit before releasing owned temporary files.
 export async function runCompiler(command, args, options = {}) {
   assertAbortSignal(options.signal);
@@ -34,7 +36,10 @@ export async function runCompiler(command, args, options = {}) {
       if (bytes > 32 * 1024 * 1024) stop(new Error("Compiler analysis exceeded the 32 MiB output limit."));
       else output += chunk.toString();
     });
-    child.stderr.on("data", chunk => { errors = (errors + chunk.toString()).slice(0, 1024 * 1024); });
+    child.stderr.on("data", chunk => {
+      const remaining = STDERR_CHARACTER_LIMIT - errors.length;
+      if (remaining > 0) errors += chunk.slice(0, remaining);
+    });
     child.once("close", code => {
       clearTimeout(timer);
       options.signal?.removeEventListener("abort", onAbort);
